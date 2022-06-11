@@ -9,6 +9,9 @@ class Tuile(pygame.sprite.Sprite):
     def getType(self):
         return self.type
     
+    def getProba(self):
+        return self.probaSup    
+
     def getCanon(self):
         return self.canon
     
