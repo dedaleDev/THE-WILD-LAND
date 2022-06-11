@@ -1,21 +1,6 @@
 import random
 taille_matrice = 64
 
-def roche1(matrice, i, j):
-    taille = random.randint(1, 10)
-    for x in range(taille):
-        for y in range(taille):
-            if x+i and y+j<taille_matrice:
-                matrice[i][j] = 2
-
-def mer1(matrice, i, j):
-    taille = random.randint(1, 10)
-    for x in range(taille):
-        for y in range(taille):
-            if x+i and y+j<taille_matrice:
-                matrice[i][j] = 3
-
-
 def generation_matrice():
     #1 = terre
     #2 = roche
