@@ -19,7 +19,7 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
     #music = pygame.mixer.music.load("data/Music/level0.mp3")
     # pygame.mixer.music.play(10)
     print("Génération de la map")
-    matriceImg = generation.loadImg(map)
+    
     BLACK = (0, 0, 0)
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
@@ -31,6 +31,7 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
     # définit la taille de la fenetre pour qu'elle occupe tout l'écran --> sous Windows 10 et ultérieur elle passe même en plein écran mais pas sous Linux et MacOS
     fenetrePygame = pygame.display.set_mode(
         (infoObject.current_w, infoObject.current_h))
+    matriceImg = generation.loadImg(map)
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
 
@@ -40,9 +41,11 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
     smallfont = pygame.font.SysFont('Corbel', 50)  # definit la police utilisé
     text = smallfont.render('MENU PRINCIPAL', True,
                             color_dark)  # créer le texte en sombre
+    moveY = 0
+    moveX = 0
     while continuer == True:  # répete indefiniment le jeu
         # initialisation de la vitesse de raffraichissement (fps)
-        clock.tick(30)
+        clock.tick(60)
 
         for event in pygame.event.get():  # On parcours la liste de tous les événements reçus
             # Si un de ces événements est de type QUIT (Alt+F4) ou bouton fermeture alors on arrête la boucle
@@ -63,12 +66,24 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
             else:
                 text = smallfont.render('MENU', True, color_dark)
 
+            #gestion du déplacement de la caméra :
+            if mouse[1] <= 200 : #Si souris en haut
+                moveY  +=20
+            if mouse[1] >= infoObject.current_h-200:  # Si souris en bas
+                moveY -=20
+            if mouse[0] >= infoObject.current_w-200:  # Si souris à droite
+                moveX -= 20
+            if mouse[0] <= 200:  # Si souris à gauche
+                moveX +=20
+
+            
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
-            fenetrePygame.blit(text, (10, 10))
             for i in range(len(matriceImg)):
                 for j in range(len(matriceImg[i])):
-                    fenetrePygame.blit(matriceImg[i][j],(j*64,i*64))
+                    fenetrePygame.blit(matriceImg[i][j],(j*75+moveX,i*90+moveY))
+
+            fenetrePygame.blit(text, (10, 10))
             pygame.display.flip()  # Rafraîchissement de l'écran
         else:
             print("Fermeture du jeu & Lancement du menu principal")
