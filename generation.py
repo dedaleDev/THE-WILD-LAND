@@ -7,20 +7,20 @@ proba_mer = 4
 proba_foret = 4
 
 
-def tirer_mer(MatriceMap, i, j):
+def tirer_mer(matriceMap, i, j):
     temp = random.randint(1,100)
     if temp<= proba_mer + matriceMap[i][j].getProba_mer() :
         matriceMap[i][j] = Tuile(3)
         majProba(matriceMap, i, j, 25, "mer")
 
-def tirer_foret(MatriceMap, i, j):
+def tirer_foret(matriceMap, i, j):
     temp = random.randint(1,100)
     if temp <= proba_foret + matriceMap[i][j].getProba_foret() :
         matriceMap[i][j] = Tuile(4)
         majProba(matriceMap, i, j, 25, "foret")
 
 
-def tirer_roche(MatriceMap, i, j):
+def tirer_roche(matriceMap, i, j):
     temp = random.randint(1,100)
     if temp<= proba_roche + matriceMap[i][j].getProba_roche() :
         matriceMap[i][j] = Tuile(2)
@@ -65,17 +65,17 @@ def generation_matrice():
         for j in range(1, taille_matrice-1):
             a = random.randint(1,3)
             if a==1:
-                tirer_foret(MatriceMap, i, j)
-                tirer_mer(MatriceMap, i, j)
-                tirer_roche(MatriceMap, i, j)
+                tirer_foret(matriceMap, i, j)
+                tirer_mer(matriceMap, i, j)
+                tirer_roche(matriceMap, i, j)
             if a==2:
-                tirer_mer(MatriceMap, i, j)
-                tirer_roche(MatriceMap, i, j)
-                tirer_foret(MatriceMap, i, j)
+                tirer_mer(matriceMap, i, j)
+                tirer_roche(matriceMap, i, j)
+                tirer_foret(matriceMap, i, j)
             if a==3:
-                tirer_roche(MatriceMap, i, j)
-                tirer_foret(MatriceMap, i, j)
-                tirer_mer(MatriceMap, i, j)
+                tirer_roche(matriceMap, i, j)
+                tirer_foret(matriceMap, i, j)
+                tirer_mer(matriceMap, i, j)
 
     printMap(matriceMap)
     return matriceMap
