@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
 import main_menu
+import generation
 fenetrePygame = ""
 
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
@@ -10,13 +11,15 @@ fenetrePygame = ""
 largeurEtHauteur = (0, 0)
 
 
-def pygameInit():  # foction servant à l'initialisation pygame
+def pygameInit(map):  # foction servant à l'initialisation pygame
     print("lancement jeu")
     global largeurEtHauteur, fenetrePygame
     # if Options.music == True:
     # pygame.mixer.init()
     #music = pygame.mixer.music.load("data/Music/level0.mp3")
     # pygame.mixer.music.play(10)
+    print("Génération de la map")
+    matriceImg = generation.loadImg(map)
     BLACK = (0, 0, 0)
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
@@ -63,6 +66,9 @@ def pygameInit():  # foction servant à l'initialisation pygame
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
             fenetrePygame.blit(text, (10, 10))
+            for i in range(len(matriceImg)):
+                for j in range(len(matriceImg[i])):
+                    fenetrePygame.blit(matriceImg[i][j],(j*64,i*64))
             pygame.display.flip()  # Rafraîchissement de l'écran
         else:
             print("Fermeture du jeu & Lancement du menu principal")
