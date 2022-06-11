@@ -11,6 +11,7 @@ largeurEtHauteur = (0, 0)
 
 
 def pygameInit():  # foction servant à l'initialisation pygame
+    print("lancement jeu")
     global largeurEtHauteur, fenetrePygame
     # if Options.music == True:
     # pygame.mixer.init()
@@ -30,7 +31,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
 
-    color_dark = (0, 0, 0)  # définit la couleur sombre du titre menu principal
+    color_dark = (0, 0, 200)  # définit la couleur sombre du titre menu principal
     # définit la couleur claire du titre menu principal
     color_light = (255, 255, 255)
     smallfont = pygame.font.SysFont('Corbel', 50)  # definit la police utilisé
@@ -46,30 +47,27 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 continuer = False  # On arrête la boucle
             if event.type == KEYDOWN:  # Si touche appuyée
                 print("")
-            else:
 
-                if event.key == K_RETURN:
-                    enterIsOK = True
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 if mouse[0] <= 200 and mouse[1] <= 50:  # detection si clic sur menu pricipal
-                    print("Main Menu loading")
-                    main_menu.Main_Menu()
                     continuer = False
-                    pygame.quit()  # ferme pygame et le jeu
-
-        if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
-            mouse = pygame.mouse.get_pos()
 
             # detection si clic sur menu pricipal, si la souris s'approche du texte menu principal, la couleur change. Noire->Blanc
+        if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
+            mouse = pygame.mouse.get_pos()
             if mouse[0] <= 200 and mouse[1] <= 50:
-                text = smallfont.render('MENU PRINCIPAL', True, color_light)
+                text = smallfont.render('MENU', True, color_light)
             else:
-                text = smallfont.render('MENU PRINCIPAL', True, color_dark)
+                text = smallfont.render('MENU', True, color_dark)
 
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
             fenetrePygame.blit(text, (10, 10))
             pygame.display.flip()  # Rafraîchissement de l'écran
         else:
-            print("Le jeu à été fermé via le menu principal")
-    return
+            print("Fermeture du jeu & Lancement du menu principal")
+            main_menu.Main_Menu()
+            pygame.display.quit()
+            pygame.quit()  # ferme pygame et le jeu
+            fenetrePygame=""
+            return
