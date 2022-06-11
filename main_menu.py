@@ -1,4 +1,5 @@
 from tkinter import *
+from turtle import st
 from PIL import Image, ImageTk
 import tkinter.font as font
 import pygame
@@ -6,8 +7,9 @@ import options
 import sys
 
 
-fenetre = Tk()  # On crée une fenêtre, racine de l'interface Tk
-
+fenetre = ""  # On crée une fenêtre, racine de l'interface Tk
+startGame =False
+load =True
 
 def musicPlayerMainTheme():
     if options.music == True:
@@ -16,8 +18,14 @@ def musicPlayerMainTheme():
         pygame.mixer.music.play(10)
     return
 
-
+def option ():
+    fenetre.destroy()
+    options.Menu_Options()
 def Quitter():
+    global startGame, load
+    startGame=False
+    load = False
+    fenetre.destroy()
     sys.exit()
     return
     # fenetre.destroy()
@@ -25,7 +33,9 @@ def Quitter():
 
 
 def LaunchGame():
-    return (True)
+    global startGame
+    startGame =True
+    fenetre.destroy()
 
 
 def tailleEcran(redimensionner=1, fenetre="", pleinEcran=False):
@@ -44,8 +54,10 @@ def tailleEcran(redimensionner=1, fenetre="", pleinEcran=False):
 
 
 def Main_Menu():
-    global fenetre
+    global fenetre, startGame
+    startGame = False
     # masque la fenêtre durant le chargement
+    fenetre = Tk()
     fenetre.title("Mini-Jeu")  # titre
     # taille de l’interface utilisateur par défaut
 
@@ -71,7 +83,7 @@ def Main_Menu():
     #fenetre.iconphoto(False, PhotoImage(file="data/logo/icon_Polgarok.png"))
 
     # importation image arrière plan
-    imageBG = Image.open("data/main_menu_background.png")
+    imageBG = Image.open("data/menu/main_menu_background.png")
     # redimentionne la taille de l'image en fonction de la taille de l'écran
     resize_imageBG = imageBG.resize((largeurE, hauteurE))
     imgBG = ImageTk.PhotoImage(resize_imageBG)  # convertit PIL en tkinter
@@ -95,7 +107,7 @@ def Main_Menu():
     #imageButtonOptions = Image.open("data/Menu/button_Options.png")
     #imageButtonOptions = ImageTk.PhotoImage(imageButtonOptions)
     buttonOptions = Button(
-        fenetre, command=options.Menu_Options,  text="OPTIONS", relief=FLAT)
+        fenetre, command=option,  text="OPTIONS", relief=FLAT)
     buttonOptions['font'] = f
     buttonOptions.pack()
     buttonOptions.place(anchor="nw", relx=0.02, rely=0.18)
@@ -113,5 +125,4 @@ def Main_Menu():
 
     # redimentionne la taille de l'image en fonction de la taille de l'écran
     resize_imageBG = imageBG.resize((largeurE, hauteurE))
-
     fenetre.mainloop()  # raffraichisement de la fenetre tkinter
