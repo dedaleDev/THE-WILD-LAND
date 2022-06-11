@@ -87,20 +87,20 @@ def printMap(matriceMap):
             print(matriceMap[i][j].getProba(), ', ', end='')
 
 
-def  loadImg(matriceMap=[]):
+def loadImg(matriceMap=[]):
     #fonction pour remplacer le plan de la map par des images
-    matricemap=matriceMap[:]#copie tout dans un nouvel espace mémoire.
+    matricemap = matriceMap[:]  # copie tout dans un nouvel espace mémoire.
     for i in range(len(matricemap)):
         for j in range(len(matricemap[i])):
             typeTemp = matricemap[i][j].getType()
-            if typeTemp == 1 :# si Terre
-                imgTemp = pygame.image.load("data/tuiles/#1_terre.png")
-            elif typeTemp ==2 : 
-                imgTemp = pygame.image.load("data/tuiles/#2_roche.png")
+            if typeTemp == 1:  # si Terre
+                imgTemp = pygame.image.load("data/tuiles/1terre.png")
+            elif typeTemp == 2:
+                imgTemp = pygame.image.load("data/tuiles/2roche.png")
             elif typeTemp == 3:
-                imgTemp = pygame.image.load("data/tuiles/#3_mer.png")
+                imgTemp = pygame.image.load("data/tuiles/3mer.png")
             elif typeTemp == 4:
-                imgTemp = pygame.image.load("data/tuiles/#4_foret.png")
-            imgTemp = pygame.transform.scale(imgTemp, (64, 64))
+                imgTemp = pygame.image.load("data/tuiles/4foret.png")
+            imgTemp = pygame.transform.scale(imgTemp, (128, 128))
             matricemap[i][j] = imgTemp
     return matricemap
