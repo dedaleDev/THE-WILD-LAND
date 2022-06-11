@@ -4,7 +4,7 @@ class Tuile(pygame.sprite.Sprite):
         self.type = type
         self.canon = False
         self.probaSup_mer = 0
-        self.probaSup_terre = 0
+        self.probaSup_roche = 0
         self.probaSup_foret = 0 
         
                
