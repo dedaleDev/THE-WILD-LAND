@@ -2,6 +2,11 @@ import random
 from tuile import Tuile
 taille_matrice = 16
 
+def majProba(matriceMap, i, j, probaSup):
+    for x in range(-1,1):
+        for y in range(-1, 1):
+            if i+x<len(matriceMap) and j+y <len(matriceMap):
+                matriceMap[i+x][j+y].augmenterProba(probaSup)
 
 def generation_matrice():
     #1 = terre
@@ -34,20 +39,20 @@ def generation_matrice():
             
             
             temp = random.randint(1,100)
-            if temp<= proba_roche :
+            if temp<= proba_roche + matriceMap[i][j].getProba() :
                 matriceMap[i][j] = Tuile(2)
+                majProba(matriceMap, i, j, 75)
             
             temp = random.randint(1,100)
-            if temp<= proba_mer :
+            if temp<= proba_mer + matriceMap[i][j].getProba() :
                 matriceMap[i][j] = Tuile(3)
+                majProba(matriceMap, i, j, 75)
 
             temp = random.randint(1,100)
-            if temp <= proba_foret:
+            if temp <= proba_foret + matriceMap[i][j].getProba() :
                 matriceMap[i][j] = Tuile(4)
-            
-                    
+                majProba(matriceMap, i, j, 75)
 
-    print(matriceMap[0][0].getCanon())
     printMap(matriceMap)
     return matriceMap
 
@@ -55,6 +60,6 @@ def printMap(matriceMap):
     for i in range(len(matriceMap)):
         print('\n')
         for j in range(len(matriceMap[0])):
-            print(matriceMap[i][j].getType(), ', ', end='')
+            print(matriceMap[i][j].getProba(), ', ', end='')
 
 generation_matrice()
