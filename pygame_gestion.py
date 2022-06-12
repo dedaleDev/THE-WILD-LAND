@@ -68,20 +68,20 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
 
             #gestion du déplacement de la caméra :
             if mouse[1] <= 200 : #Si souris en haut
-                moveY  +=20
+                moveY  +=2
             if mouse[1] >= infoObject.current_h-200:  # Si souris en bas
-                moveY -=20
+                moveY -=2
             if mouse[0] >= infoObject.current_w-200:  # Si souris à droite
-                moveX -= 20
+                moveX -= 2
             if mouse[0] <= 200:  # Si souris à gauche
-                moveX +=20
+                moveX +=2
 
             
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
             for i in range(len(matriceImg)):
                 for j in range(len(matriceImg[i])):
-                    fenetrePygame.blit(matriceImg[i][j],(j*75+moveX,i*90+moveY))
+                    fenetrePygame.blit(matriceImg[i][j],(j*80+moveX,i*100+moveY))
 
             fenetrePygame.blit(text, (10, 10))
             pygame.display.flip()  # Rafraîchissement de l'écran
