@@ -1,133 +1,106 @@
 import random
 import pygame
 from tuile import Tuile
-taille_matriceX = 12#Y
-taille_matriceY = 18#X
-proba_roche = 15  # en %
-proba_mer = 5
-proba_foret = 15
-proba_desert = 10
-proba_neige= 10
-matricemapStorageInfo=[]
+taille_matrice = 16
+proba_roche=6  #en %
+proba_mer = 4
+proba_foret = 4
+
 
 def tirer_mer(matriceMap, i, j):
-    temp = random.randint(1, 100)
-    if temp <= proba_mer + matriceMap[i][j].getProba_mer():
+    temp = random.randint(1,100)
+    if temp <= proba_mer + matriceMap[i][j].getProba_mer() :
         matriceMap[i][j] = Tuile(3)
-        majProba(matriceMap, i, j, 100, "mer")
-
-
-def tirer_desert(matriceMap, i, j):
-    temp = random.randint(1, 100)
-    if temp <= proba_desert + matriceMap[i][j].getProba_desert():
-        matriceMap[i][j] = Tuile(6)
-        majProba(matriceMap, i, j, 100, "desert")
+        majProba(matriceMap, i, j, 25, "mer")
 
 def tirer_foret(matriceMap, i, j):
-    temp = random.randint(1, 100)
-    if temp <= proba_foret + matriceMap[i][j].getProba_foret():
+    temp = random.randint(1,100)
+    if temp <= proba_foret + matriceMap[i][j].getProba_foret() :
         matriceMap[i][j] = Tuile(4)
         majProba(matriceMap, i, j, 25, "foret")
 
 
-def tirer_neige(matriceMap, i, j):
-    temp = random.randint(1, 100)
-    if temp <= proba_neige + matriceMap[i][j].getProba_neige():
-        matriceMap[i][j] = Tuile(5)
-        majProba(matriceMap, i, j, 25, "neige")
-
 def tirer_roche(matriceMap, i, j):
-    temp = random.randint(1, 100)
-    if temp <= proba_roche + matriceMap[i][j].getProba_roche():
+    temp = random.randint(1,100)
+    if temp<= proba_roche + matriceMap[i][j].getProba_roche() :
         matriceMap[i][j] = Tuile(2)
-        majProba(matriceMap, i, j, 25, nature= "roche")
-
+        majProba(matriceMap, i, j, 25, "roche")
 
 def majProba(matriceMap, i, j, probaSup, nature):
-    liste =[-1,1]
-    for x in range(-1, 1):
+    for x in range(-1,1):
         for y in range(-1, 1):
-            if i+x < len(matriceMap) and j+y < len(matriceMap):
-                if nature == "roche":
+            if i+x<len(matriceMap) and j+y <len(matriceMap):
+                if nature=="roche":
                     matriceMap[i+x][j+y].augmenterProbaRoche(probaSup)
-                if nature == "foret":
-                    matriceMap[i+x][j+y].augmenterProbaForet(probaSup)
-                if nature == "mer" and not(x in liste and y in liste) :
-
-                    matriceMap[i+x][j+y].augmenterProbaMer(probaSup)
-
+                if nature=="foret":
+                    matriceMap[i+x][j+y].augmenterProba_foret(probaSup)
+                if nature=="mer":
+                    matriceMap[i+x][j+y].augmenterProba_mer(probaSup)
 
 def generation_matrice():
-    global matricemapStorageInfo
     #1 = terre
     #2 = roche
     #3 = mer
     #4 = foret
-
+ 
+    
     matriceMap = []
-    for i in range(taille_matriceX):
-        matriceMap.append([0]*taille_matriceY)
-
-    for i in range(taille_matriceX):
-        for j in range(len(matriceMap[i])):
-            # initialisation d'une carte remplie de terre
-            matriceMap[i][j] = Tuile(1)
-
-    for i in range(taille_matriceX):
-        matriceMap[i][0] = Tuile(7)
-        matriceMap[i][taille_matriceY-1] = Tuile(7)
-    for i in range (taille_matriceY):
-        matriceMap[0][i] = Tuile(7)
-        matriceMap[taille_matriceX-1][i] = Tuile(7)
-
-    for i in range(1, taille_matriceX-1):
-        for j in range(1, taille_matriceY-1):
-            a = random.randint(1, 3)
-            if a == 1:
+    for i in range(taille_matrice):
+        matriceMap.append([0]*taille_matrice)
+        
+    
+    
+    for i in range(taille_matrice):
+        for j in range(len(matriceMap[i])): 
+            matriceMap[i][j] = Tuile(1) #initialisation d'une carte remplie de terre
+    
+    
+    for i in range(taille_matrice):
+        matriceMap[i][0] = Tuile(2)
+        matriceMap[i][taille_matrice-1] = Tuile(2)
+        matriceMap[0][i] = Tuile(2)
+        matriceMap[taille_matrice-1][i] = Tuile(2)
+    
+    for i in range(1, taille_matrice-1):
+        for j in range(1, taille_matrice-1):
+            a = random.randint(1,3)
+            if a==1:
                 tirer_foret(matriceMap, i, j)
                 tirer_mer(matriceMap, i, j)
-                tirer_desert(matriceMap, i, j)
                 tirer_roche(matriceMap, i, j)
-                tirer_neige(matriceMap, i, j)
-            if a == 2:
+            if a==2:
                 tirer_mer(matriceMap, i, j)
                 tirer_roche(matriceMap, i, j)
-                tirer_neige(matriceMap, i, j)
                 tirer_foret(matriceMap, i, j)
-                tirer_desert(matriceMap, i, j)
-            if a == 3:
-                tirer_desert(matriceMap, i, j)
+            if a==3:
                 tirer_roche(matriceMap, i, j)
                 tirer_foret(matriceMap, i, j)
-                tirer_neige(matriceMap, i, j)
                 tirer_mer(matriceMap, i, j)
+
+    printMap(matriceMap)
     return matriceMap
 
+def printMap(matriceMap):
+    for i in range(len(matriceMap)):
+        print('\n')
+        for j in range(len(matriceMap[0])):
+            print(matriceMap[i][j].getProba(), ', ', end='')
 
 
-def loadImg(matriceMap=[]):
+def  loadImg(matriceMap=[]):
     #fonction pour remplacer le plan de la map par des images
-    matricemap = matriceMap[:]  # copie tout dans un nouvel espace mémoire.
+    matricemap=matriceMap[:]#copie tout dans un nouvel espace mémoire.
     for i in range(len(matricemap)):
         for j in range(len(matricemap[i])):
             typeTemp = matricemap[i][j].getType()
-            if typeTemp == 1:  # si Terre
-                imgTemp = pygame.image.load("data/tuiles/1Terre.png")
-            elif typeTemp == 2:#Roche
-                imgTemp = pygame.image.load("data/tuiles/2Roche.png")
-            elif typeTemp == 3:#eau
-                if  random.randint(1, 2) ==1: 
-                    imgTemp = pygame.image.load("data/tuiles/3EauClaire.png")
-                else:
-                    imgTemp = pygame.image.load("data/tuiles/3EauProfonde.png")
-            elif typeTemp == 4:#Foret
-                imgTemp = pygame.image.load("data/tuiles/4Foret.png")
-            elif typeTemp == 5: #neige
-                imgTemp = pygame.image.load("data/tuiles/5Neige.png")
-            elif typeTemp == 6: #Desert
-                imgTemp = pygame.image.load("data/tuiles/6Desert.png")
-            elif typeTemp == 7: #Barriere
-                imgTemp = pygame.image.load("data/tuiles/7Barriere.png")
-            imgTemp = pygame.transform.scale(imgTemp, (150, 150))
+            if typeTemp == 1 :# si Terre
+                imgTemp = pygame.image.load("data/tuiles/#1_terre.png")
+            elif typeTemp ==2 : 
+                imgTemp = pygame.image.load("data/tuiles/#2_roche.png")
+            elif typeTemp == 3:
+                imgTemp = pygame.image.load("data/tuiles/#3_mer.png")
+            elif typeTemp == 4:
+                imgTemp = pygame.image.load("data/tuiles/#4_foret.png")
+            imgTemp = pygame.transform.scale(imgTemp, (64, 64))
             matricemap[i][j] = imgTemp
     return matricemap
