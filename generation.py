@@ -1,5 +1,6 @@
 import random
 import pygame
+import copy
 from tuile import Tuile
 taille_matriceX = 12#Y
 taille_matriceY = 18#X
@@ -87,6 +88,7 @@ def generation_matrice():
     #5 = neige
     #6 = desert
     
+    
     liste_index = []
     for i in range(1, taille_matriceX-1):
         for j in range(1, taille_matriceY-1):
@@ -134,9 +136,9 @@ def printMat(matriceMap):
         for j in range(len(matriceMap[0])):
             print(matriceMap[i][j].getProba_desert(),", ", end='')
 
-def loadImg(matriceMap=[]):
+def loadImg(matriceMap=[], matricemap=[]):
     #fonction pour remplacer le plan de la map par des images
-    matricemap = matriceMap[:]  # copie tout dans un nouvel espace mémoire.
+    matricemap = copy.deepcopy(matriceMap)  # copie tout dans un nouvel espace mémoire.
     for i in range(len(matricemap)):
         for j in range(len(matricemap[i])):
             typeTemp = matricemap[i][j].getType()
@@ -145,9 +147,6 @@ def loadImg(matriceMap=[]):
             elif typeTemp == 2:#Roche
                 imgTemp = pygame.image.load("data/tuiles/2Roche.png")
             elif typeTemp == 3:#eau
-                if  random.randint(1, 2) ==1: 
-                    imgTemp = pygame.image.load("data/tuiles/3EauClaire.png")
-                else:
                     imgTemp = pygame.image.load("data/tuiles/3EauProfonde.png")
             elif typeTemp == 4:#Foret
                 imgTemp = pygame.image.load("data/tuiles/4Foret.png")
@@ -157,6 +156,9 @@ def loadImg(matriceMap=[]):
                 imgTemp = pygame.image.load("data/tuiles/6Desert.png")
             elif typeTemp == 7: #Barriere
                 imgTemp = pygame.image.load("data/tuiles/7Barriere.png")
-            imgTemp = pygame.transform.scale(imgTemp, (150, 150))
+            if matriceMap[i][j].getType() == 2 or matriceMap[i][j].getType()==7:
+                imgTemp = pygame.transform.scale(imgTemp, (150, 190))
+            else :
+                imgTemp = pygame.transform.scale(imgTemp, (150, 150))
             matricemap[i][j] = imgTemp
     return matricemap
