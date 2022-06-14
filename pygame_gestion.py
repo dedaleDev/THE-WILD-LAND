@@ -43,6 +43,9 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
                             color_dark)  # créer le texte en sombre
     moveY = 0
     moveX = 0
+    decalageX = -((infoObject.current_w/2) +(5*generation.taille_matriceX))
+    decalageY = -((infoObject.current_h/2)-(5*generation.taille_matriceY))
+    print(decalageX, decalageY)
     while continuer == True:  # répete indefiniment le jeu
         # initialisation de la vitesse de raffraichissement (fps)
         clock.tick(60)
@@ -57,6 +60,7 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 if mouse[0] <= 200 and mouse[1] <= 50:  # detection si clic sur menu pricipal
                     continuer = False
+                    main_menu.load =False
 
             # detection si clic sur menu pricipal, si la souris s'approche du texte menu principal, la couleur change. Noire->Blanc
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
@@ -68,20 +72,23 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
 
             #gestion du déplacement de la caméra :
             if mouse[1] <= 200 : #Si souris en haut
-                moveY  +=2
+                moveY  +=10
             if mouse[1] >= infoObject.current_h-200:  # Si souris en bas
-                moveY -=2
+                moveY -=10
             if mouse[0] >= infoObject.current_w-200:  # Si souris à droite
-                moveX -= 2
+                moveX -= 10
             if mouse[0] <= 200:  # Si souris à gauche
-                moveX +=2
+                moveX +=10
 
             
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
+
+            #affichage de la map
             for i in range(len(matriceImg)):
+
                 for j in range(len(matriceImg[i])):
-                    fenetrePygame.blit(matriceImg[i][j],(j*80+moveX,i*100+moveY))
+                        fenetrePygame.blit(matriceImg[i][j], ((j*90+moveX), (i*110+moveY)))
 
             fenetrePygame.blit(text, (10, 10))
             pygame.display.flip()  # Rafraîchissement de l'écran
