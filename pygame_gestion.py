@@ -1,4 +1,4 @@
-# gestion déplacement personnage et de pygame
+
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
@@ -23,14 +23,14 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
     BLACK = (0, 0, 0)
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
-    pygame.HWSURFACE
+
     clock = pygame.time.Clock()  # créer un système permettant de gérer le temps
     # Si touche appuyée plus de 400ms répétition de 30ms
     pygame.key.set_repeat(400, 30)
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
     # définit la taille de la fenetre pour qu'elle occupe tout l'écran --> sous Windows 10 et ultérieur elle passe même en plein écran mais pas sous Linux et MacOS
     fenetrePygame = pygame.display.set_mode(
-        (infoObject.current_w, infoObject.current_h))
+        (infoObject.current_w, infoObject.current_h), pygame.HWSURFACE | pygame.DOUBLEBUF )
     matriceImg = generation.loadImg(map)
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
