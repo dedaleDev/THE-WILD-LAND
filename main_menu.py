@@ -9,7 +9,7 @@ import sys
 
 fenetre = ""  # On crée une fenêtre, racine de l'interface Tk
 startGame =False
-load =True
+loadMainMenu = True
 
 def musicPlayerMainTheme():
     if options.music == True:
@@ -22,9 +22,9 @@ def option ():
     fenetre.destroy()
     options.Menu_Options()
 def Quitter():
-    global startGame, load
+    global startGame, loadMainMenu
     startGame=False
-    load = False
+    loadMainMenu = False
     fenetre.destroy()
     sys.exit()
     return
@@ -33,7 +33,7 @@ def Quitter():
 
 
 def LaunchGame():
-    global startGame
+    global startGame, loadMainMenu
     startGame =True
     fenetre.destroy()
 
@@ -65,7 +65,7 @@ def Main_Menu():
     # musicPlayerMainTheme()
 
     fenetre.configure(background="black")
-    f = font.Font(size=80)
+    f = font.Font(size=40)
     tailleEcranUser = tailleEcran(fenetre=fenetre)  # redimentionne l'écran
     # sépare taille ecran dans un p-uplet
     tailleEcranUser = tailleEcranUser.split("x")
