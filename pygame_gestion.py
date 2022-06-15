@@ -1,4 +1,3 @@
-
 # gestion déplacement personnage et de pygame
 import pygame
 from pygame.locals import *
@@ -7,7 +6,7 @@ import main_menu
 import generation
 import copy
 from tuile import Tuile
-from OpenGL import*
+from game import Game
 
 fenetrePygame = ""
 
@@ -16,7 +15,7 @@ fenetrePygame = ""
 largeurEtHauteur = (0, 0)
 
 
-def pygameInit(map=[]):  # foction servant à l'initialisation pygame
+def pygameInit():  # foction servant à l'initialisation pygame
     print("lancement jeu")
     global largeurEtHauteur, fenetrePygame
     # if Options.music == True:
@@ -33,19 +32,15 @@ def pygameInit(map=[]):  # foction servant à l'initialisation pygame
     # Si touche appuyée plus de 400ms répétition de 30ms
     pygame.key.set_repeat(400, 30)
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
-    tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1280, 720), (800, 600), (640, 480)]
-    affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 2.77), (0.19, 2.77), (0, 0)]
-    affichagePersonalise = 2
-    for i in range(len(tailleEcran)):
-        if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
-            affichagePersonalise=i
+
+    game = Game(infoObject)
+
 
 
     # définit la taille de la fenetre pour qu'elle occupe tout l'écran --> sous Windows 10 et ultérieur elle passe même en plein écran mais pas sous Linux et MacOS
     fenetrePygame = pygame.display.set_mode(
-        (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
-    map2=copy.deepcopy(map)
-    matriceImg = generation.loadImg(map2)
+        (game.tailleEcran[game.affichagePersonalise][0], game.tailleEcran[game.affichagePersonalise][1]), pygame.DOUBLEBUF)
+
 
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
@@ -85,30 +80,39 @@ def pygameInit(map=[]):  # foction servant à l'initialisation pygame
 
             #gestion du déplacement de la caméra :
             if mouse[1] <= 200 : #Si souris en haut
-                moveY  +=10
+                for i in range(len(game.map)):
+                    for j in range(len(game.map[0])):
+                        game.map[i][j].decalerY(10)
+                
             if mouse[1] >= infoObject.current_h-200:  # Si souris en bas
-                moveY -=10
-            if mouse[0] >= infoObject.current_w-200:  # Si souris à droite
-                moveX -= 10
-            if mouse[0] <= 200:  # Si souris à gauche
-                moveX +=10
+                for i in range(len(game.map)):
+                    for j in range(len(game.map[0])):
+                        game.map[i][j].decalerY(-10)
 
-            
+            if mouse[0] >= infoObject.current_w-200:  # Si souris à droite
+                for i in range(len(game.map)):
+                    for j in range(len(game.map[0])):
+                        game.map[i][j].decalerX(-10)
+
+            if mouse[0] <= 200:  # Si souris à gauche
+                for i in range(len(game.map)):
+                    for j in range(len(game.map[0])):
+                        game.map[i][j].decalerX(10)
+
+
+
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
 
             #affichage de la map
 
-            for i in range(len(map)):
-
-                for j in range(len(map[i])):
-                    if map[i][j].getType() == 2 or map[i][j].getType()==7:
-                        fenetrePygame.blit(matriceImg[i][j], ((j*88+moveX-(affichageTuile[affichagePersonalise][0]/100*infoObject.current_w), (i*135+moveY+j*6-(affichageTuile[affichagePersonalise][1]/100*infoObject.current_h)))))
-                    else :
-                        fenetrePygame.blit(matriceImg[i][j], ((j*88+moveX), (i*135+moveY+j*6)))
-
+            for i in range(len(game.map)):
+                for j in range(len(game.map[i])): 
+                    fenetrePygame.blit(game.map[i][j].image, (game.map[i][j].getRectX(), game.map[i][j].getRectY()))
+            
             fenetrePygame.blit(text, (10, 10))
-            pygame.display.flip()  # Rafraîchissement de l'écran
+              # Rafraîchissement de l'écran
+            pygame.display.flip()
         else:
             print("Fermeture du jeu & Lancement du menu principal")
             main_menu.Main_Menu()

@@ -1,21 +1,82 @@
 import pygame
-
+import random
 
 class Tuile(pygame.sprite.Sprite):
-    def __init__(self, type):
+    def __init__(self, type, posX, posY, game):
+        super().__init__()
+        self.game = game
+        
         self.type = type
         self.canon = False
+        
+        
         self.probaSup_mer = 0
         self.probaSup_roche = 0
         self.probaSup_foret = 0
         self.probaSup_desert = 0
         self.probaSup_neige = 0
+        
         self.autoriserNeige = False
         self.autoriserDesert = True
+        
+        self.posX = posX
+        self.posY = posY
+        
+        self.image=self.loadImg(self.type)
+        self.rect = self.image.get_rect()
+        
+        self.rect.x = self.avoirX(posY)
+        self.rect.y = self.avoirY(posX, posY)
+
+    def getRectX(self):
+        return self.rect.x
+    
+    def getRectY(self):
+        return self.rect.y
+
+    def avoirX(self, posY):
+        if self.type == 2 or self.type==7:
+            return posY*88 - (self.game.getAffichageTuile()[self.game.affichagePersonalise][0]/100*self.game.infoObject.current_w)
+        else :
+            return posY*88
+
+
+    def avoirY(self, posX, posY):
+        if self.type == 2 or self.type==7:
+            return posX*135+posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
+        else:
+            return posX*135+posY*6
 
 
     def setType(self, entier):
         self.type=entier
+
+    
+    def loadImg(self, type):
+        #fonction pour charger la bonne image
+        if type == 1:  # si Terre
+            imgTemp = pygame.image.load("data/tuiles/1Terre.png")
+        elif type == 2:#Roche
+            imgTemp = pygame.image.load("data/tuiles/2Roche.png")
+        elif type == 3:#eau
+                imgTemp = pygame.image.load("data/tuiles/3EauProfonde.png")
+        elif type == 4:#Foret
+            imgTemp = pygame.image.load("data/tuiles/4Foret.png")
+        elif type == 5: #neige
+            imgTemp = pygame.image.load("data/tuiles/5Neige.png")
+        elif type == 6: #Desert
+            if random.randint(1,2) ==1:
+                imgTemp = pygame.image.load("data/tuiles/6Desert.png")
+            else :
+                imgTemp = pygame.image.load("data/tuiles/6desertCatus.png")
+        elif type == 7: #Barriere
+            imgTemp = pygame.image.load("data/tuiles/7Barriere.png")
+            
+        if self.type == 2 or self.type==7:
+            imgTemp = pygame.transform.scale(imgTemp, (150, 190))
+        else :
+            imgTemp = pygame.transform.scale(imgTemp, (150, 150))
+        return imgTemp
     
     
     def getType(self):
@@ -66,3 +127,10 @@ class Tuile(pygame.sprite.Sprite):
         self.probaSup_desert += entier
     def augmenterProbaNeige(self, entier):
         self.probaSup_neige += entier
+
+
+    def decalerX(self, valeur):
+        self.rect.x+=valeur
+        
+    def decalerY(self, valeur):
+        self.rect.y+=valeur

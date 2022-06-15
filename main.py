@@ -11,8 +11,9 @@ def main():
             main_menu.loadMainMenu = False
             main_menu.startGame = False
             print("Lancement du jeu")
-            map = generation.generation_matrice()
-            pygame_gestion.pygameInit(map)
+
+            pygame_gestion.pygameInit()
+            
     sys.exit()
 
 
