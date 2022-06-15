@@ -1,9 +1,14 @@
 
+# gestion déplacement personnage et de pygame
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
 import main_menu
 import generation
+import copy
+from tuile import Tuile
+from OpenGL import*
+
 fenetrePygame = ""
 
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
@@ -11,7 +16,7 @@ fenetrePygame = ""
 largeurEtHauteur = (0, 0)
 
 
-def pygameInit(map):  # foction servant à l'initialisation pygame
+def pygameInit(map=[]):  # foction servant à l'initialisation pygame
     print("lancement jeu")
     global largeurEtHauteur, fenetrePygame
     # if Options.music == True:
@@ -28,10 +33,20 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
     # Si touche appuyée plus de 400ms répétition de 30ms
     pygame.key.set_repeat(400, 30)
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
+    tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1280, 720), (800, 600), (640, 480)]
+    affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 2.77), (0.19, 2.77), (0, 0)]
+    affichagePersonalise = 2
+    for i in range(len(tailleEcran)):
+        if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
+            affichagePersonalise=i
+
+
     # définit la taille de la fenetre pour qu'elle occupe tout l'écran --> sous Windows 10 et ultérieur elle passe même en plein écran mais pas sous Linux et MacOS
     fenetrePygame = pygame.display.set_mode(
-        (infoObject.current_w, infoObject.current_h), pygame.HWSURFACE | pygame.DOUBLEBUF )
-    matriceImg = generation.loadImg(map)
+        (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
+    map2=copy.deepcopy(map)
+    matriceImg = generation.loadImg(map2)
+
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
 
@@ -41,11 +56,11 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
     smallfont = pygame.font.SysFont('Corbel', 50)  # definit la police utilisé
     text = smallfont.render('MENU PRINCIPAL', True,
                             color_dark)  # créer le texte en sombre
+
+            
     moveY = 0
     moveX = 0
-    decalageX = -((infoObject.current_w/2) +(5*generation.taille_matriceX))
-    decalageY = -((infoObject.current_h/2)-(5*generation.taille_matriceY))
-    print(decalageX, decalageY)
+
     while continuer == True:  # répete indefiniment le jeu
         # initialisation de la vitesse de raffraichissement (fps)
         clock.tick(60)
@@ -54,8 +69,6 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
             # Si un de ces événements est de type QUIT (Alt+F4) ou bouton fermeture alors on arrête la boucle
             if event.type == QUIT:
                 continuer = False  # On arrête la boucle
-            if event.type == KEYDOWN:  # Si touche appuyée
-                print("")
 
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 if mouse[0] <= 200 and mouse[1] <= 50:  # detection si clic sur menu pricipal
@@ -85,10 +98,14 @@ def pygameInit(map):  # foction servant à l'initialisation pygame
             fenetrePygame.fill(BLACK)
 
             #affichage de la map
-            for i in range(len(matriceImg)):
 
-                for j in range(len(matriceImg[i])):
-                        fenetrePygame.blit(matriceImg[i][j], ((j*90+moveX), (i*110+moveY)))
+            for i in range(len(map)):
+
+                for j in range(len(map[i])):
+                    if map[i][j].getType() == 2 or map[i][j].getType()==7:
+                        fenetrePygame.blit(matriceImg[i][j], ((j*88+moveX-(affichageTuile[affichagePersonalise][0]/100*infoObject.current_w), (i*135+moveY+j*6-(affichageTuile[affichagePersonalise][1]/100*infoObject.current_h)))))
+                    else :
+                        fenetrePygame.blit(matriceImg[i][j], ((j*88+moveX), (i*135+moveY+j*6)))
 
             fenetrePygame.blit(text, (10, 10))
             pygame.display.flip()  # Rafraîchissement de l'écran
