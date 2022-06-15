@@ -1,6 +1,6 @@
 import pygame
 import random
-
+from PIL import Image
 class Tuile(pygame.sprite.Sprite):
     def __init__(self, type, posX, posY, game):
         super().__init__()
@@ -23,6 +23,10 @@ class Tuile(pygame.sprite.Sprite):
         self.posY = posY
         
         self.image=self.loadImg(self.type)
+        
+        self.imageO=self.openImg(self.type)
+        
+        
         self.rect = self.image.get_rect()
         
         self.rect.x = self.avoirX(posY)
@@ -78,6 +82,31 @@ class Tuile(pygame.sprite.Sprite):
             imgTemp = pygame.transform.scale(imgTemp, (150, 150))
         return imgTemp
     
+    def openImg(self, type):
+        #fonction pour charger la bonne image
+        if type == 1:  # si Terre
+            imgTemp = Image.open("data/tuiles/1Terre.png").convert('RGBA')
+        elif type == 2:#Roche
+            imgTemp = Image.open("data/tuiles/2Roche.png").convert('RGBA')
+        elif type == 3:#eau
+                imgTemp = Image.open("data/tuiles/3EauProfonde.png").convert('RGBA')
+        elif type == 4:#Foret
+            imgTemp = Image.open("data/tuiles/4Foret.png").convert('RGBA')
+        elif type == 5: #neige
+            imgTemp = Image.open("data/tuiles/5Neige.png").convert('RGBA')
+        elif type == 6: #Desert
+            if random.randint(1,2) ==1:
+                imgTemp = Image.open("data/tuiles/6Desert.png").convert('RGBA')
+            else :
+                imgTemp = Image.open("data/tuiles/6desertCatus.png").convert('RGBA')
+        elif type == 7: #Barriere
+            imgTemp = Image.open("data/tuiles/7Barriere.png").convert('RGBA')
+            
+        if self.type == 2 or self.type==7:
+            imgTemp = imgTemp.resize((150, 190))
+        else :
+            imgTemp = imgTemp.resize((150, 150))
+        return imgTemp
     
     def getType(self):
         return self.type

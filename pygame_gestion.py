@@ -1,13 +1,15 @@
 # gestion déplacement personnage et de pygame
+from time import time
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
+from PIL import Image
 import main_menu
 import generation
 import copy
 from tuile import Tuile
 from game import Game
-
+import time
 fenetrePygame = ""
 
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
@@ -52,14 +54,13 @@ def pygameInit():  # foction servant à l'initialisation pygame
     text = smallfont.render('MENU PRINCIPAL', True,
                             color_dark)  # créer le texte en sombre
 
-            
+    game.genererImg()
     moveY = 0
     moveX = 0
 
     while continuer == True:  # répete indefiniment le jeu
         # initialisation de la vitesse de raffraichissement (fps)
-        clock.tick(60)
-
+        clock.tick(30)
         for event in pygame.event.get():  # On parcours la liste de tous les événements reçus
             # Si un de ces événements est de type QUIT (Alt+F4) ou bouton fermeture alors on arrête la boucle
             if event.type == QUIT:
@@ -83,22 +84,26 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
                         game.map[i][j].decalerY(10)
-                
+                        moveY+=0.05
+                        
+
             if mouse[1] >= infoObject.current_h-200:  # Si souris en bas
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
                         game.map[i][j].decalerY(-10)
+                        moveY-=0.05
+                        
 
             if mouse[0] >= infoObject.current_w-200:  # Si souris à droite
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
                         game.map[i][j].decalerX(-10)
-
+                        moveX-=0.05
             if mouse[0] <= 200:  # Si souris à gauche
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
                         game.map[i][j].decalerX(10)
-
+                        moveX+=0.05
 
 
             # efface l'image pour pouvoir actualiser le jeu
@@ -106,12 +111,15 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
             #affichage de la map
 
-            for i in range(len(game.map)):
+            print(moveX, moveY)
+            fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            """for i in range(len(game.map)):
                 for j in range(len(game.map[i])): 
                     fenetrePygame.blit(game.map[i][j].image, (game.map[i][j].getRectX(), game.map[i][j].getRectY()))
-            
+            """
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
+            
             pygame.display.flip()
         else:
             print("Fermeture du jeu & Lancement du menu principal")

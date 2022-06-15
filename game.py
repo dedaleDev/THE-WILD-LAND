@@ -1,6 +1,6 @@
 import pygame
 import generation
-
+from PIL import Image
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject):
         self.infoObject=infoObject
@@ -8,6 +8,8 @@ class Game(pygame.sprite.Sprite):
         self.affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 4),(0.19, 2.77), (0.19, 2.77), (0, 0)]
         self.affichagePersonalise = self.affichage()
         self.map = generation.generation_matrice(self)
+        self.mapImg = 0
+        
         
 
 
@@ -20,3 +22,16 @@ class Game(pygame.sprite.Sprite):
     
     def getAffichageTuile(self):
         return self.affichageTuile
+
+    
+    def genererImg(self):
+        background_pil = Image.new('RGBA',(150*generation.taille_matriceX,190*generation.taille_matriceY), 0) 
+        for y in range(generation.taille_matriceX):
+            for x in  range(generation.taille_matriceY):
+                if self.map[y][x].type==2 or self.map[y][x].type==7:
+                    background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX(),self.map[y][x].getRectY()),self.map[y][x].imageO)
+                background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX(),self.map[y][x].getRectY()),self.map[y][x].imageO)
+                
+        self.mapImg = pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA')
+            
+            
