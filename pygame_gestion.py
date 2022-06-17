@@ -4,7 +4,6 @@ from pygame.locals import *
 from PIL import *  # pour les images
 from PIL import Image
 import main_menu
-import generation
 from selection import majSelection
 from tuile import Tuile
 from game import Game
@@ -117,6 +116,9 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
             if tuile!=False:
+                if tuile.type == 2 or tuile.type == 7:
+                    fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
+                else : 
                     fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
             pygame.display.flip()
         else:
