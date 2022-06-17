@@ -120,7 +120,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
             if tuile!=False:
-                    fenetrePygame.blit(Imselection, (tuile.getRectX(True), tuile.getRectY(True)))
+                    fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
             pygame.display.flip()
         else:
             print("Fermeture du jeu & Lancement du menu principal")
