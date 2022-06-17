@@ -38,5 +38,3 @@ class Game(pygame.sprite.Sprite):
             
             
             
-
-            
