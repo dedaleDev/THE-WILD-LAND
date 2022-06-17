@@ -35,13 +35,13 @@ class Tuile(pygame.sprite.Sprite):
         self.estSelect = False
 
     def getRectX(self, socle=False):
-        return  self.avoirY(self.posY, socle=True)
+        return  self.avoirX(self.posY, socle=True)
 
     def setSelect(self, bool):
         self.estSelect = bool
 
     def getRectY(self, socle = False):
-        return  self.avoirY(self.posY, socle=True)
+        return  self.avoirY(self.posX, self.posY, socle=True)
 
     def avoirX(self, posY, socle=False):
         if self.type == 2 or self.type==7 and socle==False:
