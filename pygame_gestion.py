@@ -7,6 +7,7 @@ from PIL import Image
 import main_menu
 import generation
 import copy
+from selection import majSelection
 from tuile import Tuile
 from game import Game
 import time
@@ -46,7 +47,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
-
+    Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
+    Imselection = pygame.transform.scale(Imselection, (150,135))
     color_dark = (0, 0, 200)  # définit la couleur sombre du titre menu principal
     # définit la couleur claire du titre menu principal
     color_light = (255, 255, 255)
@@ -57,8 +59,9 @@ def pygameInit():  # foction servant à l'initialisation pygame
     game.genererImg()
     moveY = 0
     moveX = 0
-
+    tuile=False
     while continuer == True:  # répete indefiniment le jeu
+        
         # initialisation de la vitesse de raffraichissement (fps)
         clock.tick(30)
         for event in pygame.event.get():  # On parcours la liste de tous les événements reçus
@@ -70,6 +73,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 if mouse[0] <= 200 and mouse[1] <= 50:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
+                tuile = majSelection(game)
 
             # detection si clic sur menu pricipal, si la souris s'approche du texte menu principal, la couleur change. Noire->Blanc
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
@@ -83,27 +87,27 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if mouse[1] <= 200 : #Si souris en haut
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
-                        game.map[i][j].decalerY(10)
-                        moveY+=0.05
+                        game.map[i][j].decalerY(4)
+                moveY+=4
                         
 
             if mouse[1] >= infoObject.current_h-200:  # Si souris en bas
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
-                        game.map[i][j].decalerY(-10)
-                        moveY-=0.05
+                        game.map[i][j].decalerY(-4)
+                moveY-=4
                         
 
             if mouse[0] >= infoObject.current_w-200:  # Si souris à droite
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
-                        game.map[i][j].decalerX(-10)
-                        moveX-=0.05
+                        game.map[i][j].decalerX(-4)
+                moveX-=4
             if mouse[0] <= 200:  # Si souris à gauche
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
-                        game.map[i][j].decalerX(10)
-                        moveX+=0.05
+                        game.map[i][j].decalerX(4)
+                moveX+=4
 
 
             # efface l'image pour pouvoir actualiser le jeu
@@ -111,15 +115,12 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
             #affichage de la map
 
-            print(moveX, moveY)
+
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
-            """for i in range(len(game.map)):
-                for j in range(len(game.map[i])): 
-                    fenetrePygame.blit(game.map[i][j].image, (game.map[i][j].getRectX(), game.map[i][j].getRectY()))
-            """
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
-            
+            if tuile!=False:
+                    fenetrePygame.blit(Imselection, (tuile.getRectX(True), tuile.getRectY(True)))
             pygame.display.flip()
         else:
             print("Fermeture du jeu & Lancement du menu principal")
