@@ -29,24 +29,29 @@ class Tuile(pygame.sprite.Sprite):
         
         self.rect = self.image.get_rect()
         
-        self.rect.x = self.avoirX(posY)
-        self.rect.y = self.avoirY(posX, posY)
+        self.rect.x = self.avoirX(self.posY, socle=True)
+        self.rect.y = self.avoirY(self.posX, self.posY, socle=True)
 
-    def getRectX(self):
-        return self.rect.x
-    
-    def getRectY(self):
-        return self.rect.y
+        self.estSelect = False
 
-    def avoirX(self, posY):
-        if self.type == 2 or self.type==7:
+    def getRectX(self, socle=False):
+        return  self.avoirY(self.posY, socle=True)
+
+    def setSelect(self, bool):
+        self.estSelect = bool
+
+    def getRectY(self, socle = False):
+        return  self.avoirY(self.posY, socle=True)
+
+    def avoirX(self, posY, socle=False):
+        if self.type == 2 or self.type==7 and socle==False:
             return posY*88 - (self.game.getAffichageTuile()[self.game.affichagePersonalise][0]/100*self.game.infoObject.current_w)
         else :
             return posY*88
 
 
-    def avoirY(self, posX, posY):
-        if self.type == 2 or self.type==7:
+    def avoirY(self, posX, posY, socle=False):
+        if self.type == 2 or self.type==7 and socle ==False:
             return posX*135+posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
         else:
             return posX*135+posY*6
