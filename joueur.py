@@ -1,12 +1,13 @@
+from json import load
 import pygame
 from PIL import Image
 class Player(pygame.sprite.Sprite):
+
      def __init__(self):
           super().__init__()
           #affichage et information
           self .name ="Joueur"
-          self.skin = pygame.image.load("data/personnage/joueur_1.png")
-          self.skin = pygame.transform.scale(self.skin, (100, 150))
+          self.skin = self.loadSkin("joueur")
 
           #donnée du joueur
           self.health = 100
@@ -54,6 +55,11 @@ class Player(pygame.sprite.Sprite):
                self.nourriture += nourriture
      def setEau(self, eau):
                self.eau += eau
+     def loadSkin(self, skin):
+        self.skin = pygame.image.load("data/personnage/"+skin+".png")
+        self.skin = pygame.transform.scale(self.skin, (100, 150))
+        return(self.skin)
+
 
 
     
