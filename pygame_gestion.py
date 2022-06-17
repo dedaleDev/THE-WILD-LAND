@@ -1,16 +1,13 @@
 # gestion déplacement personnage et de pygame
-from time import time
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
 from PIL import Image
 import main_menu
 import generation
-import copy
 from selection import majSelection
 from tuile import Tuile
 from game import Game
-import time
 fenetrePygame = ""
 
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
