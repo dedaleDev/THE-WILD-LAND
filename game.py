@@ -28,8 +28,6 @@ class Game(pygame.sprite.Sprite):
         background_pil = Image.new('RGBA',(150*generation.taille_matriceX,190*generation.taille_matriceY), 0) 
         for y in range(generation.taille_matriceX):
             for x in range(generation.taille_matriceY):
-                print(self.map[y][x].getRectX())
-                print(self.map[y][x].getRectY())
                 if self.map[y][x].type == 2 or self.map[y][x].type == 7:
                     background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX(), self.map[y][x].getRectY()), self.map[y][x].imageO)
                 background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX(), self.map[y][x].getRectY()), self.map[y][x].imageO)

@@ -33,6 +33,8 @@ class Tuile(pygame.sprite.Sprite):
         self.rect.y = self.avoirY(self.posX, self.posY)
 
         self.estSelect = False
+        
+        masque = pygame.mask.from_surface(self.image)
 
     def getRectX(self):
         return  self.rect.x
@@ -64,22 +66,22 @@ class Tuile(pygame.sprite.Sprite):
     def loadImg(self, type):
         #fonction pour charger la bonne image
         if type == 1:  # si Terre
-            imgTemp = pygame.image.load("data/tuiles/1Terre.png")
+            imgTemp = pygame.image.load("data/tuiles/1Terre.png").convert_alpha()
         elif type == 2:#Roche
-            imgTemp = pygame.image.load("data/tuiles/2Roche.png")
+            imgTemp = pygame.image.load("data/tuiles/2Roche.png").convert_alpha()
         elif type == 3:#eau
-                imgTemp = pygame.image.load("data/tuiles/3EauProfonde.png")
+                imgTemp = pygame.image.load("data/tuiles/3EauProfonde.png").convert_alpha()
         elif type == 4:#Foret
-            imgTemp = pygame.image.load("data/tuiles/4Foret.png")
+            imgTemp = pygame.image.load("data/tuiles/4Foret.png").convert_alpha()
         elif type == 5: #neige
-            imgTemp = pygame.image.load("data/tuiles/5Neige.png")
+            imgTemp = pygame.image.load("data/tuiles/5Neige.png").convert_alpha()
         elif type == 6: #Desert
             if random.randint(1,2) ==1:
-                imgTemp = pygame.image.load("data/tuiles/6Desert.png")
+                imgTemp = pygame.image.load("data/tuiles/6Desert.png").convert_alpha()
             else :
-                imgTemp = pygame.image.load("data/tuiles/6desertCatus.png")
+                imgTemp = pygame.image.load("data/tuiles/6desertCatus.png").convert_alpha()
         elif type == 7: #Barriere
-            imgTemp = pygame.image.load("data/tuiles/7Barriere.png")
+            imgTemp = pygame.image.load("data/tuiles/7Barriere.png").convert_alpha()
             
         if self.type == 2 or self.type==7:
             imgTemp = pygame.transform.scale(imgTemp, (150, 190))

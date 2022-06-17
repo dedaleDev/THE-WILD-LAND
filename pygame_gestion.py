@@ -8,13 +8,15 @@ from selection import majSelection
 from tuile import Tuile
 from game import Game
 fenetrePygame = ""
-
+infoObject = 0
+tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
 # initialise la taille de l'écran (largeur, hauteur) en pixel
 largeurEtHauteur = (0, 0)
 
 
 def pygameInit():  # foction servant à l'initialisation pygame
+    global infoObject
     print("lancement jeu")
     global largeurEtHauteur, fenetrePygame
     # if Options.music == True:
@@ -30,17 +32,19 @@ def pygameInit():  # foction servant à l'initialisation pygame
     clock = pygame.time.Clock()  # créer un système permettant de gérer le temps
     # Si touche appuyée plus de 400ms répétition de 30ms
     pygame.key.set_repeat(400, 30)
-    infoObject = pygame.display.Info()  # récupère la taille de l'écran
-
-    game = Game(infoObject)
 
 
-
+    
+    
+    infoObject= pygame.display.Info()  # récupère la taille de l'écran
+    affichagePersonalise = affichage()
+    
     # définit la taille de la fenetre pour qu'elle occupe tout l'écran --> sous Windows 10 et ultérieur elle passe même en plein écran mais pas sous Linux et MacOS
     fenetrePygame = pygame.display.set_mode(
-        (game.tailleEcran[game.affichagePersonalise][0], game.tailleEcran[game.affichagePersonalise][1]), pygame.DOUBLEBUF)
-
-
+        (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
+    game = Game(infoObject)
+    
+    
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
@@ -65,6 +69,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if event.type == QUIT:
                 continuer = False  # On arrête la boucle
 
+            
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 if mouse[0] <= 200 and mouse[1] <= 50:  # detection si clic sur menu pricipal
                     continuer = False
@@ -115,6 +120,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
+            
             if tuile!=False:
                 if tuile.type == 2 or tuile.type == 7:
                     fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
@@ -128,3 +134,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
             pygame.quit()  # ferme pygame et le jeu
             fenetrePygame=""
             return
+def affichage():
+        for i in range(len(tailleEcran)):
+            if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
+                return i
+        return 2
