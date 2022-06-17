@@ -29,22 +29,22 @@ class Tuile(pygame.sprite.Sprite):
         
         self.rect = self.image.get_rect()
         
-        self.rect.x = self.avoirX(self.posY, socle=True)
-        self.rect.y = self.avoirY(self.posX, self.posY, socle=True)
+        self.rect.x = self.avoirX(self.posY)
+        self.rect.y = self.avoirY(self.posX, self.posY)
 
         self.estSelect = False
 
-    def getRectX(self, socle=False):
-        return  self.avoirX(self.posY, socle=True)
+    def getRectX(self):
+        return  self.rect.x
 
     def setSelect(self, bool):
         self.estSelect = bool
 
-    def getRectY(self, socle = False):
-        return  self.avoirY(self.posX, self.posY, socle=True)
+    def getRectY(self):
+        return  self.rect.y
 
-    def avoirX(self, posY, socle=False):
-        if self.type == 2 or self.type==7 and socle==False:
+    def avoirX(self, posY):
+        if self.type == 2 or self.type==7:
             return posY*88 - (self.game.getAffichageTuile()[self.game.affichagePersonalise][0]/100*self.game.infoObject.current_w)
         else :
             return posY*88
@@ -52,7 +52,7 @@ class Tuile(pygame.sprite.Sprite):
 
     def avoirY(self, posX, posY, socle=False):
         if self.type == 2 or self.type==7 and socle ==False:
-            return posX*135+posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
+            return posX*133+posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
         else:
             return posX*135+posY*6
 
