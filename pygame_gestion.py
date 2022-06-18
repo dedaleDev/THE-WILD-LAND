@@ -4,8 +4,10 @@ from pygame.locals import *
 from PIL import *  # pour les images
 from PIL import Image
 import main_menu
+
 from selection import majSelection
 from tuile import Tuile
+from joueur import Player
 from game import Game
 fenetrePygame = ""
 infoObject = 0
@@ -60,6 +62,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
     moveY = 0
     moveX = 0
     tuile=False
+    joueur = Player(game)
+    
+    
+    
     while continuer == True:  # répete indefiniment le jeu
         
         # initialisation de la vitesse de raffraichissement (fps)
@@ -69,6 +75,33 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if event.type == QUIT:
                 continuer = False  # On arrête la boucle
 
+            move_ticker = 0
+            keys=pygame.key.get_pressed()
+            if keys[K_RIGHT]:
+                if move_ticker == 0:
+                    move_ticker = 10
+                    if joueur.deplacementAutorise("droite"):
+                        joueur.goRight()
+            if keys[K_LEFT]:
+                if move_ticker == 0:
+                    move_ticker = 10
+                    if joueur.deplacementAutorise("gauche"):
+                        joueur.goLeft()
+            
+            if keys[K_UP]:
+                if move_ticker == 0:
+                    move_ticker = 10
+                    if joueur.deplacementAutorise("haut"):
+                        joueur.goUp()   
+
+            if keys[K_DOWN]:
+                if move_ticker == 0:
+                    move_ticker = 10
+                    if joueur.deplacementAutorise("bas"):
+                        joueur.goDown()   
+            
+
+          
             
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 if mouse[0] <= 200 and mouse[1] <= 50:  # detection si clic sur menu pricipal
@@ -111,6 +144,11 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 moveX+=4
 
 
+
+            
+            if move_ticker>0:
+                move_ticker-=1
+
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
 
@@ -121,11 +159,17 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
             
+            #affichage selection
             if tuile!=False:
                 if tuile.type == 2 or tuile.type == 7:
                     fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
                 else : 
                     fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
+                    
+            #affichage personnage
+            
+            fenetrePygame.blit(joueur.skin, (game.map[joueur.posY][joueur.posX].rect.x, game.map[joueur.posY][joueur.posX].rect.y-10))
+            
             pygame.display.flip()
         else:
             print("Fermeture du jeu & Lancement du menu principal")
@@ -139,3 +183,25 @@ def affichage():
             if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
                 return i
         return 2
+    
+"""
+
+
+  if event.type==pygame.KEYDOWN:
+                if pygame.press and joueur.posX<len(game.map[0])-2:
+                    joueur.goRight()
+                elif game.pressed.get(pygame.K_LEFT) and joueur.posX>1:
+                    joueur.goLeft()
+                elif game.pressed.get(pygame.K_DOWN) and joueur.posY<len(game.map)-2:
+                    joueur.goDown()
+                elif game.pressed.get(pygame.K_UP) and joueur.posY>1:
+                    joueur.goUp()
+            
+
+
+
+
+
+
+
+"""

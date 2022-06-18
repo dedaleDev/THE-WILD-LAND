@@ -34,7 +34,8 @@ class Tuile(pygame.sprite.Sprite):
 
         self.estSelect = False
         
-        masque = pygame.mask.from_surface(self.image)
+        self.masque = pygame.mask.from_surface(self.image)
+        
 
     def getRectX(self):
         return  self.rect.x
@@ -164,6 +165,11 @@ class Tuile(pygame.sprite.Sprite):
     def augmenterProbaNeige(self, entier):
         self.probaSup_neige += entier
 
+    def estMontagne(self):
+        return self.type==2
+    
+    def estMer(self):
+        return self.type==3
 
     def decalerX(self, valeur):
         self.rect.x+=valeur

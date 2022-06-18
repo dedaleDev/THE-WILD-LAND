@@ -10,7 +10,6 @@ class Game(pygame.sprite.Sprite):
         self.map = generation.generation_matrice(self)
         self.mapImg = 0
         
-        
 
 
 
