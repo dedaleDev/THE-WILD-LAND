@@ -183,25 +183,3 @@ def affichage():
             if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
                 return i
         return 2
-    
-"""
-
-
-  if event.type==pygame.KEYDOWN:
-                if pygame.press and joueur.posX<len(game.map[0])-2:
-                    joueur.goRight()
-                elif game.pressed.get(pygame.K_LEFT) and joueur.posX>1:
-                    joueur.goLeft()
-                elif game.pressed.get(pygame.K_DOWN) and joueur.posY<len(game.map)-2:
-                    joueur.goDown()
-                elif game.pressed.get(pygame.K_UP) and joueur.posY>1:
-                    joueur.goUp()
-            
-
-
-
-
-
-
-
-"""
