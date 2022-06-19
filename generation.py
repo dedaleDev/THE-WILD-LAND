@@ -133,6 +133,7 @@ def generation_matrice(game):
         for j in range(len(matriceMap[i])):
             # initialisation d'une carte remplie de vide
             matriceMap[i][j] = Tuile(1, i, j, game)
+            game.mapExploration[i][j] = Tuile(posX=i, posY=j, game=game, type=0)
 
     for i in range(taille_matriceX):
         matriceMap[i][0] = Tuile(7, i, 0, game)
