@@ -25,7 +25,7 @@ class Tuile(pygame.sprite.Sprite):
         self.image=self.loadImg(self.type)
         
         self.imageO=self.openImg(self.type)
-        
+        self.imageFog = self.openFog()
         
         self.rect = self.image.get_rect()
         
@@ -33,9 +33,14 @@ class Tuile(pygame.sprite.Sprite):
         self.rect.y = self.avoirY(self.posX, self.posY)
 
         self.estSelect = False
+        self.isExplored = False
         
         self.masque = pygame.mask.from_surface(self.image)
         
+    def setExplored(self):
+        return self.isExplored
+    def setIsExplored(self, bool):
+        self.isExplored = bool
 
     def getRectX(self):
         return  self.rect.x
@@ -66,6 +71,8 @@ class Tuile(pygame.sprite.Sprite):
     
     def loadImg(self, type):
         #fonction pour charger la bonne image
+        if type == 0:  # si exploration
+            return
         if type == 1:  # si Terre
             imgTemp = pygame.image.load("data/tuiles/1Terre.png").convert_alpha()
         elif type == 2:#Roche
@@ -92,6 +99,10 @@ class Tuile(pygame.sprite.Sprite):
     
     def openImg(self, type):
         #fonction pour charger la bonne image
+        if type ==0: # si exploration
+            imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
+            imgTemp = imgTemp.resize((150, 150))
+            return
         if type == 1:  # si Terre
             imgTemp = Image.open("data/tuiles/1Terre.png").convert('RGBA')
         elif type == 2:#Roche
@@ -115,7 +126,12 @@ class Tuile(pygame.sprite.Sprite):
         else :
             imgTemp = imgTemp.resize((150, 150))
         return imgTemp
-    
+
+    def openFog(self):  # fonction pour charger la bonne image
+        imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
+        imgTemp = imgTemp.resize((150, 150))
+        return imgTemp
+
     def getType(self):
         return self.type
 
