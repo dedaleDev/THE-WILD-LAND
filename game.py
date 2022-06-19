@@ -9,6 +9,8 @@ class Game(pygame.sprite.Sprite):
         self.affichagePersonalise = self.affichage()
         self.map = generation.generation_matrice(self)
         self.mapImg = 0
+        self.mapExploration = []
+        self.fogIMG = 0
         
 
 
@@ -28,10 +30,20 @@ class Game(pygame.sprite.Sprite):
         for y in range(generation.taille_matriceX):
             for x in range(generation.taille_matriceY):
                 if self.map[y][x].type == 2 or self.map[y][x].type == 7:
-                    background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX(), self.map[y][x].getRectY()), self.map[y][x].imageO)
-                background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX(), self.map[y][x].getRectY()), self.map[y][x].imageO)
+                    background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX()+20, self.map[y][x].getRectY()+20), self.map[y][x].imageO)
+                background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX()+20, self.map[y][x].getRectY()+20), self.map[y][x].imageO)
                 
         self.mapImg = pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA')
             
+    def genererFogIMG(self):
+        fogIMG_pil = Image.new(
+            'RGBA', (150*generation.taille_matriceX, 190*generation.taille_matriceY), 0)
+        for y in range(generation.taille_matriceX):
+            for x in range(generation.taille_matriceY):
+                fogIMG_pil.paste(self.explorationMap[y][x].imageFog, (self.map[y][x].getRectX(
+                ), self.explorationMap[y][x].getRectY()), self.explorationMap[y][x].imageFog)
+        self.fogIMG = pygame.image.fromstring(
+            fogIMG_pil.tobytes(), fogIMG_pil.size, 'RGBA')
             
+
             
