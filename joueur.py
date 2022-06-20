@@ -66,6 +66,10 @@ class Player(pygame.sprite.Sprite):
     
     
      def deplacementAutorise(self, direction):
+         if self.game.map[self.posY][self.posX+1].getExplored() == False:
+            print("découverte d'une nouvelle tuile...")
+            self.game.deleteFog(self.posX, self.posY+1)
+            self.game.generateFog()
          if direction=="droite":
             return not (self.game.map[self.posY][self.posX+1].estMontagne() or self.game.map[self.posY][self.posX+1].estMer()) #on ne doit pas avoir mer ou montagne
          if direction=="gauche":
