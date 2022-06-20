@@ -156,6 +156,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            fenetrePygame.blit(game.fogIMG, (moveX, moveY))
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
             
@@ -184,24 +185,3 @@ def affichage():
                 return i
         return 2
     
-"""
-
-
-  if event.type==pygame.KEYDOWN:
-                if pygame.press and joueur.posX<len(game.map[0])-2:
-                    joueur.goRight()
-                elif game.pressed.get(pygame.K_LEFT) and joueur.posX>1:
-                    joueur.goLeft()
-                elif game.pressed.get(pygame.K_DOWN) and joueur.posY<len(game.map)-2:
-                    joueur.goDown()
-                elif game.pressed.get(pygame.K_UP) and joueur.posY>1:
-                    joueur.goUp()
-            
-
-
-
-
-
-
-
-"""
