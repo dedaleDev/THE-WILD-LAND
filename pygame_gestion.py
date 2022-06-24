@@ -46,7 +46,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
         (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
     game = Game(infoObject)
     
-    
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
@@ -102,20 +101,54 @@ def pygameInit():  # foction servant à l'initialisation pygame
                             for j in range(-1, 2):
                                 game.deleteFog(joueur.posY+i, joueur.posX+j)
                         modification=True
+            
+            
             if keys[K_UP]:
                 if move_ticker == 0:
                     move_ticker = 10
                     if joueur.deplacementAutorise("haut"):
-                        joueur.goUp()   
+                        joueur.goUp()
                         for i in range(-1,2):
                             for j in range(-1, 2):
                                 game.deleteFog(joueur.posY+i, joueur.posX+j)
                         modification=True
+                        
+                        
+                    elif joueur.deplacementAutorise("diagHautDroit"):
+                        joueur.goUpRight()
+                        for i in range(-1,2):
+                            for j in range(-1, 2):
+                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                        modification=True
+                        
+                    elif joueur.deplacementAutorise("diagHautGauche"):
+                        joueur.goUpLeft()
+                        for i in range(-1,2):
+                            for j in range(-1, 2):
+                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                        modification=True
+                        
+                        
             if keys[K_DOWN]:
                 if move_ticker == 0:
                     move_ticker = 10
                     if joueur.deplacementAutorise("bas"):
                         joueur.goDown()   
+                        for i in range(-1,2):
+                            for j in range(-1, 2):
+                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                        modification=True
+                        
+                        
+                    elif joueur.deplacementAutorise("diagBasDroit"):
+                        joueur.goDownRight()
+                        for i in range(-1,2):
+                            for j in range(-1, 2):
+                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                        modification=True
+                        
+                    elif joueur.deplacementAutorise("diagBasGauche"):
+                        joueur.goDownLeft()
                         for i in range(-1,2):
                             for j in range(-1, 2):
                                 game.deleteFog(joueur.posY+i, joueur.posX+j)

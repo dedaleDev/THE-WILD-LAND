@@ -33,6 +33,7 @@ class Tuile(pygame.sprite.Sprite):
         
         self.rect.x = self.avoirX()
         self.rect.y = self.avoirY()
+        
 
         self.Xoriginal = self.rect.x
         

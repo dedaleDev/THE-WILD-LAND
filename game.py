@@ -41,10 +41,10 @@ class Game(pygame.sprite.Sprite):
         for y in range(generation.taille_matriceX):
             for x in range(generation.taille_matriceY):
                 if self.map[y][x].isExplored:
-                    if not self.map[y][x].tuileHaute():
-                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.map[y][x].imageO)
-                    else :
-                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.map[y][x].imageO)
+                    background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.map[y][x].imageO)
+                
+                elif self.map[y][x].tuileHaute():
+                        background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal+dx, self.map[y][x].Yoriginal+20+dy), self.imageFog)
                 else :
                     background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.imageFog)
         
