@@ -1,4 +1,3 @@
-# gestion déplacement personnage et de pygame
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
@@ -156,10 +155,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
-            print(game.fogIMG)
-            fenetrePygame.blit(game.fogIMG, (moveX, moveY))
+            #fenetrePygame.blit(game.mapImg, (moveX+1, moveY+1))
+            #fenetrePygame.blit(game.fogIMG, (moveX, moveY))
             fenetrePygame.blit(text, (10, 10))
-              # Rafraîchissement de l'écran
+            #Rafraîchissement de l'écran
             
             #affichage selection
             if tuile!=False:
@@ -171,8 +170,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
             #affichage personnage
             
             fenetrePygame.blit(joueur.skin, (game.map[joueur.posY][joueur.posX].rect.x, game.map[joueur.posY][joueur.posX].rect.y-10))
-            
-            pygame.display.flip()
+            pygame.display.update()
+          
         else:
             print("Fermeture du jeu & Lancement du menu principal")
             main_menu.Main_Menu()

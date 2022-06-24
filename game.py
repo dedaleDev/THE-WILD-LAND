@@ -7,11 +7,13 @@ class Game(pygame.sprite.Sprite):
         self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
         self.affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 4),(0.19, 2.77), (0.19, 2.77), (0, 0)]
         self.affichagePersonalise = self.affichage()
-        self.matrice = generation.generation_matrice(self)
-        self.map = self.matrice[0]
+        self.matrices = generation.generation_matrice(self)
+        self.map = self.matrices[0]
         self.mapImg = 0
-        self.mapExploration = self.matrice[1]
-        self.fogIMG = self.genererFogIMG()
+        self.mapExploration = self.matrices[1]
+        
+        self.imageFog = self.openFog() 
+        
         
 
 
@@ -28,14 +30,17 @@ class Game(pygame.sprite.Sprite):
     
     def genererImg(self):
         background_pil = Image.new('RGBA',(150*generation.taille_matriceX,190*generation.taille_matriceY), 0) 
+        
         for y in range(generation.taille_matriceX):
             for x in range(generation.taille_matriceY):
-                if self.map[y][x].type == 2 or self.map[y][x].type == 7:
+                if self.map[y][x].isExplored:
                     background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX()+20, self.map[y][x].getRectY()+20), self.map[y][x].imageO)
-                background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX()+20, self.map[y][x].getRectY()+20), self.map[y][x].imageO)
-                
+                else :
+                    background_pil.paste(self.imageFog, (self.map[y][x].getRectX()+20, self.map[y][x].getRectY()+20), self.imageFog)
+
+                    
         self.mapImg = pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA')
-            
+
     def genererFogIMG(self):
         fogIMG_pil = Image.new('RGBA', (150*generation.taille_matriceX, 190*generation.taille_matriceY), 0)
 
@@ -47,10 +52,19 @@ class Game(pygame.sprite.Sprite):
                 else:
                     fogIMG_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX()+20+decalageX, self.map[y][x].getRectY()+20), self.map[y][x].imageO)
                     fogIMG_pil.paste(self.mapExploration[y][x].imageO, (self.map[y][x].getRectX(), self.mapExploration[y][x].getRectY()), self.mapExploration[y][x].imageO)
-        self.fogIMG= pygame.image.fromstring(fogIMG_pil.tobytes(), fogIMG_pil.size, 'RGBA')
-        print(self.fogIMG)
+        return pygame.image.fromstring(fogIMG_pil.tobytes(), fogIMG_pil.size, 'RGBA')
 
+
+    def openFog(self):
+        imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
+        imgTemp = imgTemp.resize((150, 150))
+        return imgTemp
+    
+    
     def deleteFog(self,x,y):
         self.mapExploration[x][y] = True
             
            #Oui, enfin presque bon je n'ai pas le temps de débugger tout ce sac à noeud ce matin, je finirais ce soir
+           
+#                    if self.map[y][x].type == 2 or self.map[y][x].type == 7:
+#                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX()+20, self.map[y][x].getRectY()+20), self.map[y][x].imageO)

@@ -28,16 +28,21 @@ class Tuile(pygame.sprite.Sprite):
         
         self.rect = self.image.get_rect()
         
+        self.estSelect = False
+        self.isExplored = self.type==7
+        
         self.rect.x = self.avoirX(self.posY)
         self.rect.y = self.avoirY(self.posX, self.posY)
 
-        self.estSelect = False
-        self.isExplored = False
+        
         
         self.masque = pygame.mask.from_surface(self.image)
-        
+    
+    
+    
     def getExplored(self):
         return self.isExplored
+    
     def setExplored(self, bool):
         self.isExplored = bool
 
@@ -51,14 +56,14 @@ class Tuile(pygame.sprite.Sprite):
         return  self.rect.y
 
     def avoirX(self, posY, socle=False):
-        if self.type == 2 or self.type==7:
+        if (self.type == 2 or self.type==7) and self.getExplored():
             return posY*88 - (self.game.getAffichageTuile()[self.game.affichagePersonalise][0]/100*self.game.infoObject.current_w)
         else :
             return posY*88
 
 
     def avoirY(self, posX, posY, socle=False):
-        if self.type == 2 or self.type==7:
+        if (self.type == 2 or self.type==7) and self.getExplored():
             return posX*135+posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
         else:
             return posX*135+posY*6
@@ -189,4 +194,3 @@ class Tuile(pygame.sprite.Sprite):
         
     def decalerY(self, valeur):
         self.rect.y+=valeur
-
