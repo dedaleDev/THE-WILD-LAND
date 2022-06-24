@@ -1,4 +1,5 @@
 import pygame
+import joueur
 import generation
 from PIL import Image
 class Game(pygame.sprite.Sprite):
