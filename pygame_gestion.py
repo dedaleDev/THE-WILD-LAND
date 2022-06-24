@@ -121,12 +121,12 @@ def pygameInit():  # foction servant à l'initialisation pygame
                                 game.deleteFog(joueur.posY+i, joueur.posX+j)
                         modification=True
                         
-                    elif joueur.deplacementAutorise("diagHautGauche"):
+                    """elif joueur.deplacementAutorise("diagHautGauche"):
                         joueur.goUpLeft()
                         for i in range(-1,2):
                             for j in range(-1, 2):
                                 game.deleteFog(joueur.posY+i, joueur.posX+j)
-                        modification=True
+                        modification=True"""
                         
                         
             if keys[K_DOWN]:
@@ -139,20 +139,21 @@ def pygameInit():  # foction servant à l'initialisation pygame
                                 game.deleteFog(joueur.posY+i, joueur.posX+j)
                         modification=True
                         
-                        
-                    elif joueur.deplacementAutorise("diagBasDroit"):
-                        joueur.goDownRight()
-                        for i in range(-1,2):
-                            for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
-                        modification=True
-                        
+                    
                     elif joueur.deplacementAutorise("diagBasGauche"):
                         joueur.goDownLeft()
                         for i in range(-1,2):
                             for j in range(-1, 2):
                                 game.deleteFog(joueur.posY+i, joueur.posX+j)
                         modification=True
+                        """  
+                    elif joueur.deplacementAutorise("diagBasDroit"):
+                        joueur.goDownRight()
+                        for i in range(-1,2):
+                            for j in range(-1, 2):
+                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                        modification=True
+                        """
 
           
             
