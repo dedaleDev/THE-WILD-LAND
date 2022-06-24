@@ -16,7 +16,7 @@ class Tuile(pygame.sprite.Sprite):
         self.probaSup_desert = 0
         self.probaSup_neige = 0
         
-        self.autoriserNeige = False
+        self.autoriserNeige = False 
         self.autoriserDesert = True
         
         self.posX = posX
@@ -25,7 +25,6 @@ class Tuile(pygame.sprite.Sprite):
         self.image=self.loadImg(self.type)
         
         self.imageO=self.openImg(self.type)
-        self.imageFog = self.openFog()
         
         self.rect = self.image.get_rect()
         
@@ -37,9 +36,9 @@ class Tuile(pygame.sprite.Sprite):
         
         self.masque = pygame.mask.from_surface(self.image)
         
-    def setExplored(self):
+    def getExplored(self):
         return self.isExplored
-    def setIsExplored(self, bool):
+    def setExplored(self, bool):
         self.isExplored = bool
 
     def getRectX(self):
@@ -72,7 +71,9 @@ class Tuile(pygame.sprite.Sprite):
     def loadImg(self, type):
         #fonction pour charger la bonne image
         if type == 0:  # si exploration
-            return
+            imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
+            imgTemp=pygame.transform.scale(imgTemp, (150, 150))
+            return imgTemp
         if type == 1:  # si Terre
             imgTemp = pygame.image.load("data/tuiles/1Terre.png").convert_alpha()
         elif type == 2:#Roche
@@ -102,7 +103,7 @@ class Tuile(pygame.sprite.Sprite):
         if type ==0: # si exploration
             imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
             imgTemp = imgTemp.resize((150, 150))
-            return
+            return imgTemp
         if type == 1:  # si Terre
             imgTemp = Image.open("data/tuiles/1Terre.png").convert('RGBA')
         elif type == 2:#Roche
@@ -127,10 +128,6 @@ class Tuile(pygame.sprite.Sprite):
             imgTemp = imgTemp.resize((150, 150))
         return imgTemp
 
-    def openFog(self):  # fonction pour charger la bonne image
-        imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
-        imgTemp = imgTemp.resize((150, 150))
-        return imgTemp
 
     def getType(self):
         return self.type
@@ -192,3 +189,4 @@ class Tuile(pygame.sprite.Sprite):
         
     def decalerY(self, valeur):
         self.rect.y+=valeur
+
