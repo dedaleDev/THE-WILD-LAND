@@ -46,16 +46,13 @@ def pygameInit():  # foction servant à l'initialisation pygame
         (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
     game = Game(infoObject)
     
+    
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
     Imselection = pygame.transform.scale(Imselection, (150,135))
-    color_dark = (0, 0, 200)  # définit la couleur sombre du titre menu principal
-    # définit la couleur claire du titre menu principal
-    color_light = (255, 255, 255)
-    smallfont = pygame.font.SysFont('Corbel', 50)  # definit la police utilisé
-    text = smallfont.render('MENU PRINCIPAL', True,
-                            color_dark)  # créer le texte en sombre
+    buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
+    buttonHome = pygame.transform.scale(buttonHome, (70, 70))
 
     
     moveY = 0
@@ -156,9 +153,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         """
 
           
-            
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
-                if mouse[0] <= 200 and mouse[1] <= 50:  # detection si clic sur menu pricipal
+                if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
                 tuile = majSelection(game)
@@ -166,10 +162,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
             # detection si clic sur menu pricipal, si la souris s'approche du texte menu principal, la couleur change. Noire->Blanc
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
-            if mouse[0] <= 200 and mouse[1] <= 50:
-                text = smallfont.render('MENU', True, color_light)
-            else:
-                text = smallfont.render('MENU', True, color_dark)
 
             #gestion du déplacement de la caméra :
             if mouse[1] <= 200 : #Si souris en haut
@@ -212,7 +204,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if modification:
                 game.genererImg()
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
-            fenetrePygame.blit(text, (10, 10))
+            fenetrePygame.blit(buttonHome, (10, 10))
             #Rafraîchissement de l'écran
             
             #affichage selection
@@ -225,6 +217,11 @@ def pygameInit():  # foction servant à l'initialisation pygame
             #affichage personnage
             
             fenetrePygame.blit(joueur.skin, (game.map[joueur.posY][joueur.posX].rect.x, game.map[joueur.posY][joueur.posX].rect.y-10))
+
+            for i in range(len(joueur.ressourcesIMG)):
+                fenetrePygame.blit(joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
+                fenetrePygame.blit(joueur.RessourcesTEXT[i], (infoObject.current_w-95-(190*i), 43))
+
             pygame.display.flip()
         
         else:
