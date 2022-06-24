@@ -16,7 +16,7 @@ class Tuile(pygame.sprite.Sprite):
         self.probaSup_desert = 0
         self.probaSup_neige = 0
         
-        self.autoriserNeige = False
+        self.autoriserNeige = False 
         self.autoriserDesert = True
         
         self.posX = posX
