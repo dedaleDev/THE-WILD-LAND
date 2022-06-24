@@ -156,6 +156,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            print(game.fogIMG)
+            fenetrePygame.blit(game.fogIMG, (moveX, moveY))
             fenetrePygame.blit(text, (10, 10))
               # Rafraîchissement de l'écran
             
@@ -183,3 +185,4 @@ def affichage():
             if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
                 return i
         return 2
+    
