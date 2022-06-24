@@ -18,7 +18,8 @@ class Tuile(pygame.sprite.Sprite):
         
         self.autoriserNeige = False 
         self.autoriserDesert = True
-        
+        self.estSelect = False
+        self.isExplored = self.type==7
         self.posX = posX
         self.posY = posY
         
@@ -28,16 +29,20 @@ class Tuile(pygame.sprite.Sprite):
         
         self.rect = self.image.get_rect()
         
-        self.rect.x = self.avoirX(self.posY)
-        self.rect.y = self.avoirY(self.posX, self.posY)
+        
+        
+        self.rect.x = self.avoirX()
+        self.rect.y = self.avoirY()
 
-        self.estSelect = False
-        self.isExplored = False
+        
         
         self.masque = pygame.mask.from_surface(self.image)
-        
+    
+    
+    
     def getExplored(self):
         return self.isExplored
+    
     def setExplored(self, bool):
         self.isExplored = bool
 
@@ -50,18 +55,18 @@ class Tuile(pygame.sprite.Sprite):
     def getRectY(self):
         return  self.rect.y
 
-    def avoirX(self, posY, socle=False):
-        if self.type == 2 or self.type==7:
-            return posY*88 - (self.game.getAffichageTuile()[self.game.affichagePersonalise][0]/100*self.game.infoObject.current_w)
+    def avoirX(self):
+        if (self.type == 2 or self.type==7) and self.getExplored():
+            return self.posY*88 - (self.game.getAffichageTuile()[self.game.affichagePersonalise][0]/100*self.game.infoObject.current_w)
         else :
-            return posY*88
+            return self.posY*88
 
 
-    def avoirY(self, posX, posY, socle=False):
-        if self.type == 2 or self.type==7:
-            return posX*135+posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
+    def avoirY(self):
+        if (self.type == 2 or self.type==7) and self.getExplored():
+            return self.posX*135+self.posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
         else:
-            return posX*135+posY*6
+            return self.posX*135+self.posY*6
 
 
     def setType(self, entier):
@@ -189,4 +194,3 @@ class Tuile(pygame.sprite.Sprite):
         
     def decalerY(self, valeur):
         self.rect.y+=valeur
-

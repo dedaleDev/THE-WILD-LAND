@@ -13,8 +13,8 @@ class Player(pygame.sprite.Sprite):
           self.health = 100
           self.velocity = 5
           self.armor = 0
-          self.posX=1
-          self.posY=1
+          self.posX=5
+          self.posY=5
 
           #ressources du joueur
           self.bois = 0
@@ -66,10 +66,10 @@ class Player(pygame.sprite.Sprite):
     
     
      def deplacementAutorise(self, direction):
-         if self.game.map[self.posY][self.posX+1].getExplored() == False:
+         """if self.game.map[self.posY][self.posX+1].getExplored() == False:
             print("découverte d'une nouvelle tuile...")
             self.game.deleteFog(self.posX, self.posY+1)
-            self.game.generateFog()
+            self.game.generateFog()"""
          if direction=="droite":
             return not (self.game.map[self.posY][self.posX+1].estMontagne() or self.game.map[self.posY][self.posX+1].estMer()) #on ne doit pas avoir mer ou montagne
          if direction=="gauche":

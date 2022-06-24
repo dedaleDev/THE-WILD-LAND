@@ -1,4 +1,3 @@
-# gestion déplacement personnage et de pygame
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
@@ -58,11 +57,14 @@ def pygameInit():  # foction servant à l'initialisation pygame
     text = smallfont.render('MENU PRINCIPAL', True,
                             color_dark)  # créer le texte en sombre
 
-    game.genererImg()
+    
     moveY = 0
     moveX = 0
     tuile=False
     joueur = Player(game)
+    for i in range(-1, 2):
+        for j in range(-2, 3):
+            game.deleteFog(joueur.posX+i, joueur.posY+j, moveX, moveY)
     
     
     
@@ -82,23 +84,28 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     move_ticker = 10
                     if joueur.deplacementAutorise("droite"):
                         joueur.goRight()
+                        game.deleteFog(joueur.posY, joueur.posX, moveX, moveY)
+                        
             if keys[K_LEFT]:
                 if move_ticker == 0:
                     move_ticker = 10
                     if joueur.deplacementAutorise("gauche"):
                         joueur.goLeft()
+                        game.deleteFog(joueur.posY, joueur.posX, moveX, moveY)
             
             if keys[K_UP]:
                 if move_ticker == 0:
                     move_ticker = 10
                     if joueur.deplacementAutorise("haut"):
                         joueur.goUp()   
+                        game.deleteFog(joueur.posY, joueur.posX, moveX, moveY)
 
             if keys[K_DOWN]:
                 if move_ticker == 0:
                     move_ticker = 10
                     if joueur.deplacementAutorise("bas"):
                         joueur.goDown()   
+                        game.deleteFog(joueur.posY, joueur.posX, moveX, moveY)
             
 
           
@@ -137,6 +144,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     for j in range(len(game.map[0])):
                         game.map[i][j].decalerX(-4)
                 moveX-=4
+                
+                
             if mouse[0] <= 200:  # Si souris à gauche
                 for i in range(len(game.map)):
                     for j in range(len(game.map[0])):
@@ -156,22 +165,21 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
-            fenetrePygame.blit(game.fogIMG, (moveX, moveY))
             fenetrePygame.blit(text, (10, 10))
-              # Rafraîchissement de l'écran
+            #Rafraîchissement de l'écran
             
             #affichage selection
             if tuile!=False:
-                if tuile.type == 2 or tuile.type == 7:
+                if (tuile.type == 2 or tuile.type == 7) and tuile.isExplored:
                     fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
-                else : 
+                else :
                     fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
                     
             #affichage personnage
             
             fenetrePygame.blit(joueur.skin, (game.map[joueur.posY][joueur.posX].rect.x, game.map[joueur.posY][joueur.posX].rect.y-10))
-            
             pygame.display.flip()
+        
         else:
             print("Fermeture du jeu & Lancement du menu principal")
             main_menu.Main_Menu()
@@ -179,6 +187,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             pygame.quit()  # ferme pygame et le jeu
             fenetrePygame=""
             return
+            
 def affichage():
         for i in range(len(tailleEcran)):
             if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:

@@ -2,8 +2,8 @@ import random
 import pygame
 import copy
 from tuile import Tuile
-taille_matriceX = 12#Y
-taille_matriceY = 18#X
+taille_matriceX = 10#Y
+taille_matriceY = 16#X
 proba_roche = random.randint(10,15) # en %
 proba_mer = random.randint(3,15)
 proba_desert = random.randint(5,15)
@@ -126,8 +126,10 @@ def generation_matrice(game):
             liste_index.append((i,j))
 
     matriceMap = []
+
     for i in range(taille_matriceX):
         matriceMap.append([0]*taille_matriceY)
+
 
     for i in range(taille_matriceX):
         for j in range(len(matriceMap[i])):
@@ -158,13 +160,12 @@ def generation_matrice(game):
             Tire = tirer_biome(liste_type[biome], matriceMap, i, j, game)
             liste_type.pop(biome)
         #GIGALISTE.append(copy.deepcopy(matriceMap))
-    
 
-    return matriceMap
+
+    return (matriceMap)
 
 def printMat(matriceMap):
     for i in range(len(matriceMap)):
         print("\n")
         for j in range(len(matriceMap[0])):
             print('(',matriceMap[i][j].posX,',', matriceMap[i][j].posY, ')',end='')
-
