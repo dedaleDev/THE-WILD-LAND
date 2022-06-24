@@ -7,14 +7,19 @@ class Game(pygame.sprite.Sprite):
         self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
         self.affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 4),(0.19, 2.77), (0.19, 2.77), (0, 0)]
         self.affichagePersonalise = self.affichage()
+        self.decalageMontagneX = self.getAffichageTuile()[self.affichagePersonalise][0]/100*self.infoObject.current_w
+        self.decalageMontagneY = self.affichageTuile[self.affichagePersonalise][1]/100*self.infoObject.current_h
+        
+        
         self.map = generation.generation_matrice(self)
         self.imageFog = self.openFog()
         self.mapImg = self.genererImg()
+
         
     
     
     def verifierCo(self, x, y):
-        return  x<len(self.map[0]) and x >0 and y <len(self.map) and y>0
+        return  x<len(self.map) and x >0 and y <len(self.map[0]) and y>0
         
 
 
@@ -30,18 +35,22 @@ class Game(pygame.sprite.Sprite):
 
     
     def genererImg(self):
-        background_pil = Image.new('RGBA',(150*generation.taille_matriceX,190*generation.taille_matriceY), 0) 
-        
+        background_pil = Image.new('RGBA',(150*generation.taille_matriceX,210*generation.taille_matriceY), 0) 
+        dx = round(self.decalageMontagneX)
+        dy = round(self.decalageMontagneY)
         for y in range(generation.taille_matriceX):
             for x in range(generation.taille_matriceY):
                 if self.map[y][x].isExplored:
-                    background_pil.paste(self.map[y][x].imageO, (self.map[y][x].getRectX(), self.map[y][x].getRectY()), self.map[y][x].imageO)
+                    if not self.map[y][x].tuileHaute():
+                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.map[y][x].imageO)
+                    else :
+                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.map[y][x].imageO)
                 else :
-                    background_pil.paste(self.imageFog, (self.map[y][x].getRectX(), self.map[y][x].getRectY()), self.imageFog)
-
-
-        return pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA')
+                    background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.imageFog)
         
+
+        self.mapImg = pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA')
+
 
 
     def openFog(self):
@@ -50,12 +59,12 @@ class Game(pygame.sprite.Sprite):
         return imgTemp
     
 
-    def deleteFog(self,x,y, moveX, moveY):
+    def deleteFog(self,x,y):
         if self.verifierCo(x, y):
             self.map[x][y].setExplored(True)
             """if self.map[x][y].type==2 or self.map[x][y].type==7:
-                self.map[x][y].rect.x = self.map[x][y].avoirX()+moveX
-                self.map[x][y].rect.y = self.map[x][y].avoirY()+moveY"""
-                
-        self.mapImg = self.genererImg()
+                self.map[x][y].rect.x = self.map[x][y].avoirX()
+                self.map[x][y].rect.y = self.map[x][y].avoirY()
+                """
+        
         

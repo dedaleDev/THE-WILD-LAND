@@ -168,4 +168,6 @@ def printMat(matriceMap):
     for i in range(len(matriceMap)):
         print("\n")
         for j in range(len(matriceMap[0])):
-            print('(',matriceMap[i][j].posX,',', matriceMap[i][j].posY, ')',end='')
+            print(matriceMap[i][j].isExplored ,end=' ')
+            
+    print("fin\n\n\n\n\n")

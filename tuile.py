@@ -34,7 +34,9 @@ class Tuile(pygame.sprite.Sprite):
         self.rect.x = self.avoirX()
         self.rect.y = self.avoirY()
 
+        self.Xoriginal = self.rect.x
         
+        self.Yoriginal = self.rect.y
         
         self.masque = pygame.mask.from_surface(self.image)
     
@@ -56,15 +58,17 @@ class Tuile(pygame.sprite.Sprite):
         return  self.rect.y
 
     def avoirX(self):
-        if (self.type == 2 or self.type==7) and self.getExplored():
-            return self.posY*88 - (self.game.getAffichageTuile()[self.game.affichagePersonalise][0]/100*self.game.infoObject.current_w)
+        
+        if self.type == 2 or self.type==7:
+            
+            return self.posY*88 - self.game.decalageMontagneX
         else :
             return self.posY*88
 
 
     def avoirY(self):
-        if (self.type == 2 or self.type==7) and self.getExplored():
-            return self.posX*135+self.posY*6-self.game.affichageTuile[self.game.affichagePersonalise][1]/100*self.game.infoObject.current_h
+        if (self.type == 2 or self.type==7):
+            return self.posX*135+self.posY*6 - self.game.decalageMontagneY
         else:
             return self.posX*135+self.posY*6
 
@@ -185,6 +189,9 @@ class Tuile(pygame.sprite.Sprite):
 
     def estMontagne(self):
         return self.type==2
+    
+    def tuileHaute(self):
+        return self.type==2 or self.type==7
     
     def estMer(self):
         return self.type==3
