@@ -86,7 +86,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     
                     
                     modification=True
-                        
+
                         
                         
             if keys[K_LEFT]:
@@ -201,26 +201,36 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.fill(BLACK)
 
             #affichage de la map
-            if modification:
-                game.genererImg()
-            fenetrePygame.blit(game.mapImg, (moveX, moveY))
-            fenetrePygame.blit(buttonHome, (10, 10))
+            
             #Rafraîchissement de l'écran
             
             #affichage selection
+            if tuile!=False and tuile.isExplored:
+                if tuile.estForet():
+                    joueur.construireScierie(tuile)    
+                    joueur.changerImageScierie(tuile)
+                    modification=True
+            if modification:
+                game.genererImg()
+                
+                
+                
+            fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            fenetrePygame.blit(buttonHome, (10, 10))
             if tuile!=False:
                 if (tuile.type == 2 or tuile.type == 7) :#and tuile.isExplored:
                     fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
                 else :
-                    fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()+20))
-                    
+                    fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()+20))    
+            
+            
             #affichage personnage
             
             fenetrePygame.blit(joueur.skin, (game.map[joueur.posY][joueur.posX].rect.x, game.map[joueur.posY][joueur.posX].rect.y-10))
 
             for i in range(len(joueur.ressourcesIMG)):
                 fenetrePygame.blit(joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
-                fenetrePygame.blit(joueur.RessourcesTEXT[i], (infoObject.current_w-95-(190*i), 43))
+                fenetrePygame.blit(joueur.RessourcesTEXT[i], (infoObject.current_w-120-(190*i), 3/100*infoObject.current_h))
                 if joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
                     if timeComtpeur <=60 :
@@ -245,4 +255,3 @@ def affichage():
             if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
                 return i
         return 2
-    
