@@ -1,9 +1,9 @@
 import random
-import pygame
-import copy
 from tuile import Tuile
-taille_matriceX = 10#Y
-taille_matriceY = 16#X
+taille_matriceX = 25
+taille_matriceY = 10
+
+
 proba_roche = random.randint(10,15) # en %
 proba_mer = random.randint(3,15)
 proba_desert = random.randint(5,15)
@@ -19,8 +19,8 @@ liste_index = []
 
 def tirer_mer(matriceMap, i, j, game):
     temp = random.randint(1, 100)
-    if temp <= proba_mer + matriceMap[i][j].getProbaMer():
-        matriceMap[i][j] = Tuile(3, i, j, game)
+    if temp <= proba_mer + matriceMap[j][i].getProbaMer():
+        matriceMap[j][i] = Tuile(3, i, j, game)
         majProba(matriceMap, i, j, 70, "mer")
         return True
     return False
@@ -28,8 +28,8 @@ def tirer_mer(matriceMap, i, j, game):
 
 def tirer_desert(matriceMap, i, j, game):
     temp = random.randint(1, 100)
-    if temp <= proba_desert + matriceMap[i][j].getProbaDesert() and matriceMap[i][j].getAutoriserDesert():
-        matriceMap[i][j] = Tuile(6, i, j, game)
+    if temp <= proba_desert + matriceMap[j][i].getProbaDesert() and matriceMap[j][i].getAutoriserDesert():
+        matriceMap[j][i] = Tuile(6, i, j, game)
         majProba(matriceMap, i, j, 60, "desert")
         return True
     return False
@@ -37,8 +37,8 @@ def tirer_desert(matriceMap, i, j, game):
 
 def tirer_foret(matriceMap, i, j, game):
     temp = random.randint(1, 100)
-    if temp <= proba_foret + matriceMap[i][j].getProbaForet():
-        matriceMap[i][j] = Tuile(4, i, j, game)
+    if temp <= proba_foret + matriceMap[j][i].getProbaForet():
+        matriceMap[j][i] = Tuile(4, i, j, game)
         majProba(matriceMap, i, j, 30, "foret")
         return True
     return False
@@ -46,8 +46,8 @@ def tirer_foret(matriceMap, i, j, game):
 
 def tirer_neige(matriceMap, i, j, game) :
     temp = random.randint(1, 100)
-    if temp <= proba_neige + matriceMap[i][j].getProbaNeige() and matriceMap[i][j].getAutoriserNeige():
-        matriceMap[i][j] = Tuile(5, i, j, game)
+    if temp <= proba_neige + matriceMap[j][i].getProbaNeige() and matriceMap[j][i].getAutoriserNeige():
+        matriceMap[j][i] = Tuile(5, i, j, game)
         majNeigeAutoriser(matriceMap, i,j)
         majProba(matriceMap, i, j, 15, "neige")
         majDesertInterdire(matriceMap, i,j)
@@ -56,8 +56,8 @@ def tirer_neige(matriceMap, i, j, game) :
 
 def tirer_roche(matriceMap, i, j, game):
     temp = random.randint(1, 100)
-    if temp <= proba_roche + matriceMap[i][j].getProbaRoche():
-        matriceMap[i][j] = Tuile(2, i, j, game)
+    if temp <= proba_roche + matriceMap[j][i].getProbaRoche():
+        matriceMap[j][i] = Tuile(2, i, j, game)
         majProba(matriceMap, i, j, 25, nature= "roche")
         majNeigeAutoriser(matriceMap, i,j)
         majDesertInterdire(matriceMap, i,j)
@@ -80,36 +80,36 @@ def tirer_biome(type, matriceMap, i, j, game):
     return tire
 
 def majProba(matriceMap, i, j, probaSup, nature):
-    for x in range(-1, 2):
-        for y in range(-1, 2):
+    for y in range(-1, 2):
+        for x in range(-1, 2):
             if i+x < len(matriceMap) and j+y < len(matriceMap[0])and i+x>= 0 and y+j>=0:
                 if nature == "roche":
-                    matriceMap[i+x][j+y].augmenterProbaRoche(probaSup)
+                    matriceMap[j+y][i+x].augmenterProbaRoche(probaSup)
                 if nature == "foret":
-                    matriceMap[i+x][j+y].augmenterProbaForet(probaSup)
+                    matriceMap[j+y][i+x].augmenterProbaForet(probaSup)
                 if nature == "mer":
-                    matriceMap[i+x][j+y].augmenterProbaMer(probaSup)
+                    matriceMap[j+y][i+x].augmenterProbaMer(probaSup)
                 if nature == "desert":
-                    matriceMap[i+x][j+y].augmenterProbaDesert(probaSup)
+                    matriceMap[j+y][i+x].augmenterProbaDesert(probaSup)
                 if nature == "neige" :
-                    matriceMap[i+x][j+y].augmenterProbaNeige(probaSup)
+                    matriceMap[j+y][i+x].augmenterProbaNeige(probaSup)
 
 
 def majNeigeAutoriser(matriceMap, i, j):
     for x in range(-1, 2):
         for y in range(-1, 2):
-            if i+x < len(matriceMap) and j+y < len(matriceMap[0]) and i+x>= 0 and y+j>=0:
-                matriceMap[i+x][j+y].setAutoriserNeige()
+            if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0:
+                matriceMap[j+y][i+x].setAutoriserNeige()
 
 
 def majDesertInterdire(matriceMap, i, j):
     for x in range(-1, 2):
         for y in range(-1, 2):
-            if i+x < len(matriceMap) and i+x >=0 and j+y < len(matriceMap[0]) and j+y >= 0:
+            if i+x <  taille_matriceX and i+x >=0 and j+y < taille_matriceY and j+y >= 0:
                 
-                matriceMap[i+x][j+y].setInterdireDesert()
-                if matriceMap[i+x][j+y].getType()==6:
-                    matriceMap[i+x][j+y].setType(1)
+                matriceMap[j+y][i+x].setInterdireDesert()
+                if matriceMap[j+y][i+x].getType()==6:
+                    matriceMap[j+y][i+x].setType(1)
 
 
 def generation_matrice(game):
@@ -123,32 +123,34 @@ def generation_matrice(game):
     
     for i in range(1, taille_matriceX-1):
         for j in range(1, taille_matriceY-1):
-            liste_index.append((i,j))
+            liste_index.append((j,i))
 
     matriceMap = []
 
-    for i in range(taille_matriceX):
-        matriceMap.append([0]*taille_matriceY)
+    for i in range(taille_matriceY):
+        matriceMap.append([0]*taille_matriceX)
 
 
-    for i in range(taille_matriceX):
-        for j in range(len(matriceMap[i])):
+    for i in range(taille_matriceY):
+        for j in range(taille_matriceX):
             # initialisation d'une carte remplie de vide
-            matriceMap[i][j] = Tuile(1, i, j, game)
+            matriceMap[i][j] = Tuile(1, j, i, game)
 
     for i in range(taille_matriceX):
-        matriceMap[i][0] = Tuile(7, i, 0, game)
-        matriceMap[i][taille_matriceY-1] = Tuile(7, i, taille_matriceY-1, game)
+        matriceMap[0][i] = Tuile(7, i, 0, game)
+        matriceMap[taille_matriceY-1][i] = Tuile(7, i, taille_matriceY-1, game)
+
     for i in range (taille_matriceY):
-        matriceMap[0][i] = Tuile(7, 0,i, game)
-        matriceMap[taille_matriceX-1][i] = Tuile(7,taille_matriceX-1, i, game)
+        matriceMap[i][0] = Tuile(7, 0, i, game)
+        matriceMap[i][taille_matriceX-1] = Tuile(7,taille_matriceX-1, i, game)
 
 
     
     while len(liste_index) != 0:
+        print(liste_index)
         num_case = random.randint(0, len(liste_index)-1)
-        i=liste_index[num_case][0]
-        j=liste_index[num_case][1]
+        y=liste_index[num_case][0]
+        x=liste_index[num_case][1]
         liste_index.pop(num_case)
         
         
@@ -157,17 +159,17 @@ def generation_matrice(game):
         Tire=False
         while len(liste_type)!=0 and not Tire:
             biome = random.randint(0, len(liste_type)-1)
-            Tire = tirer_biome(liste_type[biome], matriceMap, i, j, game)
+            print("x=",x,"y=",y)
+            Tire = tirer_biome(liste_type[biome], matriceMap, x, y, game)
             liste_type.pop(biome)
         #GIGALISTE.append(copy.deepcopy(matriceMap))
 
-
+    printMat(matriceMap)
     return (matriceMap)
 
 def printMat(matriceMap):
-    for i in range(len(matriceMap)):
+    for i in range(taille_matriceY):
         print("\n")
-        for j in range(len(matriceMap[0])):
-            print(matriceMap[i][j].isExplored ,end=' ')
-            
+        for j in range(taille_matriceX):
+            print("(",matriceMap[i][j].rect.x, matriceMap[i][j].rect.y,")",end=' ')
     print("fin\n\n\n\n\n")

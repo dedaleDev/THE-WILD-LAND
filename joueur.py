@@ -192,9 +192,9 @@ class Player(pygame.sprite.Sprite):
     ####        CONSTRUCTION        ####
     
      def construireScierie(self, tuile):
-        self.game.map[tuile.posX][tuile.posY].scierie = True
+        self.game.map[tuile.posY][tuile.posX].scierie = True
      
      def changerImageScierie(self, tuile):
           imgTemp = Image.open("data/batiments/scierie.png").convert('RGBA')
 
-          self.game.map[tuile.posX][tuile.posY].imageO = imgTemp.resize((100, 100))
+          self.game.map[tuile.posY][tuile.posX].imageO = imgTemp.resize((150, 150))

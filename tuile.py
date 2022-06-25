@@ -55,7 +55,7 @@ class Tuile(pygame.sprite.Sprite):
     def getRectY(self):
         return  self.rect.y
 
-    def avoirX(self):
+    """def avoirX(self):
         
         if self.type == 2 or self.type==7:
             
@@ -68,7 +68,22 @@ class Tuile(pygame.sprite.Sprite):
         if (self.type == 2 or self.type==7):
             return self.posX*135+self.posY*6 - self.game.decalageMontagneY
         else:
-            return self.posX*135+self.posY*6
+            return self.posX*135+self.posY*6"""
+            
+    def avoirX(self):
+        
+        if self.type == 2 or self.type==7:
+            
+            return self.posX*88 - self.game.decalageMontagneX
+        else :
+            return self.posX*88
+
+
+    def avoirY(self):
+        if (self.type == 2 or self.type==7):
+            return self.posY*135+self.posX*6 - self.game.decalageMontagneY
+        else:
+            return self.posY*135+self.posX*6
 
 
     def setType(self, entier):

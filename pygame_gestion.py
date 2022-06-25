@@ -4,10 +4,12 @@ from PIL import *  # pour les images
 from PIL import Image
 import main_menu
 from generation import *
+from mob import Mob
 from selection import majSelection
 from tuile import Tuile
 from joueur import Player
 from game import Game
+
 fenetrePygame = ""
 infoObject = 0
 joueur =""
@@ -58,7 +60,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
     moveY = 0
     moveX = 0
     tuile=False
-    joueur = Player(game)
+    joueur = Player(game,"Joueur")
+    mob = Mob(game, "MOBBB")
     for i in range(-1, 1):
         for j in range(-1, 1):
             game.deleteFog(joueur.posX+i, joueur.posY+j)
@@ -81,7 +84,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     joueur.goRight()
                     for i in range(-1,2):
                         for j in range(-1, 2):
-                            game.deleteFog(joueur.posY+i, joueur.posX+j)
+                            game.deleteFog(joueur.posX+i, joueur.posY+j)
 
                     
                     
@@ -96,7 +99,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         joueur.goLeft()
                         for i in range(-1,2):
                             for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                                game.deleteFog(joueur.posX+i, joueur.posY+j)
                         modification=True
             
             
@@ -107,7 +110,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         joueur.goUp()
                         for i in range(-1,2):
                             for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                                game.deleteFog(joueur.posX+i, joueur.posY+j)
                         modification=True
                         
                         
@@ -133,7 +136,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         joueur.goDown()   
                         for i in range(-1,2):
                             for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                                game.deleteFog(joueur.posX+i, joueur.posY+j)
                         modification=True
                         
                     
@@ -141,7 +144,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         joueur.goDownLeft()
                         for i in range(-1,2):
                             for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                                game.deleteFog(joueur.posX+i, joueur.posY+j)
                         modification=True
                         """  
                     elif joueur.deplacementAutorise("diagBasDroit"):
@@ -206,7 +209,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             
             #affichage selection
             if tuile!=False and tuile.isExplored:
-                if tuile.estForet():
+                if tuile.estForet() and not tuile.scierie:
                     joueur.construireScierie(tuile)    
                     joueur.changerImageScierie(tuile)
                     modification=True

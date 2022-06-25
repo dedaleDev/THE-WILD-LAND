@@ -1,10 +1,11 @@
 import pygame
+import generation
 def majSelection(game):
     tuileSelect = False
     souris = pygame.mouse.get_pos()
     
-    for i in range(len(game.map)):
-        for j in range(len(game.map[i])):
+    for i in range(generation.taille_matriceY):
+        for j in range(generation.taille_matriceX):
             decalageX=0
             decalageY=0
             if abs(game.map[i][j].rect.y-souris[1])<75:

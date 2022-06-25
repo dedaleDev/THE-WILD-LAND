@@ -1,4 +1,5 @@
 import pygame
+import pygame_gestion
 import generation
 from PIL import Image
 class Game(pygame.sprite.Sprite):
@@ -19,7 +20,7 @@ class Game(pygame.sprite.Sprite):
     
     
     def verifierCo(self, x, y):
-        return  x<len(self.map) and x >0 and y <len(self.map[0]) and y>0
+        return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
         
 
 
@@ -38,8 +39,8 @@ class Game(pygame.sprite.Sprite):
         background_pil = Image.new('RGBA',(150*generation.taille_matriceX,210*generation.taille_matriceY), 0) 
         dx = round(self.decalageMontagneX)
         dy = round(self.decalageMontagneY)
-        for y in range(generation.taille_matriceX):
-            for x in range(generation.taille_matriceY):
+        for y in range(generation.taille_matriceY):
+            for x in range(generation.taille_matriceX):
                 if self.map[y][x].isExplored:
                     background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal+20), self.map[y][x].imageO)
                 
@@ -61,10 +62,6 @@ class Game(pygame.sprite.Sprite):
 
     def deleteFog(self,x,y):
         if self.verifierCo(x, y):
-            self.map[x][y].setExplored(True)
-            """if self.map[x][y].type==2 or self.map[x][y].type==7:
-                self.map[x][y].rect.x = self.map[x][y].avoirX()
-                self.map[x][y].rect.y = self.map[x][y].avoirY()
-                """
-        
+            self.map[y][x].setExplored(True)
+            pygame_gestion.joueur.setWater(-10)
         
