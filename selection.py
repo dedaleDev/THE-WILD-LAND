@@ -19,6 +19,7 @@ def majSelection(game):
                 else:
                     game.map[i][j].setSelect(True)
                     tuileSelect = game.map[i][j]
+                    print(tuileSelect.type)
             else:
                 game.map[i][j].setSelect(False)
     return tuileSelect

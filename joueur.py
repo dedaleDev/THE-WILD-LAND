@@ -56,16 +56,15 @@ class Player(pygame.sprite.Sprite):
          posY = random.randint(1,generation.taille_matriceY-2)
          print("posX=",posX,"posY=",posY)
          print("largeur=", len(self.game.map[0]),"hauteur =", len(self.game.map))
-         while self.game.map[posY][posX].estMontagne() or self.montagneAutour(posX, posY):
+         while self.game.map[posY][posX].caseBloquante() or self.caseBloquanteAutour(posX, posY):
              posX = random.randint(1,generation.taille_matriceX-2)
              posY = random.randint(1,generation.taille_matriceY-2)
          return posX, posY
 
-     def montagneAutour(self, posX, posY):
-         return self.game.map[posY+1][posX].estMontagne() and self.game.map[posY-1][posX].estMontagne() and self.game.map[posY][posX-1].estMontagne() and self.game.map[posY][posX+1].estMontagne()
-             
-         
-         
+     def caseBloquanteAutour(self, posX, posY):
+         return self.game.map[posY+1][posX].caseBloquante() and self.game.map[posY-1][posX].caseBloquante() and self.game.map[posY][posX-1].caseBloquante() and self.game.map[posY][posX+1].caseBloquante()
+
+
      def resetRessourcesModified(self):
         self.RessourcesInfoModified=[False,False,False,False]
 

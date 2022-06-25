@@ -1,3 +1,4 @@
+from time import sleep
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
@@ -67,14 +68,13 @@ def pygameInit():  # foction servant à l'initialisation pygame
             game.deleteFog(joueur.posX+i, joueur.posY+j)
     game.genererImg()
     
-    while continuer == True:  # répete indefiniment le jeu
+    while continuer == True: 
         modification=False
         # initialisation de la vitesse de raffraichissement (fps)
         clock.tick(30)
-        for event in pygame.event.get():  # On parcours la liste de tous les événements reçus
-            # Si un de ces événements est de type QUIT (Alt+F4) ou bouton fermeture alors on arrête la boucle
+        for event in pygame.event.get():
             if event.type == QUIT:
-                continuer = False  # On arrête la boucle
+                continuer = False 
 
             move_ticker = 0
             keys=pygame.key.get_pressed()
@@ -85,9 +85,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     for i in range(-1,2):
                         for j in range(-1, 2):
                             game.deleteFog(joueur.posX+i, joueur.posY+j)
-
-                    
-                    
                     modification=True
 
                         
@@ -120,13 +117,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                             for j in range(-1, 2):
                                 game.deleteFog(joueur.posX+i, joueur.posY+j)
                         modification=True
-                        
-                    """elif joueur.deplacementAutorise("diagHautGauche"):
-                        joueur.goUpLeft()
-                        for i in range(-1,2):
-                            for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
-                        modification=True"""
+                
                         
                         
             if keys[K_DOWN]:
@@ -146,14 +137,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                             for j in range(-1, 2):
                                 game.deleteFog(joueur.posX+i, joueur.posY+j)
                         modification=True
-                        """  
-                    elif joueur.deplacementAutorise("diagBasDroit"):
-                        joueur.goDownRight()
-                        for i in range(-1,2):
-                            for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
-                        modification=True
-                        """
+
 
           
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
@@ -162,7 +146,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     main_menu.load =False
                 tuile = majSelection(game)
 
-            # detection si clic sur menu pricipal, si la souris s'approche du texte menu principal, la couleur change. Noire->Blanc
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
 
@@ -215,9 +198,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     modification=True
             if modification:
                 game.genererImg()
-                
-                
-                
+
+
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             if tuile!=False:
@@ -239,7 +221,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     if timeComtpeur <=60 :
                         fenetrePygame.blit(joueur.RessourcesInfoModified[i],(infoObject.current_w-95-(190*i),90))
                     else :
-                        timeComtpeur =0
+                        timeComtpeur = 0
                         joueur.resetRessourcesModified()
 
 

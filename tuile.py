@@ -85,7 +85,9 @@ class Tuile(pygame.sprite.Sprite):
         else:
             return self.posY*135+self.posX*6
 
-
+    def caseBloquante(self):
+        return self.type==2 or self.type==7 or self.type == 3
+    
     def setType(self, entier):
         self.type=entier
 

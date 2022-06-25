@@ -1,3 +1,4 @@
+import copy
 import random
 from tuile import Tuile
 taille_matriceX = 25
@@ -16,6 +17,10 @@ proba_neige= 0
 nombre_biome = 5
 GIGALISTE=[]
 liste_index = []
+
+
+
+
 
 def tirer_mer(matriceMap, i, j, game):
     temp = random.randint(1, 100)
@@ -48,9 +53,9 @@ def tirer_neige(matriceMap, i, j, game) :
     temp = random.randint(1, 100)
     if temp <= proba_neige + matriceMap[j][i].getProbaNeige() and matriceMap[j][i].getAutoriserNeige():
         matriceMap[j][i] = Tuile(5, i, j, game)
-        majNeigeAutoriser(matriceMap, i,j)
+        majNeigeAutoriser(matriceMap, i, j)
         majProba(matriceMap, i, j, 15, "neige")
-        majDesertInterdire(matriceMap, i,j)
+        majDesertInterdire(matriceMap, i, j)
         return True
     return False
 
@@ -82,7 +87,7 @@ def tirer_biome(type, matriceMap, i, j, game):
 def majProba(matriceMap, i, j, probaSup, nature):
     for y in range(-1, 2):
         for x in range(-1, 2):
-            if i+x < len(matriceMap) and j+y < len(matriceMap[0])and i+x>= 0 and y+j>=0:
+            if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0:
                 if nature == "roche":
                     matriceMap[j+y][i+x].augmenterProbaRoche(probaSup)
                 if nature == "foret":
@@ -96,20 +101,21 @@ def majProba(matriceMap, i, j, probaSup, nature):
 
 
 def majNeigeAutoriser(matriceMap, i, j):
-    for x in range(-1, 2):
-        for y in range(-1, 2):
+    for y in range(-1, 2):
+        for x in range(-1, 2):
             if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0:
                 matriceMap[j+y][i+x].setAutoriserNeige()
 
 
 def majDesertInterdire(matriceMap, i, j):
-    for x in range(-1, 2):
-        for y in range(-1, 2):
+    for y in range(-1, 2):
+        for x in range(-1, 2):
             if i+x <  taille_matriceX and i+x >=0 and j+y < taille_matriceY and j+y >= 0:
                 
                 matriceMap[j+y][i+x].setInterdireDesert()
                 if matriceMap[j+y][i+x].getType()==6:
-                    matriceMap[j+y][i+x].setType(1)
+                    matriceMap[j+y][i+x].setType(5)
+                    matriceMap[j+y][i+x].imageO = matriceMap[j+y][i+x].openImg(5)
 
 
 def generation_matrice(game):
@@ -131,10 +137,10 @@ def generation_matrice(game):
         matriceMap.append([0]*taille_matriceX)
 
 
-    for i in range(taille_matriceY):
-        for j in range(taille_matriceX):
+    for j in range(taille_matriceY):
+        for i in range(taille_matriceX):
             # initialisation d'une carte remplie de vide
-            matriceMap[i][j] = Tuile(1, j, i, game)
+            matriceMap[j][i] = Tuile(1, i, j, game)
 
     for i in range(taille_matriceX):
         matriceMap[0][i] = Tuile(7, i, 0, game)
@@ -147,7 +153,6 @@ def generation_matrice(game):
 
     
     while len(liste_index) != 0:
-        print(liste_index)
         num_case = random.randint(0, len(liste_index)-1)
         y=liste_index[num_case][0]
         x=liste_index[num_case][1]
@@ -159,12 +164,11 @@ def generation_matrice(game):
         Tire=False
         while len(liste_type)!=0 and not Tire:
             biome = random.randint(0, len(liste_type)-1)
-            print("x=",x,"y=",y)
             Tire = tirer_biome(liste_type[biome], matriceMap, x, y, game)
             liste_type.pop(biome)
         #GIGALISTE.append(copy.deepcopy(matriceMap))
 
-    printMat(matriceMap)
+    #printMat(matriceMap)
     return (matriceMap)
 
 def printMat(matriceMap):
