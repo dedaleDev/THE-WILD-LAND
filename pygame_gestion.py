@@ -10,15 +10,15 @@ from joueur import Player
 from game import Game
 fenetrePygame = ""
 infoObject = 0
+joueur =""
 tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
 # initialise la taille de l'écran (largeur, hauteur) en pixel
 largeurEtHauteur = (0, 0)
 modification = False
-
+timeComtpeur=0
 def pygameInit():  # foction servant à l'initialisation pygame
-    global infoObject
-    global modification
+    global infoObject, modification, joueur,timeComtpeur
     print("lancement jeu")
     global largeurEtHauteur, fenetrePygame
     # if Options.music == True:
@@ -32,7 +32,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
 
     clock = pygame.time.Clock()  # créer un système permettant de gérer le temps
-    # Si touche appuyée plus de 400ms répétition de 30ms
+        # Si touche appuyée plus de 400ms répétition de 30ms
     pygame.key.set_repeat(400, 30)
 
 
@@ -77,7 +77,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             keys=pygame.key.get_pressed()
             if keys[K_RIGHT]:
 
-                if joueur.deplacementAutorise("droite"):
+                if joueur.deplacementAutorise("droite") and joueur.getWater() -10 >=0:
                     joueur.goRight()
                     for i in range(-1,2):
                         for j in range(-1, 2):
@@ -92,7 +92,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if keys[K_LEFT]:
                 if move_ticker == 0:
                     move_ticker = 10
-                    if joueur.deplacementAutorise("gauche"):
+                    if joueur.deplacementAutorise("gauche") and joueur.getWater() -10 >=0:
                         joueur.goLeft()
                         for i in range(-1,2):
                             for j in range(-1, 2):
@@ -103,7 +103,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if keys[K_UP]:
                 if move_ticker == 0:
                     move_ticker = 10
-                    if joueur.deplacementAutorise("haut"):
+                    if joueur.deplacementAutorise("haut") and joueur.getWater() -10 >=0:
                         joueur.goUp()
                         for i in range(-1,2):
                             for j in range(-1, 2):
@@ -111,7 +111,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         modification=True
                         
                         
-                    elif joueur.deplacementAutorise("diagHautDroit"):
+                    elif joueur.deplacementAutorise("diagHautDroit") and joueur.getWater() -10 >=0:
                         joueur.goUpRight()
                         for i in range(-1,2):
                             for j in range(-1, 2):
@@ -221,6 +221,14 @@ def pygameInit():  # foction servant à l'initialisation pygame
             for i in range(len(joueur.ressourcesIMG)):
                 fenetrePygame.blit(joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
                 fenetrePygame.blit(joueur.RessourcesTEXT[i], (infoObject.current_w-95-(190*i), 43))
+                if joueur.RessourcesInfoModified[i] != False:
+                    timeComtpeur +=1
+                    if timeComtpeur <=60 :
+                        fenetrePygame.blit(joueur.RessourcesInfoModified[i],(infoObject.current_w-95-(190*i),90))
+                    else :
+                        timeComtpeur =0
+                        joueur.resetRessourcesModified()
+
 
             pygame.display.flip()
         
