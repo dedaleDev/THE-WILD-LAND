@@ -1,5 +1,5 @@
 import pygame
-from PIL import Image
+import pygame_gestion
 class Player(pygame.sprite.Sprite):
 
      def __init__(self, game):
@@ -22,10 +22,11 @@ class Player(pygame.sprite.Sprite):
           self.wood = 200
           self.stone = 100
           self.food = 50
-          self.water = 50
+          self.water = 300
           self.RessourcesTEXT =""
+          self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
-
+          self.ancientRessources =(0,0)#type de la dernière ressource actualisé puis sa valeur
 
      def getSkin(self):
          return self.skin
@@ -47,25 +48,32 @@ class Player(pygame.sprite.Sprite):
      def getWater(self):
                return self.water
 
+     def resetRessourcesModified(self):
+        self.RessourcesInfoModified=[False,False,False,False]
+
      def setHealth(self, health):
                self.health += health     
      def setVelocity(self, velocity):
                self.velocity += velocity
      def setArmor(self, armor):
                self.armor += armor
-               
-     def setWood(self, wood):
-               self.wood += wood
-               self.compteurRessources()
-     def setStone(self, stone):
-               self.stone += stone
-               self.compteurRessources()
      def setFood(self, food):
-               self.food += food
-               self.compteurRessources()
+        if (self.food -food>=0) :
+            self.food += food
+            self.compteurRessources(modif=food, type=1)
+     def setStone(self, stone):
+        if (self.stone -stone>=0) :
+            self.stone += stone
+            self.compteurRessources(modif=stone, type=2)   
      def setWater(self, water):
-               self.water += water
-               self.compteurRessources()
+        if (self.water -water>=0) :
+            self.water += water
+            self.compteurRessources(modif=water, type=3)   
+     def setWood(self, wood):
+        if (self.wood -wood>=0) :
+            self.wood += wood
+            self.compteurRessources(modif=wood, type=4)
+
      def loadSkin(self, skin):
         self.skin = pygame.image.load("data/personnages/"+skin+".png")
         self.skin = pygame.transform.scale(self.skin, (100, 150))
@@ -137,11 +145,27 @@ class Player(pygame.sprite.Sprite):
         self.compteurRessources()
         return listeRessourcesSources
 
-     def compteurRessources(self):
+     def compteurRessources(self, modif = False,type = None):
+        #1 food 
+        #2 stone
+        #3 water
+        #4 wood
         smallfont = pygame.font.SysFont('Corbel', 50)  # definit la police utilisé
-        listeRessources=[self.stone, self.food, self.water, self.wood]
+        listeRessources=[self.food, self.stone, self.water, self.wood]
         listeRessourcesTEXT=["", "","",""]
+        listeRessourcesInfoModified =  [False,False,False,False]
         for i in  range (len(listeRessourcesTEXT)) : 
             listeRessourcesTEXT[i]=smallfont.render(str(listeRessources[i]), True, (0,0,0))
+        if modif != False and type != None and modif<0:
+            if self.ancientRessources[0]==type and self.ancientRessources[1]<=50:
+                calcul = modif + self.ancientRessources[1]
+                print("Calculating", calcul, self.ancientRessources)
+            else :
+                calcul =modif
+            self.ancientRessources=(type,calcul)
+            listeRessourcesInfoModified[type]=smallfont.render(str(calcul), True, (255,255,255))
+            
+        self.RessourcesInfoModified=listeRessourcesInfoModified
         self.RessourcesTEXT= listeRessourcesTEXT
+        
         return
