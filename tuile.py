@@ -6,40 +6,37 @@ class Tuile(pygame.sprite.Sprite):
         super().__init__()
         self.game = game
         
+        
+        ####     SPECIFICITE    ####
+        
         self.type = type
         self.canon = False
+        self.scierie = False
         
-        
+        ####     GENREATION    ####
         self.probaSup_mer = 0
         self.probaSup_roche = 0
         self.probaSup_foret = 0
         self.probaSup_desert = 0
         self.probaSup_neige = 0
-        
         self.autoriserNeige = False 
         self.autoriserDesert = True
+        
+        
         self.estSelect = False
         self.isExplored = self.type==7
+        
+        ####     POSITION ET IMAGE    ####
+        
         self.posX = posX
         self.posY = posY
-        
         self.image=self.loadImg(self.type)
-        
         self.imageO=self.openImg(self.type)
-        
         self.rect = self.image.get_rect()
-        
-        
-        
         self.rect.x = self.avoirX()
         self.rect.y = self.avoirY()
-        
-
         self.Xoriginal = self.rect.x
-        
         self.Yoriginal = self.rect.y
-        
-        self.masque = pygame.mask.from_surface(self.image)
     
     
     
@@ -190,6 +187,8 @@ class Tuile(pygame.sprite.Sprite):
 
     def estMontagne(self):
         return self.type==2
+    def estForet(self):
+        return self.type==4
     
     def tuileHaute(self):
         return self.type==2 or self.type==7
