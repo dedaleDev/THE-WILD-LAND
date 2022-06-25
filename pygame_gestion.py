@@ -118,7 +118,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         joueur.goUpRight()
                         for i in range(-1,2):
                             for j in range(-1, 2):
-                                game.deleteFog(joueur.posY+i, joueur.posX+j)
+                                game.deleteFog(joueur.posX+i, joueur.posY+j)
                         modification=True
                         
                     """elif joueur.deplacementAutorise("diagHautGauche"):
