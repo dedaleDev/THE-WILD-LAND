@@ -13,8 +13,11 @@ def majSelection(game):
                 decalageY=-50
             
             if game.map[i][j].rect.collidepoint(souris[0]+decalageX, souris[1]+decalageY):
-                game.map[i][j].setSelect(True)
-                tuileSelect = game.map[i][j]
+                if game.map[i][j].estSelect:
+                    game.map[i][j].setSelect(False)
+                else:
+                    game.map[i][j].setSelect(True)
+                    tuileSelect = game.map[i][j]
             else:
                 game.map[i][j].setSelect(False)
     return tuileSelect
