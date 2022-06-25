@@ -1,5 +1,5 @@
 import pygame
-import joueur
+import pygame_gestion
 import generation
 from PIL import Image
 class Game(pygame.sprite.Sprite):
@@ -63,9 +63,5 @@ class Game(pygame.sprite.Sprite):
     def deleteFog(self,x,y):
         if self.verifierCo(x, y):
             self.map[x][y].setExplored(True)
-            """if self.map[x][y].type==2 or self.map[x][y].type==7:
-                self.map[x][y].rect.x = self.map[x][y].avoirX()
-                self.map[x][y].rect.y = self.map[x][y].avoirY()
-                """
-        
+            pygame_gestion.joueur.setWater(-10)
         
