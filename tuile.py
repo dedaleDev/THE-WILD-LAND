@@ -6,41 +6,39 @@ class Tuile(pygame.sprite.Sprite):
         super().__init__()
         self.game = game
         
+        
+        ####     SPECIFICITE    ####
+        
         self.type = type
         self.canon = False
+        self.scierie = False
         
-        
+        ####     GENREATION    ####
         self.probaSup_mer = 0
         self.probaSup_roche = 0
         self.probaSup_foret = 0
         self.probaSup_desert = 0
         self.probaSup_neige = 0
-        
         self.autoriserNeige = False 
         self.autoriserDesert = True
+        
+        
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
+        
+        ####     POSITION ET IMAGE    ####
+        
         self.posX = posX
         self.posY = posY
-        
         self.image=self.loadImg(self.type)
-        
         self.imageO=self.openImg(self.type)
         
         self.rect = self.image.get_rect()
-        
-        
-        
         self.rect.x = self.avoirX()
         self.rect.y = self.avoirY()
-        
-
         self.Xoriginal = self.rect.x
-        
         self.Yoriginal = self.rect.y
-        
-        self.masque = pygame.mask.from_surface(self.image)
-    
+        self.mask=pygame.mask.from_surface(self.image)
     
     
     def getExplored(self):
@@ -58,22 +56,25 @@ class Tuile(pygame.sprite.Sprite):
     def getRectY(self):
         return  self.rect.y
 
+
     def avoirX(self):
         
         if self.type == 2 or self.type==7:
             
-            return self.posY*88 - self.game.decalageMontagneX
+            return self.posX*88 - self.game.decalageMontagneX
         else :
-            return self.posY*88
+            return self.posX*88
 
 
     def avoirY(self):
         if (self.type == 2 or self.type==7):
-            return self.posX*135+self.posY*6 - self.game.decalageMontagneY
+            return self.posY*135+self.posX*6 - self.game.decalageMontagneY+20
         else:
-            return self.posX*135+self.posY*6
+            return self.posY*135+self.posX*6+20
 
-
+    def caseBloquante(self):
+        return self.type==2 or self.type==7 or self.type == 3
+    
     def setType(self, entier):
         self.type=entier
 
@@ -190,6 +191,8 @@ class Tuile(pygame.sprite.Sprite):
 
     def estMontagne(self):
         return self.type==2
+    def estForet(self):
+        return self.type==4
     
     def tuileHaute(self):
         return self.type==2 or self.type==7
