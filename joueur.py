@@ -1,6 +1,7 @@
 from PIL import Image
 import pygame
 import random
+from selection import majSelection
 import generation
 class Player(pygame.sprite.Sprite):
 
@@ -24,6 +25,7 @@ class Player(pygame.sprite.Sprite):
           self.rect.x = self.game.map[self.posY][self.posX].rect.x
           self.rect.y = self.game.map[self.posY][self.posX].rect.y - 10
 
+
           #ressources du joueur
           self.wood = 200
           self.stone = 100
@@ -37,6 +39,10 @@ class Player(pygame.sprite.Sprite):
           #deplacement
         
           self.nombreDecalageRestantX = 0
+
+     def getFeet(self):
+         return self.rect.x+65, self.rect.y+135
+
 
      def getSkin(self):
          return self.skin
@@ -57,29 +63,6 @@ class Player(pygame.sprite.Sprite):
                return self.food
      def getWater(self):
                return self.water
-
-
-
-
-     def majPos(self):
-        tuileSelect = False
-        souris = self.rect.x+75, self.rect.y+135
-        for i in range(generation.taille_matriceY):
-            for j in range(generation.taille_matriceX):
-                pos_in_mask = souris[0] - self.game.map[i][j].rect.x, souris[1] - self.game.map[i][j].rect.y
-                touching = self.game.map[i][j].rect.collidepoint(souris) and self.game.map[i][j].mask.get_at(pos_in_mask)
-                if touching :
-                    self.game.map[i][j].setSelect(True)
-                    tuileSelect = self.game.map[i][j]
-                  
-                else :
-                    self.game.map[i][j].setSelect(False)
-        self.posX=tuileSelect.posX
-        self.posY = tuileSelect.posY
-        return tuileSelect
-
-
-
 
 
 
@@ -132,22 +115,14 @@ class Player(pygame.sprite.Sprite):
     
      def deplacementAutorise(self, direction):
          if direction=="droite":
-                return not (self.game.map[self.posY][self.posX+1].tuileHaute() or (self.game.map[self.posY][self.posX+1].estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
+            return not (majSelection(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).tuileHaute() or (majSelection(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
          if direction=="gauche":
-            return not (self.game.map[self.posY][self.posX-1].tuileHaute() or (self.game.map[self.posY][self.posX-1].estMer() and not self.bateau))
+            return not (majSelection(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).tuileHaute() or (majSelection(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).estMer() and not self.bateau))
          if direction=="haut":
-             return not (self.game.map[self.posY-1][self.posX].tuileHaute() or (self.game.map[self.posY-1][self.posX].estMer() and not self.bateau))
+             return not (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).tuileHaute() or (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).estMer() and not self.bateau))
          if direction=="bas":
-             return not (self.game.map[self.posY+1][self.posX].tuileHaute() or (self.game.map[self.posY+1][self.posX].estMer() and not self.bateau))
-         if direction=="diagHautDroit":
-                return not (self.game.map[self.posY-1][self.posX+1].tuileHaute() or (self.game.map[self.posY-1][self.posX+1].estMer() and not self.bateau))
-         if direction=="diagHautGauche":
-            return not (self.game.map[self.posY-1][self.posX-1].tuileHaute() or (self.game.map[self.posY-1][self.posX-1].estMer() and not self.bateau))
-         if direction=="diagBasGauche":
-            return not (self.game.map[self.posY+1][self.posX-1].tuileHaute() or (self.game.map[self.posY+1][self.posX-1].estMer() and not self.bateau))
-         if direction=="diagBasDroit":
-            return not (self.game.map[self.posY+1][self.posX+1].tuileHaute() or (self.game.map[self.posY+1][self.posX+1].estMer() and not self.bateau))
-        
+             return not (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).tuileHaute() or (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
+
      def goLeft(self):
         self.posX-=1
         if self.posX<1:

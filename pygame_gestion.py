@@ -22,6 +22,7 @@ largeurEtHauteur = (0, 0)
 modification = False
 timeComtpeur=0
 def pygameInit():  # foction servant à l'initialisation pygame
+    
     global infoObject, modification, joueur,timeComtpeur
     print("lancement jeu")
     global largeurEtHauteur, fenetrePygame
@@ -63,13 +64,13 @@ def pygameInit():  # foction servant à l'initialisation pygame
     moveX = 0
     tuile=False
     joueur = Player(game,"joueur_1")
+    
     mob = Mob(game, "monstre")
     for i in range(-1, 1):
         for j in range(-1, 1):
             game.deleteFog(joueur.posX+i, joueur.posY+j)
     game.genererImg()
-
-    deacalageJoueurX=0
+    
     while continuer == True: 
         # initialisation de la vitesse de raffraichissement (fps)
         modification=False
@@ -80,14 +81,13 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 
                 
             modification, tuileTemp = KEY_move(game, joueur)
-            if tuileTemp!=False:
-                tuile=tuileTemp
+
         
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
-                tuile = majSelection(game)
+                tuile = majSelection(game, pygame.mouse.get_pos())
 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
@@ -148,7 +148,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if modification:
                 game.genererImg()
 
-
+            
 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
@@ -210,7 +210,8 @@ def KEY_move(game, joueur):
             #joueur.goRight()
             #joueur.nombreDecalageRestantX=1
             joueur.rect.x+=joueur.velocity
-            tuile = joueur.majPos()
+            tuile = majSelection(game, joueur.getFeet())
+            joueur.posX, joueur.posY = tuile.posX, tuile.posY
             joueur.majBateau()
             for i in range(-1,2):
                 for j in range(-1, 2):
@@ -224,7 +225,8 @@ def KEY_move(game, joueur):
                 #joueur.goLeft()
                 joueur.majBateau()
                 joueur.rect.x-=joueur.velocity
-                tuile = joueur.majPos()
+                tuile = majSelection(game, joueur.getFeet())
+                joueur.posX, joueur.posY = tuile.posX, tuile.posY
                 for i in range(-1,2):
                     for j in range(-1, 2):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -236,7 +238,8 @@ def KEY_move(game, joueur):
                 #joueur.goUp()
                 joueur.majBateau()
                 joueur.rect.y-=joueur.velocity
-                tuile = joueur.majPos()
+                tuile = majSelection(game, joueur.getFeet())
+                joueur.posX, joueur.posY = tuile.posX, tuile.posY
                 for i in range(-1,2):
                     for j in range(-1, 2):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -246,7 +249,8 @@ def KEY_move(game, joueur):
             if joueur.deplacementAutorise("bas"):
                 #joueur.goDown()
                 joueur.rect.y+=joueur.velocity
-                tuile = joueur.majPos()
+                tuile = majSelection(game, joueur.getFeet())
+                joueur.posX, joueur.posY = tuile.posX, tuile.posY
                 joueur.majBateau()
                 for i in range(-1,2):
                     for j in range(-1, 2):
