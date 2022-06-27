@@ -127,7 +127,7 @@ def majDesertInterdire(matriceMap, i, j):
                 matriceMap[j+y][i+x].setInterdireDesert()
                 if matriceMap[j+y][i+x].getType()==6:
                     matriceMap[j+y][i+x].setType(1)
-                    matriceMap[j+y][i+x].imageO = matriceMap[j+y][i+x].openImg(1)
+                    
 
 
 def generation_matrice(game):

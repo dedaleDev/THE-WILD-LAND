@@ -78,6 +78,7 @@ class Tuile(pygame.sprite.Sprite):
     
     def setType(self, entier):
         self.type=entier
+        self.imageO = self.game.images.returnImgO(entier)
 
     
 
