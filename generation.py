@@ -1,9 +1,11 @@
 import copy
 from operator import xor
 import random
+import pygame
+
 from tuile import Tuile
-taille_matriceX = 25
-taille_matriceY = 10
+taille_matriceX = 15
+taille_matriceY = 15
 
 
 proba_roche = random.randint(10,15) # en %
@@ -13,7 +15,16 @@ if proba_mer<=6:
     proba_desert+=5
 proba_foret = random.randint(10,15)
 proba_neige= 0
+"""
+proba_mer=0
+proba_desert=0
+proba_roche=0
+proba_foret=0
+"""
 
+
+proba_roche=0
+proba_foret=0
 
 nombre_biome = 5
 GIGALISTE=[]
@@ -149,7 +160,7 @@ def generation_matrice(game):
 
     for i in range (taille_matriceY):
         matriceMap[i][0] = Tuile(7, 0, i, game)
-        matriceMap[i][taille_matriceX-1] = Tuile(7,taille_matriceX-1, i, game)
+        matriceMap[i][taille_matriceX-1] = Tuile(7 ,taille_matriceX-1, i, game)
 
 
     

@@ -1,5 +1,6 @@
 import pygame
 import random
+
 from PIL import Image
 class Tuile(pygame.sprite.Sprite):
     def __init__(self, type, posX, posY, game):
@@ -30,9 +31,9 @@ class Tuile(pygame.sprite.Sprite):
         
         self.posX = posX
         self.posY = posY
-        self.image=self.loadImg(self.type)
-        self.imageO=self.openImg(self.type)
-        
+        self.image= game.images.returnImg(self.type)
+        self.imageO=game.images.returnImgO(self.type)
+
         self.rect = self.image.get_rect()
         self.rect.x = self.avoirX()
         self.rect.y = self.avoirY()
@@ -59,18 +60,18 @@ class Tuile(pygame.sprite.Sprite):
 
     def avoirX(self):
         
-        if self.type == 2 or self.type==7:
+        if (self.type == 2 or self.type==7) and False:
             
             return self.posX*88 - self.game.decalageMontagneX
         else :
-            return self.posX*88
+            return self.posX*74+self.posY*74-10
 
 
     def avoirY(self):
-        if (self.type == 2 or self.type==7):
+        if ((self.type == 2 or self.type==7) and False):
             return self.posY*135+self.posX*6 - self.game.decalageMontagneY+20
         else:
-            return self.posY*135+self.posX*6+20
+            return self.posY*74-self.posX*74+75*15
 
     def caseBloquante(self):
         return self.type==2 or self.type==7 or self.type == 3
@@ -79,66 +80,6 @@ class Tuile(pygame.sprite.Sprite):
         self.type=entier
 
     
-    def loadImg(self, type):
-        #fonction pour charger la bonne image
-        if type == 0:  # si exploration
-            imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
-            imgTemp=pygame.transform.scale(imgTemp, (150, 150))
-            return imgTemp
-        if type == 1:  # si Terre
-            imgTemp = pygame.image.load("data/tuiles/1Terre.png").convert_alpha()
-        elif type == 2:#Roche
-            imgTemp = pygame.image.load("data/tuiles/2Roche.png").convert_alpha()
-        elif type == 3:#eau
-                imgTemp = pygame.image.load("data/tuiles/3EauProfonde.png").convert_alpha()
-        elif type == 4:#Foret
-            imgTemp = pygame.image.load("data/tuiles/4Foret.png").convert_alpha()
-        elif type == 5: #neige
-            imgTemp = pygame.image.load("data/tuiles/5Neige.png").convert_alpha()
-        elif type == 6: #Desert
-            if random.randint(1,2) ==1:
-                imgTemp = pygame.image.load("data/tuiles/6Desert.png").convert_alpha()
-            else :
-                imgTemp = pygame.image.load("data/tuiles/6desertCatus.png").convert_alpha()
-        elif type == 7: #Barriere
-            imgTemp = pygame.image.load("data/tuiles/7Barriere.png").convert_alpha()
-            
-        if self.type == 2 or self.type==7:
-            imgTemp = pygame.transform.scale(imgTemp, (150, 190))
-        else :
-            imgTemp = pygame.transform.scale(imgTemp, (150, 150))
-        return imgTemp
-    
-    def openImg(self, type):
-        #fonction pour charger la bonne image
-        if type ==0: # si exploration
-            imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
-            imgTemp = imgTemp.resize((150, 150))
-            return imgTemp
-        if type == 1:  # si Terre
-            imgTemp = Image.open("data/tuiles/1Terre.png").convert('RGBA')
-        elif type == 2:#Roche
-            imgTemp = Image.open("data/tuiles/2Roche.png").convert('RGBA')
-        elif type == 3:#eau
-                imgTemp = Image.open("data/tuiles/3EauProfonde.png").convert('RGBA')
-        elif type == 4:#Foret
-            imgTemp = Image.open("data/tuiles/4Foret.png").convert('RGBA')
-        elif type == 5: #neige
-            imgTemp = Image.open("data/tuiles/5Neige.png").convert('RGBA')
-        elif type == 6: #Desert
-            if random.randint(1,2) ==1:
-                imgTemp = Image.open("data/tuiles/6Desert.png").convert('RGBA')
-            else :
-                imgTemp = Image.open("data/tuiles/6desertCatus.png").convert('RGBA')
-        elif type == 7: #Barriere
-            imgTemp = Image.open("data/tuiles/7Barriere.png").convert('RGBA')
-            
-        if self.type == 2 or self.type==7:
-            imgTemp = imgTemp.resize((150, 190))
-        else :
-            imgTemp = imgTemp.resize((150, 150))
-        return imgTemp
-
 
     def getType(self):
         return self.type

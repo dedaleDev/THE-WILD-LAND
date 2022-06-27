@@ -1,6 +1,7 @@
 import pygame
-import pygame_gestion
+
 import generation
+from imageLoad import ImageLoad
 from PIL import Image
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject):
@@ -10,18 +11,18 @@ class Game(pygame.sprite.Sprite):
         self.affichagePersonalise = self.affichage()
         self.decalageMontagneX = self.getAffichageTuile()[self.affichagePersonalise][0]/100*self.infoObject.current_w
         self.decalageMontagneY = self.affichageTuile[self.affichagePersonalise][1]/100*self.infoObject.current_h
+        self.images = ImageLoad()
         
-        
-        self.map = generation.generation_matrice(self)
+        self.map = 0
         self.imageFog = self.openFog()
-        self.mapImg = self.genererImg()
+        self.mapImg = 0
 
-        
-    
-    
+
     def verifierCo(self, x, y):
         return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
         
+    def genererMatrice(self):
+        self.map = generation.generation_matrice(self)
 
 
 
@@ -36,7 +37,7 @@ class Game(pygame.sprite.Sprite):
 
     
     def genererImg(self):
-        background_pil = Image.new('RGBA',(150*generation.taille_matriceX,210*generation.taille_matriceY), 0) 
+        background_pil = Image.new('RGBA',(160*generation.taille_matriceX,160*generation.taille_matriceY), 0) 
         dx = round(self.decalageMontagneX)
         dy = round(self.decalageMontagneY)
         for y in range(generation.taille_matriceY):
@@ -44,13 +45,13 @@ class Game(pygame.sprite.Sprite):
                 if self.map[y][x].isExplored:
                     background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
                 
-                elif self.map[y][x].tuileHaute():
-                        background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal+dx, self.map[y][x].Yoriginal+20+dy), self.imageFog)
+                #elif self.map[y][x].tuileHaute():
+                #        background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal+dx, self.map[y][x].Yoriginal+20+dy), self.imageFog)
                 else :
                     background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
         
 
-        self.mapImg = pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA')
+        self.mapImg = pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA').convert_alpha()
 
 
 

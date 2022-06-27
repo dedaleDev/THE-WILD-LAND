@@ -50,12 +50,13 @@ def pygameInit():  # foction servant à l'initialisation pygame
     fenetrePygame = pygame.display.set_mode(
         (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
     game = Game(infoObject)
+    game.genererMatrice()
     
     
     # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
-    Imselection = pygame.transform.scale(Imselection, (150,135))
+    Imselection = pygame.transform.scale(Imselection, (150,150))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
 
@@ -153,6 +154,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             if tuile!=False:
+                print(tuile.posY, tuile.posX)
                 if (tuile.type == 2 or tuile.type == 7) :#and tuile.isExplored:
                     fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
                 else :
