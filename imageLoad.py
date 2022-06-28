@@ -163,6 +163,9 @@ class ImageLoad():
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("scierie", imgTemp))
         
+        imgTemp = pygame.image.load("data/batiments/icon/icon_port.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("port", imgTemp))
         return listeImgItem
 
 

@@ -156,11 +156,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             if tuile!=False:
-
-                if (tuile.type == 2 or tuile.type == 7) :#and tuile.isExplored:
-                    fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
-                else :
-                    fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))    
+                fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))    
             
             
             #affichage personnage

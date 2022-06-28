@@ -23,11 +23,14 @@ def selectionDispoItem(game, tuile):
         optionDIspo.append(Item(game, "forge", 20))
     elif tuile.type==3:
         optionDIspo.append(Item(game, "moulin", 20))
+        optionDIspo.append(Item(game, "port", 20))
     elif tuile.type==4:
         optionDIspo.append(Item(game, "scierie", 20))
     elif tuile.type==5:
-        optionDIspo.append(Item(game, "igloo", 20))
+        #optionDIspo.append(Item(game, "igloo", 20))
+        pass
     elif tuile.type==6:
-        optionDIspo.append(Item(game, "puit", 20))
+        #optionDIspo.append(Item(game, "puit", 20))
+        pass
     return optionDIspo
     
