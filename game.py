@@ -37,7 +37,7 @@ class Game(pygame.sprite.Sprite):
 
     
     def genererImg(self):
-        background_pil = Image.new('RGBA',(160*generation.taille_matriceX,160*generation.taille_matriceY), 0) 
+        background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0) 
         dx = round(self.decalageMontagneX)
         dy = round(self.decalageMontagneY)
         for y in range(generation.taille_matriceY):

@@ -1,7 +1,7 @@
 from PIL import Image
 import pygame
 import random
-from selection import majSelection
+from selection import majSelectionJoueur
 import generation
 class Player(pygame.sprite.Sprite):
 
@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
           super().__init__()
           #affichage et information
           self.name = nom
-          self.skin = self.loadSkin(nom, (100, 150))
+          self.skin = self.loadSkin(nom, (472*0.13, 978*0.13))
           self.game = game
           self.bateau = False
           self.skinBateau = self.loadSkin("bateau",(100, 150))
@@ -22,8 +22,8 @@ class Player(pygame.sprite.Sprite):
           self.armor = 0
           self.posX, self.posY = self.initPos()
           self.rect = self.skin.get_rect()
-          self.rect.x = self.game.map[self.posY][self.posX].rect.x
-          self.rect.y = self.game.map[self.posY][self.posX].rect.y - 10
+          self.rect.x = self.game.map[self.posY][self.posX].rect.x+50
+          self.rect.y = self.game.map[self.posY][self.posX].rect.y - 20
 
 
           #ressources du joueur
@@ -36,12 +36,13 @@ class Player(pygame.sprite.Sprite):
           self.ressourcesIMG = self.loadRessourcesIMG()
           self.ancientRessources =(0,0)#type de la dernière ressource actualisé puis sa valeur
           
+          self.nbScierie = 0
           #deplacement
         
           self.nombreDecalageRestantX = 0
 
      def getFeet(self):
-         return self.rect.x+65, self.rect.y+135
+         return self.rect.x+35, self.rect.y+120
 
 
      def getSkin(self):
@@ -67,13 +68,13 @@ class Player(pygame.sprite.Sprite):
 
 
      def initPos(self):
-         borneMaxX = min(generation.taille_matriceX-2, 15)
-         borneMaxY = min(generation.taille_matriceY-2, 5)
-         posX = random.randint(1,borneMaxX)
-         posY = random.randint(1,borneMaxY)
+         borneMaxX = min(generation.taille_matriceX-2, 9)
+         borneMaxY = min(generation.taille_matriceY-2, 9)
+         posX = random.randint(6,borneMaxX)
+         posY = random.randint(6,borneMaxY)
          while self.game.map[posY][posX].caseBloquante() or self.caseBloquanteAutour(posX, posY):
-             posX = random.randint(1,borneMaxX)
-             posY = random.randint(1,borneMaxY)
+             posX = random.randint(6,borneMaxX)
+             posY = random.randint(6,borneMaxY)
          return posX, posY
 
      def caseBloquanteAutour(self, posX, posY):
@@ -100,7 +101,7 @@ class Player(pygame.sprite.Sprite):
      def setWater(self, water):
         if (self.water -water>=0) :
             self.water += water
-            self.compteurRessources(modif=water, type=3)   
+            self.compteurRessources(modif=water, type=3)
      def setWood(self, wood):
         if (self.wood -wood>=0) :
             self.wood += wood
@@ -115,13 +116,13 @@ class Player(pygame.sprite.Sprite):
     
      def deplacementAutorise(self, direction):
          if direction=="droite":
-            return not (majSelection(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).tuileHaute() or (majSelection(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
+            return not (majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
          if direction=="gauche":
-            return not (majSelection(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).tuileHaute() or (majSelection(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).estMer() and not self.bateau))
+            return not (majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).estMer() and not self.bateau))
          if direction=="haut":
-             return not (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).tuileHaute() or (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).estMer() and not self.bateau))
+             return not (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).estMer() and not self.bateau))
          if direction=="bas":
-             return not (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).tuileHaute() or (majSelection(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
+             return not (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
 
      def goLeft(self):
         self.posX-=1
@@ -207,8 +208,13 @@ class Player(pygame.sprite.Sprite):
     
      def construireScierie(self, tuile):
         self.game.map[tuile.posY][tuile.posX].scierie = True
+        self.nbScierie+=1
      
      def changerImageScierie(self, tuile):
           imgTemp = Image.open("data/batiments/scierie.png").convert('RGBA')
 
           self.game.map[tuile.posY][tuile.posX].imageO = imgTemp.resize((150, 150))
+          
+     def ajouterRessources(self):
+
+         self.setWood(1*self.nbScierie)

@@ -25,7 +25,7 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = True#self.type==7
+        self.isExplored = self.type==7
         
         ####     POSITION ET IMAGE    ####
         
@@ -59,19 +59,11 @@ class Tuile(pygame.sprite.Sprite):
 
 
     def avoirX(self):
-        
-        if (self.type == 2 or self.type==7) and False:
-            
-            return self.posX*88 - self.game.decalageMontagneX
-        else :
-            return self.posX*74+self.posY*74-10
+        return self.posX*74+self.posY*74-10
 
 
     def avoirY(self):
-        if ((self.type == 2 or self.type==7) and False):
-            return self.posY*135+self.posX*6 - self.game.decalageMontagneY+20
-        else:
-            return self.posY*74-self.posX*74+75*15
+        return self.posY*74-self.posX*74+75*15
 
     def caseBloquante(self):
         return self.type==2 or self.type==7 or self.type == 3

@@ -4,8 +4,8 @@ import random
 import pygame
 
 from tuile import Tuile
-taille_matriceX = 15
-taille_matriceY = 15
+taille_matriceX = 18
+taille_matriceY = 18
 
 
 proba_roche = random.randint(10,15) # en %
@@ -98,7 +98,7 @@ def tirer_biome(type, matriceMap, i, j, game):
 def majProba(matriceMap, i, j, probaSup, nature):
     for y in range(-1, 2):
         for x in range(-1, 2):
-            if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0  and not (y==-1 and x == -1):
+            if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0 :
                                                                                         #SUPPRESSION DE PROBA EN HAUT A GAUCHE
                 if nature == "roche":
                     matriceMap[j+y][i+x].augmenterProbaRoche(probaSup)
