@@ -23,8 +23,8 @@ proba_foret=0
 """
 
 
-proba_roche=0
-proba_foret=0
+
+
 
 nombre_biome = 5
 GIGALISTE=[]

@@ -12,7 +12,7 @@ class Game(pygame.sprite.Sprite):
         self.decalageMontagneX = self.getAffichageTuile()[self.affichagePersonalise][0]/100*self.infoObject.current_w
         self.decalageMontagneY = self.affichageTuile[self.affichagePersonalise][1]/100*self.infoObject.current_h
         self.images = ImageLoad()
-        
+
         self.map = 0
         self.imageFog = self.openFog()
         self.mapImg = 0

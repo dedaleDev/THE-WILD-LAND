@@ -4,13 +4,15 @@ import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
 from PIL import Image
+from inventaire import Inventaire
 import main_menu
 from generation import *
 from mob import Mob
-from selection import majSelection
+from selection import majSelection, selectionDispoItem
 from tuile import Tuile
 from joueur import Player
 from game import Game
+from item import Item
 
 fenetrePygame = ""
 infoObject = 0
@@ -71,7 +73,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
         for j in range(-1, 1):
             game.deleteFog(joueur.posX+i, joueur.posY+j)
     game.genererImg()
-    
+    itemForge = Item(game, "forge", 150)
+    itemMoulin = Item(game, "moulin", 10)
     while continuer == True: 
         # initialisation de la vitesse de raffraichissement (fps)
         modification=False
@@ -150,11 +153,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 game.genererImg()
 
             
-
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             if tuile!=False:
-                print(tuile.posY, tuile.posX)
+
                 if (tuile.type == 2 or tuile.type == 7) :#and tuile.isExplored:
                     fenetrePygame.blit(Imselection, (tuile.getRectX()+game.affichageTuile[game.affichagePersonalise][0]/100*game.infoObject.current_w, tuile.getRectY()+(game.getAffichageTuile()[game.affichagePersonalise][1]/100*game.infoObject.current_h)))
                 else :
@@ -169,7 +171,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 fenetrePygame.blit(mob.skin, (game.map[mob.posY][mob.posX].rect.x, game.map[mob.posY][mob.posX].rect.y-10))
             if joueur.bateau:
                 fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x, joueur.rect.y+70))
-            
+            if tuile!=False :
+                liste = selectionDispoItem(game, tuile)
+                inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
+                inventaire.blitInventaire(fenetrePygame)
             
             
             for i in range(len(joueur.ressourcesIMG)):
