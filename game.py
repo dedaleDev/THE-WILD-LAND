@@ -38,15 +38,10 @@ class Game(pygame.sprite.Sprite):
     
     def genererImg(self):
         background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0) 
-        dx = round(self.decalageMontagneX)
-        dy = round(self.decalageMontagneY)
         for y in range(generation.taille_matriceY):
             for x in range(generation.taille_matriceX):
                 if self.map[y][x].isExplored:
                     background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
-                
-                #elif self.map[y][x].tuileHaute():
-                #        background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal+dx, self.map[y][x].Yoriginal+20+dy), self.imageFog)
                 else :
                     background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
         
