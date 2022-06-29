@@ -10,7 +10,7 @@ def majSelection(game, pos):
             touching = game.map[i][j].rect.collidepoint(souris) and game.map[i][j].mask.get_at(pos_in_mask)
             if touching :
                 if game.map[i][j].estSelect:
-                    game.map[i][j].setSelect(True)
+                    game.map[i][j].setSelect(False)
                 else:
                     game.map[i][j].setSelect(True)
                     tuileSelect = game.map[i][j]
@@ -26,10 +26,7 @@ def majSelectionJoueur(game, pos):
             pos_in_mask = souris[0] - game.map[i][j].rect.x, souris[1] - game.map[i][j].rect.y
             touching = game.map[i][j].rect.collidepoint(souris) and game.map[i][j].mask.get_at(pos_in_mask)
             if touching :
-                game.map[i][j].setSelect(True)
                 tuileSelect = game.map[i][j]
-            else :
-                game.map[i][j].setSelect(False)
     return tuileSelect
 
 def selectionDispoItem(game, tuile):
