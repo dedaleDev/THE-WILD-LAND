@@ -120,6 +120,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 if not cliqueItem:
                     tuile = majSelection(game, pygame.mouse.get_pos())
                 else :
+                    if tuile:
+                        tuile.estSelect=False
                     tuile=False
                 
                 
