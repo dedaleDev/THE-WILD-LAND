@@ -13,6 +13,7 @@ class Tuile(pygame.sprite.Sprite):
         self.type = type
         self.canon = False
         self.scierie = False
+        self.aEteModifie = True
         
         ####     GENREATION    ####
         self.probaSup_mer = 0
@@ -25,7 +26,7 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = True#self.type==7
+        self.isExplored = self.type==7
         
         ####     POSITION ET IMAGE    ####
         
@@ -46,6 +47,7 @@ class Tuile(pygame.sprite.Sprite):
         return self.isExplored
     
     def setExplored(self, bool):
+        self.aEteModifie=True
         self.isExplored = bool
 
     def getRectX(self):

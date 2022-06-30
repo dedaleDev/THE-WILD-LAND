@@ -3,6 +3,8 @@ import pygame
 import generation
 from imageLoad import ImageLoad
 from PIL import Image
+background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
+premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject):
         self.infoObject=infoObject
@@ -16,7 +18,7 @@ class Game(pygame.sprite.Sprite):
         self.map = 0
         self.imageFog = self.openFog()
         self.mapImg = 0
-
+        self.mapImgO = 0
 
     def verifierCo(self, x, y):
         return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
@@ -37,18 +39,34 @@ class Game(pygame.sprite.Sprite):
 
     
     def genererImg(self):
-        background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0) 
+        global background_pil, premierPAss
+        modification=False
         for y in range(generation.taille_matriceY):
             for x in range(generation.taille_matriceX):
-                if self.map[y][x].isExplored:
-                    background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
-                else :
-                    background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                if self.map[y][x].aEteModifie:        
+                    #print(self.map[y][x].posY, self.map[y][x].posX)
+                    if self.map[y][x].isExplored:
+                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
+                    else :
+                        background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                    self.map[y][x].aEteModifie=False
+                    modification=True                    
+        if modification:
+
+            if premierPAss:
+                self.mapImg = pygame.image.frombuffer(background_pil.tobytes(), background_pil.size, "RGBA").convert_alpha()
+
+            self.mapImgO = background_pil
+
+
+    def collerImageBackground(self, tuile):
         
-
-        self.mapImg = pygame.image.fromstring(background_pil.tobytes(), background_pil.size,'RGBA').convert_alpha()
-
-
+        if tuile.isExplored:
+            self.mapImgO.paste(tuile.imageO, (tuile.Xoriginal, tuile.Yoriginal), tuile.imageO)
+        else:
+            self.mapImgO.paste(self.imageFog, (tuile.Xoriginal, tuile.Yoriginal), self.imageFog)
+        self.mapImg = pygame.image.fromstring(self.mapImgO.tobytes(),self.mapImgO.size,'RGBA').convert_alpha()
+            
 
     def openFog(self):
         imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
@@ -57,11 +75,11 @@ class Game(pygame.sprite.Sprite):
     
 
     def deleteFog(self,x,y):
-        modification=False
+        modification = False
         if self.verifierCo(x, y):
             if not self.map[y][x].isExplored:
                 self.map[y][x].setExplored(True)
                 modification=True
-                #pygame_gestion.joueur.setWater(-10)
         return modification
+                #pygame_gestion.joueur.setWater(-10)
         

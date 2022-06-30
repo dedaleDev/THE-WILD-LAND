@@ -13,7 +13,7 @@ from tuile import Tuile
 from joueur import Player
 from game import Game
 from item import Item
-
+from game import background_pil
 fenetrePygame = ""
 infoObject = 0
 joueur =""
@@ -162,8 +162,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if modification:
                 game.genererImg()
                 
-                
-            
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             if tuile!=False:
@@ -175,8 +173,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
             
             fenetrePygame.blit(joueur.skin, (joueur.rect.x, joueur.rect.y))
             #fenetrePygame.blit(imDebug, joueur.getFeet())
-            #if game.map[mob.posY][mob.posX].isExplored:
-            #    fenetrePygame.blit(mob.skin, (game.map[mob.posY][mob.posX].rect.x, game.map[mob.posY][mob.posX].rect.y-10))
+            if game.map[mob.posY][mob.posX].isExplored:
+                fenetrePygame.blit(mob.skin, (game.map[mob.posY][mob.posX].rect.x, game.map[mob.posY][mob.posX].rect.y-10))
             if joueur.bateau:
                 fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x, joueur.rect.y+70))
                 
