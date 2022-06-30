@@ -1,15 +1,12 @@
 from random import randint
-from time import sleep
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
-from PIL import Image
 from inventaire import Inventaire
 import main_menu
 from generation import *
 from mob import Mob
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
-from tuile import Tuile
 from joueur import Player
 from game import Game
 from item import Item
@@ -68,6 +65,9 @@ def pygameInit():  # foction servant à l'initialisation pygame
     Imselection = pygame.transform.scale(Imselection, (150,150))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
+
+    listeInfoButton = [("data/menu/scierie")]
+
     tick_ressource=0
     move_ticker=0
 
@@ -80,8 +80,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
         for j in range(-1, 2):
             game.deleteFog(joueur.posX+i, joueur.posY+j)
     game.genererImg()
-    itemForge = Item(game, "forge", 150)
-    itemMoulin = Item(game, "moulin", 10)
+    itemForge = Item(game, "forge", 150,"data/batiments/infoBulle/info_scierie.png")
+    itemMoulin = Item(game, "moulin", 10,"data/batiments/infoBulle/info_scierie.png")
 
     for deplacement in range(1675-infoObject.current_w):
         for i in range(len(game.map)):
@@ -148,9 +148,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
 
-            #affichage de la map
-            
-            #Rafraîchissement de l'écran
             
             #affichage selection
             if tick_ressource==0:
@@ -182,8 +179,11 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 liste = selectionDispoItem(game, tuile)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
                 inventaire.blitInventaire(fenetrePygame)
+                for item in inventaire.listeItem:
+                        if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##
+                            inventaire.blitInfoBulle(fenetrePygame, item)
 
-                
+
             
             for i in range(len(joueur.ressourcesIMG)):
                 fenetrePygame.blit(joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
