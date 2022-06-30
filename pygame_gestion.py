@@ -175,8 +175,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
             
             fenetrePygame.blit(joueur.skin, (joueur.rect.x, joueur.rect.y))
             #fenetrePygame.blit(imDebug, joueur.getFeet())
-            if game.map[mob.posY][mob.posX].isExplored:
-                fenetrePygame.blit(mob.skin, (game.map[mob.posY][mob.posX].rect.x, game.map[mob.posY][mob.posX].rect.y-10))
+            #if game.map[mob.posY][mob.posX].isExplored:
+            #    fenetrePygame.blit(mob.skin, (game.map[mob.posY][mob.posX].rect.x, game.map[mob.posY][mob.posX].rect.y-10))
             if joueur.bateau:
                 fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x, joueur.rect.y+70))
                 
@@ -308,7 +308,7 @@ def deplacementCamBas(mouse, game, joueur):
                 game.map[i][j].decalerY(f(x))
         joueur.rect.y+=f(x)
         moveY+=f(x)
-    print(f(x))
+
 
         
 def deplacementCamHaut(mouse, game, joueur):
@@ -336,7 +336,7 @@ def deplacementCamDroite(mouse, game, joueur):
     global moveY, moveX
     x = infoObject.current_w-mouse[0]
     y=f(x)
-    print("x=",x)
+
     if x < 200:  # Si souris à droite
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
