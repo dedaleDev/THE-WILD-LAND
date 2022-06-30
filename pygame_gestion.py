@@ -42,24 +42,18 @@ def pygameInit():  # foction servant à l'initialisation pygame
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
 
-    clock = pygame.time.Clock()  # créer un système permettant de gérer le temps
-        # Si touche appuyée plus de 400ms répétition de 30ms
+    clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 30)
 
-
-    
-    
-    infoObject= pygame.display.Info()  # récupère la taille de l'écran
+    infoObject = pygame.display.Info()  # récupère la taille de l'écran
     affichagePersonalise = affichage()
-    
-    # définit la taille de la fenetre pour qu'elle occupe tout l'écran --> sous Windows 10 et ultérieur elle passe même en plein écran mais pas sous Linux et MacOS
     fenetrePygame = pygame.display.set_mode(
         (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
     game = Game(infoObject)
     game.genererMatrice()
     
     
-    # mise a l'echelle du perso les argument sont la surface qui est modifier et la taille
+    # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
     Imselection = pygame.transform.scale(Imselection, (150,150))
@@ -98,7 +92,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
         moveY-=4
                             
     while continuer == True:
-        # initialisation de la vitesse de raffraichissement (fps)
+        
         modification=False
         cliqueItem = False
         modification, tuileTemp = KEY_move(game, joueur)
@@ -113,13 +107,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 
                 for item in inventaire.listeItem: 
-                    if colisionItem(item, pygame.mouse.get_pos()) and tuile!=False:
-                        if item.nom == "scierie":
-                            joueur.construireScierie(tuile)    
-                            joueur.changerImageScierie(tuile)
-                            
-                            modification=True
-                            cliqueItem=True
+                    if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
+                        joueur.construireBatiment(tuile, item.nom)
+                        modification=True
+                        cliqueItem=True
                             
 
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
@@ -161,8 +152,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
-            if tuile!=False:
-                
+            
+            if tuile :  
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))    
             #affichage personnage
             
@@ -175,7 +166,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if joueur.bateau:
                 fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x, joueur.rect.y+70))
                 
-            if tuile!=False:
+            if tuile :
                 liste = selectionDispoItem(game, tuile)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
                 inventaire.blitInventaire(fenetrePygame)
@@ -222,11 +213,9 @@ def KEY_move(game, joueur):
     
     if keys[K_RIGHT] :
         if joueur.deplacementAutorise("droite") and joueur.getWater() -10 >=0 :
-            #joueur.goRight()
-            #joueur.nombreDecalageRestantX=1
-            joueur.rect.x+=joueur.velocity
+            joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
-            joueur.posX, joueur.posY = tuile.posX, tuile.posY
+            joueur.setPos(tuile)
             joueur.majBateau()
             for i in range(-1,2):
                 for j in range(-1, 2):
@@ -237,11 +226,10 @@ def KEY_move(game, joueur):
                 
     if keys[K_LEFT]:
             if joueur.deplacementAutorise("gauche") and joueur.getWater() -10 >=0:
-                #joueur.goLeft()
                 joueur.majBateau()
-                joueur.rect.x-=joueur.velocity
+                joueur.goLeft()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
-                joueur.posX, joueur.posY = tuile.posX, tuile.posY
+                joueur.setPos(tuile)
                 for i in range(-1,2):
                     for j in range(-1, 2):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -250,11 +238,10 @@ def KEY_move(game, joueur):
 
     if keys[K_UP]:
             if joueur.deplacementAutorise("haut") and joueur.getWater() -10 >=0:
-                #joueur.goUp()
                 joueur.majBateau()
-                joueur.rect.y-=joueur.velocity
+                joueur.goUp()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
-                joueur.posX, joueur.posY = tuile.posX, tuile.posY
+                joueur.setPos(tuile)
                 for i in range(-1,2):
                     for j in range(-1, 2):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -262,10 +249,9 @@ def KEY_move(game, joueur):
 
     if keys[K_DOWN]:
             if joueur.deplacementAutorise("bas"):
-                #joueur.goDown()
-                joueur.rect.y+=joueur.velocity
+                joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
-                joueur.posX, joueur.posY = tuile.posX, tuile.posY
+                joueur.setPos(tuile)
                 joueur.majBateau()
                 for i in range(-1,2):
                     for j in range(-1, 2):

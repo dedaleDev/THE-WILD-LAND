@@ -7,7 +7,5 @@ class Item(pygame.sprite.Sprite):
         self.nom = nom
         self.image = game.images.returnImItem(nom)
         self.cout = cout
-        self.infoBulle =infoBulle
+        self.infoBulle =game.images.ImInfoBullItem(nom)
         self.rect = self.image.get_rect()
-    
-    

@@ -30,6 +30,6 @@ class Inventaire(pygame.sprite.Sprite):
     def loadInfoBulle(self, source = "data/menu/infoBulleBatiment"):
         imgTemp = pygame.image.load(source)
         return imgTemp
+    
     def blitInfoBulle(self, fenetre, item):
-        img = pygame.image.load(item.infoBulle)
-        fenetre.blit(img,(item.rect.x-175, self.rect.y-260))
+        fenetre.blit(item.infoBulle,(item.rect.x-175, self.rect.y-260))

@@ -37,6 +37,9 @@ class Player(pygame.sprite.Sprite):
           self.ancientRessources =(0,0)#type de la dernière ressource actualisé puis sa valeur
           
           self.nbScierie = 0
+          self.nbMoulin = 0
+          self.nbPuit=0
+          self.nbForge = 0
           #deplacement
         
           self.nombreDecalageRestantX = 0
@@ -124,46 +127,24 @@ class Player(pygame.sprite.Sprite):
          if direction=="bas":
              return not (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
 
+     def setPos(self, tuile):
+        self.posX, self.posY = tuile.posX, tuile.posY
+
      def goLeft(self):
-        self.posX-=1
-        if self.posX<1:
-            self.posX=1
+            self.rect.x-=self.velocity
      
      
         
         
      def goRight(self):
-        self.posX+=1
-        if self.posX>len(self.game.map[0])-2:
-            self.posX=len(self.game.map[0])-2
+        self.rect.x+=self.velocity
         
      def goUp(self):
-         self.posY-=1
-         if self.posY<1:
-                self.posY=1
+         self.rect.y-=self.velocity
          
      def goDown(self):
-         self.posY+=1
-         if self.posY>len(self.game.map)-2:
-            self.posY=len(self.game.map)-2
+         self.rect.y+=self.velocity
 
-     def goDownLeft(self):
-         self.goDown()
-         self.goLeft()
-
-
-     def goDownRight(self):
-         self.goDown()
-         self.goRight()
-         
-     def goUpRight(self):
-        self.goRight()
-        self.goUp()
-
-     def goUpLeft(self):
-         self.goUp()
-         self.goLeft()
-         
      def majBateau(self):
          if self.game.map[self.posY][self.posX].type!=3:
              self.bateau=False
@@ -189,12 +170,12 @@ class Player(pygame.sprite.Sprite):
         listeRessourcesInfoModified =  [False,False,False,False]
         for i in  range (len(listeRessourcesTEXT)) : 
             listeRessourcesTEXT[i]=smallfont.render(str(listeRessources[i]), True, (0,0,0))
-        if modif != False and type != None and modif<0:
+        if not modif and type and modif<0:
             if self.ancientRessources[0]==type and self.ancientRessources[1]<=50:
                 calcul = modif + self.ancientRessources[1]
                 #print("Calculating", calcul, self.ancientRessources)
             else :
-                calcul =modif
+                calcul = modif
             self.ancientRessources=(type,calcul)
             listeRessourcesInfoModified[type]=smallfont.render(str(calcul), True, (255,255,255))
             
@@ -206,15 +187,35 @@ class Player(pygame.sprite.Sprite):
     
     ####        CONSTRUCTION        ####
     
-     def construireScierie(self, tuile):
-        self.game.map[tuile.posY][tuile.posX].scierie = True
-        self.nbScierie+=1
-     
-     def changerImageScierie(self, tuile):
-          imgTemp = Image.open("data/batiments/scierie.png").convert('RGBA')
+     def construireBatiment(self, tuile, nom):
+        if nom == "scierie":
+            self.game.map[tuile.posY][tuile.posX].scierie = True
+            self.nbScierie+=1
+        elif nom == "moulin":
+            self.game.map[tuile.posY][tuile.posX].moulin = True
+            self.nbMoulin+=1
+        elif nom == "puit":
+            self.game.map[tuile.posY][tuile.posX].puit = True
+            self.nbPuit+=1
+        elif nom == "forge":
+            self.game.map[tuile.posY][tuile.posX].forge = True
+            self.nbForge+=1
+        self.changerImageBatiment(tuile, nom)
 
-          self.game.map[tuile.posY][tuile.posX].imageO = imgTemp.resize((150, 150))
+     
+     def changerImageBatiment(self, tuile, nom):
+          if nom=="port":
+             imgTemp = Image.open("data/batiments/port/port"+str(random.randint(0,3))+".png").convert('RGBA')
+          else:
+              imgTemp = Image.open("data/batiments/"+nom+".png").convert('RGBA')
+          tuile.imageO = imgTemp.resize((150, 150))
+          tuile.aEteModifie=True
+          
+     
           
      def ajouterRessources(self):
 
          self.setWood(1*self.nbScierie)
+         self.setStone(1*self.nbForge)
+         self.setWater(1*self.nbPuit)
+         #self.setFood(1*self.nbMoulin)

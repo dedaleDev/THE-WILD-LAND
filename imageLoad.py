@@ -324,3 +324,7 @@ class ImageLoad():
         assert(1==2)
         #Pas d'image d'item trouvé
         return False
+
+    def ImInfoBullItem(self, nom, chemin="data/batiments/infoBulle/info_"):
+        img = pygame.image.load(chemin+nom+".png")
+        return img

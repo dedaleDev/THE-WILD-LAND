@@ -13,6 +13,9 @@ class Tuile(pygame.sprite.Sprite):
         self.type = type
         self.canon = False
         self.scierie = False
+        self.moulin = False
+        self.puit= False
+        self.forge = False
         self.aEteModifie = True
         
         ####     GENREATION    ####
@@ -26,7 +29,7 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
         
         ####     POSITION ET IMAGE    ####
         
