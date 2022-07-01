@@ -111,19 +111,19 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         joueur.construireBatiment(tuile, item.nom)
                         modification=True
                         cliqueItem=True
-                            
+     
 
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
-                    
+  
                 if not cliqueItem:
                     tuile = majSelection(game, pygame.mouse.get_pos())
                 else :
                     if tuile:
                         tuile.estSelect=False
                     tuile=False
-                
+
                 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
