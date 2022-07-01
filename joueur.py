@@ -5,7 +5,7 @@ from selection import majSelectionJoueur
 import generation
 class Player(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse):
+     def __init__(self, game, nom, vitesse):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -17,7 +17,8 @@ class Player(pygame.sprite.Sprite):
 
 
           #donnée du joueur
-          self.health = vie
+          self.health = 100
+          self.max_health=100
           self.velocity = vitesse
           self.armor = 0
           self.posX, self.posY = self.initPos()
@@ -49,8 +50,12 @@ class Player(pygame.sprite.Sprite):
      def getFeet(self):
          return self.rect.x+35, self.rect.y+120
 
-     def damage(self, entier):
-         self.health-=entier
+     def takeDamage(self, entier, surface):
+        if self.health >=0 :
+            self.health-=entier
+            self.update_health_bar(surface)
+        else :
+            print("VOUS ETES MORT !!!")
      def getSkin(self):
          return self.skin
      def getName(self):
@@ -70,8 +75,6 @@ class Player(pygame.sprite.Sprite):
                return self.food
      def getWater(self):
                return self.water
-
-
 
      def initPos(self):
          borneMaxX = min(generation.taille_matriceX-2, 9)
@@ -285,3 +288,26 @@ class Player(pygame.sprite.Sprite):
          #self.setWater(1*self.nbPuit)
          #self.setFood(1*self.nbMoulin)
          self.setFood(2*self.nbElevage+ 1*self.nbChamps)
+
+     def update_health_bar(self, surface):
+        #def la couleur
+        infoObject = pygame.display.Info()  #récupère la taille de l'écran
+
+        if self.health >=80 : 
+            bar_color = (111, 210, 46)
+        elif self.health >=50 : 
+            bar_color = (255, 165, 0)
+        elif self.health >=25 : 
+            bar_color = (255, 69, 0)
+        elif self.health >=0 : 
+            bar_color = (255, 0, 0)
+        else : 
+            print("Vous êtes MORT !!!")
+            bar_color = (255, 0, 0)
+        back_bar_color = (60,63,60)
+        bar_position = [110, 20, self.health*3, 50]
+        back_bar_position = [110, 20, self.max_health*3, 50]
+        #dessiner la barre de vie
+
+        pygame.draw.rect(surface, back_bar_color, back_bar_position)
+        pygame.draw.rect(surface, bar_color, bar_position)
