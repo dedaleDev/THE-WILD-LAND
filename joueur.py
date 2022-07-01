@@ -223,9 +223,12 @@ class Player(pygame.sprite.Sprite):
         elif nom == "moulin":
             self.game.map[tuile.posY][tuile.posX].moulin = True
             self.nbMoulin+=1
-        elif nom == "puit":
-            self.game.map[tuile.posY][tuile.posX].puit = True
-            self.nbPuit+=1
+        elif nom == "champs":
+            self.game.map[tuile.posY][tuile.posX].champs = True
+            self.nbChamps+=1
+        elif nom == "elevage":
+            self.game.map[tuile.posY][tuile.posX].champs = True
+            self.nbElevage+=1
         elif nom == "mine":
             self.game.map[tuile.posY][tuile.posX].mine = True
             self.nbMine+=1
