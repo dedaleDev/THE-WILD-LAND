@@ -213,7 +213,7 @@ def KEY_move(game, joueur):
     tuile=False
     keys=pygame.key.get_pressed()
     
-    if keys[K_RIGHT] :
+    if keys[K_d] :
         if joueur.deplacementAutorise("droite") and joueur.getWater() -10 >=0 :
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -226,7 +226,7 @@ def KEY_move(game, joueur):
 
                 
                 
-    if keys[K_LEFT]:
+    if keys[K_q]:
             if joueur.deplacementAutorise("gauche") and joueur.getWater() -10 >=0:
                 #joueur.majBateau()
                 joueur.goLeft()
@@ -238,7 +238,7 @@ def KEY_move(game, joueur):
                             modification=True
     
 
-    if keys[K_UP]:
+    if keys[K_z]:
             if joueur.deplacementAutorise("haut") and joueur.getWater() -10 >=0:
                 #joueur.majBateau()
                 joueur.goUp()
@@ -249,7 +249,7 @@ def KEY_move(game, joueur):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
                             modification=True
 
-    if keys[K_DOWN]:
+    if keys[K_s]:
             if joueur.deplacementAutorise("bas"):
                 joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
