@@ -38,10 +38,10 @@ class Player(pygame.sprite.Sprite):
           
           self.nbScierie = 0
           self.nbMoulin = 0
-          self.nbPuit=0
+          self.nbElevage=0
+          self.nbChamps=0
           self.nbMine = 0
           self.nbPort = 0
-          #deplacement
         
           self.nombreDecalageRestantX = 0
 
@@ -273,5 +273,6 @@ class Player(pygame.sprite.Sprite):
 
          self.setWood(1*self.nbScierie)
          self.setStone(1*self.nbMine)
-         self.setWater(1*self.nbPuit)
-         #self.setFood(1*self.nbMoulin)
+         self.setWater(1*self.nbMoulin)
+         self.setFood(2*self.nbElevage+ 1*self.nbChamps)
+
