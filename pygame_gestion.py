@@ -67,9 +67,11 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
     tuile=False
 
-    joueur = Player(game,"joueur_1")
+    joueur = Player(game,"joueur_1", 100, 5)
     inventaire=Inventaire(0,0, [])
-    mob = Mob(game, "monstre")
+    mob = Mob(game, "monstre", 100, 1)
+    listeMob=[]
+    listeMob.append(mob)
     for i in range(-1, 2):
         for j in range(-1, 2):
             game.deleteFog(joueur.posX+i, joueur.posY+j)
@@ -82,6 +84,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerX(-4)
         joueur.rect.x-=4 
+        mob.rect.x-=4
         moveX-=4
     
     for deplacement in range(1070-infoObject.current_h):
@@ -89,6 +92,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerY(-4)
         joueur.rect.y-=4
+        mob.rect.y-=4
         moveY-=4
                             
     while continuer == True:
@@ -127,13 +131,12 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
-            deplacement_cam(mouse, game, joueur)
+            deplacement_cam(mouse, game, joueur, listeMob)
             
            
             #### Deplacement des mobs
-
-            #if randint(0,10)==0:
-            #    mob.randmove()
+            
+            mob.moveMob(joueur)
         
             if move_ticker>0:
                 move_ticker-=1
@@ -151,7 +154,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
             if modification:
                 game.genererImg()
-                
+
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             
@@ -159,14 +162,15 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))    
             #affichage personnage
             
+            if not joueur.bateau:
+                fenetrePygame.blit(joueur.skin, (joueur.rect.x, joueur.rect.y))
             
-            
-            fenetrePygame.blit(joueur.skin, (joueur.rect.x, joueur.rect.y))
-            #fenetrePygame.blit(imDebug, joueur.getFeet())
             if game.map[mob.posY][mob.posX].isExplored:
-                fenetrePygame.blit(mob.skin, (game.map[mob.posY][mob.posX].rect.x, game.map[mob.posY][mob.posX].rect.y-10))
+                fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
+            fenetrePygame.blit(imDebug, mob.getFeet())
             if joueur.bateau:
                 fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x-15, joueur.rect.y+30))
+                
                 
             if tuile :
                 liste = selectionDispoItem(game, tuile, joueur)
@@ -213,7 +217,7 @@ def KEY_move(game, joueur):
     tuile=False
     keys=pygame.key.get_pressed()
     
-    if keys[K_d] or keys[K_RIGHT] :
+    if keys[K_d] :
         if joueur.deplacementAutorise("droite") and joueur.getWater() -10 >=0 :
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -226,7 +230,7 @@ def KEY_move(game, joueur):
 
                 
                 
-    if keys[K_q]or keys[K_LEFT]:
+    if keys[K_q]:
             if joueur.deplacementAutorise("gauche") and joueur.getWater() -10 >=0:
                 #joueur.majBateau()
                 joueur.goLeft()
@@ -238,7 +242,7 @@ def KEY_move(game, joueur):
                             modification=True
     
 
-    if keys[K_z]or keys[K_UP]:
+    if keys[K_z]:
             if joueur.deplacementAutorise("haut") and joueur.getWater() -10 >=0:
                 #joueur.majBateau()
                 joueur.goUp()
@@ -249,7 +253,7 @@ def KEY_move(game, joueur):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
                             modification=True
 
-    if keys[K_s]or keys[K_DOWN]:
+    if keys[K_s]:
             if joueur.deplacementAutorise("bas"):
                 joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -271,11 +275,11 @@ def KEY_move(game, joueur):
     return modification, tuile
 
 
-def deplacement_cam(mouse, game, joueur): #gestion du déplacement de la caméra 
-    deplacementCamBas(mouse, game, joueur)
-    deplacementCamDroite(mouse, game, joueur)
-    deplacementCamGauche(mouse, game, joueur)
-    deplacementCamHaut(mouse, game, joueur)
+def deplacement_cam(mouse, game, joueur, listeMob): #gestion du déplacement de la caméra 
+    deplacementCamBas(mouse, game, joueur, listeMob)
+    deplacementCamDroite(mouse, game, joueur, listeMob)
+    deplacementCamGauche(mouse, game, joueur, listeMob)
+    deplacementCamHaut(mouse, game, joueur, listeMob)
     
     
 
@@ -286,30 +290,36 @@ def deplacement_cam(mouse, game, joueur): #gestion du déplacement de la caméra
         
     
 
-def deplacementCamBas(mouse, game, joueur):
+def deplacementCamBas(mouse, game, joueur, listeMob):
     global moveY, moveX
     x=infoObject.current_h-mouse[1]
+    y=f(x)
     if x < 200 :  # Si souris en bas
         
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
-                game.map[i][j].decalerY(f(x))
-        joueur.rect.y+=f(x)
-        moveY+=f(x)
+                game.map[i][j].decalerY(y)
+        joueur.rect.y+=y
+        moveY+=y
+        for mob in listeMob:
+            mob.rect.y+=y
 
 
         
-def deplacementCamHaut(mouse, game, joueur):
+def deplacementCamHaut(mouse, game, joueur, listeMob):
     global moveY, moveX
     x = mouse[1]
+    y = -f(x)
     if x < 200 : #Si souris en haut
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
-                game.map[i][j].decalerY(-f(x))
-        joueur.rect.y+=-f(x)
-        moveY+=-f(x)
+                game.map[i][j].decalerY(y)
+        joueur.rect.y+=y
+        moveY+=y
+        for mob in listeMob:
+            mob.rect.y+=y
         
-def deplacementCamGauche(mouse, game, joueur):
+def deplacementCamGauche(mouse, game, joueur, listeMob):
     global moveY, moveX
     x= mouse[0]
     y = -f(x)
@@ -318,9 +328,11 @@ def deplacementCamGauche(mouse, game, joueur):
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerX(y)
         joueur.rect.x+=y
+        for mob in listeMob:
+            mob.rect.x+=y
         moveX+=y
         
-def deplacementCamDroite(mouse, game, joueur):
+def deplacementCamDroite(mouse, game, joueur, listeMob):
     global moveY, moveX
     x = infoObject.current_w-mouse[0]
     y=f(x)
@@ -331,6 +343,8 @@ def deplacementCamDroite(mouse, game, joueur):
                 game.map[i][j].decalerX(y)
         joueur.rect.x+=y
         moveX+=y
+        for mob in listeMob:
+            mob.rect.x+=y
 
 def f(x):  #fonction vitesse deplacement cam
     y  = round(x*0.04-10)

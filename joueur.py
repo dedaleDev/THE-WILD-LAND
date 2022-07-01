@@ -5,26 +5,26 @@ from selection import majSelectionJoueur
 import generation
 class Player(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom):
+     def __init__(self, game, nom, vie, vitesse):
           super().__init__()
           #affichage et information
           self.name = nom
-          self.skin = self.loadSkin(nom, (472*0.13, 978*0.13))
+          self.skin = self.loadSkin(nom)
           self.game = game
           self.bateau = False
-          self.skinBateau = self.loadSkin("bateau",(100, 150))
+          self.skinBateau = self.loadSkin("bateau")
 
 
 
           #donnée du joueur
-          self.health = 100
-          self.velocity = 5
+          self.health = vie
+          self.velocity = vitesse
           self.armor = 0
           self.posX, self.posY = self.initPos()
           self.rect = self.skin.get_rect()
-          self.rect.x = self.game.map[self.posY][self.posX].rect.x+50
-          self.rect.y = self.game.map[self.posY][self.posX].rect.y - 20
-
+          self.rect.x = self.game.map[self.posY][self.posX].rect.x
+          self.rect.y = self.game.map[self.posY][self.posX].rect.y
+          
 
           #ressources du joueur
           self.wood = 200
@@ -38,17 +38,19 @@ class Player(pygame.sprite.Sprite):
           
           self.nbScierie = 0
           self.nbMoulin = 0
-          self.nbElevage=0
-          self.nbChamps=0
           self.nbMine = 0
           self.nbPort = 0
+          self.nbElevage=0
+          self.nbChamps=0
+          #deplacement
         
-          self.nombreDecalageRestantX = 0
+
 
      def getFeet(self):
          return self.rect.x+35, self.rect.y+120
 
-
+     def damage(self, entier):
+         self.health-=entier
      def getSkin(self):
          return self.skin
      def getName(self):
@@ -111,7 +113,13 @@ class Player(pygame.sprite.Sprite):
             self.wood += wood
             self.compteurRessources(modif=wood, type=4)
 
-     def loadSkin(self, nomSkin, scale):
+     def loadSkin(self, nomSkin):
+        if nomSkin=="joueur_1" or nomSkin=="joueur_1-2":
+            scale = (472*0.13, 978*0.13)
+        elif nomSkin=="bateau":
+            scale= (512*0.2, 512*0.2)
+        else:
+            scale = (472*0.13, 978*0.13)
         skin = pygame.image.load("data/personnages/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
         return skin
@@ -160,12 +168,14 @@ class Player(pygame.sprite.Sprite):
         self.posX, self.posY = tuile.posX, tuile.posY
 
      def goLeft(self):
+            self.skin = self.loadSkin("joueur_1-2")
             self.rect.x-=self.velocity
      
      
         
         
      def goRight(self):
+        self.skin = self.loadSkin("joueur_1")
         self.rect.x+=self.velocity
         
      def goUp(self):
@@ -223,18 +233,16 @@ class Player(pygame.sprite.Sprite):
         elif nom == "moulin":
             self.game.map[tuile.posY][tuile.posX].moulin = True
             self.nbMoulin+=1
-        elif nom == "champs":
-            self.game.map[tuile.posY][tuile.posX].champs = True
-            self.nbChamps+=1
-        elif nom == "elevage":
-            self.game.map[tuile.posY][tuile.posX].champs = True
-            self.nbElevage+=1
+        elif nom == "puit":
+            self.game.map[tuile.posY][tuile.posX].puit = True
+            self.nbPuit+=1
         elif nom == "mine":
             self.game.map[tuile.posY][tuile.posX].mine = True
             self.nbMine+=1
         elif nom == "port":
             self.game.map[tuile.posY][tuile.posX].port = True
             self.nbPort+=1
+        
         self.changerImageBatiment(tuile, nom)
     
      
@@ -269,13 +277,11 @@ class Player(pygame.sprite.Sprite):
               imgTemp = Image.open("data/batiments/"+nom+".png").convert('RGBA')
           tuile.imageO = imgTemp.resize((150, 150))
           tuile.aEteModifie=True
-          
-     
-          
+
      def ajouterRessources(self):
 
          self.setWood(1*self.nbScierie)
          self.setStone(1*self.nbMine)
-         self.setWater(1*self.nbMoulin)
+         #self.setWater(1*self.nbPuit)
+         #self.setFood(1*self.nbMoulin)
          self.setFood(2*self.nbElevage+ 1*self.nbChamps)
-

@@ -14,13 +14,12 @@ class Tuile(pygame.sprite.Sprite):
         self.canon = False
         self.scierie = False
         self.moulin = False
-        self.champs =False
-        self.elevage=False
         self.puit= False
         self.forge = False
         self.port = False
         self.aEteModifie = True
-        
+        self.champs =False
+        self.elevage=False
         ####     GENREATION    ####
         self.probaSup_mer = 0
         self.probaSup_roche = 0
@@ -32,7 +31,7 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
         
         ####     POSITION ET IMAGE    ####
         
@@ -138,7 +137,7 @@ class Tuile(pygame.sprite.Sprite):
     
     def tuileHaute(self):
         return self.type==2 or self.type==7
-    
+
     def pasPort(self):
         return not self.port
     

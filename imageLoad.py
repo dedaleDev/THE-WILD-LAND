@@ -227,7 +227,6 @@ class ImageLoad():
 
             return listeImgO
 
-
     def loadImgItem(self):
         listeImgItem = []
         imgTemp = pygame.image.load("data/batiments/icon/icon_forge.png").convert_alpha()
@@ -248,11 +247,11 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_port.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("port", imgTemp))
-
+        
         imgTemp = pygame.image.load("data/batiments/icon/icon_champs.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("champs", imgTemp))
-
+        
         imgTemp = pygame.image.load("data/batiments/icon/icon_elevage.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("elevage", imgTemp))
@@ -333,7 +332,7 @@ class ImageLoad():
         for elem in self.listeImgItem:
             if elem[0]==nom:
                 return elem[1]
-        assert(1==2)
+        assert(False)
         #Pas d'image d'item trouvé
         return False
 

@@ -50,7 +50,6 @@ def selectionDispoItem(game, tuile, joueur):
         if tuile.type==1:
             optionDIspo.append(Item(game, "elevage", 20, "data/batiments/infoBulle/info_elevage.png"))
             optionDIspo.append(Item(game, "champs", 20, "data/batiments/infoBulle/info_champs.png"))
-            pass
         elif tuile.type==2:
             optionDIspo.append(Item(game, "forge", 20, "data/batiments/infoBulle/info_forge.png"))
             optionDIspo.append(Item(game, "mine", 20, "data/batiments/infoBulle/info_mine.png"))
