@@ -59,7 +59,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
     Imselection = pygame.transform.scale(Imselection, (150,150))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
-
+    health = pygame.image.load("data/menu/health.png").convert_alpha()
+    health = pygame.transform.scale(health, (70, 70))
     listeInfoButton = [("data/menu/scierie")]
 
     tick_ressource=0
@@ -67,9 +68,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
     tuile=False
 
-    joueur = Player(game,"joueur_1", 100, 5)
+    joueur = Player(game,"joueur_1", 5)
+
     inventaire=Inventaire(0,0, [])
-    mob = Mob(game, "monstre", 100, 1)
+    mob = Mob(game, "golem_des_forets", 100, 1)
     listeMob=[]
     listeMob.append(mob)
     for i in range(-1, 2):
@@ -99,7 +101,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
         
         modification=False
         cliqueItem = False
-        modification, tuileTemp = KEY_move(game, joueur)
+        modification, tuileTemp = KEY_move(game, joueur, fenetrePygame)
         for event in pygame.event.get():
             if event.type == QUIT:
                 continuer = False
@@ -193,7 +195,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         timeComtpeur = 0
                         joueur.resetRessourcesModified()
 
-
+            joueur.update_health_bar(fenetrePygame)
+            fenetrePygame.blit(health, (100,10))
             pygame.display.flip()
         
         else:
@@ -212,12 +215,12 @@ def affichage():
                 return i
         return 2
     
-def KEY_move(game, joueur):
+def KEY_move(game, joueur,fenetre):
     modification=False
     tuile=False
     keys=pygame.key.get_pressed()
     
-    if keys[K_d] :
+    if keys[K_d] or keys[K_RIGHT]:
         if joueur.deplacementAutorise("droite") and joueur.getWater() -10 >=0 :
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -230,7 +233,7 @@ def KEY_move(game, joueur):
 
                 
                 
-    if keys[K_q]:
+    if keys[K_q]or keys[K_LEFT]:
             if joueur.deplacementAutorise("gauche") and joueur.getWater() -10 >=0:
                 #joueur.majBateau()
                 joueur.goLeft()
@@ -242,7 +245,7 @@ def KEY_move(game, joueur):
                             modification=True
     
 
-    if keys[K_z]:
+    if keys[K_z] or keys[K_UP]:
             if joueur.deplacementAutorise("haut") and joueur.getWater() -10 >=0:
                 #joueur.majBateau()
                 joueur.goUp()
@@ -253,7 +256,7 @@ def KEY_move(game, joueur):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
                             modification=True
 
-    if keys[K_s]:
+    if keys[K_s]or keys[K_DOWN]:
             if joueur.deplacementAutorise("bas"):
                 joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -271,6 +274,8 @@ def KEY_move(game, joueur):
     if keys[K_v]:
         if game.map[joueur.posY][joueur.posX].port:
             joueur.bateau = False
+    if keys[K_k]:#kill
+        joueur.takeDamage(5, fenetre)
         
     return modification, tuile
 
