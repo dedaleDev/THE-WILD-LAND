@@ -39,7 +39,7 @@ class Player(pygame.sprite.Sprite):
           self.nbScierie = 0
           self.nbMoulin = 0
           self.nbPuit=0
-          self.nbForge = 0
+          self.nbMine = 0
           #deplacement
         
           self.nombreDecalageRestantX = 0
@@ -197,9 +197,9 @@ class Player(pygame.sprite.Sprite):
         elif nom == "puit":
             self.game.map[tuile.posY][tuile.posX].puit = True
             self.nbPuit+=1
-        elif nom == "forge":
-            self.game.map[tuile.posY][tuile.posX].forge = True
-            self.nbForge+=1
+        elif nom == "mine":
+            self.game.map[tuile.posY][tuile.posX].mine = True
+            self.nbMine+=1
         self.changerImageBatiment(tuile, nom)
 
      
@@ -216,6 +216,6 @@ class Player(pygame.sprite.Sprite):
      def ajouterRessources(self):
 
          self.setWood(1*self.nbScierie)
-         self.setStone(1*self.nbForge)
+         self.setStone(1*self.nbMine)
          self.setWater(1*self.nbPuit)
          #self.setFood(1*self.nbMoulin)
