@@ -16,6 +16,7 @@ class Tuile(pygame.sprite.Sprite):
         self.moulin = False
         self.puit= False
         self.forge = False
+        self.port = False
         self.aEteModifie = True
         
         ####     GENREATION    ####
@@ -135,6 +136,9 @@ class Tuile(pygame.sprite.Sprite):
     
     def tuileHaute(self):
         return self.type==2 or self.type==7
+    
+    def pasPort(self):
+        return not self.port
     
     def estMer(self):
         return self.type==3

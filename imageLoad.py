@@ -232,6 +232,9 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_forge.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("forge", imgTemp))
+        imgTemp = pygame.image.load("data/batiments/icon/icon_mine.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("mine", imgTemp))
         
         imgTemp = pygame.image.load("data/batiments/icon/icon_moulin.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
@@ -313,6 +316,7 @@ class ImageLoad():
             return self.listeImg[type][rand]
         return self.listeImg[type]
 
+             
 
 
     def returnImItem(self, nom):

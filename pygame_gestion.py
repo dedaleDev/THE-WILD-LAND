@@ -111,19 +111,19 @@ def pygameInit():  # foction servant à l'initialisation pygame
                         joueur.construireBatiment(tuile, item.nom)
                         modification=True
                         cliqueItem=True
-     
+                            
 
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
-  
+                    
                 if not cliqueItem:
-                    tuile = majSelection(game, pygame.mouse.get_pos())
+                    tuile = majSelection(game, pygame.mouse.get_pos(), joueur)
                 else :
                     if tuile:
                         tuile.estSelect=False
                     tuile=False
-
+                
                 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
@@ -166,10 +166,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if game.map[mob.posY][mob.posX].isExplored:
                 fenetrePygame.blit(mob.skin, (game.map[mob.posY][mob.posX].rect.x, game.map[mob.posY][mob.posX].rect.y-10))
             if joueur.bateau:
-                fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x, joueur.rect.y+70))
+                fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x-15, joueur.rect.y+30))
                 
             if tuile :
-                liste = selectionDispoItem(game, tuile)
+                liste = selectionDispoItem(game, tuile, joueur)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
                 inventaire.blitInventaire(fenetrePygame)
                 for item in inventaire.listeItem:
@@ -218,7 +218,7 @@ def KEY_move(game, joueur):
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
             joueur.setPos(tuile)
-            joueur.majBateau()
+            #joueur.majBateau()
             for i in range(-1,2):
                 for j in range(-1, 2):
                     if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -228,7 +228,7 @@ def KEY_move(game, joueur):
                 
     if keys[K_LEFT]:
             if joueur.deplacementAutorise("gauche") and joueur.getWater() -10 >=0:
-                joueur.majBateau()
+                #joueur.majBateau()
                 joueur.goLeft()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -240,7 +240,7 @@ def KEY_move(game, joueur):
 
     if keys[K_UP]:
             if joueur.deplacementAutorise("haut") and joueur.getWater() -10 >=0:
-                joueur.majBateau()
+                #joueur.majBateau()
                 joueur.goUp()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -254,7 +254,7 @@ def KEY_move(game, joueur):
                 joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
-                joueur.majBateau()
+                #joueur.majBateau()
                 for i in range(-1,2):
                     for j in range(-1, 2):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -262,9 +262,11 @@ def KEY_move(game, joueur):
                 
         
     if keys[K_b]:
-        joueur.bateau=True
+        if game.map[joueur.posY][joueur.posX].port:
+            joueur.bateau=True
     if keys[K_v]:
-        joueur.bateau = False
+        if game.map[joueur.posY][joueur.posX].port:
+            joueur.bateau = False
         
     return modification, tuile
 

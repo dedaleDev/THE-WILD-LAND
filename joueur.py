@@ -39,7 +39,8 @@ class Player(pygame.sprite.Sprite):
           self.nbScierie = 0
           self.nbMoulin = 0
           self.nbPuit=0
-          self.nbForge = 0
+          self.nbMine = 0
+          self.nbPort = 0
           #deplacement
         
           self.nombreDecalageRestantX = 0
@@ -119,13 +120,41 @@ class Player(pygame.sprite.Sprite):
     
      def deplacementAutorise(self, direction):
          if direction=="droite":
-            return not (majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1])).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
+            tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1]))
+            
          if direction=="gauche":
-            return not (majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1])).estMer() and not self.bateau))
+            tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1]))
+            
          if direction=="haut":
-             return not (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity)).estMer() and not self.bateau))
+            tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity))
+            
          if direction=="bas":
-             return not (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).tuileHaute() or (majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity)).estMer() and not self.bateau)) #on ne doit pas avoir mer ou montagne
+             tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity))
+         if tuile:
+            if self.tuileInterdit(tuile):
+                
+                if direction=="droite":
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity+10, self.getFeet()[1]))
+            
+                if direction=="gauche":
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity-10, self.getFeet()[1]))
+                    
+                if direction=="haut":
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity-10))
+                    
+                if direction=="bas":
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity+10))
+            return not self.tuileInterdit(tuile)
+        
+         else:
+             print("erreur dans fonction joueur.deplacement autorisé")
+             return False
+         
+         
+     def tuileInterdit(self, tuile):
+         return tuile.tuileHaute() or (tuile.estMer() and tuile.pasPort() and not self.bateau) or (not tuile.estMer() and tuile.pasPort() and self.bateau)
+         
+
 
      def setPos(self, tuile):
         self.posX, self.posY = tuile.posX, tuile.posY
@@ -197,15 +226,42 @@ class Player(pygame.sprite.Sprite):
         elif nom == "puit":
             self.game.map[tuile.posY][tuile.posX].puit = True
             self.nbPuit+=1
-        elif nom == "forge":
-            self.game.map[tuile.posY][tuile.posX].forge = True
-            self.nbForge+=1
+        elif nom == "mine":
+            self.game.map[tuile.posY][tuile.posX].mine = True
+            self.nbMine+=1
+        elif nom == "port":
+            self.game.map[tuile.posY][tuile.posX].port = True
+            self.nbPort+=1
         self.changerImageBatiment(tuile, nom)
+    
+     
+     def chargerImPort(self, tuile):
+         ecartX = tuile.posX-self.posX
+         ecartY = tuile.posY-self.posY
+         print(ecartX, ecartY)
+         if ecartX==0 and ecartY == 1:
+             imgTemp = Image.open("data/batiments/port/port2.png").convert('RGBA')
+         if ecartX==-1 and ecartY == 0:
+             imgTemp = Image.open("data/batiments/port/port3.png").convert('RGBA')
+         if ecartX==0 and ecartY == -1:
+             imgTemp = Image.open("data/batiments/port/port1.png").convert('RGBA')
+         if ecartX == 1 and ecartY == 0:
+             imgTemp = Image.open("data/batiments/port/port0.png").convert('RGBA')
+         if ecartX == 1 and ecartY == -1:
+             imgTemp = Image.open("data/batiments/port/port"+str(random.randint(0,1))+".png").convert('RGBA')
+         if ecartX == -1 and ecartY == 1:
+             imgTemp = Image.open("data/batiments/port/port"+str(random.randint(2,3))+".png").convert('RGBA')
+         if ecartX == 1 and ecartY == 1:
+             imgTemp = Image.open("data/batiments/port/port"+str(random.choice([0,2]))+".png").convert('RGBA')
+         if ecartX == -1 and ecartY == -1:
+             imgTemp = Image.open("data/batiments/port/port"+str(random.choice([1,3]))+".png").convert('RGBA')
 
+         return imgTemp
      
      def changerImageBatiment(self, tuile, nom):
           if nom=="port":
-             imgTemp = Image.open("data/batiments/port/port"+str(random.randint(0,3))+".png").convert('RGBA')
+              imgTemp = self.chargerImPort(tuile)
+             
           else:
               imgTemp = Image.open("data/batiments/"+nom+".png").convert('RGBA')
           tuile.imageO = imgTemp.resize((150, 150))
@@ -216,6 +272,6 @@ class Player(pygame.sprite.Sprite):
      def ajouterRessources(self):
 
          self.setWood(1*self.nbScierie)
-         self.setStone(1*self.nbForge)
+         self.setStone(1*self.nbMine)
          self.setWater(1*self.nbPuit)
          #self.setFood(1*self.nbMoulin)

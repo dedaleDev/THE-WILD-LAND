@@ -37,7 +37,8 @@ class Game(pygame.sprite.Sprite):
     def getAffichageTuile(self):
         return self.affichageTuile
 
-    
+    def avoirTuileJoueur(self, joueur):
+        return self.map[joueur.posY][joueur.posX]
     def genererImg(self):
         global background_pil, premierPAss
         modification=False
