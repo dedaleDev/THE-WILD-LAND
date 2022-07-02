@@ -101,7 +101,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
         
         modification=False
         cliqueItem = False
-        modification, tuileTemp = KEY_move(game, joueur, fenetrePygame)
+        modification, tuileTemp = KEY_move(game, joueur,mob, fenetrePygame)
         for event in pygame.event.get():
             if event.type == QUIT:
                 continuer = False
@@ -173,7 +173,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if joueur.bateau:
                 fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x-15, joueur.rect.y+30))
                 
-                
+            mob.update_health_bar(fenetrePygame)   
             if tuile :
                 liste = selectionDispoItem(game, tuile, joueur)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
@@ -194,7 +194,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
                     else :
                         timeComtpeur = 0
                         joueur.resetRessourcesModified()
-
             joueur.update_health_bar(fenetrePygame)
             fenetrePygame.blit(health, (100,10))
             pygame.display.flip()
@@ -207,7 +206,17 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame=""
             return
         clock.tick(60)
-            
+           
+
+
+
+
+
+
+
+
+
+
             
 def affichage():
         for i in range(len(tailleEcran)):
@@ -215,7 +224,7 @@ def affichage():
                 return i
         return 2
     
-def KEY_move(game, joueur,fenetre):
+def KEY_move(game, joueur,mob,fenetre):
     modification=False
     tuile=False
     keys=pygame.key.get_pressed()
@@ -276,7 +285,7 @@ def KEY_move(game, joueur,fenetre):
             joueur.bateau = False
     if keys[K_k]:#kill
         joueur.takeDamage(5, fenetre)
-        
+        mob.takeDamage(5, fenetre)
     return modification, tuile
 
 
@@ -356,3 +365,4 @@ def f(x):  #fonction vitesse deplacement cam
     if y>20:
         return 15
     return y
+
