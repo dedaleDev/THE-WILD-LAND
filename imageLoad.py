@@ -328,8 +328,9 @@ class ImageLoad():
         return self.listeImg[type]
 
              
-
-
+    def getImCollision(self):
+        im = pygame.image.load("data/personnages/degat.png")
+        return pygame.transform.scale(im ,(40,40))
     def returnImItem(self, nom):
 
         for elem in self.listeImgItem:

@@ -14,7 +14,7 @@ class Game(pygame.sprite.Sprite):
         self.decalageMontagneX = self.getAffichageTuile()[self.affichagePersonalise][0]/100*self.infoObject.current_w
         self.decalageMontagneY = self.affichageTuile[self.affichagePersonalise][1]/100*self.infoObject.current_h
         self.images = ImageLoad()
-
+        self.imCollision = self.images.getImCollision()
         self.map = 0
         self.mapMontagneMer = 0
         self.imageFog = self.openFog()
@@ -33,11 +33,15 @@ class Game(pygame.sprite.Sprite):
         self.mapMontagneMer = generation.generation_matriceMontagneMer(self.map)
 
     def checkCollision(self, joueur, listeMob):
+        listeColide=[]
         now = pygame.time.get_ticks()
         for mob in listeMob :
-            if mob.rect.colliderect(joueur.rect) and now-joueur.lastDamage>joueur.cooldownDamage:
+            colide = mob.rect.colliderect(joueur.rect)
+            if colide and now-joueur.lastDamage>joueur.cooldownDamage:
                 joueur.takeDamage(mob.attack)
                 joueur.lastDamage=now
+                listeColide.append(colide)
+        return listeColide
                 
 
     def affichage(self):

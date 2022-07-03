@@ -121,7 +121,7 @@ class Player(pygame.sprite.Sprite):
             self.compteurRessources(modif=wood, type=4)
 
      def loadSkin(self, nomSkin):
-        if nomSkin=="joueur_1" or nomSkin=="joueur1-2":
+        if nomSkin=="joueur_1" or nomSkin=="joueur_1-2":
             scale = (472*0.13, 978*0.13)
         elif nomSkin=="bateau":
             scale= (512*0.2, 512*0.2)

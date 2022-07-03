@@ -72,7 +72,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
     joueur = Player(game,"joueur_1", 5)
 
     inventaire=Inventaire(0,0, [])
-    mob = Mob(game, "golem_des_forets", 100, 3)
+    mob = Mob(game, "golem_des_forets", 100, 2)
     
     
     
@@ -107,7 +107,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
         cliqueItem = False
         modification, tuileTemp = KEY_move(game, joueur,mob, fenetrePygame)
         
-        game.checkCollision(joueur, listeMob)
+        listeColide = game.checkCollision(joueur, listeMob)
         
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -147,7 +147,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             
             
             now = pygame.time.get_ticks()
-            if now-last>=cooldown and fini:
+            if now-last>=cooldown and fini and not game.map[joueur.posY][joueur.posX].estMer():
                 the_path = findPos(game.mapMontagneMer, joueur.posX, joueur.posY, mob.posX, mob.posY)
                 last = now
                 cooldown = 1000
@@ -197,7 +197,9 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 for item in inventaire.listeItem:
                         if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##
                             inventaire.blitInfoBulle(fenetrePygame, item)
-
+            for collision in listeColide:
+                fenetrePygame.blit(game.imCollision,(random.randint(joueur.rect.x-20, joueur.rect.x+20), random.randint(joueur.rect.y, joueur.rect.y+120)))
+                
             if joueur.estMort:
                 fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
             
