@@ -255,6 +255,9 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_elevage.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("elevage", imgTemp))
+        imgTemp = pygame.image.load("data/batiments/icon/icon_tour.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("tour", imgTemp))
         return listeImgItem
 
 
