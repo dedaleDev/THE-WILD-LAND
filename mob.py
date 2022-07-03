@@ -17,7 +17,6 @@ class Mob(pygame.sprite.Sprite):
           #self.skinBateau = self.loadSkin("bateau",(100, 150))
 
           self.health = vie
-          self.max_health =vie
           self.velocity = vitesse
           self.armor = 0
           self.posX, self.posY = self.initPos()
@@ -51,11 +50,6 @@ class Mob(pygame.sprite.Sprite):
         skin = pygame.image.load("data/personnages/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
         return skin
-
-     def takeDamage(self, entier, surface):
-        if self.health >=0 :
-            self.health-=entier
-            self.update_health_bar(surface)
 
      def moveMob(self, joueur):
         diffX = self.rect.x - joueur.rect.x
@@ -182,26 +176,3 @@ class Mob(pygame.sprite.Sprite):
          
      def goDown(self):
          self.rect.y+=self.velocity
-
-     def update_health_bar(self, surface):
-        #def la couleur
-        infoObject = pygame.display.Info()  #récupère la taille de l'écran
-
-        if self.health >=80 : 
-            bar_color = (111, 210, 46)
-        elif self.health >=50 : 
-            bar_color = (255, 165, 0)
-        elif self.health >=25 : 
-            bar_color = (255, 69, 0)
-        elif self.health >=0 : 
-            bar_color = (255, 0, 0)
-        else : 
-            print("Le "+ self.name+" est MORT !!!")
-            bar_color = (255, 0, 0)
-        back_bar_color = (60,63,60)
-        bar_position = [self.rect.x, self.rect.y-10, self.health, 5]
-        back_bar_position = [self.rect.x, self.rect.y-10, self.max_health, 5]
-        #dessiner la barre de vie
-
-        pygame.draw.rect(surface, back_bar_color, back_bar_position)
-        pygame.draw.rect(surface, bar_color, bar_position)

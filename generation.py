@@ -1,6 +1,7 @@
 import copy
-from operator import xor
+
 import random
+import time
 import pygame
 
 from tuile import Tuile
@@ -179,13 +180,15 @@ def generation_matrice(game):
             Tire = tirer_biome(liste_type[biome], matriceMap, x, y, game)
             liste_type.pop(biome)
         #GIGALISTE.append(copy.deepcopy(matriceMap))
-
-    #printMat(matriceMap)
+    printMat(matriceMap)
     return (matriceMap)
 
 def printMat(matriceMap):
     for i in range(taille_matriceY):
-        print("\n")
+        print("]\n")
         for j in range(taille_matriceX):
-            print("(",matriceMap[i][j].rect.x, matriceMap[i][j].rect.y,")",end=' ')
-    print("fin\n\n\n\n\n")
+            if matriceMap[i][j].tuileHaute() or matriceMap[i][j].estMer():
+                print(" 1,",end='')
+            else:
+                print(" 0,", end='')
+    print("]fin\n\n\n\n\n")
