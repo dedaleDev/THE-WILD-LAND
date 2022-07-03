@@ -15,6 +15,4 @@ def main():
             pygame_gestion.pygameInit()
                 
     sys.exit()"""
-
-
 main()

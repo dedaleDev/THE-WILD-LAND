@@ -6,7 +6,7 @@ from PIL import Image
 background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
 premierPAss=True
 class Game(pygame.sprite.Sprite):
-    def __init__(self, infoObject):
+    def __init__(self, infoObject, fenetre):
         self.infoObject=infoObject
         self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
         self.affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 4),(0.19, 2.77), (0.19, 2.77), (0, 0)]
@@ -16,17 +16,29 @@ class Game(pygame.sprite.Sprite):
         self.images = ImageLoad()
 
         self.map = 0
+        self.mapMontagneMer = 0
         self.imageFog = self.openFog()
         self.mapImg = 0
         self.mapImgO = 0
+        
+        self.fenetre = fenetre
+        
+        
 
     def verifierCo(self, x, y):
         return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
         
     def genererMatrice(self):
         self.map = generation.generation_matrice(self)
+        self.mapMontagneMer = generation.generation_matriceMontagneMer(self.map)
 
-
+    def checkCollision(self, joueur, listeMob):
+        now = pygame.time.get_ticks()
+        for mob in listeMob :
+            if mob.rect.colliderect(joueur.rect) and now-joueur.lastDamage>joueur.cooldownDamage:
+                joueur.takeDamage(mob.attack)
+                joueur.lastDamage=now
+                
 
     def affichage(self):
         for i in range(len(self.tailleEcran)):

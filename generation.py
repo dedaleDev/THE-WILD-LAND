@@ -1,7 +1,6 @@
 import copy
-
+from operator import xor
 import random
-import time
 import pygame
 
 from tuile import Tuile
@@ -18,12 +17,11 @@ proba_foret = random.randint(10,15)
 proba_neige= 0
 """
 proba_mer=0
-proba_desert=0
 proba_roche=0
+
+proba_desert=0
 proba_foret=0
 """
-
-
 
 
 
@@ -180,15 +178,27 @@ def generation_matrice(game):
             Tire = tirer_biome(liste_type[biome], matriceMap, x, y, game)
             liste_type.pop(biome)
         #GIGALISTE.append(copy.deepcopy(matriceMap))
-    printMat(matriceMap)
+
+    #printMat(matriceMap)
     return (matriceMap)
+
+def generation_matriceMontagneMer(map):
+    mapBool=[]
+    for i in range(taille_matriceY):
+        mapBool.append([0]*taille_matriceX)
+    
+    for y in range(taille_matriceY):
+        for x in range(taille_matriceX):
+            tuile = map[y][x]
+            if tuile.tuileHaute() or tuile.estMer():
+                mapBool[y][x]=1
+            else:
+                mapBool[y][x]=0
+    return mapBool
 
 def printMat(matriceMap):
     for i in range(taille_matriceY):
-        print("]\n")
+        print("\n")
         for j in range(taille_matriceX):
-            if matriceMap[i][j].tuileHaute() or matriceMap[i][j].estMer():
-                print(" 1,",end='')
-            else:
-                print(" 0,", end='')
-    print("]fin\n\n\n\n\n")
+            print("(",matriceMap[i][j].rect.x, matriceMap[i][j].rect.y,")",end=' ')
+    print("fin\n\n\n\n\n")
