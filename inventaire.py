@@ -8,13 +8,10 @@ class Inventaire(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = rectX
         self.rect.y = rectY
-        for i in range(len(listeItem)):
-            if i==0:
-                listeItem[i].rect.x = self.rect.x+12
-                listeItem[i].rect.y = self.rect.y+12
-            if i==1:
-                listeItem[i].rect.x = self.rect.x+14+60
-                listeItem[i].rect.y = self.rect.y+12
+        for i in range(len(listeItem)): 
+            listeItem[i].rect.x = self.rect.x+14+60*i
+            listeItem[i].rect.y = self.rect.y+12
+
         
     def blitInventaire(self, fenetre):
         fenetre.blit(self.image, (self.rect.x, self.rect.y))
