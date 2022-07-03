@@ -6,6 +6,7 @@ from inventaire import Inventaire
 import main_menu
 from generation import *
 from mob import Mob
+from projectile import Projectile
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
 from joueur import Player
 from game import Game
@@ -101,6 +102,9 @@ def pygameInit():  # foction servant à l'initialisation pygame
         mob.rect.y-=4
         moveY-=4
     the_path = [[mob.posY, mob.posX]]
+    
+    
+    fleche= Projectile(game, "fleche", 10, 0,0, joueur)
     while continuer == True:
         
         modification=False
@@ -155,6 +159,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if fini and len(the_path)>1:
                 the_path = the_path[1:]
 
+            fleche.moveProjectile()
+
             if move_ticker>0:
                 move_ticker-=1
 
@@ -197,9 +203,12 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 for item in inventaire.listeItem:
                         if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##
                             inventaire.blitInfoBulle(fenetrePygame, item)
+            if not fleche.estDetruit:              
+                fenetrePygame.blit(fleche.img, (fleche.rect.x, fleche.rect.y))                
+
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(joueur.rect.x-20, joueur.rect.x+20), random.randint(joueur.rect.y, joueur.rect.y+120)))
-                
+            
             if joueur.estMort:
                 fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
             

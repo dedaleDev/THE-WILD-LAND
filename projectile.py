@@ -1,66 +1,58 @@
+import math
 import pygame
 import random
+
+from selection import majSelectionJoueur
 class Projectile(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vitesse, mob, tuileBatimentCompatible):
+     def __init__(self, game, nom, vitesse, posDepartX, posDepartY, cible):
           super().__init__()
           #affichage et information
           self.name = nom
-          self.img = self.loadImg(nom)
+          self.img = game.images.loadImgFleche()
           self.game = game
           self.velocity = vitesse
-          
+          self.cibleX = cible.rect.x
+          self.cibleY = cible.rect.y
 
           self.rect = self.img.get_rect()
-          self.rect.x = self.game.map[tuileBatimentCompatible[0]][tuileBatimentCompatible[1]].rect.x
-          self.rect.y = self.game.map[tuileBatimentCompatible[0]][tuileBatimentCompatible[1]].rect.y
+          self.rect.x = posDepartX
+          self.rect.y = posDepartY
           
-     def loadImg(self, nom):
-        if nom== "fleche":
-            scale = (704*0.13, 613*0.13)
-        tempIgmg = pygame.image.load("data/projectile"+nom+".png")
-        tempIgmg = pygame.transform.scale(tempIgmg, scale)
-        return tempIgmg
+          self.estDetruit= False
+        
+     def moveProjectile(self):
+        dx, dy = self.cibleX - self.rect.x, self.cibleY - self.rect.y
+        dist = math.hypot(dx, dy)
+        if dist!=0:
+            dx, dy = dx / dist, dy / dist  # normalisation du vecteur
+            # bouger en direction du vecteur
+            self.rect.x += dx * self.velocity
+            self.rect.y += dy * self.velocity
+        else :
+            self.estDetruit=True
+            #detruire le projo
 
-
-     def moveMob(self, joueur):
-        diffX = self.rect.x - joueur.rect.x
-        diffY = self.rect.y - joueur.rect.y
-        if diffY >= 0 and diffX>=0: #le joueur est en haut a gauche
-            reussi = self.mobHaut()
-            reussi = self.mobGauche() or reussi
-            if not reussi:
-                if random.randint(0,1):
-                    self.mobBas()
-                else:
-                    self.mobDroite()
+     """def moveProjectile(self):
+        diffX = self.rect.x - self.cible.rect.x
+        diffY = self.rect.y - self.cible.rect.y
+        if diffY >= 0 and diffX>=0: #la cible est en haut a gauche
+            reussi = self.projHaut()
+            reussi = self.projGauche() or reussi
     
-        elif diffY<=0 and diffX>=0: #le joueur est en bas a gauche
-            reussi = self.mobBas()
-            reussi  = self.mobGauche() or reussi
-            if not reussi :
-                if random.randint(0,1):
-                    self.mobDroite()
-                else :
-                    self.mobHaut()
+        elif diffY<=0 and diffX>=0: #la cible est en bas a gauche
+            reussi = self.projBas()
+            reussi  = self.projGauche() or reussi
 
-        elif diffY<=0 and diffX<=0: #le joueur est en bas a droite
-            reussi = self.mobBas()
-            reussi = self.mobDroite() or reussi
-            if not reussi:
-                if random.randint(0,1):
-                    self.mobGauche()
-                else :
-                    self.mobHaut()
+        elif diffY<=0 and diffX<=0: #la cible est en bas a droite
+            reussi = self.projBas()
+            reussi = self.projDroite() or reussi
+
             
-        elif diffY>=0 and diffX<=0: #le joueur est en haut a droite
-            reussi = self.mobHaut()
-            reussi = self.mobDroite() or reussi
-            if not reussi:
-                if random.randint(0,1):
-                    self.mobGauche()
-                else :
-                    self.mobBas()
+        elif diffY>=0 and diffX<=0: #la cible est en haut a droite
+            reussi = self.projHaut()
+            reussi = self.projDroite() or reussi"""
+            
             
         
           
@@ -113,3 +105,4 @@ class Projectile(pygame.sprite.Sprite):
          
      def goDown(self):
          self.rect.y+=self.velocity
+         

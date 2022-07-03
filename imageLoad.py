@@ -327,6 +327,13 @@ class ImageLoad():
             return self.listeImg[type][rand]
         return self.listeImg[type]
 
+    def loadImgFleche(self):
+        nom= "fleche"
+        scale = (572*0.13, 70*0.13)
+        tempIgmg = pygame.image.load("data/projectiles/"+nom+".png")
+        tempIgmg = pygame.transform.scale(tempIgmg, scale)
+        return tempIgmg
+    
              
     def getImCollision(self):
         im = pygame.image.load("data/personnages/degat.png")
