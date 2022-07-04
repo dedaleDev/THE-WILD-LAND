@@ -111,10 +111,15 @@ def pygameInit():  # foction servant à l'initialisation pygame
         
         listeColide = game.checkCollision(joueur, game.groupMob)
 
-        for mob in game.groupMob:
+        for mob in game.groupMob:#Gestion des pieux
             if majSelectionJoueur(game, pos=(mob.getFeet())).pieux ==True:
+                print("pieux activé par : ", mob.name)
                 mob.takeDamage(10)
-                mob.setVelocity(-10)
+                if mob.slow ==False:
+                    mob.slow ==True
+                    mob.setVelocity(-10)
+            else  : #problème car du coup executer non stop 
+                mob.slow ==False
 
         for event in pygame.event.get():
             if event.type == QUIT:
