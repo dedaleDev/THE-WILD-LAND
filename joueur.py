@@ -255,6 +255,8 @@ class Player(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].tour = True
             tour = Tour(self.game, tuile, 1000)
             self.game.groupDefense.add(tour)
+        elif nom == "tour":
+            self.game.map[tuile.posY][tuile.posX].pieux = True
 
         
         self.changerImageBatiment(tuile, nom)
