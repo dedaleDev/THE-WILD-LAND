@@ -1,6 +1,3 @@
-from tkinter import Scale
-from PIL import Image
-from numpy import true_divide
 import pygame
 import random
 from selection import majSelectionJoueur
@@ -28,6 +25,9 @@ class Mob(pygame.sprite.Sprite):
           self.rect.x = self.game.map[self.posY][self.posX].rect.x+28
           self.rect.y = self.game.map[self.posY][self.posX].rect.y+97-75
           
+
+     def setVelocity(self, entier):
+        self.velocity += entier
           
 
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
