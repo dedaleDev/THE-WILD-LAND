@@ -23,6 +23,9 @@ class Game(pygame.sprite.Sprite):
         
         self.fenetre = fenetre
         
+        self.groupMob = pygame.sprite.Group()
+        self.groupProjectile = pygame.sprite.Group()
+        self.groupDefense = pygame.sprite.Group()
         
 
     def verifierCo(self, x, y):

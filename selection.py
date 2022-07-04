@@ -1,4 +1,3 @@
-import pygame
 import generation
 from item import Item
 def majSelection(game, pos, joueur=False):

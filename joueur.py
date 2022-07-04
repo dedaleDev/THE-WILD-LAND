@@ -3,6 +3,7 @@ import pygame
 import random
 from selection import majSelectionJoueur
 import generation
+from tour import Tour
 class Player(pygame.sprite.Sprite):
 
      def __init__(self, game, nom, vitesse):
@@ -44,6 +45,7 @@ class Player(pygame.sprite.Sprite):
           self.nbPort = 0
           self.nbElevage=0
           self.nbChamps=0
+          self.listeTour=[]
           
           self.cooldownDamage = 500
           self.lastDamage = 0
@@ -121,7 +123,7 @@ class Player(pygame.sprite.Sprite):
             self.compteurRessources(modif=wood, type=4)
 
      def loadSkin(self, nomSkin):
-        if nomSkin=="joueur_1" or nomSkin=="joueur_1-2":
+        if nomSkin=="joueur_1" or nomSkin=="joueur1-2":
             scale = (472*0.13, 978*0.13)
         elif nomSkin=="bateau":
             scale= (512*0.2, 512*0.2)
@@ -175,7 +177,7 @@ class Player(pygame.sprite.Sprite):
         self.posX, self.posY = tuile.posX, tuile.posY
 
      def goLeft(self):
-            self.skin = self.loadSkin("joueur_1-2")
+            self.skin = self.loadSkin("joueur1-2")
             self.rect.x-=self.velocity
      
      
@@ -249,6 +251,11 @@ class Player(pygame.sprite.Sprite):
         elif nom == "port":
             self.game.map[tuile.posY][tuile.posX].port = True
             self.nbPort+=1
+        elif nom == "tour":
+            self.game.map[tuile.posY][tuile.posX].tour = True
+            tour = Tour(self.game, tuile, 1000)
+            self.game.groupDefense.add(tour)
+
         
         self.changerImageBatiment(tuile, nom)
     
@@ -279,7 +286,6 @@ class Player(pygame.sprite.Sprite):
      def changerImageBatiment(self, tuile, nom):
           if nom=="port":
               imgTemp = self.chargerImPort(tuile)
-             
           else:
               imgTemp = Image.open("data/batiments/"+nom+".png").convert('RGBA')
           tuile.imageO = imgTemp.resize((150, 150))

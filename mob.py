@@ -27,6 +27,8 @@ class Mob(pygame.sprite.Sprite):
           self.rect = self.skin.get_rect()
           self.rect.x = self.game.map[self.posY][self.posX].rect.x+28
           self.rect.y = self.game.map[self.posY][self.posX].rect.y+97-75
+          
+          
 
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
         if posY == self.posY and posX-self.posX>0:
@@ -90,10 +92,12 @@ class Mob(pygame.sprite.Sprite):
         skin = pygame.transform.scale(skin, scale)
         return skin
 
-     def takeDamage(self, entier, surface):
-        if self.health >=0 :
+     def takeDamage(self, entier):
+        if self.health >0 :
             self.health-=entier
-            self.update_health_bar(surface)
+            self.update_health_bar(self.game.fenetre)
+        if self.health<=0:
+            self.kill()
 
      def moveMob(self, joueur):
         diffX = self.rect.x - joueur.rect.x

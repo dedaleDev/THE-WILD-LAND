@@ -75,10 +75,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
     inventaire=Inventaire(0,0, [])
     mob = Mob(game, "golem_des_forets", 100, 2)
     
-    
-    
-    listeMob=[]
-    listeMob.append(mob)
+    game.groupMob.add(mob)
     for i in range(-1, 2):
         for j in range(-1, 2):
             game.deleteFog(joueur.posX+i, joueur.posY+j)
@@ -104,14 +101,15 @@ def pygameInit():  # foction servant à l'initialisation pygame
     the_path = [[mob.posY, mob.posX]]
     
     
-    fleche= Projectile(game, "fleche", 10, 0,0, joueur)
+    #fleche= Projectile(game, "fleche", 10, 0,0, joueur)
+    #game.groupProjectile.add(fleche)
     while continuer == True:
         
         modification=False
         cliqueItem = False
         modification, tuileTemp = KEY_move(game, joueur,mob, fenetrePygame)
         
-        listeColide = game.checkCollision(joueur, listeMob)
+        listeColide = game.checkCollision(joueur, game.groupMob)
         
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -144,7 +142,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
-            deplacement_cam(mouse, game, joueur, listeMob)
+            deplacement_cam(mouse, game, joueur, game.groupMob)
             
            
             #### Deplacement des mobs
@@ -159,7 +157,10 @@ def pygameInit():  # foction servant à l'initialisation pygame
             if fini and len(the_path)>1:
                 the_path = the_path[1:]
 
-            fleche.moveProjectile()
+            for tour in game.groupDefense:
+                tour.attack()
+            for projo in game.groupProjectile:
+                projo.moveProjectile()
 
             if move_ticker>0:
                 move_ticker-=1
@@ -203,8 +204,8 @@ def pygameInit():  # foction servant à l'initialisation pygame
                 for item in inventaire.listeItem:
                         if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##
                             inventaire.blitInfoBulle(fenetrePygame, item)
-            if not fleche.estDetruit:              
-                fenetrePygame.blit(fleche.img, (fleche.rect.x, fleche.rect.y))                
+            for projectile in game.groupProjectile:              
+                fenetrePygame.blit(projectile.img, (projectile.rect.x, projectile.rect.y))                
 
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(joueur.rect.x-20, joueur.rect.x+20), random.randint(joueur.rect.y, joueur.rect.y+120)))
@@ -345,6 +346,10 @@ def deplacementCamBas(mouse, game, joueur, listeMob):
         moveY+=y
         for mob in listeMob:
             mob.rect.y+=y
+        for projo in game.groupProjectile:
+            projo.rect.y+=y
+        for defense in game.groupDefense:
+            defense.rect.y+=y
 
 
         
@@ -360,6 +365,10 @@ def deplacementCamHaut(mouse, game, joueur, listeMob):
         moveY+=y
         for mob in listeMob:
             mob.rect.y+=y
+        for projo in game.groupProjectile:
+            projo.rect.y+=y
+        for defense in game.groupDefense:
+            defense.rect.y+=y
         
 def deplacementCamGauche(mouse, game, joueur, listeMob):
     global moveY, moveX
@@ -373,6 +382,10 @@ def deplacementCamGauche(mouse, game, joueur, listeMob):
         for mob in listeMob:
             mob.rect.x+=y
         moveX+=y
+        for projo in game.groupProjectile:
+            projo.rect.x+=y
+        for defense in game.groupDefense:
+            defense.rect.x+=y
         
 def deplacementCamDroite(mouse, game, joueur, listeMob):
     global moveY, moveX
@@ -387,6 +400,11 @@ def deplacementCamDroite(mouse, game, joueur, listeMob):
         moveX+=y
         for mob in listeMob:
             mob.rect.x+=y
+        for projo in game.groupProjectile:
+            projo.rect.x+=y
+        for defense in game.groupDefense:
+            defense.rect.x+=y
+
 
 def f(x):  #fonction vitesse deplacement cam
     y  = round(x*0.04-10)
