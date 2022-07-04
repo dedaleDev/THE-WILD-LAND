@@ -23,6 +23,7 @@ class Game(pygame.sprite.Sprite):
         
         self.fenetre = fenetre
         
+        self.groupMob =[]
         
 
     def verifierCo(self, x, y):
