@@ -32,11 +32,10 @@ class Tour(pygame.sprite.Sprite):
             xMob = mob.rect.x
             yMob = mob.rect.y
             distance = sqrt((self.rect.x - mob.skin.get_width()/2 - xMob)**2 + (self.rect.y -mob.skin.get_height()/2 - yMob)**2)
-            print(distance)
+
             if distance < self.range:
                    mob_proche.append((mob, distance))
-                   
-                   
+         
                    
          mob_proche.sort(key=lambda tup: tup[1]) #pour trier la liste selon la distance
          
@@ -44,7 +43,6 @@ class Tour(pygame.sprite.Sprite):
          
          if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]
-            mobPlusProche.takeDamage(self.damage) #Il faudra ajouter un delai de tir
-            self.game.groupProjectile.add(Projectile(self.game, "fleche", self.attackSpeed, self.rect.x, self.rect.y, mobPlusProche))
+            self.game.groupProjectile.add(Projectile(self.game, "fleche", self.attackSpeed, self.damage, self.rect.x, self.rect.y, mobPlusProche))
             self.lastProjectile = now
             self.cooldown=1000
