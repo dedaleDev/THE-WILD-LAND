@@ -258,6 +258,9 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_tour.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("tour", imgTemp))
+        imgTemp = pygame.image.load("data/batiments/icon/icon_pieux.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("pieux", imgTemp))
         return listeImgItem
 
 
@@ -330,7 +333,7 @@ class ImageLoad():
     def loadImgProjectile(self, nom):
         if nom== "fleche":
             scale = (572*0.13, 70*0.13)
-            tempIgmg = pygame.image.load("data/projectiles/"+nom+".png")
+            tempIgmg = pygame.image.load("data/particules/"+nom+".png")
             tempIgmg = pygame.transform.scale(tempIgmg, scale)
             return tempIgmg
         assert False, ("LoadImgProjectile n'as pas trouvé d'image correspondante a ", nom)
