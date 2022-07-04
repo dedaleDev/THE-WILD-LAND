@@ -17,6 +17,7 @@ class Tuile(pygame.sprite.Sprite):
         self.puit= False
         self.forge = False
         self.port = False
+        self.pieux=False
         self.aEteModifie = True
         self.champs =False
         self.elevage=False
