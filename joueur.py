@@ -44,6 +44,7 @@ class Player(pygame.sprite.Sprite):
           self.nbPort = 0
           self.nbElevage=0
           self.nbChamps=0
+          self.listTour=[]
           
           self.cooldownDamage = 500
           self.lastDamage = 0
@@ -121,7 +122,7 @@ class Player(pygame.sprite.Sprite):
             self.compteurRessources(modif=wood, type=4)
 
      def loadSkin(self, nomSkin):
-        if nomSkin=="joueur_1" or nomSkin=="joueur_1-2":
+        if nomSkin=="joueur_1" or nomSkin=="joueur1-2":
             scale = (472*0.13, 978*0.13)
         elif nomSkin=="bateau":
             scale= (512*0.2, 512*0.2)
@@ -175,7 +176,7 @@ class Player(pygame.sprite.Sprite):
         self.posX, self.posY = tuile.posX, tuile.posY
 
      def goLeft(self):
-            self.skin = self.loadSkin("joueur_1-2")
+            self.skin = self.loadSkin("joueur1-2")
             self.rect.x-=self.velocity
      
      
@@ -249,6 +250,10 @@ class Player(pygame.sprite.Sprite):
         elif nom == "port":
             self.game.map[tuile.posY][tuile.posX].port = True
             self.nbPort+=1
+        elif nom == "tour":
+            self.game.map[tuile.posY][tuile.posX].tour = True
+            self.listTour.append(self.game, tuile, 1.5, self.game.groupMob)
+
         
         self.changerImageBatiment(tuile, nom)
     
