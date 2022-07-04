@@ -18,6 +18,7 @@ class Mob(pygame.sprite.Sprite):
           self.max_health =vie
           self.attack = 10
           self.velocity = vitesse
+          self.slow =False
           self.armor = 0
           self.posX, self.posY = self.initPos()
 
