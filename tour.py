@@ -1,5 +1,5 @@
 from dis import dis
-from math import sqrt
+from math import acos, sqrt
 import pygame
 from projectile import Projectile 
 class Tour(pygame.sprite.Sprite):
@@ -43,6 +43,10 @@ class Tour(pygame.sprite.Sprite):
          
          if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]
+            
+            
             self.game.groupProjectile.add(Projectile(self.game, "fleche", self.attackSpeed, self.damage, self.rect.x, self.rect.y, mobPlusProche))
             self.lastProjectile = now
             self.cooldown=1000
+            
+
