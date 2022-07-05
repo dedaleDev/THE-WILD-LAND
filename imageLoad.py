@@ -354,7 +354,10 @@ class ImageLoad():
             return tempIgmg
         assert False, ("LoadImgProjectile n'as pas trouvé d'image correspondante a ", nom)
     
-             
+    def ImInfoBulleMob(self, nom, chemin="data/personnages/infoBulle/info_"):
+        img = pygame.image.load(chemin+nom+".png")
+        return img
+    
     def getImCollision(self):
         im = pygame.image.load("data/personnages/degat.png")
         return pygame.transform.scale(im ,(40,40))

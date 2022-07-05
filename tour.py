@@ -34,9 +34,12 @@ class Tour(pygame.sprite.Sprite):
             yMob = mob.rect.y-10
             distance = sqrt((self.rect.x - mob.skin.get_width()/2 - xMob)**2 + (self.rect.y -mob.skin.get_height()/2 - yMob)**2)
 
-            if distance < self.range:
-                   mob_proche.append((mob, distance))
-         
+            if distance < self.range :
+                if self.nom=="mortier":
+                    if mob.aerien:
+                        mob_proche.append((mob, distance))
+                else :
+                    mob_proche.append((mob, distance))
                    
          mob_proche.sort(key=lambda tup: tup[1]) #pour trier la liste selon la distance
          

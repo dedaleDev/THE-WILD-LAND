@@ -4,7 +4,7 @@ from selection import majSelectionJoueur
 import generation
 class Mob(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse, pique=False, aquatique=False):
+     def __init__(self, game, nom, vie, vitesse, pique=False, aquatique=False, aerien=False):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -13,11 +13,12 @@ class Mob(pygame.sprite.Sprite):
           self.game = game
           self.bateau = False
           #self.skinBateau = self.loadSkin("bateau",(100, 150))
-
+          self.infoBulle = game.images.ImInfoBulleMob(self.name)
           self.health = vie
           self.max_health =vie
           self.pique = pique
           self.aquatique = aquatique
+          self.aerien = aerien
           self.attack = 10
           self.velocity = vitesse
           self.maxVelocity = self.velocity
@@ -106,6 +107,9 @@ class Mob(pygame.sprite.Sprite):
             scale = (751*0.13, 613*0.13)
         elif nomSkin=="kraken":
             scale = (756*0.13, 480*0.13)
+        elif nomSkin=="dragon":
+            scale = (375*0.13, 612*0.13)
+            
         skin = pygame.image.load("data/personnages/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
         return skin
@@ -116,6 +120,7 @@ class Mob(pygame.sprite.Sprite):
             self.update_health_bar(self.game.fenetre)
         if self.health<=0:
             self.kill()
+
 
      def moveMob(self, joueur):
         diffX = self.rect.x - joueur.rect.x

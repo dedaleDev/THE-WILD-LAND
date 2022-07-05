@@ -61,6 +61,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     Imselection = pygame.transform.scale(Imselection, (150,150))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
+    bookicon = pygame.image.load("data/menu/book.png").convert_alpha()
+    bookicon = pygame.transform.scale(bookicon,(50,50))
     health = pygame.image.load("data/menu/health.png").convert_alpha()
     health = pygame.transform.scale(health, (70, 70))
     listeInfoButton = [("data/menu/scierie")]
@@ -70,7 +72,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     cooldown=0
     tuile=False
     fini=True
-    
+    librairie=False
     joueur = Player(game,"joueur_1", 5)
 
     inventaire=Inventaire(0,0, [])
@@ -98,9 +100,11 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
-    game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
-    game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
+    #game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
+    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
+    #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
+    game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
+    
     the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     #fleche= Projectile(game, "fleche", 10, 0,0, joueur)
     #game.groupProjectile.add(fleche)
@@ -115,14 +119,14 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         
         for mob in game.groupMob:#Gestion des pieux
             tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
-            if not mob.pique and tuileMob.pieux:
+            if not mob.pique and not mob.aerien and tuileMob.pieux:
             #if game.map[mob.posY][mob.posX].pieux==True:
                 mob.takeDamage(0.2)
                 if not mob.slow:
                     mob.slow =True
 
 
-            elif tuileMob.sableMouvant:
+            elif tuileMob.sableMouvant and not mob.aerien:
                 mob.takeDamage(0.3)
                 if not mob.slow:
                     mob.slow =True
@@ -154,6 +158,11 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
+                if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80 or librairie == True:  # detection si clic sur menu pricipal
+                    librairie = True
+
+                else :
+                    librairie = False
                     
                 if not cliqueItem:
                     tuile = majSelection(game, pygame.mouse.get_pos(), joueur)
@@ -172,8 +181,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             now = pygame.time.get_ticks()
             for mob in game.groupMob:
                 
-                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[joueur.posY][joueur.posX].estMer() and not mob.aquatique) and not (not game.map[joueur.posY][joueur.posX].estMer() and mob.aquatique):
-                    mob.the_path = findPos(game, joueur.posX, joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique)
+                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[joueur.posY][joueur.posX].estMer() and not mob.aquatique and not mob.aerien) and not (not game.map[joueur.posY][joueur.posX].estMer() and mob.aquatique):
+                    mob.the_path = findPos(game, joueur.posX, joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
                     
                     mob.last = now
                     mob.majCoolDown()
@@ -210,6 +219,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
+            fenetrePygame.blit(bookicon, (0,80))
             
             if tuile :  
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))  
@@ -259,6 +269,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         joueur.resetRessourcesModified()
             joueur.update_health_bar(fenetrePygame)
             fenetrePygame.blit(health, (100,10))
+            if librairie ==True : 
+                i =0
+                for mob in game.groupMob : 
+                    i+=1
+                    fenetrePygame.blit(mob.infoBulle,(50*i,150))
+                    
             pygame.display.flip()
         
         else:
