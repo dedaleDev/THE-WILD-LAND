@@ -73,9 +73,13 @@ def draw_matrix(a, m, zoom, start, end, borders, the_path = []):
     images.append(im)
 
 
-def findPos(map, posDebutX, posDebutY, posFinX, posFinY):
+def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False):
     startTime = time.time()
-    a = map
+    if not aqua :
+        a = game.mapMontagneMer
+    else :
+        a = game.mapMer
+        
     zoom = 20
     borders = 6
     start = (posDebutY, posDebutX)

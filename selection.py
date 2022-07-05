@@ -64,7 +64,7 @@ def selectionDispoItem(game, tuile, joueur):
             #optionDIspo.append(Item(game, "igloo", 20))
             pass
         elif tuile.type==6:
-            #optionDIspo.append(Item(game, "puit", 20))
+            optionDIspo.append(Item(game, "sableMouvant", 20, "data/batiments/infoBulle/info_sableMouvant.png"))
             pass
     return optionDIspo
     

@@ -260,7 +260,9 @@ class Player(pygame.sprite.Sprite):
             tuile.tour = tour
         elif nom == "pieux":
             self.game.map[tuile.posY][tuile.posX].pieux = True
-
+            
+        elif nom == "sableMouvant":
+            self.game.map[tuile.posY][tuile.posX].sableMouvant = True
         
         self.changerImageBatiment(tuile, nom)
     

@@ -23,6 +23,7 @@ class Tuile(pygame.sprite.Sprite):
         self.elevage=False
         self.tour = False
         self.pieux=False
+        self.sableMouvant=False
         ####     GENREATION    ####
         self.probaSup_mer = 0
         self.probaSup_roche = 0
@@ -34,7 +35,7 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
         
         ####     POSITION ET IMAGE    ####
         

@@ -1,4 +1,5 @@
 from random import randint
+from tokenize import group
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
@@ -52,8 +53,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
     game = Game(infoObject, fenetrePygame)
     game.genererMatrice()
-    cooldown = 1000
-    fini=True
+    
     
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
@@ -67,9 +67,10 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
     tick_ressource=0
     move_ticker=0
-
+    cooldown=0
     tuile=False
-
+    fini=True
+    
     joueur = Player(game,"joueur_1", 5)
 
     inventaire=Inventaire(0,0, [])
@@ -97,9 +98,10 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
+    #game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
+    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
+    game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
-    
     #fleche= Projectile(game, "fleche", 10, 0,0, joueur)
     #game.groupProjectile.add(fleche)
     while continuer == True:
@@ -112,20 +114,26 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         
         
         for mob in game.groupMob:#Gestion des pieux
-            if majSelectionJoueur(game, pos=(mob.getFeet())).pieux ==True:
+            tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
+            if not mob.pique and tuileMob.pieux:
             #if game.map[mob.posY][mob.posX].pieux==True:
                 mob.takeDamage(0.2)
                 if not mob.slow:
                     mob.slow =True
+
+
+            elif tuileMob.sableMouvant:
+                mob.takeDamage(0.3)
+                if not mob.slow:
+                    mob.slow =True
                     
-                    mob.velocity=mob.velocity/2
+                    mob.velocity=mob.velocity/3
                     if mob.velocity<1:
                         mob.velocity=1
-
             elif mob.slow:
                  mob.slow =False
                  mob.velocity =mob.maxVelocity
-        
+                 
         for event in pygame.event.get():
             if event.type == QUIT:
                 continuer = False
@@ -153,7 +161,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     if tuile:
                         tuile.estSelect=False
                     tuile=False
-                
+            
                 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
@@ -161,18 +169,22 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
            
             #### Deplacement des mobs
-
-            if game.groupMob.__len__()>0:
-                now = pygame.time.get_ticks()
-                if now-last>=cooldown and fini and not game.map[joueur.posY][joueur.posX].estMer():
-                    the_path = findPos(game.mapMontagneMer, joueur.posX, joueur.posY, game.groupMob.sprites()[0].posX, game.groupMob.sprites()[0].posY)
-                    last = now
-                    cooldown = 1000
+            now = pygame.time.get_ticks()
+            for mob in game.groupMob:
                 
-                fini = game.groupMob.sprites()[0].allerVersTuile(the_path[0][1], the_path[0][0])
-                
-            if fini and len(the_path)>1:
-                the_path = the_path[1:]
+                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[joueur.posY][joueur.posX].estMer() and not mob.aquatique):
+                    mob.the_path = findPos(game, joueur.posX, joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique)
+                    
+                    mob.last = now
+                    mob.cooldown=1000
+                if not mob.slow:
+                    mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
+                else :
+                    if now%2==0:
+                        mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
+                        
+                if mob.fini and len(mob.the_path)>1:
+                    mob.the_path = mob.the_path[1:]
 
             for tour in game.groupDefense:
                 tour.attack()

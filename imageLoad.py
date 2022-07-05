@@ -261,6 +261,10 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_pieux.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("pieux", imgTemp))
+        imgTemp = pygame.image.load("data/batiments/icon/icon_sableMouvant.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("sableMouvant", imgTemp))
+        
         return listeImgItem
 
 

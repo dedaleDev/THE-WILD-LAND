@@ -4,7 +4,7 @@ from selection import majSelectionJoueur
 import generation
 class Mob(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse):
+     def __init__(self, game, nom, vie, vitesse, pique=False, aquatique=False):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -16,17 +16,24 @@ class Mob(pygame.sprite.Sprite):
 
           self.health = vie
           self.max_health =vie
-          
+          self.pique = pique
+          self.aquatique = aquatique
           self.attack = 10
           self.velocity = vitesse
           self.maxVelocity = self.velocity
           self.slow =False
           self.armor = 0
           self.posX, self.posY = self.initPos()
+          self.last=0
+          self.the_path = [[self.posY, self.posX]]
+          self.fini = True
+          self.cooldown = 0
 
           self.rect = self.skin.get_rect()
           self.rect.x = self.game.map[self.posY][self.posX].rect.x+28
           self.rect.y = self.game.map[self.posY][self.posX].rect.y+97-75
+          
+          
           
 
      def setVelocity(self, entier):
@@ -79,18 +86,26 @@ class Mob(pygame.sprite.Sprite):
          return self.game.map[posY+1][posX].caseBloquante() and self.game.map[posY-1][posX].caseBloquante() and self.game.map[posY][posX-1].caseBloquante() and self.game.map[posY][posX+1].caseBloquante()
 
      def initPos(self):
-         borneMaxX = min(generation.taille_matriceX-2, 20)
-         borneMaxY = min(generation.taille_matriceY-2, 20)
-         posX = random.randint(1,borneMaxX)
-         posY = random.randint(1,borneMaxY)
-         while self.game.map[posY][posX].caseBloquante() or self.caseBloquanteAutour(posX, posY):
-             posX = random.randint(1,borneMaxX)
-             posY = random.randint(1,borneMaxY)
-         return posX, posY
+         if not self.aquatique:
+            borneMaxX = min(generation.taille_matriceX-2, 20)
+            borneMaxY = min(generation.taille_matriceY-2, 20)
+            posX = random.randint(1,borneMaxX)
+            posY = random.randint(1,borneMaxY)
+            while self.game.map[posY][posX].caseBloquante() or self.caseBloquanteAutour(posX, posY):
+                posX = random.randint(1,borneMaxX)
+                posY = random.randint(1,borneMaxY)
+            return posX, posY
+         tuile = random.choice(self.game.listeCaseMer)
+         return tuile.posX, tuile.posY
+             
           
      def loadSkin(self, nomSkin):
         if nomSkin== "golem_des_forets":
             scale = (704*0.13, 613*0.13)
+        elif nomSkin=="oursin":
+            scale = (751*0.13, 613*0.13)
+        elif nomSkin=="kraken":
+            scale = (756*0.13, 480*0.13)
         skin = pygame.image.load("data/personnages/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
         return skin
