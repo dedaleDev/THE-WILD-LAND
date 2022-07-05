@@ -172,7 +172,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             now = pygame.time.get_ticks()
             for mob in game.groupMob:
                 
-                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[joueur.posY][joueur.posX].estMer() and not mob.aquatique):
+                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[joueur.posY][joueur.posX].estMer() and not mob.aquatique) and not (not game.map[joueur.posY][joueur.posX].estMer() and mob.aquatique):
                     mob.the_path = findPos(game, joueur.posX, joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique)
                     
                     mob.last = now
