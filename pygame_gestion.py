@@ -100,9 +100,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    #game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
-    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
-    #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
+    game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
+    game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
+    game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
     
     the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]

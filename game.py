@@ -22,6 +22,9 @@ class Game(pygame.sprite.Sprite):
         self.mapImgO = 0
         self.mapMer = 0
         self.listeCaseMer = 0
+        self.listeCaseForet = 0
+        self.listeCasePlaine=0
+        self.listeCaseMontagne=0
         self.fenetre = fenetre
         
         self.groupMob = pygame.sprite.Group()
@@ -34,7 +37,7 @@ class Game(pygame.sprite.Sprite):
         
     def genererMatrice(self):
         self.map = generation.generation_matrice(self)
-        self.mapMontagneMer, self.listeCaseMer, self.mapMer = generation.generation_matriceMontagneMer(self.map)
+        self.mapMontagneMer, self.mapMer, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map)
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]

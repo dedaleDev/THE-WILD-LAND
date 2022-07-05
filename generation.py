@@ -186,7 +186,7 @@ def generation_matrice(game):
 def generation_matriceMontagneMer(map):
     mapBool=[]
     mapMer=[]
-    listeCaseMer=[]
+    listeCaseMer,listeCaseForet, listeCasePlaine,listeCaseMontagne=[], [], [],[]
     for i in range(taille_matriceY):
         mapBool.append([0]*taille_matriceX)
         mapMer.append([0]*taille_matriceX)
@@ -202,8 +202,15 @@ def generation_matriceMontagneMer(map):
                 mapMer[y][x]=0
             else :
                 mapMer[y][x]=1
+                
+            if tuile.estPlaine():
+                listeCasePlaine.append(tuile)
+            if tuile.estForet():
+                listeCaseForet.append(tuile)
+            if tuile.type==2:
+                listeCaseMontagne.append(tuile)
             
-    return mapBool, listeCaseMer, mapMer
+    return mapBool,mapMer, listeCaseMer, listeCaseForet, listeCasePlaine, listeCaseMontagne
 
 
 def printMat(matriceMap):

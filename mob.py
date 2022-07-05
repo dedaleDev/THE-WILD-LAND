@@ -87,19 +87,19 @@ class Mob(pygame.sprite.Sprite):
          return self.game.map[posY+1][posX].caseBloquante() and self.game.map[posY-1][posX].caseBloquante() and self.game.map[posY][posX-1].caseBloquante() and self.game.map[posY][posX+1].caseBloquante()
 
      def initPos(self):
-         if not self.aquatique:
-            borneMaxX = min(generation.taille_matriceX-2, 20)
-            borneMaxY = min(generation.taille_matriceY-2, 20)
-            posX = random.randint(1,borneMaxX)
-            posY = random.randint(1,borneMaxY)
-            while self.game.map[posY][posX].caseBloquante() or self.caseBloquanteAutour(posX, posY):
-                posX = random.randint(1,borneMaxX)
-                posY = random.randint(1,borneMaxY)
-            return posX, posY
-         tuile = random.choice(self.game.listeCaseMer)
+         if self.aquatique:
+            
+            tuile = random.choice(self.game.listeCaseMer)
+            
+         elif self.name=="oursin":
+             tuile=random.choice(self.game.listeCasePlaine)
+         
+         elif self.aerien:
+             tuile=random.choice(self.game.listeCaseMontagne)
+         
+         elif self.name=="golem_des_forets":
+             tuile=random.choice(self.game.listeCaseForet)
          return tuile.posX, tuile.posY
-             
-          
      def loadSkin(self, nomSkin):
         if nomSkin== "golem_des_forets":
             scale = (704*0.13, 613*0.13)
