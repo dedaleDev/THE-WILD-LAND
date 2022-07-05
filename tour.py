@@ -13,11 +13,11 @@ class Tour(pygame.sprite.Sprite):
          self.lastProjectile =0
          self.image = pygame.image.load("data/batiments/tour.png").convert_alpha()
          self.rect = self.image.get_rect()
-         self.rect.x = tuile.rect.x
-         self.rect.y = tuile.rect.y
+         self.rect.x = tuile.rect.x+45
+         self.rect.y = tuile.rect.y+20
          self.range = 300
          self.damage = 10
-         self.attackSpeed = 10
+         self.speedProjectile = 10
          self.cooldown = 0
          
      def tirerFleche(self, cible):
@@ -45,7 +45,7 @@ class Tour(pygame.sprite.Sprite):
             mobPlusProche = mob_proche[0][0]
             
             
-            self.game.groupProjectile.add(Projectile(self.game, "fleche", self.attackSpeed, self.damage, self.rect.x, self.rect.y, mobPlusProche))
+            self.game.groupProjectile.add(Projectile(self.game, "fleche", self.speedProjectile, self.damage, self.rect.x+30, self.rect.y, mobPlusProche))
             self.lastProjectile = now
             self.cooldown=1000
             

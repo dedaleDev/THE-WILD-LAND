@@ -16,8 +16,10 @@ class Mob(pygame.sprite.Sprite):
 
           self.health = vie
           self.max_health =vie
+          
           self.attack = 10
           self.velocity = vitesse
+          self.maxVelocity = self.velocity
           self.slow =False
           self.armor = 0
           self.posX, self.posY = self.initPos()
@@ -243,6 +245,5 @@ class Mob(pygame.sprite.Sprite):
         bar_position = [self.rect.x, self.rect.y-10, self.health, 5]
         back_bar_position = [self.rect.x, self.rect.y-10, self.max_health, 5]
         #dessiner la barre de vie
-
         pygame.draw.rect(surface, back_bar_color, back_bar_position)
         pygame.draw.rect(surface, bar_color, bar_position)

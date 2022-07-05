@@ -62,6 +62,8 @@ class Player(pygame.sprite.Sprite):
             self.update_health_bar(self.game.fenetre)
         else :
             self.estMort=True
+
+            
      def getSkin(self):
          return self.skin
      def getName(self):
@@ -255,7 +257,8 @@ class Player(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].tour = True
             tour = Tour(self.game, tuile, 1000)
             self.game.groupDefense.add(tour)
-        elif nom == "tour":
+            tuile.tour = tour
+        elif nom == "pieux":
             self.game.map[tuile.posY][tuile.posX].pieux = True
 
         
@@ -265,7 +268,6 @@ class Player(pygame.sprite.Sprite):
      def chargerImPort(self, tuile):
          ecartX = tuile.posX-self.posX
          ecartY = tuile.posY-self.posY
-         print(ecartX, ecartY)
          if ecartX==0 and ecartY == 1:
              imgTemp = Image.open("data/batiments/port/port2.png").convert('RGBA')
          if ecartX==-1 and ecartY == 0:

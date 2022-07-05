@@ -90,7 +90,7 @@ def findPos(map, posDebutX, posDebutY, posFinX, posFinY):
     m[i][j] = 1
 
     k = 0
-    while m[end[0]][end[1]] == 0 and time.time()-startTime<0.1:
+    while m[end[0]][end[1]] == 0 and time.time()-startTime<0.05:
         
         k += 1
 
@@ -101,7 +101,7 @@ def findPos(map, posDebutX, posDebutY, posFinX, posFinY):
     i, j = end
     k = m[i][j]
     the_path = [(i,j)]
-    while k > 1 and time.time()-startTime<0.1:
+    while k > 1 and time.time()-startTime<0.05:
         
         if j > 0 and m[i][j - 1] == k-1:
             i, j = i, j-1
@@ -146,7 +146,7 @@ def findPos(map, posDebutX, posDebutY, posFinX, posFinY):
     #print_m(m)
 
 
-    print("--- %s seconds ---" % (time.time() - startTime))
+    #print("--- %s seconds ---" % (time.time() - startTime))
 
     """images[0].save('maze.gif',
                 save_all=True, append_images=images[1:],

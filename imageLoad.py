@@ -330,11 +330,14 @@ class ImageLoad():
             return self.listeImg[type][rand]
         return self.listeImg[type]
 
-    def loadImgProjectile(self, nom):
+    def loadImgProjectile(self, nom, angle=False):
+        
         if nom== "fleche":
-            scale = (572*0.13, 70*0.13)
-            tempIgmg = pygame.image.load("data/particules/"+nom+".png")
+            scale = (572*0.065, 70*0.065)
+            tempIgmg = pygame.image.load("data/projectiles/"+nom+".png")
             tempIgmg = pygame.transform.scale(tempIgmg, scale)
+            if angle:
+                tempIgmg = pygame.transform.rotate(tempIgmg, angle)
             return tempIgmg
         assert False, ("LoadImgProjectile n'as pas trouvé d'image correspondante a ", nom)
     

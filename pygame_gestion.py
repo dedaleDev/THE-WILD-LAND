@@ -28,7 +28,7 @@ tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), 
 largeurEtHauteur = (0, 0)
 modification = False
 timeComtpeur=0
-def pygameInit():  # foction servant à l'initialisation pygame
+def pygameInit():  # fonction servant à l'initialisation pygame
     
     global infoObject, modification, joueur,timeComtpeur
     global largeurEtHauteur, fenetrePygame, moveX, moveY, last
@@ -73,9 +73,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
     joueur = Player(game,"joueur_1", 5)
 
     inventaire=Inventaire(0,0, [])
-    mob = Mob(game, "golem_des_forets", 100, 2)
-    
-    game.groupMob.add(mob)
+
     for i in range(-1, 2):
         for j in range(-1, 2):
             game.deleteFog(joueur.posX+i, joueur.posY+j)
@@ -88,7 +86,7 @@ def pygameInit():  # foction servant à l'initialisation pygame
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerX(-4)
         joueur.rect.x-=4 
-        mob.rect.x-=4
+
         moveX-=4
     
     for deplacement in range(1070-infoObject.current_h):
@@ -96,10 +94,11 @@ def pygameInit():  # foction servant à l'initialisation pygame
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerY(-4)
         joueur.rect.y-=4
-        mob.rect.y-=4
+
         moveY-=4
-    the_path = [[mob.posY, mob.posX]]
     
+    game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
+    the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     
     #fleche= Projectile(game, "fleche", 10, 0,0, joueur)
     #game.groupProjectile.add(fleche)
@@ -107,23 +106,32 @@ def pygameInit():  # foction servant à l'initialisation pygame
         
         modification=False
         cliqueItem = False
-        modification, tuileTemp = KEY_move(game, joueur,mob, fenetrePygame)
+        modification, tuileTemp = KEY_move(game, joueur, fenetrePygame)
         
         listeColide = game.checkCollision(joueur, game.groupMob)
-
+        
+        
         for mob in game.groupMob:#Gestion des pieux
             if majSelectionJoueur(game, pos=(mob.getFeet())).pieux ==True:
-                print("pieux activé par : ", mob.name)
-                mob.takeDamage(10)
-                if mob.slow ==False:
-                    mob.slow ==True
-                    mob.setVelocity(-10)
-            else  : #problème car du coup executer non stop 
-                mob.slow ==False
+            #if game.map[mob.posY][mob.posX].pieux==True:
+                mob.takeDamage(0.2)
+                if not mob.slow:
+                    mob.slow =True
+                    
+                    mob.velocity=mob.velocity/2
+                    if mob.velocity<1:
+                        mob.velocity=1
 
+            elif mob.slow:
+                 mob.slow =False
+                 mob.velocity =mob.maxVelocity
+        
         for event in pygame.event.get():
             if event.type == QUIT:
                 continuer = False
+                
+                
+            
 
         
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
@@ -153,14 +161,16 @@ def pygameInit():  # foction servant à l'initialisation pygame
             
            
             #### Deplacement des mobs
-            
-            
-            now = pygame.time.get_ticks()
-            if now-last>=cooldown and fini and not game.map[joueur.posY][joueur.posX].estMer():
-                the_path = findPos(game.mapMontagneMer, joueur.posX, joueur.posY, mob.posX, mob.posY)
-                last = now
-                cooldown = 1000
-            fini = mob.allerVersTuile(the_path[0][1], the_path[0][0])
+
+            if game.groupMob.__len__()>0:
+                now = pygame.time.get_ticks()
+                if now-last>=cooldown and fini and not game.map[joueur.posY][joueur.posX].estMer():
+                    the_path = findPos(game.mapMontagneMer, joueur.posX, joueur.posY, game.groupMob.sprites()[0].posX, game.groupMob.sprites()[0].posY)
+                    last = now
+                    cooldown = 1000
+                
+                fini = game.groupMob.sprites()[0].allerVersTuile(the_path[0][1], the_path[0][0])
+                
             if fini and len(the_path)>1:
                 the_path = the_path[1:]
 
@@ -171,7 +181,6 @@ def pygameInit():  # foction servant à l'initialisation pygame
 
             if move_ticker>0:
                 move_ticker-=1
-
 
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
@@ -191,20 +200,25 @@ def pygameInit():  # foction servant à l'initialisation pygame
             fenetrePygame.blit(buttonHome, (10, 10))
             
             if tuile :  
-                fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))    
+                fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))  
+                if tuile.tour:      
+                    #pygame.draw.circle(fenetrePygame, (155,155,155), (tuile.tour.rect.x+30, tuile.tour.rect.y), tuile.tour.range, width=3, )
+                    pass
             #affichage personnage
             
             if not joueur.bateau:
                 fenetrePygame.blit(joueur.skin, (joueur.rect.x, joueur.rect.y))
-            
-            if game.map[mob.posY][mob.posX].isExplored :
-                fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
-            fenetrePygame.blit(imDebug, mob.getFeet())
-            fenetrePygame.blit(imDebug,(mob.getFeet()[0]-75, mob.getFeet()[1]))
+            for mob in game.groupMob:
+                if game.map[mob.posY][mob.posX].isExplored :
+                    fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
+                fenetrePygame.blit(imDebug, mob.getFeet())
+
             if joueur.bateau:
                 fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x-15, joueur.rect.y+30))
                 
-            mob.update_health_bar(fenetrePygame)   
+            for mob in game.groupMob:
+                if game.map[mob.posY][mob.posX].isExplored:
+                    mob.update_health_bar(fenetrePygame)
             if tuile :
                 liste = selectionDispoItem(game, tuile, joueur)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
@@ -261,7 +275,7 @@ def affichage():
                 return i
         return 2
     
-def KEY_move(game, joueur,mob,fenetre):
+def KEY_move(game, joueur,fenetre):
     modification=False
     tuile=False
     keys=pygame.key.get_pressed()
@@ -320,9 +334,7 @@ def KEY_move(game, joueur,mob,fenetre):
     if keys[K_v]:
         if game.map[joueur.posY][joueur.posX].port:
             joueur.bateau = False
-    if keys[K_k]:#kill
-        joueur.takeDamage(5)
-        mob.takeDamage(5)
+
     return modification, tuile
 
 
@@ -358,6 +370,7 @@ def deplacementCamBas(mouse, game, joueur, listeMob):
             projo.rect.y+=y
         for defense in game.groupDefense:
             defense.rect.y+=y
+    
 
 
         

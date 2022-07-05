@@ -15,21 +15,24 @@ class Projectile(pygame.sprite.Sprite):
           self.img=game.images.loadImgProjectile(nom)
           
           self.rect = self.img.get_rect()
+          self.rect.x = posDepartX
+          self.rect.y = posDepartY
           self.degat = degat
           self.angle = self.genererAngle()
           self.img = game.images.loadImgProjectile(nom, self.angle)
-          
           self.rect = self.img.get_rect()
           self.rect.x = posDepartX
           self.rect.y = posDepartY
+          self.lancement=pygame.time.get_ticks()
+          self.dureeMax = 1500
 
      def genererAngle(self):
-        dx, dy = self.cibleX - self.rect.x, self.cibleY - self.rect.y
-        dist = math.hypot(dx, dy)
-        print(dx,dy)
-        return angle([dx,dy], [1,0])
-        
-        
+        dx, dy =  self.cibleX-self.rect.x , self.rect.y-self.cibleY 
+        angledegre= 180/math.pi*angle([1,0],[dx,dy])
+        if dy<0: ##  calcul du determinant de la matrice associé aux 2 vecteurs colonne
+          angledegre = 360-angledegre
+        return angledegre
+
 
      def moveProjectile(self):
         dx, dy = self.cibleX - self.rect.x, self.cibleY - self.rect.y
@@ -43,13 +46,17 @@ class Projectile(pygame.sprite.Sprite):
             self.cible.takeDamage(self.degat)
             self.kill()
             #detruire le projo
+        elif pygame.time.get_ticks()-self.lancement>self.dureeMax:
+              self.kill()
         
 
 
 def produit(v1, v2):
+      
       return sum((a*b) for a, b in zip(v1, v2))
 
 def longueur(v):
+  
   return math.sqrt(produit(v, v))
 
 def angle(v1, v2):
