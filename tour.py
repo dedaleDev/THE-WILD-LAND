@@ -4,19 +4,20 @@ import pygame
 from projectile import Projectile 
 class Tour(pygame.sprite.Sprite):
 
-     def __init__(self, game, tuile, cooldown):
+     def __init__(self, game, tuile, cooldown, nom, damage, range):
          super().__init__() 
          self.cooldown =cooldown
+         self.nom = nom
          self.addMob = True
          self.game =game
          self.tuile = tuile
          self.lastProjectile =0
-         self.image = pygame.image.load("data/batiments/tour.png").convert_alpha()
+         self.image = pygame.image.load("data/batiments/"+self.nom+".png").convert_alpha()
          self.rect = self.image.get_rect()
          self.rect.x = tuile.rect.x+45
          self.rect.y = tuile.rect.y+20
-         self.range = 300
-         self.damage = 10
+         self.range = range
+         self.damage = damage
          self.speedProjectile = 10
          self.cooldown = 0
          
@@ -30,7 +31,7 @@ class Tour(pygame.sprite.Sprite):
          mob_proche = []
          for mob in self.game.groupMob:
             xMob = mob.rect.x
-            yMob = mob.rect.y
+            yMob = mob.rect.y-10
             distance = sqrt((self.rect.x - mob.skin.get_width()/2 - xMob)**2 + (self.rect.y -mob.skin.get_height()/2 - yMob)**2)
 
             if distance < self.range:
@@ -45,7 +46,7 @@ class Tour(pygame.sprite.Sprite):
             mobPlusProche = mob_proche[0][0]
             
             
-            self.game.groupProjectile.add(Projectile(self.game, "fleche", self.speedProjectile, self.damage, self.rect.x+30, self.rect.y, mobPlusProche))
+            self.game.groupProjectile.add(Projectile(self.game, self.nom, self.speedProjectile, self.damage, self.rect.x+30, self.rect.y, mobPlusProche))
             self.lastProjectile = now
             self.cooldown=1000
             

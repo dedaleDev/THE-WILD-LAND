@@ -98,8 +98,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    #game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
-    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
+    game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
+    game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
     game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     #fleche= Projectile(game, "fleche", 10, 0,0, joueur)
@@ -176,7 +176,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     mob.the_path = findPos(game, joueur.posX, joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique)
                     
                     mob.last = now
-                    mob.cooldown=1000
+                    mob.majCoolDown()
                 if not mob.slow:
                     mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
                 else :

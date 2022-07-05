@@ -5,7 +5,7 @@ import pygame
 
 from tuile import Tuile
 taille_matriceX = 18
-taille_matriceY = 18
+taille_matriceY = 18 #25 bonne taille 
 
 
 proba_roche = random.randint(10,15) # en %

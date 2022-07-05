@@ -230,7 +230,19 @@ class Mob(pygame.sprite.Sprite):
             self.rect.x-=self.velocity
      
      
+     def majCoolDown(self):
+         if self.name=="kraken":
+             self.cooldown=3000
+         elif self.name=="golem_des_forets":
+             self.cooldown=500
+         elif self.name=="oursin":
+             self.cooldown=1000
+         elif self.name=="dragon":
+             self.cooldown=2000
+         else:
+             assert(False), "Oublie du cooldown pour le mob"+self.nom   
         
+         
         
      def goRight(self):
         self.rect.x+=self.velocity
@@ -244,14 +256,14 @@ class Mob(pygame.sprite.Sprite):
      def update_health_bar(self, surface):
         #def la couleur
         infoObject = pygame.display.Info()  #récupère la taille de l'écran
-
-        if self.health >=80 : 
+        pourcentagePv = self.health/self.max_health*100
+        if pourcentagePv >=80 : 
             bar_color = (111, 210, 46)
-        elif self.health >=50 : 
+        elif pourcentagePv >=50 : 
             bar_color = (255, 165, 0)
-        elif self.health >=25 : 
+        elif pourcentagePv >=25 : 
             bar_color = (255, 69, 0)
-        elif self.health >=0 : 
+        elif pourcentagePv >=0 : 
             bar_color = (255, 0, 0)
         else : 
             print("Le "+ self.name+" est MORT !!!")

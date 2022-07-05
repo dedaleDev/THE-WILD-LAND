@@ -255,15 +255,18 @@ class Player(pygame.sprite.Sprite):
             self.nbPort+=1
         elif nom == "tour":
             self.game.map[tuile.posY][tuile.posX].tour = True
-            tour = Tour(self.game, tuile, 1000)
+            tour = Tour(self.game, tuile, 1000, "tour", 10, 300)
             self.game.groupDefense.add(tour)
             tuile.tour = tour
         elif nom == "pieux":
             self.game.map[tuile.posY][tuile.posX].pieux = True
-            
         elif nom == "sableMouvant":
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
-        
+        elif nom == "mortier":
+            self.game.map[tuile.posY][tuile.posX].mortier = True
+            mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
+            self.game.groupDefense.add(mortier)
+            tuile.mortier = mortier
         self.changerImageBatiment(tuile, nom)
     
      

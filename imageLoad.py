@@ -264,6 +264,9 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_sableMouvant.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("sableMouvant", imgTemp))
+        imgTemp = pygame.image.load("data/batiments/icon/icon_mortier.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("mortier", imgTemp))
         
         return listeImgItem
 
@@ -335,8 +338,14 @@ class ImageLoad():
         return self.listeImg[type]
 
     def loadImgProjectile(self, nom, angle=False):
-        
-        if nom== "fleche":
+        if nom== "mortier":
+            scale = (45*1, 47*1)
+            tempIgmg = pygame.image.load("data/projectiles/"+nom+".png")
+            tempIgmg = pygame.transform.scale(tempIgmg, scale)
+            if angle:
+                tempIgmg = pygame.transform.rotate(tempIgmg, angle)
+            return tempIgmg
+        if nom== "tour":
             scale = (572*0.065, 70*0.065)
             tempIgmg = pygame.image.load("data/projectiles/"+nom+".png")
             tempIgmg = pygame.transform.scale(tempIgmg, scale)

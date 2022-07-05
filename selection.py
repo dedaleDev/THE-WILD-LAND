@@ -54,6 +54,7 @@ def selectionDispoItem(game, tuile, joueur):
         elif tuile.type==2:
             optionDIspo.append(Item(game, "forge", 20, "data/batiments/infoBulle/info_forge.png"))
             optionDIspo.append(Item(game, "mine", 20, "data/batiments/infoBulle/info_mine.png"))
+            optionDIspo.append(Item(game, "mortier", 20, "data/batiments/infoBulle/info_mortier.png"))
         elif tuile.type==3:
             optionDIspo.append(Item(game, "moulin", 20, "data/batiments/infoBulle/info_moulin.png"))
             if not game.avoirTuileJoueur(joueur).port:
@@ -65,7 +66,7 @@ def selectionDispoItem(game, tuile, joueur):
             pass
         elif tuile.type==6:
             optionDIspo.append(Item(game, "sableMouvant", 20, "data/batiments/infoBulle/info_sableMouvant.png"))
-            pass
+
     return optionDIspo
     
     
