@@ -23,6 +23,7 @@ class Tuile(pygame.sprite.Sprite):
         self.pieux=False
         self.mortier=False
         self.sableMouvant=False
+        self.trou=False
         ####     GENREATION    ####
         self.probaSup_mer = 0
         self.probaSup_roche = 0

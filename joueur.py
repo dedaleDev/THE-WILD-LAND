@@ -30,8 +30,8 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
 
           #ressources du joueur
-          self.wood = 250
-          self.stone = 50
+          self.wood = 350
+          self.stone = 150
           self.food = 50
           self.water = 100
           self.RessourcesTEXT =""
@@ -296,6 +296,8 @@ class Player(pygame.sprite.Sprite):
             mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
             self.game.groupDefense.add(mortier)
             tuile.mortier = mortier
+        elif item.nom=="trou":
+            self.game.map[tuile.posY][tuile.posX].trou = True
         self.changerImageBatiment(tuile, item.nom)
     
      

@@ -67,6 +67,7 @@ class Mob(pygame.sprite.Sprite):
 
          
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
+         
         if posY == self.posY and posX-self.posX>0:
             self.goUp()
             self.goRight()

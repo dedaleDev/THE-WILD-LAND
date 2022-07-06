@@ -41,10 +41,42 @@ class Game(pygame.sprite.Sprite):
         
         self.probaDragon = 0
         self.probaGolemForet = 2
-        self.probaOursin = 2
+        self.probaOursin = 0
         self.probaKraken = 1
+        
+        self.debutDePartie=0
 
-
+    def augmenterMob(self):
+        if pygame.time.get_ticks()-self.debutDePartie > 120000*4: #8min 
+            self.probaDragon = 3
+            self.probaGolemForet = 5
+            self.probaOursin = 4
+            self.probaKraken = 4
+            
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*3: #6min 
+            self.probaDragon = 1
+            self.probaGolemForet = 4
+            self.probaOursin = 3
+            self.probaKraken = 3
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*2: #4min 
+            self.probaDragon = 0
+            self.probaGolemForet = 4
+            self.probaOursin = 1
+            self.probaKraken = 2
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*1.5: #3min 
+            self.probaDragon = 0
+            self.probaGolemForet = 3
+            self.probaOursin = 0
+            self.probaKraken = 2
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min 
+            self.probaDragon = 0
+            self.probaGolemForet = 2
+            self.probaOursin = 0
+            self.probaKraken = 1
+        
+        
+        
+        
     def verifierCo(self, x, y):
         return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
         
@@ -85,12 +117,12 @@ class Game(pygame.sprite.Sprite):
                     if tuile.type==2:
                         rand = random.randint(1,400)
                         if rand <= self.probaDragon:
-                            self.groupMob.add(Mob(self, "drgaon", 100, 1, tuile))   
+                            self.groupMob.add(Mob(self, "dragon", 100, 1, tuile))   
                     if tuile.estForet():
                         rand = random.randint(1,400)
 
                         if rand <= self.probaGolemForet:
-                            self.groupMob.add(Mob(self, "golem_des_forets", 100, 2, tuile))
+                            self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile))
                     if tuile.estPlaine():
                         rand = random.randint(1,400)
                         if rand <= self.probaOursin:

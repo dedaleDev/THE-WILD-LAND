@@ -6,6 +6,7 @@ from PIL import *  # pour les images
 from inventaire import Inventaire
 import main_menu
 from generation import *
+from mob import Mob
 
 from projectile import Projectile
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
@@ -98,15 +99,20 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    #game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
-    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
+    game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
     #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     #game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
     
     #the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
     #game.groupProjectile.add(fleche)
+    game.debutDePartie=pygame.time.get_ticks()
     while continuer == True:
+        
+        
+        game.augmenterMob()
+        
         
         modification=False
         cliqueItem = False
@@ -116,6 +122,14 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         
         
         for mob in game.groupMob:#Gestion des pieux
+            
+            if mob.name=="oursin":
+                if game.avoirTuileJoueur(mob).trou:
+                    game.joueur.changerImageBatiment(game.avoirTuileJoueur(mob), "trou_bouche")
+                    game.avoirTuileJoueur(mob).trou=False
+                    mob.kill()
+                    
+            
             tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
             if not mob.pique and not mob.aerien and tuileMob.pieux:
             #if game.map[mob.posY][mob.posX].pieux==True:
@@ -253,8 +267,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
             
-            if game.joueur.estMort:
-                fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
+            #if game.joueur.estMort:
+            #    fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
             
             for i in range(len(game.joueur.ressourcesIMG)):
                 fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
@@ -459,4 +473,3 @@ def f(x):  #fonction vitesse deplacement cam
     if y>20:
         return 15
     return y
-
