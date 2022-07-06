@@ -1,11 +1,9 @@
-import copy
-from operator import xor
 import random
-import pygame
+
 
 from tuile import Tuile
-taille_matriceX = 18
-taille_matriceY = 18 #25 bonne taille 
+taille_matriceX = 25
+taille_matriceY = 25 #25 bonne taille 
 
 
 proba_roche = random.randint(10,15) # en %
@@ -13,7 +11,7 @@ proba_mer = random.randint(3,15)
 proba_desert = random.randint(5,15)
 if proba_mer<=6:
     proba_desert+=5
-proba_foret = random.randint(10,15)
+proba_foret = random.randint(7,12)
 proba_neige= 0
 """
 proba_mer=0
@@ -46,7 +44,7 @@ def tirer_desert(matriceMap, i, j, game):
     temp = random.randint(1, 100)
     if temp <= proba_desert + matriceMap[j][i].getProbaDesert() and matriceMap[j][i].getAutoriserDesert():
         matriceMap[j][i] = Tuile(6, i, j, game)
-        majProba(matriceMap, i, j, 60, "desert")
+        majProba(matriceMap, i, j, 80, "desert")
         return True
     return False
         
@@ -55,7 +53,7 @@ def tirer_foret(matriceMap, i, j, game):
     temp = random.randint(1, 100)
     if temp <= proba_foret + matriceMap[j][i].getProbaForet():
         matriceMap[j][i] = Tuile(4, i, j, game)
-        majProba(matriceMap, i, j, 30, "foret")
+        majProba(matriceMap, i, j, 50, "foret")
         return True
     return False
 

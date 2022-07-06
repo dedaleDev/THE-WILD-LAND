@@ -6,17 +6,16 @@ from PIL import *  # pour les images
 from inventaire import Inventaire
 import main_menu
 from generation import *
-from mob import Mob
+
 from projectile import Projectile
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
-from joueur import Player
 from game import Game
 from item import Item
 from game import background_pil
 from findPos import *
 fenetrePygame = ""
 infoObject = 0
-joueur =""
+
 global moveY, moveX
 moveY=0
 moveX=0
@@ -52,7 +51,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     fenetrePygame = pygame.display.set_mode(
         (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
     game = Game(infoObject, fenetrePygame)
-    game.genererMatrice()
+    
     
     
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
@@ -73,22 +72,21 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     tuile=False
     fini=True
     librairie=False
-    joueur = Player(game,"joueur_1", 5)
+    
 
     inventaire=Inventaire(0,0, [])
 
     for i in range(-1, 2):
         for j in range(-1, 2):
-            game.deleteFog(joueur.posX+i, joueur.posY+j)
+            game.deleteFog(game.joueur.posX+i, game.joueur.posY+j)
     game.genererImg()
-    itemForge = Item(game, "forge", 150,"data/batiments/infoBulle/info_scierie.png")
-    itemMoulin = Item(game, "moulin", 10,"data/batiments/infoBulle/info_scierie.png")
+
 
     for deplacement in range(1675-infoObject.current_w):
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerX(-4)
-        joueur.rect.x-=4 
+        game.joueur.rect.x-=4 
 
         moveX-=4
     
@@ -96,32 +94,32 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerY(-4)
-        joueur.rect.y-=4
+        game.joueur.rect.y-=4
 
         moveY-=4
     
-    game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
-    game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
-    game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
-    game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
+    #game.groupMob.add(Mob(game, "golem_des_forets", 100, 2))
+    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True))
+    #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
+    #game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
     
-    the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
-    #fleche= Projectile(game, "fleche", 10, 0,0, joueur)
+    #the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
+    #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
     #game.groupProjectile.add(fleche)
     while continuer == True:
         
         modification=False
         cliqueItem = False
-        modification, tuileTemp = KEY_move(game, joueur, fenetrePygame)
+        modification, tuileTemp = KEY_move(game, game.joueur, fenetrePygame)
         
-        listeColide = game.checkCollision(joueur, game.groupMob)
+        listeColide = game.checkCollision(game.joueur, game.groupMob)
         
         
         for mob in game.groupMob:#Gestion des pieux
             tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
             if not mob.pique and not mob.aerien and tuileMob.pieux:
             #if game.map[mob.posY][mob.posX].pieux==True:
-                mob.takeDamage(0.2)
+                mob.takeDamage(0.1)
                 if not mob.slow:
                     mob.slow =True
 
@@ -150,7 +148,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
-                        joueur.construireBatiment(tuile, item.nom)
+                        game.joueur.construireBatiment(tuile, item)
                         modification=True
                         cliqueItem=True
                             
@@ -165,7 +163,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     librairie = False
                     
                 if not cliqueItem:
-                    tuile = majSelection(game, pygame.mouse.get_pos(), joueur)
+                    tuile = majSelection(game, pygame.mouse.get_pos(), game.joueur)
                 else :
                     if tuile:
                         tuile.estSelect=False
@@ -174,15 +172,15 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
             mouse = pygame.mouse.get_pos()
-            deplacement_cam(mouse, game, joueur, game.groupMob)
+            deplacement_cam(mouse, game, game.joueur, game.groupMob)
             
            
             #### Deplacement des mobs
             now = pygame.time.get_ticks()
             for mob in game.groupMob:
                 
-                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[joueur.posY][joueur.posX].estMer() and not mob.aquatique and not mob.aerien) and not (not game.map[joueur.posY][joueur.posX].estMer() and mob.aquatique):
-                    mob.the_path = findPos(game, joueur.posX, joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
+                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].estMer() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].estMer() and mob.aquatique):
+                    mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
                     
                     mob.last = now
                     mob.majCoolDown()
@@ -209,8 +207,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
             #affichage selection
             if tick_ressource==0:
-                tick_ressource=180
-                joueur.ajouterRessources()
+                tick_ressource=600
+                game.joueur.ajouterRessources()
+                game.spawMob()
             else:
                 tick_ressource-=1
 
@@ -228,21 +227,21 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     pass
             #affichage personnage
             
-            if not joueur.bateau:
-                fenetrePygame.blit(joueur.skin, (joueur.rect.x, joueur.rect.y))
+            if not game.joueur.bateau:
+                fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored :
                     fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
                 fenetrePygame.blit(imDebug, mob.getFeet())
 
-            if joueur.bateau:
-                fenetrePygame.blit(joueur.skinBateau, (joueur.rect.x-15, joueur.rect.y+30))
+            if game.joueur.bateau:
+                fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
                 
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored:
                     mob.update_health_bar(fenetrePygame)
             if tuile :
-                liste = selectionDispoItem(game, tuile, joueur)
+                liste = selectionDispoItem(game, tuile, game.joueur)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
                 inventaire.blitInventaire(fenetrePygame)
                 for item in inventaire.listeItem:
@@ -252,22 +251,22 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 fenetrePygame.blit(projectile.img, (projectile.rect.x, projectile.rect.y))                
 
             for collision in listeColide:
-                fenetrePygame.blit(game.imCollision,(random.randint(joueur.rect.x-20, joueur.rect.x+20), random.randint(joueur.rect.y, joueur.rect.y+120)))
+                fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
             
-            if joueur.estMort:
+            if game.joueur.estMort:
                 fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
             
-            for i in range(len(joueur.ressourcesIMG)):
-                fenetrePygame.blit(joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
-                fenetrePygame.blit(joueur.RessourcesTEXT[i], (infoObject.current_w-120-(190*i), 3/100*infoObject.current_h))
-                if joueur.RessourcesInfoModified[i] != False:
+            for i in range(len(game.joueur.ressourcesIMG)):
+                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
+                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject.current_w-120-(190*i), 3/100*infoObject.current_h))
+                if game.joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
                     if timeComtpeur <=60 :
-                        fenetrePygame.blit(joueur.RessourcesInfoModified[i],(infoObject.current_w-95-(190*i),90))
+                        fenetrePygame.blit(game.joueur.RessourcesInfoModified[i],(infoObject.current_w-95-(190*i),90))
                     else :
                         timeComtpeur = 0
-                        joueur.resetRessourcesModified()
-            joueur.update_health_bar(fenetrePygame)
+                        game.joueur.resetRessourcesModified()
+            game.joueur.update_health_bar(fenetrePygame)
             fenetrePygame.blit(health, (100,10))
             if librairie ==True : 
                 i =0
@@ -303,7 +302,7 @@ def affichage():
                 return i
         return 2
     
-def KEY_move(game, joueur,fenetre):
+def KEY_move(game,joueur,fenetre):
     modification=False
     tuile=False
     keys=pygame.key.get_pressed()

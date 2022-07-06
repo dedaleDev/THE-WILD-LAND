@@ -1,10 +1,9 @@
 import pygame
 import random
 from selection import majSelectionJoueur
-import generation
 class Mob(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse, pique=False, aquatique=False, aerien=False):
+     def __init__(self, game, nom, vie, vitesse, tuile, pique=False, aquatique=False, aerien=False):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -24,7 +23,7 @@ class Mob(pygame.sprite.Sprite):
           self.maxVelocity = self.velocity
           self.slow =False
           self.armor = 0
-          self.posX, self.posY = self.initPos()
+          self.posX, self.posY = tuile.posX, tuile.posY
           self.last=0
           self.the_path = [[self.posY, self.posX]]
           self.fini = True
@@ -35,12 +34,38 @@ class Mob(pygame.sprite.Sprite):
           self.rect.y = self.game.map[self.posY][self.posX].rect.y+97-75
           
           
+          self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater=0,0,0,0
+          self.initRecompense(self.name)
           
+         
 
      def setVelocity(self, entier):
         self.velocity += entier
           
 
+     def initRecompense(self, name):
+         if name=="golem_des_forets":
+             self.recompenseWood = random.randint(10,25)
+             self.recompenseWater=0
+             self.recompenseStone=0
+             self.recompenseFood=0
+         if name=="oursin":
+             self.recompenseWood = 0
+             self.recompenseWater=0
+             self.recompenseStone=random.randint(5,15)
+             self.recompenseFood=0
+         if name=="dragon":
+             self.recompenseWood = 0
+             self.recompenseWater=0
+             self.recompenseStone=random.randint(15,25)
+             self.recompenseFood=0
+         if name=="kraken":
+             self.recompenseWood = 0
+             self.recompenseWater=0
+             self.recompenseStone=0
+             self.recompenseFood=random.randint(10,20)
+
+         
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
         if posY == self.posY and posX-self.posX>0:
             self.goUp()
@@ -120,6 +145,8 @@ class Mob(pygame.sprite.Sprite):
             self.update_health_bar(self.game.fenetre)
         if self.health<=0:
             self.kill()
+            self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
+            
 
 
      def moveMob(self, joueur):

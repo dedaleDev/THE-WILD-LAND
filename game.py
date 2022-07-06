@@ -1,8 +1,11 @@
+import random
 import pygame
-
 import generation
 from imageLoad import ImageLoad
 from PIL import Image
+from mob import Mob
+from joueur import Player
+
 background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
 premierPAss=True
 class Game(pygame.sprite.Sprite):
@@ -27,10 +30,20 @@ class Game(pygame.sprite.Sprite):
         self.listeCaseMontagne=0
         self.fenetre = fenetre
         
+        self.taille_matriceY = generation.taille_matriceY
+        self.taille_matriceX = generation.taille_matriceX
+        
         self.groupMob = pygame.sprite.Group()
         self.groupProjectile = pygame.sprite.Group()
         self.groupDefense = pygame.sprite.Group()
+        self.genererMatrice()
+        self.joueur = Player(self,"joueur_1", 5)
         
+        self.probaDragon = 0
+        self.probaGolemForet = 2
+        self.probaOursin = 2
+        self.probaKraken = 1
+
 
     def verifierCo(self, x, y):
         return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
@@ -62,6 +75,31 @@ class Game(pygame.sprite.Sprite):
 
     def avoirTuileJoueur(self, joueur):
         return self.map[joueur.posY][joueur.posX]
+    
+    
+    def spawMob(self):
+        for y in range(-5, 5):
+            for x in range(-5,5):
+                if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y):
+                    tuile = self.map[self.joueur.posY+y][self.joueur.posX+x]
+                    if tuile.type==2:
+                        rand = random.randint(1,400)
+                        if rand <= self.probaDragon:
+                            self.groupMob.add(Mob(self, "drgaon", 100, 1, tuile))   
+                    if tuile.estForet():
+                        rand = random.randint(1,400)
+
+                        if rand <= self.probaGolemForet:
+                            self.groupMob.add(Mob(self, "golem_des_forets", 100, 2, tuile))
+                    if tuile.estPlaine():
+                        rand = random.randint(1,400)
+                        if rand <= self.probaOursin:
+                            self.groupMob.add(Mob(self, "oursin", 150, 3, tuile, pique=True))
+                    if tuile.estMer():
+                        rand = random.randint(1,400)
+                        if rand <= self.probaKraken:
+                            self.groupMob.add(Mob(self, "kraken", 50, 1,tuile, aquatique=True))
+                
     def genererImg(self):
         global background_pil, premierPAss
         modification=False

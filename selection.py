@@ -47,25 +47,25 @@ def selectionDispoItem(game, tuile, joueur):
     optionDIspo = []
     if tuile.isExplored and not joueur.bateau:
         if tuile.type==1:
-            optionDIspo.append(Item(game, "elevage", 20, "data/batiments/infoBulle/info_elevage.png"))
-            optionDIspo.append(Item(game, "champs", 20, "data/batiments/infoBulle/info_champs.png"))
-            optionDIspo.append(Item(game, "tour", 20, "data/batiments/infoBulle/info_tour.png"))
-            optionDIspo.append(Item(game, "pieux", 20, "data/batiments/infoBulle/info_pieux.png"))
+            optionDIspo.append(Item(game, "elevage", 175, 75,0,0))
+            optionDIspo.append(Item(game, "champs", 50, 25,0,0))
+            optionDIspo.append(Item(game, "tour", 0, 0, 0, 300 ))
+            optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
         elif tuile.type==2:
-            optionDIspo.append(Item(game, "forge", 20, "data/batiments/infoBulle/info_forge.png"))
-            optionDIspo.append(Item(game, "mine", 20, "data/batiments/infoBulle/info_mine.png"))
-            optionDIspo.append(Item(game, "mortier", 20, "data/batiments/infoBulle/info_mortier.png"))
+            optionDIspo.append(Item(game, "forge", 0,0,0,0))
+            optionDIspo.append(Item(game, "mine", 0,0,50,50))
+            optionDIspo.append(Item(game, "mortier", 0,0,0,200))
         elif tuile.type==3:
-            optionDIspo.append(Item(game, "moulin", 20, "data/batiments/infoBulle/info_moulin.png"))
+            optionDIspo.append(Item(game, "moulin", 0,0,100,0))
             if not game.avoirTuileJoueur(joueur).port:
-                optionDIspo.append(Item(game, "port", 20, "data/batiments/infoBulle/info_port.png"))
+                optionDIspo.append(Item(game, "port", 0,0,250,0))
         elif tuile.type==4:
-            optionDIspo.append(Item(game, "scierie", 20, "data/batiments/infoBulle/info_scierie.png"))
+            optionDIspo.append(Item(game, "scierie", 0,0,100,0))
         elif tuile.type==5:
             #optionDIspo.append(Item(game, "igloo", 20))
             pass
         elif tuile.type==6:
-            optionDIspo.append(Item(game, "sableMouvant", 20, "data/batiments/infoBulle/info_sableMouvant.png"))
+            optionDIspo.append(Item(game, "sableMouvant", 200, 100,0,0))
 
     return optionDIspo
     

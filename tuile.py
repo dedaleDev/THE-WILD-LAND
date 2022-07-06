@@ -1,7 +1,5 @@
 import pygame
-import random
 
-from PIL import Image
 class Tuile(pygame.sprite.Sprite):
     def __init__(self, type, posX, posY, game):
         super().__init__()
@@ -36,7 +34,7 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = True#self.type==7
+        self.isExplored = self.type==7
         
         ####     POSITION ET IMAGE    ####
         
@@ -78,7 +76,7 @@ class Tuile(pygame.sprite.Sprite):
     def estForet(self):
         return self.type==4
     def avoirY(self):
-        return self.posY*74-self.posX*74+75*15
+        return self.posY*74-self.posX*74+75*self.game.taille_matriceY
 
     def caseBloquante(self):
         return self.type==2 or self.type==7 or self.type == 3

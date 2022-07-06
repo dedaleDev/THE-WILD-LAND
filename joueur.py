@@ -30,10 +30,10 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
 
           #ressources du joueur
-          self.wood = 200
-          self.stone = 100
+          self.wood = 250
+          self.stone = 50
           self.food = 50
-          self.water = 30000
+          self.water = 100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -83,7 +83,12 @@ class Player(pygame.sprite.Sprite):
                return self.food
      def getWater(self):
                return self.water
-
+    
+     def setRessource(self, Wood, Stone, Food, Water):
+         return self.setFood(Food) and self.setWood(Wood) and self.setStone(Stone) and self.setWater(Water)
+    
+         
+     
      def initPos(self):
          borneMaxX = min(generation.taille_matriceX-2, 9)
          borneMaxY = min(generation.taille_matriceY-2, 9)
@@ -108,21 +113,31 @@ class Player(pygame.sprite.Sprite):
      def setArmor(self, armor):
                self.armor += armor
      def setFood(self, food):
-        if (self.food -food>=0) :
+        if (self.food +food>=0) :
             self.food += food
             self.compteurRessources(modif=food, type=1)
+            return True
+        return False
+    
      def setStone(self, stone):
-        if (self.stone -stone>=0) :
+        if (self.stone + stone>=0) :
             self.stone += stone
-            self.compteurRessources(modif=stone, type=2)   
+            self.compteurRessources(modif=stone, type=2)
+            return True
+        return False
+            
      def setWater(self, water):
-        if (self.water -water>=0) :
+        if (self.water + water>=0) :
             self.water += water
             self.compteurRessources(modif=water, type=3)
+            return True
+        return False
      def setWood(self, wood):
-        if (self.wood -wood>=0) :
+        if (self.wood + wood>=0) :
             self.wood += wood
             self.compteurRessources(modif=wood, type=4)
+            return True
+        return False
 
      def loadSkin(self, nomSkin):
         if nomSkin=="joueur_1" or nomSkin=="joueur1-2":
@@ -237,37 +252,51 @@ class Player(pygame.sprite.Sprite):
     
     ####        CONSTRUCTION        ####
     
-     def construireBatiment(self, tuile, nom):
-        if nom == "scierie":
+     def majCout(self, item):
+        return self.setFood(-item.coutFood) and self.setWood(-item.coutWood) and self.setStone(-item.coutStone) and self.setWater(-item.coutWater)
+    
+    
+    
+     def construireBatiment(self, tuile, item):
+        if not self.majCout(item):
+            return
+        if item.nom == "scierie":
             self.game.map[tuile.posY][tuile.posX].scierie = True
             self.nbScierie+=1
-        elif nom == "moulin":
+            
+        elif item.nom == "moulin":
             self.game.map[tuile.posY][tuile.posX].moulin = True
             self.nbMoulin+=1
-        elif nom == "puit":
+        elif item.nom == "puit":
             self.game.map[tuile.posY][tuile.posX].puit = True
             self.nbPuit+=1
-        elif nom == "mine":
+        elif item.nom == "champs":
+            self.game.map[tuile.posY][tuile.posX].champs = True
+            self.nbChamps+=1
+        elif item.nom == "elevage":
+            self.game.map[tuile.posY][tuile.posX].elevage = True
+            self.nbElevage+=1
+        elif item.nom == "mine":
             self.game.map[tuile.posY][tuile.posX].mine = True
             self.nbMine+=1
-        elif nom == "port":
+        elif item.nom == "port":
             self.game.map[tuile.posY][tuile.posX].port = True
             self.nbPort+=1
-        elif nom == "tour":
+        elif item.nom == "tour":
             self.game.map[tuile.posY][tuile.posX].tour = True
             tour = Tour(self.game, tuile, 1000, "tour", 10, 300)
             self.game.groupDefense.add(tour)
             tuile.tour = tour
-        elif nom == "pieux":
+        elif item.nom == "pieux":
             self.game.map[tuile.posY][tuile.posX].pieux = True
-        elif nom == "sableMouvant":
+        elif item.nom == "sableMouvant":
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
-        elif nom == "mortier":
+        elif item.nom == "mortier":
             self.game.map[tuile.posY][tuile.posX].mortier = True
             mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
             self.game.groupDefense.add(mortier)
             tuile.mortier = mortier
-        self.changerImageBatiment(tuile, nom)
+        self.changerImageBatiment(tuile, item.nom)
     
      
      def chargerImPort(self, tuile):
@@ -302,11 +331,11 @@ class Player(pygame.sprite.Sprite):
 
      def ajouterRessources(self):
 
-         self.setWood(1*self.nbScierie)
-         self.setStone(1*self.nbMine)
+         self.setWood(5*self.nbScierie)
+         self.setStone(2*self.nbMine)
          #self.setWater(1*self.nbPuit)
-         #self.setFood(1*self.nbMoulin)
-         self.setFood(2*self.nbElevage+ 1*self.nbChamps)
+         self.setWater(3*self.nbMoulin)
+         self.setFood(4*self.nbElevage + 1*self.nbChamps)
 
      def update_health_bar(self, surface):
         #def la couleur
