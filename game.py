@@ -21,6 +21,7 @@ class Game(pygame.sprite.Sprite):
         self.map = 0
         self.mapMontagneMer = 0
         self.imageFog = self.openFog()
+        self.imageErreurRessource = self.openImageRessource()
         self.mapImg = 0
         self.mapImgO = 0
         self.mapMer = 0
@@ -38,50 +39,60 @@ class Game(pygame.sprite.Sprite):
         self.groupDefense = pygame.sprite.Group()
         self.genererMatrice()
         self.joueur = Player(self,"joueur_1", 5)
+        self.groupJoueur=pygame.sprite.Group()
+        self.groupJoueur.add(self.joueur)
         
         self.probaDragon = 0
         self.probaGolemForet = 2
         self.probaOursin = 0
-        self.probaKraken = 1
+        self.probaKraken = 0
+        self.probaMage = 0
         
         self.debutDePartie=0
-
+    def openImageRessource(self):
+        im = pygame.image.load("data/menu/alerteRessource.png")
+        im = pygame.transform.scale(im, (592*0.75, 155*0.75))
+        return im
+    
     def augmenterMob(self):
-        if pygame.time.get_ticks()-self.debutDePartie > 120000*4: #8min 
-            self.probaDragon = 3
+        if pygame.time.get_ticks()-self.debutDePartie > 120000*6: #12min 
+
+            self.probaDragon = 0
             self.probaGolemForet = 5
-            self.probaOursin = 4
+            self.probaOursin = 3
             self.probaKraken = 4
-            
+            self.probaMage = 4
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*5: #10min 
             self.probaDragon = 1
             self.probaGolemForet = 4
             self.probaOursin = 2
             self.probaKraken = 2
+            self.probaMage = 3
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*3.5: #7min 
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 2
             self.probaKraken = 1
+            self.probaMage = 2
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*2: #4min 
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 1
             self.probaKraken = 1
+            self.probaMage = 1
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*1.5: #3min 
             self.probaDragon = 0
             self.probaGolemForet = 3
             self.probaOursin = 0
             self.probaKraken = 1
+            self.probaMage = 0
         elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min 
             self.probaDragon = 0
             self.probaGolemForet = 2
             self.probaOursin = 0
             self.probaKraken = 0
-        
-        
-        
-        
+            self.probaMage = 0
+
     def verifierCo(self, x, y):
         return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
         
@@ -93,11 +104,14 @@ class Game(pygame.sprite.Sprite):
         listeColide=[]
         now = pygame.time.get_ticks()
         for mob in listeMob :
+            
             colide = mob.rect.colliderect(joueur.rect)
             if colide and now-joueur.lastDamage>joueur.cooldownDamage:
                 joueur.takeDamage(mob.attack)
                 joueur.lastDamage=now
                 listeColide.append(colide)
+            if mob.name=="mage":
+                mob.lunchProjectile()
         return listeColide
                 
 
@@ -117,7 +131,7 @@ class Game(pygame.sprite.Sprite):
     def spawMob(self):
         for y in range(-5, 5):
             for x in range(-5,5):
-                if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y):
+                if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y) and (y!=0 or x!=0):
                     tuile = self.map[self.joueur.posY+y][self.joueur.posX+x]
                     if tuile.type==2:
                         rand = random.randint(1,400)
@@ -128,6 +142,10 @@ class Game(pygame.sprite.Sprite):
 
                         if rand <= self.probaGolemForet:
                             self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile))
+                        
+                        rand = random.randint(1,400)
+                        if rand<= self.probaMage:
+                            self.groupMob.add(Mob(self, "mage", 50, 1, tuile))
                     if tuile.estPlaine():
                         rand = random.randint(1,400)
                         if rand <= self.probaOursin:
@@ -143,7 +161,7 @@ class Game(pygame.sprite.Sprite):
         for y in range(generation.taille_matriceY):
             for x in range(generation.taille_matriceX):
                 if self.map[y][x].aEteModifie:        
-                    #print(self.map[y][x].posY, self.map[y][x].posX)
+                   
                     if self.map[y][x].isExplored:
                         background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
                     else :
@@ -164,7 +182,7 @@ class Game(pygame.sprite.Sprite):
             self.mapImgO.paste(tuile.imageO, (tuile.Xoriginal, tuile.Yoriginal), tuile.imageO)
         else:
             self.mapImgO.paste(self.imageFog, (tuile.Xoriginal, tuile.Yoriginal), self.imageFog)
-        self.mapImg = pygame.image.fromstring(self.mapImgO.tobytes(),self.mapImgO.size,'RGBA').convert_alpha()
+        self.mapImg = pygame.image.frombuffer(self.mapImgO.tobytes(),self.mapImgO.size,'RGBA').convert_alpha()
             
 
     def openFog(self):
@@ -180,5 +198,5 @@ class Game(pygame.sprite.Sprite):
                 self.map[y][x].setExplored(True)
                 modification=True
         return modification
-                #pygame_gestion.joueur.setWater(-10)
+                
         

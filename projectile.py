@@ -13,12 +13,16 @@ class Projectile(pygame.sprite.Sprite):
           self.cibleY = cible.rect.y
           self.cible=cible
           self.img=game.images.loadImgProjectile(nom)
-          
+          self.nom = nom
           self.rect = self.img.get_rect()
           self.rect.x = posDepartX
           self.rect.y = posDepartY
           self.degat = degat
-          self.angle = self.genererAngle()
+          if self.nom =="mage":
+                self.angle=False
+                
+          else:
+            self.angle = self.genererAngle()
           self.img = game.images.loadImgProjectile(nom, self.angle)
           self.rect = self.img.get_rect()
           self.rect.x = posDepartX

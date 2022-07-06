@@ -153,6 +153,8 @@ class Player(pygame.sprite.Sprite):
     
     
      def deplacementAutorise(self, direction):
+         if direction=="bas":
+             tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity))
          if direction=="droite":
             tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1]))
             
@@ -162,11 +164,12 @@ class Player(pygame.sprite.Sprite):
          if direction=="haut":
             tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity))
             
-         if direction=="bas":
-             tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity))
+         
          if tuile:
             if self.tuileInterdit(tuile):
-                
+                if direction=="bas":
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity+10))
+                    
                 if direction=="droite":
                     tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity+10, self.getFeet()[1]))
             
@@ -176,8 +179,7 @@ class Player(pygame.sprite.Sprite):
                 if direction=="haut":
                     tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity-10))
                     
-                if direction=="bas":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity+10))
+                
             return not self.tuileInterdit(tuile)
         
          else:
@@ -259,6 +261,7 @@ class Player(pygame.sprite.Sprite):
             self.setStone(-item.coutStone) 
             self.setWater(-item.coutWater)
             return True
+        
         return False
         
     
@@ -266,7 +269,7 @@ class Player(pygame.sprite.Sprite):
     
      def construireBatiment(self, tuile, item):
         if not self.majCout(item):
-            return
+            return False
         if item.nom == "scierie":
             self.game.map[tuile.posY][tuile.posX].scierie = True
             self.nbScierie+=1
@@ -306,6 +309,7 @@ class Player(pygame.sprite.Sprite):
         elif item.nom=="trou":
             self.game.map[tuile.posY][tuile.posX].trou = True
         self.changerImageBatiment(tuile, item.nom)
+        return True
     
      
      def chargerImPort(self, tuile):

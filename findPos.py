@@ -99,7 +99,11 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
         a = game.mapMontagneMer
     else :
         a = game.mapMer
-        
+    
+    if not type(posDebutX)==int and type(posDebutY)==int and type(posFinX)==int and type(posFinY)==int and game.verifierCo(posDebutX, posDebutY) and game.verifierCo(posFinX, posDebutY):
+        print("ATTENTION BUG : posDebutX, posDebutY=", posDebutX, posDebutY, "posFinX, posFinY=", posFinX, posFinY)
+        return [[posFinX, posFinY]]
+    
     zoom = 20
     borders = 6
     start = (posDebutY, posDebutX)
@@ -111,7 +115,13 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
         for j in range(len(a[i])):
             m[-1].append(0)
     i,j = start
-    m[i][j] = 1
+    
+    try:
+        m[i][j] = 1
+    except IndexError:
+        print("VOUS AVEZ TROUVE UN BUG !!! BRAVO, merci de l'envoyer aux créateurs avec tout le rapport d'erreur")
+        print("fonction findPos, i,j=",i,j,"out of range try exept")
+        return [[posDebutX, posDebutY]]
 
     k = 0
     while m[end[0]][end[1]] == 0 and time.time()-startTime<0.05:

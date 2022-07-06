@@ -55,6 +55,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     
     
     
+    
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
@@ -63,6 +64,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
     bookicon = pygame.image.load("data/menu/book.png").convert_alpha()
     bookicon = pygame.transform.scale(bookicon,(50,50))
+
+    librairieIMG = pygame.image.load("data/personnages/infoBulle/librairie.png").convert_alpha()
     health = pygame.image.load("data/menu/health.png").convert_alpha()
     health = pygame.transform.scale(health, (70, 70))
     listeInfoButton = [("data/menu/scierie")]
@@ -73,7 +76,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     tuile=False
     fini=True
     librairie=False
-    
+    tickBatiment=1000
 
     inventaire=Inventaire(0,0, [])
 
@@ -103,7 +106,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
     #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     #game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
-    
+    #game.groupMob.add(Mob(game, "mage", 50, 1, game.map[1][1]))
     #the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
     #game.groupProjectile.add(fleche)
@@ -162,20 +165,24 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
-                        game.joueur.construireBatiment(tuile, item)
+                        batimentConstruit = game.joueur.construireBatiment(tuile, item)
                         modification=True
                         cliqueItem=True
+                        if not batimentConstruit:
+                            tickBatiment=0
+                            
                             
 
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
-                if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80 or librairie == True:  # detection si clic sur menu pricipal
-                    librairie = True
-
+                if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80:  # detection si clic sur menu pricipal
+                    if librairie ==True : 
+                        librairie = False 
+                    else : 
+                        librairie = True 
                 else :
                     librairie = False
-                    
                 if not cliqueItem:
                     tuile = majSelection(game, pygame.mouse.get_pos(), game.joueur)
                 else :
@@ -269,7 +276,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
             #if game.joueur.estMort:
             #    fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
-            
+            if librairie ==True :
+                    fenetrePygame.blit(librairieIMG,(infoObject.current_w-1256-(infoObject.current_w-1256)/2,200))
             for i in range(len(game.joueur.ressourcesIMG)):
                 fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
                 fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject.current_w-120-(190*i), 3/100*infoObject.current_h))
@@ -282,6 +290,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         game.joueur.resetRessourcesModified()
             game.joueur.update_health_bar(fenetrePygame)
             fenetrePygame.blit(health, (100,10))
+            
+            if tickBatiment<60:
+                fenetrePygame.blit(game.imageErreurRessource, (infoObject.current_w-game.imageErreurRessource.get_width()-(infoObject.current_w-game.imageErreurRessource.get_width())/2,infoObject.current_h - 200))
+                tickBatiment+=1
+
+                
             if librairie ==True : 
                 i =0
                 for mob in game.groupMob : 
@@ -322,7 +336,7 @@ def KEY_move(game,joueur,fenetre):
     keys=pygame.key.get_pressed()
     
     if keys[K_d] or keys[K_RIGHT]:
-        if joueur.deplacementAutorise("droite") and joueur.getWater() -10 >=0 :
+        if joueur.deplacementAutorise("droite") :
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
             joueur.setPos(tuile)
@@ -335,7 +349,7 @@ def KEY_move(game,joueur,fenetre):
                 
                 
     if keys[K_q]or keys[K_LEFT]:
-            if joueur.deplacementAutorise("gauche") and joueur.getWater() -10 >=0:
+            if joueur.deplacementAutorise("gauche"):
                 #joueur.majBateau()
                 joueur.goLeft()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -347,7 +361,7 @@ def KEY_move(game,joueur,fenetre):
     
 
     if keys[K_z] or keys[K_UP]:
-            if joueur.deplacementAutorise("haut") and joueur.getWater() -10 >=0:
+            if joueur.deplacementAutorise("haut"):
                 #joueur.majBateau()
                 joueur.goUp()
                 tuile = majSelectionJoueur(game, joueur.getFeet())

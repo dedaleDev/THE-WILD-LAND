@@ -1,9 +1,11 @@
+from math import sqrt
 import pygame
 import random
+from projectile import Projectile
 from selection import majSelectionJoueur
 class Mob(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse, tuile, pique=False, aquatique=False, aerien=False):
+     def __init__(self, game, nom, vie, vitesse, tuile, pique=False, aquatique=False, aerien=False, attaque=10):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -12,13 +14,12 @@ class Mob(pygame.sprite.Sprite):
           self.game = game
           self.bateau = False
           #self.skinBateau = self.loadSkin("bateau",(100, 150))
-          self.infoBulle = game.images.ImInfoBulleMob(self.name)
           self.health = vie
           self.max_health =vie
           self.pique = pique
           self.aquatique = aquatique
           self.aerien = aerien
-          self.attack = 10
+          self.attack = attaque
           self.velocity = vitesse
           self.maxVelocity = self.velocity
           self.slow =False
@@ -32,8 +33,10 @@ class Mob(pygame.sprite.Sprite):
           self.rect = self.skin.get_rect()
           self.rect.x = self.game.map[self.posY][self.posX].rect.x+28
           self.rect.y = self.game.map[self.posY][self.posX].rect.y+97-75
-          
-          
+          self.lastProjectile=0
+          self.speedProjectile = 3
+          self.damageDistance = 5
+          self.range=300
           self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater=0,0,0,0
           self.initRecompense(self.name)
           
@@ -64,6 +67,7 @@ class Mob(pygame.sprite.Sprite):
              self.recompenseWater=0
              self.recompenseStone=0
              self.recompenseFood=random.randint(10,20)
+        
 
          
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
@@ -123,8 +127,9 @@ class Mob(pygame.sprite.Sprite):
          elif self.aerien:
              tuile=random.choice(self.game.listeCaseMontagne)
          
-         elif self.name=="golem_des_forets":
+         elif self.name=="golem_des_forets" or "mage":
              tuile=random.choice(self.game.listeCaseForet)
+             
          return tuile.posX, tuile.posY
      def loadSkin(self, nomSkin):
         if nomSkin== "golem_des_forets":
@@ -135,19 +140,44 @@ class Mob(pygame.sprite.Sprite):
             scale = (756*0.13, 480*0.13)
         elif nomSkin=="dragon":
             scale = (375*0.13, 612*0.13)
+        elif nomSkin=="mage":
+            scale = (323*0.2, 612*0.2)
             
         skin = pygame.image.load("data/personnages/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
         return skin
+
+     def lunchProjectile(self):
+        mob_proche = []
+        xMob = self.game.joueur.rect.x
+        yMob = self.game.joueur.rect.y-10
+        distance = sqrt((self.rect.x - self.game.joueur.skin.get_width()/2 - xMob)**2 + (self.rect.y -self.game.joueur.skin.get_height()/2 - yMob)**2)
+
+        if distance < self.range :
+            mob_proche.append((self.game.joueur, distance))
+                   
+        mob_proche.sort(key=lambda tup: tup[1]) #pour trier la liste selon la distance
+         
+        now = pygame.time.get_ticks()
+         
+        if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
+            mobPlusProche = mob_proche[0][0]
+            
+            
+            self.game.groupProjectile.add(Projectile(self.game, self.name, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche))
+            self.lastProjectile = now
+            self.cooldown=1000
+
 
      def takeDamage(self, entier):
         if self.health >0 :
             self.health-=entier
             self.update_health_bar(self.game.fenetre)
         if self.health<=0:
-            self.kill()
+            if self.name=="mage":
+                self.game.joueur.health+=15
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
-            
+            self.kill()
 
 
      def moveMob(self, joueur):
@@ -271,6 +301,8 @@ class Mob(pygame.sprite.Sprite):
          elif self.name=="oursin":
              self.cooldown=1000
          elif self.name=="dragon":
+             self.cooldown=2000
+         elif self.name=="mage":
              self.cooldown=2000
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
