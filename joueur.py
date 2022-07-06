@@ -253,7 +253,14 @@ class Player(pygame.sprite.Sprite):
     ####        CONSTRUCTION        ####
     
      def majCout(self, item):
-        return self.setFood(-item.coutFood) and self.setWood(-item.coutWood) and self.setStone(-item.coutStone) and self.setWater(-item.coutWater)
+        if self.wood - item.coutWood >=0 and self.food - item.coutFood >=0 and self.stone - item.coutStone >=0 and self.water - item.coutWater >=0:
+            self.setFood(-item.coutFood)
+            self.setWood(-item.coutWood) 
+            self.setStone(-item.coutStone) 
+            self.setWater(-item.coutWater)
+            return True
+        return False
+        
     
     
     
@@ -334,7 +341,7 @@ class Player(pygame.sprite.Sprite):
      def ajouterRessources(self):
 
          self.setWood(5*self.nbScierie)
-         self.setStone(2*self.nbMine)
+         self.setStone(4*self.nbMine)
          #self.setWater(1*self.nbPuit)
          self.setWater(3*self.nbMoulin)
          self.setFood(4*self.nbElevage + 1*self.nbChamps)

@@ -47,8 +47,8 @@ def selectionDispoItem(game, tuile, joueur):
     optionDIspo = []
     if tuile.isExplored and not joueur.bateau:
         if tuile.type==1:
-            optionDIspo.append(Item(game, "elevage", 175, 75,0,0))
-            optionDIspo.append(Item(game, "champs", 50, 15,0,0))
+            optionDIspo.append(Item(game, "elevage", 175, 25,0,0))
+            optionDIspo.append(Item(game, "champs", 50, 0,0,0))
             optionDIspo.append(Item(game, "tour", 0, 0, 0, 300 ))
             optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
         elif tuile.type==2:

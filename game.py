@@ -53,26 +53,31 @@ class Game(pygame.sprite.Sprite):
             self.probaOursin = 4
             self.probaKraken = 4
             
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*3: #6min 
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*5: #10min 
             self.probaDragon = 1
             self.probaGolemForet = 4
-            self.probaOursin = 3
-            self.probaKraken = 3
+            self.probaOursin = 2
+            self.probaKraken = 2
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*3.5: #7min 
+            self.probaDragon = 0
+            self.probaGolemForet = 4
+            self.probaOursin = 2
+            self.probaKraken = 1
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*2: #4min 
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 1
-            self.probaKraken = 2
+            self.probaKraken = 1
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*1.5: #3min 
             self.probaDragon = 0
             self.probaGolemForet = 3
             self.probaOursin = 0
-            self.probaKraken = 2
+            self.probaKraken = 1
         elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min 
             self.probaDragon = 0
             self.probaGolemForet = 2
             self.probaOursin = 0
-            self.probaKraken = 1
+            self.probaKraken = 0
         
         
         
@@ -117,7 +122,7 @@ class Game(pygame.sprite.Sprite):
                     if tuile.type==2:
                         rand = random.randint(1,400)
                         if rand <= self.probaDragon:
-                            self.groupMob.add(Mob(self, "dragon", 100, 1, tuile))   
+                            self.groupMob.add(Mob(self, "dragon", 100, 1, tuile, aerien=True))   
                     if tuile.estForet():
                         rand = random.randint(1,400)
 
