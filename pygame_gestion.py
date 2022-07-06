@@ -99,8 +99,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
-    game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
+    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
     #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     #game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
     
