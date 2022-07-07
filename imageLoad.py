@@ -345,18 +345,18 @@ class ImageLoad():
     
     def loadImgAcide(self):
         scale = (45*1, 47*1)
-        tempIgmg = pygame.image.load("data/projectiles/mortier.png")
+        tempIgmg = pygame.image.load("data/projectiles/acide.png")
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     
     def loadImgFleche(self):
         scale = (572*0.065, 70*0.065)
-        tempIgmg = pygame.image.load("data/projectiles/tour.png")
+        tempIgmg = pygame.image.load("data/projectiles/fleche.png")
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     def loadImgPotion(self):
         scale = (512*0.065, 712*0.065)
-        tempIgmg = pygame.image.load("data/projectiles/mage.png")
+        tempIgmg = pygame.image.load("data/projectiles/potion.png")
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
         
