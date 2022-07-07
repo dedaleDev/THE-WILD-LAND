@@ -17,6 +17,6 @@ class Sound():
         self.trouCreuse = pygame.mixer.Sound("data/son/effets/trouCreuse.wav")
         self.fleche = pygame.mixer.Sound("data/son/effets/fleche.wav")
         self.vache = pygame.mixer.Sound("data/son/effets/vache.wav")
-        self.sableMouvant = pygame.mixer.Sound("data/son/effets/sableMouvant.wav")
+        #self.sableMouvant = pygame.mixer.Sound("data/son/effets/sableMouvant.wav")
         self.sableMouvantPassage = pygame.mixer.Sound("data/son/effets/sableMouvantPassage.wav")
         
