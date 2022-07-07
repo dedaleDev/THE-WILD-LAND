@@ -31,9 +31,9 @@ class Player(pygame.sprite.Sprite):
 
           #ressources du joueur
           self.wood = 350
-          self.stone = 3000#150
-          self.food = 300#50
-          self.water = 2000#100
+          self.stone = 150
+          self.food = 50
+          self.water = 100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -324,7 +324,7 @@ class Player(pygame.sprite.Sprite):
         elif item.nom == "sableMouvant":
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
             self.indiceEcolo+=10
-            pygame.mixer.Sound.play(self.game.son.sableMouvant)
+            #pygame.mixer.Sound.play(self.game.son.sableMouvant)
             
         elif item.nom == "mortier":
             self.game.map[tuile.posY][tuile.posX].mortier = True
