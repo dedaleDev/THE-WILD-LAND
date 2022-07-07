@@ -46,7 +46,7 @@ class Game(pygame.sprite.Sprite):
         self.groupJoueur.add(self.joueur)
         
         self.probaGolemForet = 2
-        self.probaOursin = 8
+        self.probaOursin = 0
         self.probaKraken = 0
         self.probaMage = 0
         self.probaDragon = 0
