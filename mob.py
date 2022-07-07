@@ -333,7 +333,7 @@ class Mob(pygame.sprite.Sprite):
         elif pourcentagePv >=0 : 
             bar_color = (255, 0, 0)
         else : 
-            print("Le "+ self.name+" est MORT !!!")
+
             bar_color = (255, 0, 0)
         back_bar_color = (60,63,60)
         bar_position = [self.rect.x, self.rect.y-10, self.health, 5]

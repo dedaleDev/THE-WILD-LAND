@@ -36,8 +36,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     
     global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie
     global largeurEtHauteur, fenetrePygame, moveX, moveY, last
-    # if Options.music == True:
-    # pygame.mixer.init()
+     #if Options.music == True:
+    pygame.mixer.init()
     #music = pygame.mixer.music.load("data/Music/level0.mp3")
     # pygame.mixer.music.play(10)
     print("Génération de la map")
@@ -99,7 +99,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveX-=4
     
-    for deplacement in range(1070-infoObject.current_h):
+    for deplacement in range(1250-infoObject.current_h):
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerY(-4)
@@ -133,6 +133,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             if mob.name=="oursin":
                 if game.avoirTuileJoueur(mob).trou:
                     game.joueur.changerImageBatiment(game.avoirTuileJoueur(mob), "trou_bouche")
+                    pygame.mixer.Sound.play(game.son.trou)
                     modification=True
                     game.avoirTuileJoueur(mob).aEteModifie=True
                     game.avoirTuileJoueur(mob).trou=False
@@ -149,6 +150,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
             elif tuileMob.sableMouvant and not mob.aerien:
                 mob.takeDamage(0.3)
+                pygame.mixer.Sound(game.son.sableMouvantPassage)
                 if not mob.slow:
                     mob.slow =True
                     

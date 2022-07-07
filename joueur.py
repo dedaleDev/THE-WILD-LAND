@@ -30,10 +30,10 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
 
           #ressources du joueur
-          self.wood = 5000#350
-          self.stone = 150
+          self.wood = 350
+          self.stone = 3000#150
           self.food = 300#50
-          self.water = 800#100
+          self.water = 2000#100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -279,12 +279,14 @@ class Player(pygame.sprite.Sprite):
             self.nbScierie+=1
             self.indiceEcolo+=1
             self.game.listeCaseBatiment.append(tuile)
+            pygame.mixer.Sound.play(self.game.son.scierie)
             
         elif item.nom == "moulin":
             self.game.map[tuile.posY][tuile.posX].moulin = True
             self.nbMoulin+=1
             self.indiceEcolo+=1
             self.game.listeCaseBatiment.append(tuile)
+            pygame.mixer.Sound.play(self.game.son.moulin)
         elif item.nom == "puit":
             self.game.map[tuile.posY][tuile.posX].puit = True
             self.nbPuit+=1
@@ -293,17 +295,19 @@ class Player(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].champs = True
             self.nbChamps+=1
             self.game.listeCaseBatiment.append(tuile)
-            
+
         elif item.nom == "elevage":
             self.game.map[tuile.posY][tuile.posX].elevage = True
             self.nbElevage+=1
             self.indiceEcolo+=3
             self.game.listeCaseBatiment.append(tuile)
+            pygame.mixer.Sound.play(self.game.son.vache)
         elif item.nom == "mine":
             self.game.map[tuile.posY][tuile.posX].mine = True
             self.nbMine+=1
             self.game.listeCaseBatiment.append(tuile)
             self.indiceEcolo+=2
+            pygame.mixer.Sound.play(self.game.son.mine)
         elif item.nom == "port":
             self.game.map[tuile.posY][tuile.posX].port = True
             self.nbPort+=1
@@ -320,6 +324,8 @@ class Player(pygame.sprite.Sprite):
         elif item.nom == "sableMouvant":
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
             self.indiceEcolo+=10
+            pygame.mixer.Sound.play(self.game.son.sableMouvant)
+            
         elif item.nom == "mortier":
             self.game.map[tuile.posY][tuile.posX].mortier = True
             mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
@@ -328,6 +334,7 @@ class Player(pygame.sprite.Sprite):
             self.indiceEcolo+=10
         elif item.nom=="trou":
             self.game.map[tuile.posY][tuile.posX].trou = True
+            pygame.mixer.Sound.play(self.game.son.trouCreuse, maxtime=1000)
         self.changerImageBatiment(tuile, item.nom)
 
         return True

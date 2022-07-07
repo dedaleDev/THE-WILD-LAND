@@ -50,6 +50,7 @@ class Tour(pygame.sprite.Sprite):
             
             
             self.game.groupProjectile.add(Projectile(self.game, self.nom, self.speedProjectile, self.damage, self.rect.x+30, self.rect.y, mobPlusProche))
+            pygame.mixer.Sound.play(self.game.son.fleche)
             self.lastProjectile = now
             self.cooldown=1000
             

@@ -5,7 +5,7 @@ from imageLoad import ImageLoad
 from PIL import Image
 from mob import Mob
 from joueur import Player
-
+from sound import Sound
 background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
 premierPAss=True
 class Game(pygame.sprite.Sprite):
@@ -17,6 +17,8 @@ class Game(pygame.sprite.Sprite):
         self.decalageMontagneX = self.getAffichageTuile()[self.affichagePersonalise][0]/100*self.infoObject.current_w
         self.decalageMontagneY = self.affichageTuile[self.affichagePersonalise][1]/100*self.infoObject.current_h
         self.images = ImageLoad()
+        self.son = Sound()
+        
         self.imCollision = self.images.getImCollision()
         self.map = 0
         self.mapMontagneMer = 0
@@ -44,7 +46,7 @@ class Game(pygame.sprite.Sprite):
         self.groupJoueur.add(self.joueur)
         
         self.probaGolemForet = 2
-        self.probaOursin = 0
+        self.probaOursin = 8
         self.probaKraken = 0
         self.probaMage = 0
         self.probaDragon = 0
@@ -65,6 +67,8 @@ class Game(pygame.sprite.Sprite):
             self.incendieDelay=pygame.time.get_ticks()
             return tuile
 
+
+        
         
         
         
