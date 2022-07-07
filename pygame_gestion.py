@@ -21,17 +21,20 @@ global moveY, moveX
 moveY=0
 moveX=0
 last = 0
-
-
+annimIncendieListe=[]
+annimIncendie=0
+for i in range(1,10):
+    annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png"))
 tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
 # initialise la taille de l'écran (largeur, hauteur) en pixel
 largeurEtHauteur = (0, 0)
 modification = False
+delayIncendie=500
 timeComtpeur=0
 def pygameInit():  # fonction servant à l'initialisation pygame
     
-    global infoObject, modification, joueur,timeComtpeur
+    global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie
     global largeurEtHauteur, fenetrePygame, moveX, moveY, last
     # if Options.music == True:
     # pygame.mixer.init()
@@ -50,7 +53,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
     affichagePersonalise = affichage()
     fenetrePygame = pygame.display.set_mode(
-        (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF)
+        (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF, pygame.FULLSCREEN)
     game = Game(infoObject, fenetrePygame)
     
     
@@ -67,7 +70,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
     librairieIMG = pygame.image.load("data/personnages/infoBulle/librairie.png").convert_alpha()
     health = pygame.image.load("data/menu/health.png").convert_alpha()
-    health = pygame.transform.scale(health, (70, 70))
+    health = pygame.transform.scale(health, (50, 50))
+    feuille = pygame.image.load("data/menu/feuille.png").convert_alpha()
+    feuille = pygame.transform.scale(feuille, (50, 50))
     listeInfoButton = [("data/menu/scierie")]
 
     tick_ressource=0
@@ -105,7 +110,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
     #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
-    #game.groupMob.add(Mob(game, "dragon", 100, 2, aerien=True))
+    #game.groupMob.add(Mob(game, "dragon", 100, 2,game.map[1][1], aerien=True))
     #game.groupMob.add(Mob(game, "mage", 50, 1, game.map[1][1]))
     #the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
@@ -115,7 +120,6 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         
         
         game.augmenterMob()
-        
         
         modification=False
         cliqueItem = False
@@ -129,6 +133,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             if mob.name=="oursin":
                 if game.avoirTuileJoueur(mob).trou:
                     game.joueur.changerImageBatiment(game.avoirTuileJoueur(mob), "trou_bouche")
+                    modification=True
+                    game.avoirTuileJoueur(mob).aEteModifie=True
                     game.avoirTuileJoueur(mob).trou=False
                     mob.kill()
                     
@@ -225,16 +231,29 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             # efface l'image pour pouvoir actualiser le jeu
             fenetrePygame.fill(BLACK)
 
+            ####CATASTROPHE
+
             
+                
+                
+                
+                
+            modification=True
             #affichage selection
             if tick_ressource==0:
                 tick_ressource=600
                 game.joueur.ajouterRessources()
                 game.spawMob()
+                
+                tuileCata = game.majCata()
+                if game.incendie and tuileCata:
+                    annimIncendieListe.append(tuileCata)
+                
             else:
                 tick_ressource-=1
 
             if modification:
+
                 game.genererImg()
 
             fenetrePygame.blit(game.mapImg, (moveX, moveY))
@@ -260,7 +279,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored:
-                    mob.update_health_bar(fenetrePygame)
+                    mob.update_health_bar()
             if tuile :
                 liste = selectionDispoItem(game, tuile, game.joueur)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
@@ -271,8 +290,25 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             for projectile in game.groupProjectile:              
                 fenetrePygame.blit(projectile.img, (projectile.rect.x, projectile.rect.y))                
 
+            
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
+            
+            if (annimIncendie or  game.incendie) and type(annimIncendieListe[-1])==Tuile :
+                
+                fenetrePygame.blit(annimIncendieListe[annimIncendie], (annimIncendieListe[-1].rect.x+50, annimIncendieListe[-1].rect.y-annimIncendieListe[annimIncendie].get_height()+100))
+                game.incendie=False
+                if pygame.time.get_ticks()-delayIncendie>250:
+                    annimIncendie+=1
+
+                    
+                    delayIncendie=pygame.time.get_ticks()
+                    if annimIncendie==9:
+                        annimIncendie=0
+                        game.joueur.detruireBatimentRessource(annimIncendieListe[-1])
+                        annimIncendieListe.pop(len(annimIncendieListe)-1)
+
+            
             
             #if game.joueur.estMort:
             #    fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
@@ -288,9 +324,10 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     else :
                         timeComtpeur = 0
                         game.joueur.resetRessourcesModified()
-            game.joueur.update_health_bar(fenetrePygame)
-            fenetrePygame.blit(health, (100,10))
-            
+            game.joueur.update_health_bar()
+            game.joueur.update_ecolo_bar()
+            fenetrePygame.blit(health, (120,15))
+            fenetrePygame.blit(feuille, (10,155))
             if tickBatiment<60:
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject.current_w-game.imageErreurRessource.get_width()-(infoObject.current_w-game.imageErreurRessource.get_width())/2,infoObject.current_h - 200))
                 tickBatiment+=1

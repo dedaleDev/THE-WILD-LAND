@@ -30,10 +30,10 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
 
           #ressources du joueur
-          self.wood = 350
+          self.wood = 5000#350
           self.stone = 150
-          self.food = 50
-          self.water = 100
+          self.food = 300#50
+          self.water = 800#100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -49,6 +49,9 @@ class Player(pygame.sprite.Sprite):
           
           self.cooldownDamage = 500
           self.lastDamage = 0
+          
+          self.indiceEcolo=0
+          self.MaxEcolo=100
           #deplacement
         
 
@@ -59,7 +62,7 @@ class Player(pygame.sprite.Sprite):
      def takeDamage(self, entier):
         if self.health >=0 :
             self.health-=entier
-            self.update_health_bar(self.game.fenetre)
+            self.update_health_bar()
         else :
             self.estMort=True
 
@@ -270,28 +273,42 @@ class Player(pygame.sprite.Sprite):
      def construireBatiment(self, tuile, item):
         if not self.majCout(item):
             return False
+        
         if item.nom == "scierie":
             self.game.map[tuile.posY][tuile.posX].scierie = True
             self.nbScierie+=1
+            self.indiceEcolo+=1
+            self.game.listeCaseBatiment.append(tuile)
             
         elif item.nom == "moulin":
             self.game.map[tuile.posY][tuile.posX].moulin = True
             self.nbMoulin+=1
+            self.indiceEcolo+=1
+            self.game.listeCaseBatiment.append(tuile)
         elif item.nom == "puit":
             self.game.map[tuile.posY][tuile.posX].puit = True
             self.nbPuit+=1
+            self.game.listeCaseBatiment.append(tuile)
         elif item.nom == "champs":
             self.game.map[tuile.posY][tuile.posX].champs = True
             self.nbChamps+=1
+            self.game.listeCaseBatiment.append(tuile)
+            
         elif item.nom == "elevage":
             self.game.map[tuile.posY][tuile.posX].elevage = True
             self.nbElevage+=1
+            self.indiceEcolo+=3
+            self.game.listeCaseBatiment.append(tuile)
         elif item.nom == "mine":
             self.game.map[tuile.posY][tuile.posX].mine = True
             self.nbMine+=1
+            self.game.listeCaseBatiment.append(tuile)
+            self.indiceEcolo+=2
         elif item.nom == "port":
             self.game.map[tuile.posY][tuile.posX].port = True
             self.nbPort+=1
+            self.indiceEcolo+=2
+            self.game.listeCaseBatiment.append(tuile)
         elif item.nom == "tour":
             self.game.map[tuile.posY][tuile.posX].tour = True
             tour = Tour(self.game, tuile, 1000, "tour", 10, 300)
@@ -299,18 +316,49 @@ class Player(pygame.sprite.Sprite):
             tuile.tour = tour
         elif item.nom == "pieux":
             self.game.map[tuile.posY][tuile.posX].pieux = True
+
         elif item.nom == "sableMouvant":
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
+            self.indiceEcolo+=10
         elif item.nom == "mortier":
             self.game.map[tuile.posY][tuile.posX].mortier = True
             mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
             self.game.groupDefense.add(mortier)
             tuile.mortier = mortier
+            self.indiceEcolo+=10
         elif item.nom=="trou":
             self.game.map[tuile.posY][tuile.posX].trou = True
         self.changerImageBatiment(tuile, item.nom)
+
         return True
     
+     def detruireBatimentRessource(self, tuile):
+         
+         if tuile.champs:
+            tuile.champs=False
+            self.nbChamps-=1
+         if tuile.elevage:
+            tuile.elevage=False
+            self.nbElevage-=1
+         if tuile.mine:
+            tuile.mine=False
+            self.nbMine-=1
+         if tuile.moulin:   
+            tuile.moulin=False
+            self.nbMoulin-=1
+         if tuile.scierie:
+             tuile.scierie=False
+             self.nbScierie-=1
+         if tuile.port:
+            tuile.port=False
+            self.nbPort-=1
+         if tuile.pieux:
+             tuile.pieux=False
+         tuile.image= self.game.images.returnImg(tuile.type)
+         tuile.imageO=self.game.images.returnImgO(tuile.type)
+         tuile.aEteModifie=True
+
+         return tuile
      
      def chargerImPort(self, tuile):
          ecartX = tuile.posX-self.posX
@@ -350,9 +398,9 @@ class Player(pygame.sprite.Sprite):
          self.setWater(3*self.nbMoulin)
          self.setFood(4*self.nbElevage + 1*self.nbChamps)
 
-     def update_health_bar(self, surface):
+     def update_health_bar(self):
         #def la couleur
-        infoObject = pygame.display.Info()  #récupère la taille de l'écran
+        
 
         if self.health >=80 : 
             bar_color = (111, 210, 46)
@@ -365,9 +413,28 @@ class Player(pygame.sprite.Sprite):
         else : 
             bar_color = (255, 0, 0)
         back_bar_color = (60,63,60)
-        bar_position = [110, 20, self.health*3, 50]
-        back_bar_position = [110, 20, self.max_health*3, 50]
+        bar_position = [160, 20, self.health*3, 40]
+        back_bar_position = [160, 20, self.max_health*3, 40]
         #dessiner la barre de vie
+        
+        pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)
+        pygame.draw.rect(self.game.fenetre, bar_color, bar_position)
+        
+     def update_ecolo_bar(self):
+        
+        if self.indiceEcolo >=80 : 
+            bar_color = (255, 0, 0)
+        elif self.indiceEcolo >=50 : 
+            bar_color = (255, 69, 0)
+        elif self.indiceEcolo >=25 : 
+            bar_color = (255, 165, 0)
+        else :
+            bar_color = (111, 210, 46)
 
-        pygame.draw.rect(surface, back_bar_color, back_bar_position)
-        pygame.draw.rect(surface, bar_color, bar_position)
+        back_bar_color = (60,63,60)
+        bar_position = [20, 200, 30, self.MaxEcolo*2-self.indiceEcolo*2]
+        back_bar_position = [20, 200, 30, self.MaxEcolo*2]
+        #dessiner la barre de vie
+        
+        pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)
+        pygame.draw.rect(self.game.fenetre, bar_color, bar_position)

@@ -111,6 +111,8 @@ class Mob(pygame.sprite.Sprite):
         return self.posX == posX and self.posY==posY
 
      def getFeet(self):
+         if self.name == "mage":
+             return self.rect.x+30, self.rect.y+100
          return self.rect.x+45, self.rect.y+50
      
      def caseBloquanteAutour(self, posX, posY):
@@ -172,7 +174,7 @@ class Mob(pygame.sprite.Sprite):
      def takeDamage(self, entier):
         if self.health >0 :
             self.health-=entier
-            self.update_health_bar(self.game.fenetre)
+            self.update_health_bar()
         if self.health<=0:
             if self.name=="mage":
                 self.game.joueur.health+=15
@@ -318,7 +320,7 @@ class Mob(pygame.sprite.Sprite):
      def goDown(self):
          self.rect.y+=self.velocity
 
-     def update_health_bar(self, surface):
+     def update_health_bar(self):
         #def la couleur
         infoObject = pygame.display.Info()  #récupère la taille de l'écran
         pourcentagePv = self.health/self.max_health*100
@@ -337,5 +339,5 @@ class Mob(pygame.sprite.Sprite):
         bar_position = [self.rect.x, self.rect.y-10, self.health, 5]
         back_bar_position = [self.rect.x, self.rect.y-10, self.max_health, 5]
         #dessiner la barre de vie
-        pygame.draw.rect(surface, back_bar_color, back_bar_position)
-        pygame.draw.rect(surface, bar_color, bar_position)
+        pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)
+        pygame.draw.rect(self.game.fenetre, bar_color, bar_position)

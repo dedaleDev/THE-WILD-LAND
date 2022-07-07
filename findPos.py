@@ -77,24 +77,7 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
     startTime = time.time()
     if aerien:
 
-        a=[[ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
- [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        a=game.mapVide
     elif not aqua :
         a = game.mapMontagneMer
     else :
@@ -114,6 +97,7 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
         m.append([])
         for j in range(len(a[i])):
             m[-1].append(0)
+    
     i,j = start
     
     try:
@@ -121,6 +105,8 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
     except IndexError:
         print("VOUS AVEZ TROUVE UN BUG !!! BRAVO, merci de l'envoyer aux créateurs avec tout le rapport d'erreur")
         print("fonction findPos, i,j=",i,j,"out of range try exept")
+        print("posFin, posDebut=", end[0], end[1])
+        print("hauteur = ", len(m), "largeur=", len(m[0]))
         return [[posDebutX, posDebutY]]
 
     k = 0

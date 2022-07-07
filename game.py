@@ -25,12 +25,13 @@ class Game(pygame.sprite.Sprite):
         self.mapImg = 0
         self.mapImgO = 0
         self.mapMer = 0
+        self.mapVide = 0
         self.listeCaseMer = 0
         self.listeCaseForet = 0
         self.listeCasePlaine=0
         self.listeCaseMontagne=0
         self.fenetre = fenetre
-        
+        self.listeCaseBatiment=[]
         self.taille_matriceY = generation.taille_matriceY
         self.taille_matriceX = generation.taille_matriceX
         
@@ -42,22 +43,37 @@ class Game(pygame.sprite.Sprite):
         self.groupJoueur=pygame.sprite.Group()
         self.groupJoueur.add(self.joueur)
         
-        self.probaDragon = 0
         self.probaGolemForet = 2
         self.probaOursin = 0
         self.probaKraken = 0
         self.probaMage = 0
-        
+        self.probaDragon = 0
         self.debutDePartie=0
+        self.incendieDelay=0
+        self.incendie=False
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png")
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
         return im
     
+    def majCata(self):
+        if self.joueur.indiceEcolo>60 and len(self.listeCaseBatiment)>0 and pygame.time.get_ticks()-self.incendieDelay >5000 and False: #INCENDIE
+            indice=random.randint(0, len(self.listeCaseBatiment)-1)
+            tuile = self.listeCaseBatiment[indice]
+            self.listeCaseBatiment.pop(indice)
+            self.incendie=True
+            self.incendieDelay=pygame.time.get_ticks()
+            return tuile
+
+        
+        
+        
+    
+    
     def augmenterMob(self):
         if pygame.time.get_ticks()-self.debutDePartie > 120000*6: #12min 
 
-            self.probaDragon = 0
+            self.probaDragon = 2
             self.probaGolemForet = 5
             self.probaOursin = 3
             self.probaKraken = 4
@@ -98,7 +114,7 @@ class Game(pygame.sprite.Sprite):
         
     def genererMatrice(self):
         self.map = generation.generation_matrice(self)
-        self.mapMontagneMer, self.mapMer, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map)
+        self.mapMontagneMer, self.mapMer, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map)
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]
@@ -161,7 +177,7 @@ class Game(pygame.sprite.Sprite):
         for y in range(generation.taille_matriceY):
             for x in range(generation.taille_matriceX):
                 if self.map[y][x].aEteModifie:        
-                   
+
                     if self.map[y][x].isExplored:
                         background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
                     else :
