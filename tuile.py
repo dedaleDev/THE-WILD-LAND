@@ -23,6 +23,8 @@ class Tuile(pygame.sprite.Sprite):
         self.tour = False
         self.pieux=False
         self.mortier=False
+        self.ventilo=False
+        self.frigo=False
         self.sableMouvant=False
         self.trou=False
         ####     GENREATION    ####

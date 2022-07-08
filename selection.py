@@ -62,8 +62,8 @@ def selectionDispoItem(game, tuile, joueur):
         elif tuile.type==4:
             optionDIspo.append(Item(game, "scierie", 0,0,100,0))
         elif tuile.type==5:
-            #optionDIspo.append(Item(game, "igloo", 20))
-            pass
+            optionDIspo.append(Item(game, "frigo", 300, 50, 0, 0))
+            optionDIspo.append(Item(game, "ventilo", 0, 0, 500, 400))
         elif tuile.type==6:
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))
             optionDIspo.append(Item(game, "trou", 15,0, 10, 0))

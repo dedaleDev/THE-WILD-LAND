@@ -22,7 +22,14 @@ moveY=0
 moveX=0
 last = 0
 annimIncendieListe=[]
+annimTremblementListe=[]
 annimIncendie=0
+
+nombreAnnimationIncendie=3
+
+for i in range(1,10):
+    im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png")
+    annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
 for i in range(1,10):
     annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png"))
 tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
@@ -34,10 +41,11 @@ delayIncendie=500
 timeComtpeur=0
 def pygameInit():  # fonction servant à l'initialisation pygame
     
-    global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie
+    global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie,nombreAnnimationIncendie, annimTremblementListe
     global largeurEtHauteur, fenetrePygame, moveX, moveY, last
      #if Options.music == True:
-    pygame.mixer.init()
+    
+    
     #music = pygame.mixer.music.load("data/Music/level0.mp3")
     # pygame.mixer.music.play(10)
     print("Génération de la map")
@@ -46,6 +54,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     BLACK = (0, 0, 0)
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
+    pygame.mixer.init()
 
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 30)
@@ -150,13 +159,24 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
             elif tuileMob.sableMouvant and not mob.aerien:
                 mob.takeDamage(0.3)
-                pygame.mixer.Sound(game.son.sableMouvantPassage)
+                pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
                 if not mob.slow:
                     mob.slow =True
                     
                     mob.velocity=mob.velocity/3
                     if mob.velocity<1:
                         mob.velocity=1
+                        
+            elif tuileMob.ventilo and not mob.aerien:
+                mob.takeDamage(0.5)
+                pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
+                if not mob.slow:
+                    mob.slow =True
+                    
+                    mob.velocity=mob.velocity/3
+                    if mob.velocity<1:
+                        mob.velocity=1
+                        
             elif mob.slow:
                  mob.slow =False
                  mob.velocity =mob.maxVelocity
@@ -246,11 +266,16 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 tick_ressource=600
                 game.joueur.ajouterRessources()
                 game.spawMob()
-                
                 tuileCata = game.majCata()
                 if game.incendie and tuileCata:
                     annimIncendieListe.append(tuileCata)
-                
+                    annimTremblementListe.append(tuileCata)
+                    choixIncendie = random.randint(0,1)
+                    if choixIncendie:
+                        pygame.mixer.Sound.play(game.son.incendie, maxtime=4000)
+                    else:
+                        #pygame.mixer.Sound.play(game.son.tremblement)
+                        pass
             else:
                 tick_ressource-=1
 
@@ -297,25 +322,35 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
             
             if (annimIncendie or  game.incendie) and type(annimIncendieListe[-1])==Tuile :
-                
-                fenetrePygame.blit(annimIncendieListe[annimIncendie], (annimIncendieListe[-1].rect.x+50, annimIncendieListe[-1].rect.y-annimIncendieListe[annimIncendie].get_height()+100))
+                if choixIncendie:
+                    entreImage=100
+                    fenetrePygame.blit(annimIncendieListe[annimIncendie], (annimIncendieListe[-1].rect.x+50, annimIncendieListe[-1].rect.y-annimIncendieListe[annimIncendie].get_height()+100))
+                else:
+                    entreImage=500
+                    fenetrePygame.blit(annimTremblementListe[annimIncendie], (annimTremblementListe[-1].rect.x+50, annimTremblementListe[-1].rect.y-annimTremblementListe[annimIncendie].get_height()+100))
                 game.incendie=False
-                if pygame.time.get_ticks()-delayIncendie>250:
+                if pygame.time.get_ticks()-delayIncendie>entreImage:
                     annimIncendie+=1
 
                     
                     delayIncendie=pygame.time.get_ticks()
                     if annimIncendie==9:
-                        annimIncendie=0
-                        game.joueur.detruireBatimentRessource(annimIncendieListe[-1])
-                        annimIncendieListe.pop(len(annimIncendieListe)-1)
+                        if nombreAnnimationIncendie>0:
+                            annimIncendie=1
+                            nombreAnnimationIncendie-=1
+                        else:
+                            game.joueur.detruireBatimentRessource(annimIncendieListe[-1])
+                            annimIncendieListe.pop(len(annimIncendieListe)-1)
+                            annimTremblementListe.pop(len(annimTremblementListe)-1)
+                            nombreAnnimationIncendie=3
+                            annimIncendie=0
 
             
             
             #if game.joueur.estMort:
             #    fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
             if librairie ==True :
-                    fenetrePygame.blit(librairieIMG,(infoObject.current_w-1256-(infoObject.current_w-1256)/2,200))
+                    fenetrePygame.blit(librairieIMG,(infoObject.current_w-librairieIMG.get_width()-(infoObject.current_w-librairieIMG.get_width())/2,200))
             for i in range(len(game.joueur.ressourcesIMG)):
                 fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
                 fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject.current_w-120-(190*i), 3/100*infoObject.current_h))

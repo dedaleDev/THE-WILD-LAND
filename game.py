@@ -59,7 +59,7 @@ class Game(pygame.sprite.Sprite):
         return im
     
     def majCata(self):
-        if self.joueur.indiceEcolo>60 and len(self.listeCaseBatiment)>0 and pygame.time.get_ticks()-self.incendieDelay >5000 and False: #INCENDIE
+        if self.joueur.indiceEcolo>2 and len(self.listeCaseBatiment)>0 and pygame.time.get_ticks()-self.incendieDelay >5000 : #INCENDIE
             indice=random.randint(0, len(self.listeCaseBatiment)-1)
             tuile = self.listeCaseBatiment[indice]
             self.listeCaseBatiment.pop(indice)
@@ -169,7 +169,7 @@ class Game(pygame.sprite.Sprite):
                     if tuile.estPlaine():
                         rand = random.randint(1,400)
                         if rand <= self.probaOursin:
-                            self.groupMob.add(Mob(self, "oursin", 150, 3, tuile, pique=True))
+                            self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, pique=True))
                     if tuile.estMer():
                         rand = random.randint(1,400)
                         if rand <= self.probaKraken:

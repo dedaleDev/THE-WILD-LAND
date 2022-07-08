@@ -273,6 +273,14 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_trou.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("trou", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_frigo.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("frigo", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_ventilo.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("ventilo", imgTemp))
         return listeImgItem
 
 
@@ -391,7 +399,7 @@ class ImageLoad():
                 return elem[1]
         assert(False)
         #Pas d'image d'item trouvé
-        return False
+
 
     def ImInfoBullItem(self, nom, chemin="data/batiments/infoBulle/info_"):
         img = pygame.image.load(chemin+nom+".png")

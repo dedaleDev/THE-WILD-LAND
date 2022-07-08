@@ -30,10 +30,10 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
 
           #ressources du joueur
-          self.wood = 350
-          self.stone = 150
-          self.food = 50
-          self.water = 100
+          self.wood = 3000#350
+          self.stone = 20000#150
+          self.food = 5000#50
+          self.water = 2000#100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -45,6 +45,9 @@ class Player(pygame.sprite.Sprite):
           self.nbPort = 0
           self.nbElevage=0
           self.nbChamps=0
+          self.nbFrigo=0
+          
+          
           self.listeTour=[]
           
           self.cooldownDamage = 500
@@ -334,8 +337,23 @@ class Player(pygame.sprite.Sprite):
             self.indiceEcolo+=10
         elif item.nom=="trou":
             self.game.map[tuile.posY][tuile.posX].trou = True
-            pygame.mixer.Sound.play(self.game.son.trouCreuse, maxtime=1000)
+            pygame.mixer.Sound.play(self.game.son.trouCreuse, maxtime=900)
+            
+        elif item.nom=="frigo": 
+            self.game.map[tuile.posY][tuile.posX].frigo = True
+            self.nbFrigo+=1
+            pygame.mixer.Sound.play(self.game.son.frigo, fade_ms=1000)
+        elif item.nom=="ventilo": 
+            self.game.map[tuile.posY][tuile.posX].ventilo = True
+
+            
+            
+            
+            
         self.changerImageBatiment(tuile, item.nom)
+        
+        
+            
 
         return True
     
@@ -404,7 +422,7 @@ class Player(pygame.sprite.Sprite):
          #self.setWater(1*self.nbPuit)
          self.setWater(3*self.nbMoulin)
          self.setFood(4*self.nbElevage + 1*self.nbChamps)
-
+         self.indiceEcolo-=self.nbFrigo*0.5
      def update_health_bar(self):
         #def la couleur
         
