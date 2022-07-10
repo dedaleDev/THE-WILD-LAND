@@ -409,9 +409,10 @@ class Player(pygame.sprite.Sprite):
      
      def changerImageBatiment(self, tuile, nom):
           if nom=="port":
-              tuile.imageO  = self.chargerImPort(tuile)
+              imgTemp = self.chargerImPort(tuile)
           else:
-              tuile.imageO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
+              imgTemp = Image.open("data/batiments/"+nom+".png").convert('RGBA')
+          tuile.imageO = imgTemp.resize((150, 150))
           tuile.aEteModifie=True
 
      def ajouterRessources(self):

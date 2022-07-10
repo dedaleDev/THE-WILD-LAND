@@ -16,7 +16,7 @@ from game import background_pil
 from findPos import *
 fenetrePygame = ""
 infoObject = 0
-suiviePerso=160
+
 global moveY, moveX
 moveY=0
 moveX=0
@@ -27,12 +27,11 @@ annimIncendie=0
 
 nombreAnnimationIncendie=3
 
-#for i in range(1,10):
-#    im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png")
-#    annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
+for i in range(1,10):
+    im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png")
+    annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
 for i in range(1,10):
     annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png"))
-annimTremblementListe=annimIncendieListe
 tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
 # stocke la largeur et la hauteur de l'écran de l'utilisateur
 # initialise la taille de l'écran (largeur, hauteur) en pixel
@@ -72,6 +71,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
+    Imselection = pygame.transform.scale(Imselection, (150,150))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
     bookicon = pygame.image.load("data/menu/book.png").convert_alpha()
@@ -411,7 +411,6 @@ def KEY_move(game,joueur,fenetre):
     
     if keys[K_d] or keys[K_RIGHT]:
         if joueur.deplacementAutorise("droite") :
-            deplacementCamDroite((infoObject.current_w-suiviePerso, 0), game, game.joueur, game.groupMob)
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
             joueur.setPos(tuile)
@@ -425,7 +424,6 @@ def KEY_move(game,joueur,fenetre):
                 
     if keys[K_q]or keys[K_LEFT]:
             if joueur.deplacementAutorise("gauche"):
-                deplacementCamGauche((suiviePerso, 0), game, game.joueur, game.groupMob)
                 #joueur.majBateau()
                 joueur.goLeft()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -438,7 +436,6 @@ def KEY_move(game,joueur,fenetre):
 
     if keys[K_z] or keys[K_UP]:
             if joueur.deplacementAutorise("haut"):
-                deplacementCamHaut((0, suiviePerso), game, game.joueur, game.groupMob)
                 #joueur.majBateau()
                 joueur.goUp()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
@@ -449,9 +446,7 @@ def KEY_move(game,joueur,fenetre):
                             modification=True
 
     if keys[K_s]or keys[K_DOWN]:
-            
             if joueur.deplacementAutorise("bas"):
-                deplacementCamBas((0, infoObject.current_h-suiviePerso), game, game.joueur, game.groupMob)
                 joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -491,9 +486,8 @@ def deplacementCamBas(mouse, game, joueur, listeMob):
     global moveY, moveX
     x=infoObject.current_h-mouse[1]
     y=f(x)
-    
     if x < 200 :  # Si souris en bas
-        print(x)
+        
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerY(y)
@@ -507,13 +501,13 @@ def deplacementCamBas(mouse, game, joueur, listeMob):
             defense.rect.y+=y
     
 
+
+        
 def deplacementCamHaut(mouse, game, joueur, listeMob):
     global moveY, moveX
     x = mouse[1]
     y = -f(x)
-    
     if x < 200 : #Si souris en haut
-        print(x)
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerY(y)
@@ -549,7 +543,6 @@ def deplacementCamDroite(mouse, game, joueur, listeMob):
     y=f(x)
 
     if x < 200:  # Si souris à droite
-
         for i in range(len(game.map)):
             for j in range(len(game.map[0])):
                 game.map[i][j].decalerX(y)

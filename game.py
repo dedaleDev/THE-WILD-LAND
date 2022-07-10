@@ -6,7 +6,7 @@ from PIL import Image
 from mob import Mob
 from joueur import Player
 from sound import Sound
-background_pil = Image.new('RGBA',(247*generation.taille_matriceX,143*generation.taille_matriceY), 0)
+background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
 premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre):
@@ -207,6 +207,7 @@ class Game(pygame.sprite.Sprite):
 
     def openFog(self):
         imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
+        imgTemp = imgTemp.resize((150, 150))
         return imgTemp
     
 
