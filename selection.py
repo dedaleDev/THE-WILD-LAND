@@ -1,3 +1,4 @@
+
 import generation
 from item import Item
 def majSelection(game, pos, joueur=False):
@@ -40,31 +41,35 @@ def majSelectionJoueur(game, pos):
             touching = game.map[i][j].rect.collidepoint(souris) and game.map[i][j].mask.get_at(pos_in_mask)
             if touching :
                 tuileSelect = game.map[i][j]
-
+    if not tuileSelect:
+        print("attention majSelectionJoueur n'a pas trouvé de tuile en", pos)
+        #Pour ne pas crash, decommenter la ligne suivante, après avoir fait suivre le bug
+        return game.map[1][1]
+        assert(False)
     return tuileSelect
 
 def selectionDispoItem(game, tuile, joueur):
     optionDIspo = []
     if tuile.isExplored and not joueur.bateau:
-        if tuile.type==1:
+        if tuile.type==1 and not tuile.elevage and not tuile.champs and not tuile.tour and not tuile.pieux:
             optionDIspo.append(Item(game, "elevage", 175, 25,0,0))
             optionDIspo.append(Item(game, "champs", 50, 0,0,0))
             optionDIspo.append(Item(game, "tour", 0, 0, 0, 300 ))
             optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
-        elif tuile.type==2:
+        elif tuile.type==2 and not tuile.forge and not tuile.mine and not tuile.mortier:
             optionDIspo.append(Item(game, "forge", 0,0,0,0))
             optionDIspo.append(Item(game, "mine", 0,0,50,50))
             optionDIspo.append(Item(game, "mortier", 0,0,0,200))
-        elif tuile.type==3:
+        elif tuile.type==3 and not tuile.moulin and not tuile.port:
             optionDIspo.append(Item(game, "moulin", 0,0,100,0))
             if not game.avoirTuileJoueur(joueur).port:
                 optionDIspo.append(Item(game, "port", 0,0,250,0))
-        elif tuile.type==4:
+        elif tuile.type==4 and not tuile.scierie:
             optionDIspo.append(Item(game, "scierie", 0,0,100,0))
-        elif tuile.type==5:
+        elif tuile.type==5 and not tuile.frigo and not tuile.ventilo:
             optionDIspo.append(Item(game, "frigo", 300, 50, 0, 0))
             optionDIspo.append(Item(game, "ventilo", 0, 0, 500, 400))
-        elif tuile.type==6:
+        elif tuile.type==6 and not tuile.sableMouvant and not tuile.trou:
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))
             optionDIspo.append(Item(game, "trou", 15,0, 10, 0))
 

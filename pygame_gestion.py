@@ -24,7 +24,7 @@ last = 0
 annimIncendieListe=[]
 annimTremblementListe=[]
 annimIncendie=0
-
+suiviePerso=150
 nombreAnnimationIncendie=3
 
 for i in range(1,10):
@@ -71,7 +71,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
-    Imselection = pygame.transform.scale(Imselection, (150,150))
+    Imselection = pygame.transform.scale(Imselection, (246,144))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
     bookicon = pygame.image.load("data/menu/book.png").convert_alpha()
@@ -116,7 +116,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
     #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     #game.groupMob.add(Mob(game, "dragon", 100, 2,game.map[1][1], aerien=True))
@@ -147,6 +147,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     game.avoirTuileJoueur(mob).aEteModifie=True
                     game.avoirTuileJoueur(mob).trou=False
                     mob.kill()
+                    
                     
             
             tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
@@ -280,10 +281,17 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 tick_ressource-=1
 
             if modification:
+                pass
+                #game.genererImg()
 
-                game.genererImg()
-
-            fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            for y in range(25):
+                for x in range(25):
+                    if game.map[y][x].isExplored:
+                        fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                    else :
+                        fenetrePygame.blit(game.imageFog2, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+            #fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            #fenetrePygame.blit(game.mapImgSuperpose, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             fenetrePygame.blit(bookicon, (0,80))
             
@@ -411,6 +419,7 @@ def KEY_move(game,joueur,fenetre):
     
     if keys[K_d] or keys[K_RIGHT]:
         if joueur.deplacementAutorise("droite") :
+            deplacementCamDroite((infoObject.current_w - suiviePerso,0), game, game.joueur, game.groupMob)
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
             joueur.setPos(tuile)
@@ -425,6 +434,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_q]or keys[K_LEFT]:
             if joueur.deplacementAutorise("gauche"):
                 #joueur.majBateau()
+                deplacementCamGauche((suiviePerso, 0), game, game.joueur, game.groupMob)
                 joueur.goLeft()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -437,6 +447,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_z] or keys[K_UP]:
             if joueur.deplacementAutorise("haut"):
                 #joueur.majBateau()
+                deplacementCamHaut((0,suiviePerso), game, game.joueur, game.groupMob)
                 joueur.goUp()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -447,6 +458,7 @@ def KEY_move(game,joueur,fenetre):
 
     if keys[K_s]or keys[K_DOWN]:
             if joueur.deplacementAutorise("bas"):
+                deplacementCamBas((0, infoObject.current_h-suiviePerso), game, game.joueur, game.groupMob)
                 joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)

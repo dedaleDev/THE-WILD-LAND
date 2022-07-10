@@ -7,6 +7,9 @@ from mob import Mob
 from joueur import Player
 from sound import Sound
 background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
+background_pil_superpose = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
+
+
 premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre):
@@ -23,9 +26,12 @@ class Game(pygame.sprite.Sprite):
         self.map = 0
         self.mapMontagneMer = 0
         self.imageFog = self.openFog()
+        self.imageFog2 = self.openFog2()
         self.imageErreurRessource = self.openImageRessource()
         self.mapImg = 0
         self.mapImgO = 0
+        self.mapImgO_superpose = 0
+        self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
         self.mapMer = 0
         self.mapVide = 0
         self.listeCaseMer = 0
@@ -53,6 +59,7 @@ class Game(pygame.sprite.Sprite):
         self.debutDePartie=0
         self.incendieDelay=0
         self.incendie=False
+        
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png")
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
@@ -183,17 +190,31 @@ class Game(pygame.sprite.Sprite):
                 if self.map[y][x].aEteModifie:        
 
                     if self.map[y][x].isExplored:
-                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
+                        if premierPAss:
+                            background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
+                        else:
+                            background_pil_superpose.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
                     else :
-                        background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                        if premierPAss:
+                            background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                        else:
+                            background_pil_superpose.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                            
+                            
                     self.map[y][x].aEteModifie=False
                     modification=True                    
         if modification:
 
             if premierPAss:
                 self.mapImg = pygame.image.frombuffer(background_pil.tobytes(), background_pil.size, "RGBA").convert_alpha()
-
+                premierPAss=False
+            else:
+                
+                a=background_pil_superpose.tobytes()
+                #pygame.image.frombuffer(a, background_pil.size, "RGBA").convert_alpha()
+                #self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
             self.mapImgO = background_pil
+            self.mapImgO_superpose = background_pil_superpose
 
 
     def collerImageBackground(self, tuile):
@@ -207,9 +228,12 @@ class Game(pygame.sprite.Sprite):
 
     def openFog(self):
         imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
-        imgTemp = imgTemp.resize((150, 150))
+        imgTemp = imgTemp.resize((246, 144))
         return imgTemp
-    
+    def openFog2(self):
+        imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (246, 144))
+        return imgTemp
 
     def deleteFog(self,x,y):
         modification = False

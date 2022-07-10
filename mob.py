@@ -75,38 +75,38 @@ class Mob(pygame.sprite.Sprite):
         if posY == self.posY and posX-self.posX>0:
             self.goUp()
             self.goRight()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-75/2, self.getFeet()[1]+75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]+142/4))
             self.setPos(newTuile)
         if posY==self.posY and posX-self.posX<0:
             self.goDown()
             self.goLeft()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+75/2, self.getFeet()[1]-75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]-142/4))
             self.setPos(newTuile)
         if posX==self.posX and posY-self.posY>0:
             self.goRight()
             self.goDown()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-75/2, self.getFeet()[1]-75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]-142/4))
             self.setPos(newTuile)
         if posX==self.posX and posY-self.posY<0:
             self.goUp()
             self.goLeft()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+75/2, self.getFeet()[1]+75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]+142/4))
             self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY>0:
             self.goRight()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-75, self.getFeet()[1]))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/2, self.getFeet()[1]))
             self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY<0:
             self.goUp()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+75))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+142/2))
             self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY<0:
             self.goLeft()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+75, self.getFeet()[1]))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/2, self.getFeet()[1]))
             self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY>0:
             self.goDown()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-75))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-142/2))
             self.setPos(newTuile)
         return self.posX == posX and self.posY==posY
 

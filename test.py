@@ -1,5 +1,3 @@
-a =1
-if a :
-    print("if")
-else :
-    print("else")
+a =2
+print(a//2)
+print(a/2)

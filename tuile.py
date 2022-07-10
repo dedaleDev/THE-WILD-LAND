@@ -73,14 +73,14 @@ class Tuile(pygame.sprite.Sprite):
 
 
     def avoirX(self):
-        return self.posX*74+self.posY*74-10
+        return self.posX*244//2+self.posY*244//2-10
 
     def estPlaine(self):
         return self.type==1
     def estForet(self):
         return self.type==4
     def avoirY(self):
-        return self.posY*74-self.posX*74+75*self.game.taille_matriceY
+        return self.posY*142//2-self.posX*142//2+142//2*self.game.taille_matriceY
 
     def caseBloquante(self):
         return self.type==2 or self.type==7 or self.type == 3

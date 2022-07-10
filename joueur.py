@@ -172,18 +172,18 @@ class Player(pygame.sprite.Sprite):
             
          
          if tuile:
-            if self.tuileInterdit(tuile):
+            if self.tuileInterdit(tuile): #gestion de deplacement entre 2 cases
                 if direction=="bas":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity+10))
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity+20))
                     
                 if direction=="droite":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity+10, self.getFeet()[1]))
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity+30, self.getFeet()[1]))
             
                 if direction=="gauche":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity-10, self.getFeet()[1]))
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity-30, self.getFeet()[1]))
                     
                 if direction=="haut":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity-10))
+                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity-20))
                     
                 
             return not self.tuileInterdit(tuile)
@@ -390,29 +390,38 @@ class Player(pygame.sprite.Sprite):
          ecartY = tuile.posY-self.posY
          if ecartX==0 and ecartY == 1:
              imgTemp = Image.open("data/batiments/port/port2.png").convert('RGBA')
+             imgTemp2 = pygame.image.load("data/batiments/port/port2.png").convert_alpha()
          if ecartX==-1 and ecartY == 0:
              imgTemp = Image.open("data/batiments/port/port3.png").convert('RGBA')
+             imgTemp2 = pygame.image.load("data/batiments/port/port3.png").convert_alpha()
          if ecartX==0 and ecartY == -1:
              imgTemp = Image.open("data/batiments/port/port1.png").convert('RGBA')
+             imgTemp2 = pygame.image.load("data/batiments/port/port1.png").convert_alpha()
          if ecartX == 1 and ecartY == 0:
              imgTemp = Image.open("data/batiments/port/port0.png").convert('RGBA')
+             imgTemp2 = pygame.image.load("data/batiments/port/port0.png").convert_alpha()
          if ecartX == 1 and ecartY == -1:
              imgTemp = Image.open("data/batiments/port/port"+str(random.randint(0,1))+".png").convert('RGBA')
+             imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.randint(0,1))+".png").convert_alpha()
          if ecartX == -1 and ecartY == 1:
              imgTemp = Image.open("data/batiments/port/port"+str(random.randint(2,3))+".png").convert('RGBA')
+             imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.randint(2,3))+".png").convert_alpha()
          if ecartX == 1 and ecartY == 1:
              imgTemp = Image.open("data/batiments/port/port"+str(random.choice([0,2]))+".png").convert('RGBA')
+             imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.choice([0,2]))+".png").convert_alpha()
          if ecartX == -1 and ecartY == -1:
              imgTemp = Image.open("data/batiments/port/port"+str(random.choice([1,3]))+".png").convert('RGBA')
-
-         return imgTemp
+             imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.choice([1,3]))+".png").convert_alpha()
+         return imgTemp, imgTemp2
      
      def changerImageBatiment(self, tuile, nom):
           if nom=="port":
-              imgTemp = self.chargerImPort(tuile)
+              imgTempO, imgTemp = self.chargerImPort(tuile)
+              
           else:
-              imgTemp = Image.open("data/batiments/"+nom+".png").convert('RGBA')
-          tuile.imageO = imgTemp.resize((150, 150))
+              imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
+              imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
+          tuile.imageO = imgTempO.resize((246, 144))
           tuile.aEteModifie=True
 
      def ajouterRessources(self):
