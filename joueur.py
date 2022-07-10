@@ -422,6 +422,7 @@ class Player(pygame.sprite.Sprite):
               imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
               imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
           tuile.imageO = imgTempO.resize((246, 144))
+          tuile.image = pygame.transform.scale(imgTemp,(246, 144))
           tuile.aEteModifie=True
 
      def ajouterRessources(self):
