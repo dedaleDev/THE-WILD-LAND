@@ -1,5 +1,4 @@
 from random import randint
-from tokenize import group
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
@@ -7,11 +6,8 @@ from inventaire import Inventaire
 import main_menu
 from generation import *
 from mob import Mob
-
-from projectile import Projectile
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
 from game import Game
-from item import Item
 from game import background_pil
 from findPos import *
 fenetrePygame = ""
@@ -27,13 +23,6 @@ annimIncendie=0
 suiviePerso=150
 nombreAnnimationIncendie=3
 
-for i in range(1,10):
-    im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png")
-    annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
-for i in range(1,10):
-    annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png"))
-tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
-# stocke la largeur et la hauteur de l'écran de l'utilisateur
 # initialise la taille de l'écran (largeur, hauteur) en pixel
 largeurEtHauteur = (0, 0)
 modification = False
@@ -60,18 +49,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     pygame.key.set_repeat(1, 30)
 
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
-    affichagePersonalise = affichage()
-    fenetrePygame = pygame.display.set_mode(
-        (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF, pygame.FULLSCREEN)
+    fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
     game = Game(infoObject, fenetrePygame)
-    
-    
-    
     
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
-    Imselection = pygame.transform.scale(Imselection, (246,144))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
     bookicon = pygame.image.load("data/menu/book.png").convert_alpha()
@@ -82,13 +65,16 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     health = pygame.transform.scale(health, (50, 50))
     feuille = pygame.image.load("data/menu/feuille.png").convert_alpha()
     feuille = pygame.transform.scale(feuille, (50, 50))
-    listeInfoButton = [("data/menu/scierie")]
+
+    for i in range(1,10):
+        im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png").convert_alpha()
+        annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
+    for i in range(1,10):
+        annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png").convert_alpha())
 
     tick_ressource=0
     move_ticker=0
-    cooldown=0
     tuile=False
-    fini=True
     librairie=False
     tickBatiment=1000
 
@@ -132,7 +118,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         
         modification=False
         cliqueItem = False
-        modification, tuileTemp = KEY_move(game, game.joueur, fenetrePygame)
+        modification = KEY_move(game, game.joueur, fenetrePygame)
         
         listeColide = game.checkCollision(game.joueur, game.groupMob)
         
@@ -185,11 +171,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         for event in pygame.event.get():
             if event.type == QUIT:
                 continuer = False
-                
-                
-            
 
-        
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 
                 for item in inventaire.listeItem: 
@@ -199,8 +181,6 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         cliqueItem=True
                         if not batimentConstruit:
                             tickBatiment=0
-                            
-                            
 
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
@@ -396,21 +376,6 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         clock.tick(60)
            
 
-
-
-
-
-
-
-
-
-
-
-def affichage():
-        for i in range(len(tailleEcran)):
-            if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
-                return i
-        return 2
     
 def KEY_move(game,joueur,fenetre):
     modification=False
