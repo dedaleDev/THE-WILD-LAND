@@ -97,7 +97,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     for i in range(-1, 2):
         for j in range(-1, 2):
             game.deleteFog(game.joueur.posX+i, game.joueur.posY+j)
-    game.genererImg()
+    #game.genererImg()
 
 
     for deplacement in range(1675-infoObject.current_w):

@@ -45,7 +45,7 @@ class Tuile(pygame.sprite.Sprite):
         self.posX = posX
         self.posY = posY
         self.image= game.images.returnImg(self.type)
-        self.imageO=game.images.returnImgO(self.type)
+        self.imageO=0#game.images.returnImgO(self.type)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.avoirX()
@@ -87,7 +87,8 @@ class Tuile(pygame.sprite.Sprite):
     
     def setType(self, entier):
         self.type=entier
-        self.imageO = self.game.images.returnImgO(entier)
+        self.image = self.game.images.returnImg(entier)
+        #self.imageO = self.game.images.returnImgO(entier)
 
     
 

@@ -4,7 +4,7 @@ from PIL import Image
 class ImageLoad():
     def __init__(self):
         self.listeImg = self.loadImg()
-        self.listeImgO = self.loadImgO()
+        #self.listeImgO = self.loadImgO()
         self.listeImgItem = self.loadImgItem()
         self.imgFleche = self.loadImgFleche()
         self.imgAcide = self.loadImgAcide()

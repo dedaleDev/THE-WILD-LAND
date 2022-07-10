@@ -380,7 +380,7 @@ class Player(pygame.sprite.Sprite):
          if tuile.pieux:
              tuile.pieux=False
          tuile.image= self.game.images.returnImg(tuile.type)
-         tuile.imageO=self.game.images.returnImgO(tuile.type)
+         #tuile.imageO=self.game.images.returnImgO(tuile.type)
          tuile.aEteModifie=True
 
          return tuile
