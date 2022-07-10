@@ -1,10 +1,8 @@
 import pygame
 import random
-from PIL import Image
 class ImageLoad():
     def __init__(self):
         self.listeImg = self.loadImg()
-        #self.listeImgO = self.loadImgO()
         self.listeImgItem = self.loadImgItem()
         self.imgFleche = self.loadImgFleche()
         self.imgAcide = self.loadImgAcide()
@@ -17,218 +15,77 @@ class ImageLoad():
         #fonction pour charger la bonne image
     # si exploration
         imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
-        imgTemp=pygame.transform.scale(imgTemp, (246, 144))
         listeImg.append(imgTemp)
     # si Terre
         imgTemp0 = pygame.image.load("data/tuiles/1Terre0.png").convert_alpha()
-        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
         
         imgTemp1 = pygame.image.load("data/tuiles/1Terre1.png").convert_alpha()
-        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
         
         imgTemp2 = pygame.image.load("data/tuiles/1Terre2.png").convert_alpha()
-        imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
         
         imgTemp3 = pygame.image.load("data/tuiles/1Terre3.png").convert_alpha()
-        imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
         
         imgTemp4 = pygame.image.load("data/tuiles/1Terre4.png").convert_alpha()
-        imgTemp4=pygame.transform.scale(imgTemp4, (246, 144))
         
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3, imgTemp4))
     #Roche
         imgTemp0 = pygame.image.load("data/tuiles/2Roche0.png").convert_alpha()
-        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
         
         imgTemp1 = pygame.image.load("data/tuiles/2Roche1.png").convert_alpha()
-        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
         
         imgTemp2 = pygame.image.load("data/tuiles/2Roche2.png").convert_alpha()
-        imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
         
         imgTemp3 = pygame.image.load("data/tuiles/2Roche3.png").convert_alpha()
-        imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
         
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
     #eau
         imgTemp0 = pygame.image.load("data/tuiles/3Eau0.png").convert_alpha()
-        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
         
         imgTemp1 = pygame.image.load("data/tuiles/3Eau1.png").convert_alpha()
-        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
         
         imgTemp2 = pygame.image.load("data/tuiles/3Eau2.png").convert_alpha()
-        imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
+
         
         imgTemp3 = pygame.image.load("data/tuiles/3Eau3.png").convert_alpha()
-        imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
 
         imgTemp4 = pygame.image.load("data/tuiles/3Eau4.png").convert_alpha()
-        imgTemp4=pygame.transform.scale(imgTemp4, (246, 144))
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3,imgTemp4))
     #Foret
         imgTemp0 = pygame.image.load("data/tuiles/4Foret0.png").convert_alpha()
-        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
         
         imgTemp1 = pygame.image.load("data/tuiles/4Foret1.png").convert_alpha()
-        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
         
         imgTemp2 = pygame.image.load("data/tuiles/4Foret2.png").convert_alpha()
-        imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
         
         imgTemp3 = pygame.image.load("data/tuiles/4Foret3.png").convert_alpha()
-        imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
     #neige
         imgTemp0 = pygame.image.load("data/tuiles/5Neige0.png").convert_alpha()
-        imgTemp0=pygame.transform.scale(imgTemp, (246, 144))
         
         
         imgTemp1 = pygame.image.load("data/tuiles/5Neige1.png").convert_alpha()
-        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
+ 
         
         imgTemp2 = pygame.image.load("data/tuiles/5Neige2.png").convert_alpha()
-        imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
         listeImg.append((imgTemp0, imgTemp1, imgTemp2))
     #Desert
         imgTemp = pygame.image.load("data/tuiles/6Desert0.png").convert_alpha()
-        imgTemp=pygame.transform.scale(imgTemp, (246, 144))
         imgTemp2 = pygame.image.load("data/tuiles/6Desert1.png").convert_alpha()
-        imgTemp2 =pygame.transform.scale(imgTemp2, (246, 144))
         imgTemp3 = pygame.image.load("data/tuiles/6Desert2.png").convert_alpha()
-        imgTemp3 =pygame.transform.scale(imgTemp3, (246, 144))
         imgTemp4 = pygame.image.load("data/tuiles/6Desert3.png").convert_alpha()
-        imgTemp4 =pygame.transform.scale(imgTemp4, (246, 144))
         imgTemp5 = pygame.image.load("data/tuiles/6Desert4.png").convert_alpha()
-        imgTemp5 =pygame.transform.scale(imgTemp5, (246, 144))
         listeImg.append((imgTemp, imgTemp2, imgTemp3, imgTemp4, imgTemp5))
     #Barriere
         imgTemp0 = pygame.image.load("data/tuiles/7Barriere0.png").convert_alpha()
-        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
         
         imgTemp1 = pygame.image.load("data/tuiles/7Barriere1.png").convert_alpha()
-        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
         
         imgTemp2 = pygame.image.load("data/tuiles/7Barriere2.png").convert_alpha()
-        imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
         
         imgTemp3 = pygame.image.load("data/tuiles/7Barriere3.png").convert_alpha()
-        imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
         
         return listeImg
-
-    
-    def loadImgO(self):
-        #fonction pour charger la bonne image
-# si exploration
-            listeImgO=[]
-            imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
-            imgTemp = imgTemp.resize((246, 144))
-            listeImgO.append(imgTemp)
-# si Terre
-            imgTemp0 = Image.open("data/tuiles/1Terre0.png").convert('RGBA')
-            imgTemp0 = imgTemp0.resize((246, 144))
-            
-            imgTemp1 = Image.open("data/tuiles/1Terre1.png").convert('RGBA')
-            imgTemp1 = imgTemp1.resize((246, 144))
-            
-            imgTemp2 = Image.open("data/tuiles/1Terre2.png").convert('RGBA')
-            imgTemp2 = imgTemp2.resize((246, 144))
-            
-            imgTemp3 = Image.open("data/tuiles/1Terre3.png").convert('RGBA')
-            imgTemp3 = imgTemp3.resize((246, 144))
-            
-            imgTemp4 = Image.open("data/tuiles/1Terre4.png").convert('RGBA')
-            imgTemp4 = imgTemp4.resize((246, 144))
-            listeImgO.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3, imgTemp4))
-#Roche  
-            imgTemp0 = Image.open("data/tuiles/2Roche0.png").convert('RGBA')
-            imgTemp0 = imgTemp0.resize((246, 144))
-            
-            imgTemp1 = Image.open("data/tuiles/2Roche1.png").convert('RGBA')
-            imgTemp1 = imgTemp1.resize((246, 144))
-            
-            imgTemp2 = Image.open("data/tuiles/2Roche2.png").convert('RGBA')
-            imgTemp2 = imgTemp2.resize((246, 144))
-            
-            imgTemp3 = Image.open("data/tuiles/2Roche3.png").convert('RGBA')
-            imgTemp3 = imgTemp3.resize((246, 144))
-            
-            
-            listeImgO.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
-#eau
-            imgTemp0 = Image.open("data/tuiles/3Eau0.png").convert('RGBA')
-            imgTemp0 = imgTemp0.resize((246, 144))
-            
-            imgTemp1 = Image.open("data/tuiles/3Eau1.png").convert('RGBA')
-            imgTemp1 = imgTemp1.resize((246, 144))
-            
-            imgTemp2 = Image.open("data/tuiles/3Eau2.png").convert('RGBA')
-            imgTemp2 = imgTemp2.resize((246, 144))
-            
-            imgTemp3 = Image.open("data/tuiles/3Eau3.png").convert('RGBA')
-            imgTemp3 = imgTemp3.resize((246, 144))
-
-            imgTemp4 = Image.open("data/tuiles/3Eau4.png").convert('RGBA')
-            imgTemp4 = imgTemp4.resize((246, 144))
-            
-            listeImgO.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3,imgTemp4))
-            
-            
-#Foret
-            imgTemp0 = Image.open("data/tuiles/4Foret0.png").convert('RGBA')
-            imgTemp0 = imgTemp0.resize((246, 144))
-            
-            imgTemp1 = Image.open("data/tuiles/4Foret1.png").convert('RGBA')
-            imgTemp1 = imgTemp1.resize((246, 144))
-            
-            imgTemp2 = Image.open("data/tuiles/4Foret2.png").convert('RGBA')
-            imgTemp2 = imgTemp2.resize((246, 144))
-            
-            imgTemp3 = Image.open("data/tuiles/4Foret3.png").convert('RGBA')
-            imgTemp3 = imgTemp3.resize((246, 144))
-            
-            listeImgO.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
- #neige
-            imgTemp0 = Image.open("data/tuiles/5Neige0.png").convert('RGBA')
-            imgTemp0= imgTemp0.resize((246, 144))
-            
-            imgTemp1 = Image.open("data/tuiles/5Neige1.png").convert('RGBA')
-            imgTemp1= imgTemp1.resize((246, 144))
-            
-            imgTemp2 = Image.open("data/tuiles/5Neige2.png").convert('RGBA')
-            imgTemp2= imgTemp2.resize((246, 144))
-            listeImgO.append((imgTemp0, imgTemp1, imgTemp2))
- #Desert
-
-            imgTemp = Image.open("data/tuiles/6Desert0.png").convert('RGBA')
-            imgTemp = imgTemp.resize((246, 144))
-            imgTemp2 = Image.open("data/tuiles/6Desert1.png").convert('RGBA')
-            imgTemp2 = imgTemp2.resize((246, 144))
-            imgTemp3 = Image.open("data/tuiles/6Desert2.png").convert('RGBA')
-            imgTemp3 = imgTemp3.resize((246, 144))
-            imgTemp4 = Image.open("data/tuiles/6Desert3.png").convert('RGBA')
-            imgTemp4 = imgTemp4.resize((246, 144))
-            imgTemp5 = Image.open("data/tuiles/6Desert4.png").convert('RGBA')
-            imgTemp5 = imgTemp5.resize((246, 144))
-            listeImgO.append((imgTemp, imgTemp2, imgTemp3, imgTemp4, imgTemp5))
-#Barriere
-            imgTemp0 = Image.open("data/tuiles/7Barriere0.png").convert('RGBA')
-            imgTemp0 = imgTemp0.resize((246, 144))
-            
-            imgTemp1 = Image.open("data/tuiles/7Barriere1.png").convert('RGBA')
-            imgTemp1 = imgTemp1.resize((246, 144))
-            
-            imgTemp2 = Image.open("data/tuiles/7Barriere2.png").convert('RGBA')
-            imgTemp2 = imgTemp2.resize((246, 144))
-            
-            imgTemp3 = Image.open("data/tuiles/7Barriere3.png").convert('RGBA')
-            imgTemp3 = imgTemp3.resize((246, 144))
-            
-            listeImgO.append((imgTemp0,imgTemp1, imgTemp2,imgTemp3))
-
-            return listeImgO
 
     def loadImgItem(self):
         listeImgItem = []
@@ -353,18 +210,18 @@ class ImageLoad():
     
     def loadImgAcide(self):
         scale = (45*1, 47*1)
-        tempIgmg = pygame.image.load("data/projectiles/acide.png")
+        tempIgmg = pygame.image.load("data/projectiles/acide.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     
     def loadImgFleche(self):
         scale = (572*0.065, 70*0.065)
-        tempIgmg = pygame.image.load("data/projectiles/fleche.png")
+        tempIgmg = pygame.image.load("data/projectiles/fleche.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     def loadImgPotion(self):
         scale = (512*0.065, 712*0.065)
-        tempIgmg = pygame.image.load("data/projectiles/potion.png")
+        tempIgmg = pygame.image.load("data/projectiles/potion.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
         
@@ -387,11 +244,11 @@ class ImageLoad():
         assert False, ("LoadImgProjectile n'as pas trouvé d'image correspondante a ", nom)
     
     def ImInfoBulleMob(self, nom, chemin="data/personnages/infoBulle/info_"):
-        img = pygame.image.load(chemin+nom+".png")
+        img = pygame.image.load(chemin+nom+".png").convert_alpha()
         return img
     
     def getImCollision(self):
-        im = pygame.image.load("data/personnages/degat.png")
+        im = pygame.image.load("data/personnages/degat.png").convert_alpha()
         return pygame.transform.scale(im ,(40,40))
     def returnImItem(self, nom):
         for elem in self.listeImgItem:
@@ -402,5 +259,5 @@ class ImageLoad():
 
 
     def ImInfoBullItem(self, nom, chemin="data/batiments/infoBulle/info_"):
-        img = pygame.image.load(chemin+nom+".png")
+        img = pygame.image.load(chemin+nom+".png").convert_alpha()
         return img
