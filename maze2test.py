@@ -104,9 +104,9 @@ k = 0
 while m[end[0]][end[1]] == 0:
     
     k += 1
-    #print("go")
+    
     make_step(k)
-    #draw_matrix(a, m)
+    draw_matrix(a, m)
 
 
 i, j = end

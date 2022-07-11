@@ -31,16 +31,45 @@ class Mob(pygame.sprite.Sprite):
           self.cooldown = 0
 
           self.rect = self.skin.get_rect()
-          self.rect.x = self.game.map[self.posY][self.posX].rect.x+28
-          self.rect.y = self.game.map[self.posY][self.posX].rect.y+97-75
+          self.rect.x, self.rect.y = self.initRect()
+          
           self.lastProjectile=0
-          self.speedProjectile = 3
+          if self.name=="mage":
+              self.speedProjectile=3
+          else:
+              self.speedProjectile=5
           self.damageDistance = 5
           self.range=300
           self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater=0,0,0,0
           self.initRecompense(self.name)
           
-         
+     def initRect(self):
+        if self.name=="yeti":
+            x =self.game.map[self.posY][self.posX].rect.x+70+random.randint(-5, 5)
+            y= self.game.map[self.posY][self.posX].rect.y-60+random.randint(-5, 5)
+            return x,y
+        if self.name=="oursin":
+            x =self.game.map[self.posY][self.posX].rect.x+100+random.randint(-5, 5)
+            y= self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        if self.name=="golem_des_forets":
+            x =self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y= self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        if self.name=="mage":
+            x =self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y= self.game.map[self.posY][self.posX].rect.y+random.randint(-5, 5)
+            return x,y
+        if self.name=="kraken":
+            x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        if self.name=="dragon":
+            x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        print("oublie de calibrage du mob en rect.x et rect.y") 
+        assert(False)
 
      def setVelocity(self, entier):
         self.velocity += entier
@@ -75,44 +104,48 @@ class Mob(pygame.sprite.Sprite):
         if posY == self.posY and posX-self.posX>0:
             self.goUp()
             self.goRight()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-75/2, self.getFeet()[1]+75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]+142/4))
             self.setPos(newTuile)
         if posY==self.posY and posX-self.posX<0:
             self.goDown()
             self.goLeft()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+75/2, self.getFeet()[1]-75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]-142/4))
             self.setPos(newTuile)
         if posX==self.posX and posY-self.posY>0:
             self.goRight()
             self.goDown()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-75/2, self.getFeet()[1]-75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]-142/4))
             self.setPos(newTuile)
         if posX==self.posX and posY-self.posY<0:
             self.goUp()
             self.goLeft()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+75/2, self.getFeet()[1]+75/2))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]+142/4))
             self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY>0:
             self.goRight()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-75, self.getFeet()[1]))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/2, self.getFeet()[1]))
             self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY<0:
             self.goUp()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+75))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+142/2))
             self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY<0:
             self.goLeft()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+75, self.getFeet()[1]))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/2, self.getFeet()[1]))
             self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY>0:
             self.goDown()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-75))
+            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-142/2))
             self.setPos(newTuile)
         return self.posX == posX and self.posY==posY
 
      def getFeet(self):
          if self.name == "mage":
              return self.rect.x+30, self.rect.y+100
+         if self.name == "yeti":
+             return self.rect.x+40, self.rect.y+150
+         if self.name == "dragon":
+             return self.rect.x, self.rect.y+150
          return self.rect.x+45, self.rect.y+50
      
      def caseBloquanteAutour(self, posX, posY):
@@ -144,6 +177,8 @@ class Mob(pygame.sprite.Sprite):
             scale = (375*0.13, 612*0.13)
         elif nomSkin=="mage":
             scale = (323*0.2, 612*0.2)
+        elif nomSkin=="yeti":
+            scale = (413*0.3,611*0.3)
             
         skin = pygame.image.load("data/personnages/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
@@ -306,6 +341,8 @@ class Mob(pygame.sprite.Sprite):
              self.cooldown=2000
          elif self.name=="mage":
              self.cooldown=2000
+         elif self.name=="yeti":
+             self.cooldown=200
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
         
@@ -322,7 +359,7 @@ class Mob(pygame.sprite.Sprite):
 
      def update_health_bar(self):
         #def la couleur
-        infoObject = pygame.display.Info()  #récupère la taille de l'écran
+        
         pourcentagePv = self.health/self.max_health*100
         if pourcentagePv >=80 : 
             bar_color = (111, 210, 46)
@@ -332,12 +369,11 @@ class Mob(pygame.sprite.Sprite):
             bar_color = (255, 69, 0)
         elif pourcentagePv >=0 : 
             bar_color = (255, 0, 0)
-        else : 
-
+        else :
             bar_color = (255, 0, 0)
         back_bar_color = (60,63,60)
-        bar_position = [self.rect.x, self.rect.y-10, self.health, 5]
-        back_bar_position = [self.rect.x, self.rect.y-10, self.max_health, 5]
+        bar_position = [self.rect.x, self.rect.y-10, pourcentagePv, 5]
+        back_bar_position = [self.rect.x, self.rect.y-10, 100, 5]
         #dessiner la barre de vie
         pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)
         pygame.draw.rect(self.game.fenetre, bar_color, bar_position)

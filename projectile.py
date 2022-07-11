@@ -18,7 +18,7 @@ class Projectile(pygame.sprite.Sprite):
           self.rect.x = posDepartX
           self.rect.y = posDepartY
           self.degat = degat
-          if self.nom =="mage":
+          if self.nom =="mage" or "yeti":
                 self.angle=False
                 
           else:
@@ -29,6 +29,7 @@ class Projectile(pygame.sprite.Sprite):
           self.rect.y = posDepartY
           self.lancement=pygame.time.get_ticks()
           self.dureeMax = 1500
+          self.dx, self.dy = self.cibleX - self.rect.x, self.cibleY - self.rect.y
 
      def genererAngle(self):
         dx, dy =  self.cibleX-self.rect.x , self.rect.y-self.cibleY 
@@ -39,13 +40,13 @@ class Projectile(pygame.sprite.Sprite):
 
 
      def moveProjectile(self):
-        dx, dy = self.cibleX - self.rect.x, self.cibleY - self.rect.y
-        dist = math.hypot(dx, dy)
+        
+        dist = math.hypot(self.dx, self.dy)
         if dist!=0:
-            dx, dy = dx / dist, dy / dist  # normalisation du vecteur
+            self.dx, self.dy = self.dx / dist, self.dy / dist  # normalisation du vecteur
             # bouger en direction du vecteur
-            self.rect.x += dx * self.velocity
-            self.rect.y += dy * self.velocity
+            self.rect.x += self.dx * self.velocity
+            self.rect.y += self.dy * self.velocity
         if self.rect.colliderect(self.cible.rect):
             self.cible.takeDamage(self.degat)
             self.kill()

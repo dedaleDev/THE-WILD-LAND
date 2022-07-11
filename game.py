@@ -7,6 +7,53 @@ from mob import Mob
 from joueur import Player
 from sound import Sound
 background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
+background_pil_superpose = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
+modeFacile=True
+modeNormal = False
+modeDifficile=False
+
+if modeFacile:
+    pvKraken = 50
+    pvDragon = 300
+    pvOursin = 100
+    pvMage = 50
+    pvGolem = 75
+    
+    vitesseKraken = 2
+    vitesseOursin = 3 
+    vitesseMage = 2
+    vitesseGolem = 2
+    vitesseDragon = 2
+    
+elif modeNormal :
+    pvKraken = 100
+    pvDragon = 400
+    pvOursin = 125
+    pvMage = 100
+    pvGolem = 100
+    
+    vitesseKraken = 2
+    vitesseOursin = 3
+    vitesseMage =2
+    vitesseGolem =3
+    vitesseDragon = 3
+
+elif modeDifficile :
+    pvKraken = 150
+    pvDragon = 500
+    pvOursin = 150
+    pvMage = 150
+    pvGolem = 125
+    
+    vitesseKraken = 2
+    vitesseOursin = 4
+    vitesseMage = 3
+    vitesseGolem = 3
+    vitesseDragon = 4
+
+    
+
+
 premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre):
@@ -23,9 +70,12 @@ class Game(pygame.sprite.Sprite):
         self.map = 0
         self.mapMontagneMer = 0
         self.imageFog = self.openFog()
+        self.imageFog2 = self.openFog2()
         self.imageErreurRessource = self.openImageRessource()
         self.mapImg = 0
         self.mapImgO = 0
+        self.mapImgO_superpose = 0
+        self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
         self.mapMer = 0
         self.mapVide = 0
         self.listeCaseMer = 0
@@ -50,22 +100,25 @@ class Game(pygame.sprite.Sprite):
         self.probaKraken = 0
         self.probaMage = 0
         self.probaDragon = 0
+        self.probaYeti = 0
         self.debutDePartie=0
         self.incendieDelay=0
         self.incendie=False
+        
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png")
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
         return im
     
     def majCata(self):
-        if self.joueur.indiceEcolo>2 and len(self.listeCaseBatiment)>0 and pygame.time.get_ticks()-self.incendieDelay >5000 : #INCENDIE
-            indice=random.randint(0, len(self.listeCaseBatiment)-1)
-            tuile = self.listeCaseBatiment[indice]
-            self.listeCaseBatiment.pop(indice)
-            self.incendie=True
-            self.incendieDelay=pygame.time.get_ticks()
-            return tuile
+        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and pygame.time.get_ticks()-self.incendieDelay > 60000 : #INCENDIE
+            if not random.randint(0,2): #quand on tombe sur un 0, donc incendie toute les 3 min environ
+                indice=random.randint(0, len(self.listeCaseBatiment)-1)
+                tuile = self.listeCaseBatiment[indice]
+                self.listeCaseBatiment.pop(indice)
+                self.incendie=True
+                self.incendieDelay=pygame.time.get_ticks()
+                return tuile
 
 
         
@@ -75,43 +128,50 @@ class Game(pygame.sprite.Sprite):
     
     
     def augmenterMob(self):
+        
         if pygame.time.get_ticks()-self.debutDePartie > 120000*6: #12min 
-
             self.probaDragon = 2
             self.probaGolemForet = 5
             self.probaOursin = 3
             self.probaKraken = 4
             self.probaMage = 4
+            self.probaYeti = 2
+            
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*5: #10min 
             self.probaDragon = 1
             self.probaGolemForet = 4
             self.probaOursin = 2
             self.probaKraken = 2
             self.probaMage = 3
+            self.probaYeti = 0
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*3.5: #7min 
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 2
             self.probaKraken = 1
             self.probaMage = 2
+            self.probaYeti = 0
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*2: #4min 
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 1
             self.probaKraken = 1
             self.probaMage = 1
+            self.probaYeti = 0
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*1.5: #3min 
             self.probaDragon = 0
             self.probaGolemForet = 3
             self.probaOursin = 0
             self.probaKraken = 1
             self.probaMage = 0
+            self.probaYeti = 0
         elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min 
             self.probaDragon = 0
             self.probaGolemForet = 2
             self.probaOursin = 0
             self.probaKraken = 0
             self.probaMage = 0
+            self.probaYeti = 0
 
     def verifierCo(self, x, y):
         return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
@@ -130,8 +190,9 @@ class Game(pygame.sprite.Sprite):
                 joueur.takeDamage(mob.attack)
                 joueur.lastDamage=now
                 listeColide.append(colide)
-            if mob.name=="mage":
+            if mob.name=="mage" or mob.name=="yeti":
                 mob.lunchProjectile()
+                
         return listeColide
                 
 
@@ -156,25 +217,33 @@ class Game(pygame.sprite.Sprite):
                     if tuile.type==2:
                         rand = random.randint(1,400)
                         if rand <= self.probaDragon:
-                            self.groupMob.add(Mob(self, "dragon", 100, 1, tuile, aerien=True))   
+                            self.groupMob.add(Mob(self, "dragon", 300, 2, tuile, aerien=True))   
+                            pygame.mixer.Sound.play(self.son.dragonSpawn)
                     if tuile.estForet():
                         rand = random.randint(1,400)
-
                         if rand <= self.probaGolemForet:
                             self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile))
-                        
+                            pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)
                         rand = random.randint(1,400)
                         if rand<= self.probaMage:
                             self.groupMob.add(Mob(self, "mage", 50, 1, tuile))
+                            pygame.mixer.Sound.play(self.son.mageSpawn)
                     if tuile.estPlaine():
                         rand = random.randint(1,400)
                         if rand <= self.probaOursin:
                             self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, pique=True))
+                            pygame.mixer.Sound.play(self.son.oursinSpawn)
                     if tuile.estMer():
                         rand = random.randint(1,400)
                         if rand <= self.probaKraken:
                             self.groupMob.add(Mob(self, "kraken", 50, 1,tuile, aquatique=True))
-                
+                            pygame.mixer.Sound.play(self.son.krakenSpawn)
+                    if tuile.type==5:
+                        rand = random.randint(1,400)
+                        if rand <= self.probaYeti:
+                            self.groupMob.add(Mob(self, "yeti", 300, 2, tuile))
+                            pygame.mixer.Sound.play(self.son.yetiSpawn)
+                            
     def genererImg(self):
         global background_pil, premierPAss
         modification=False
@@ -183,17 +252,31 @@ class Game(pygame.sprite.Sprite):
                 if self.map[y][x].aEteModifie:        
 
                     if self.map[y][x].isExplored:
-                        background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
+                        if premierPAss:
+                            background_pil.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
+                        else:
+                            background_pil_superpose.paste(self.map[y][x].imageO, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.map[y][x].imageO)
                     else :
-                        background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                        if premierPAss:
+                            background_pil.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                        else:
+                            background_pil_superpose.paste(self.imageFog, (self.map[y][x].Xoriginal, self.map[y][x].Yoriginal), self.imageFog)
+                            
+                            
                     self.map[y][x].aEteModifie=False
                     modification=True                    
         if modification:
 
             if premierPAss:
                 self.mapImg = pygame.image.frombuffer(background_pil.tobytes(), background_pil.size, "RGBA").convert_alpha()
-
+                premierPAss=False
+            else:
+                
+                a=background_pil_superpose.tobytes()
+                #pygame.image.frombuffer(a, background_pil.size, "RGBA").convert_alpha()
+                #self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
             self.mapImgO = background_pil
+            self.mapImgO_superpose = background_pil_superpose
 
 
     def collerImageBackground(self, tuile):
@@ -207,9 +290,12 @@ class Game(pygame.sprite.Sprite):
 
     def openFog(self):
         imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
-        imgTemp = imgTemp.resize((150, 150))
+        imgTemp = imgTemp.resize((246, 144))
         return imgTemp
-    
+    def openFog2(self):
+        imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (246, 144))
+        return imgTemp
 
     def deleteFog(self,x,y):
         modification = False

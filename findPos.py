@@ -110,7 +110,7 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
         return [[posDebutX, posDebutY]]
 
     k = 0
-    while m[end[0]][end[1]] == 0 and time.time()-startTime<0.05:
+    while m[end[0]][end[1]] == 0 and time.time()-startTime<0.005:
         
         k += 1
 
@@ -121,7 +121,7 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
     i, j = end
     k = m[i][j]
     the_path = [(i,j)]
-    while k > 1 and time.time()-startTime<0.05:
+    while k > 1 and time.time()-startTime<0.005:
         
         if j > 0 and m[i][j - 1] == k-1:
             i, j = i, j-1
@@ -171,7 +171,6 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
     """images[0].save('maze.gif',
                 save_all=True, append_images=images[1:],
                 optimize=False, duration=1, loop=0)"""
-    
     if len(the_path)==1:
         return the_path
     return the_path[1:]

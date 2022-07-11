@@ -64,7 +64,7 @@ def tirer_neige(matriceMap, i, j, game) :
         matriceMap[j][i] = Tuile(5, i, j, game)
         majNeigeAutoriser(matriceMap, i, j)
         majProba(matriceMap, i, j, 15, "neige")
-        majDesertInterdire(matriceMap, i, j)
+        majDesertInterdire(matriceMap, i, j, game)
         return True
     return False
 
@@ -74,7 +74,7 @@ def tirer_roche(matriceMap, i, j, game):
         matriceMap[j][i] = Tuile(2, i, j, game)
         majProba(matriceMap, i, j, 25, nature= "roche")
         majNeigeAutoriser(matriceMap, i,j)
-        majDesertInterdire(matriceMap, i,j)
+        majDesertInterdire(matriceMap, i,j, game)
         majProba(matriceMap, i,j,50, "neige")
         return True
     return False
@@ -97,7 +97,7 @@ def majProba(matriceMap, i, j, probaSup, nature):
     for y in range(-1, 2):
         for x in range(-1, 2):
             if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0 :
-                                                                                        #SUPPRESSION DE PROBA EN HAUT A GAUCHE
+                                                                                       
                 if nature == "roche":
                     matriceMap[j+y][i+x].augmenterProbaRoche(probaSup)
                 if nature == "foret":
@@ -117,14 +117,14 @@ def majNeigeAutoriser(matriceMap, i, j):
                 matriceMap[j+y][i+x].setAutoriserNeige()
 
 
-def majDesertInterdire(matriceMap, i, j):
+def majDesertInterdire(matriceMap, i, j, game):
     for y in range(-1, 2):
         for x in range(-1, 2):
             if i+x <  taille_matriceX and i+x >=0 and j+y < taille_matriceY and j+y >= 0:
                 
                 matriceMap[j+y][i+x].setInterdireDesert()
                 if matriceMap[j+y][i+x].getType()==6:
-                    matriceMap[j+y][i+x].setType(1)
+                    matriceMap[j+y][i+x].setType(1)#Tuile(1, j+y, i+x, game)
                     
 
 
@@ -231,5 +231,5 @@ def printMat(matriceMap):
     for i in range(taille_matriceY):
         print("\n")
         for j in range(taille_matriceX):
-            print("(",matriceMap[i][j].rect.x, matriceMap[i][j].rect.y,")",end=' ')
+            print(matriceMap[i][j].isExplored, matriceMap[i][j].type ,end=' ')
     print("fin\n\n\n\n\n")

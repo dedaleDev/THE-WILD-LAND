@@ -22,3 +22,14 @@ class Sound():
         self.frigo =  pygame.mixer.Sound("data/son/effets/frigo.wav")
         self.ventilo = pygame.mixer.Sound("data/son/effets/ventilo.wav")
         self.incendie = pygame.mixer.Sound("data/son/effets/incendie.wav")
+        self.tremblement = pygame.mixer.Sound("data/son/effets/tremblement.wav")
+        
+        self.krakenSpawn = pygame.mixer.Sound("data/son/effets/krakenSpawn.wav")
+        self.mageSpawn = pygame.mixer.Sound("data/son/effets/mageSpawn.wav")
+        self.golem_des_foretsSpawn = pygame.mixer.Sound("data/son/effets/golem_des_foretsSpawn.wav")
+        self.dragonSpawn = pygame.mixer.Sound("data/son/effets/dragonSpawn.wav")
+        self.oursinSpawn = pygame.mixer.Sound("data/son/effets/oursinSpawn.wav")
+        self.yetiSpawn = pygame.mixer.Sound("data/son/effets/yetiSpawn.wav")
+    #Delay entre son
+        self.dernierVentilo = 0
+        self.dernierSable = 0

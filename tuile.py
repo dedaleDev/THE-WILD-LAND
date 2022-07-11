@@ -38,14 +38,14 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
         
         ####     POSITION ET IMAGE    ####
         
         self.posX = posX
         self.posY = posY
         self.image= game.images.returnImg(self.type)
-        self.imageO=game.images.returnImgO(self.type)
+        self.imageO=0#game.images.returnImgO(self.type)
 
         self.rect = self.image.get_rect()
         self.rect.x = self.avoirX()
@@ -73,21 +73,22 @@ class Tuile(pygame.sprite.Sprite):
 
 
     def avoirX(self):
-        return self.posX*74+self.posY*74-10
+        return self.posX*244//2+self.posY*244//2-10
 
     def estPlaine(self):
         return self.type==1
     def estForet(self):
         return self.type==4
     def avoirY(self):
-        return self.posY*74-self.posX*74+75*self.game.taille_matriceY
+        return self.posY*142//2-self.posX*142//2+142//2*self.game.taille_matriceY
 
     def caseBloquante(self):
         return self.type==2 or self.type==7 or self.type == 3
     
     def setType(self, entier):
         self.type=entier
-        self.imageO = self.game.images.returnImgO(entier)
+        self.image = self.game.images.returnImg(entier)
+        #self.imageO = self.game.images.returnImgO(entier)
 
     
 

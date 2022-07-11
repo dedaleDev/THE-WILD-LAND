@@ -1,5 +1,4 @@
 from random import randint
-from tokenize import group
 import pygame
 from pygame.locals import *
 from PIL import *  # pour les images
@@ -7,11 +6,8 @@ from inventaire import Inventaire
 import main_menu
 from generation import *
 from mob import Mob
-
-from projectile import Projectile
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
 from game import Game
-from item import Item
 from game import background_pil
 from findPos import *
 fenetrePygame = ""
@@ -24,16 +20,9 @@ last = 0
 annimIncendieListe=[]
 annimTremblementListe=[]
 annimIncendie=0
-
+suiviePerso=150
 nombreAnnimationIncendie=3
 
-for i in range(1,10):
-    im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png")
-    annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
-for i in range(1,10):
-    annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png"))
-tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
-# stocke la largeur et la hauteur de l'écran de l'utilisateur
 # initialise la taille de l'écran (largeur, hauteur) en pixel
 largeurEtHauteur = (0, 0)
 modification = False
@@ -60,18 +49,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     pygame.key.set_repeat(1, 30)
 
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
-    affichagePersonalise = affichage()
-    fenetrePygame = pygame.display.set_mode(
-        (tailleEcran[affichagePersonalise][0], tailleEcran[affichagePersonalise][1]), pygame.DOUBLEBUF, pygame.FULLSCREEN)
+    fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
     game = Game(infoObject, fenetrePygame)
-    
-    
-    
     
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
-    Imselection = pygame.transform.scale(Imselection, (150,150))
     buttonHome = pygame.image.load("data/menu/buttonHome.png").convert_alpha()
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
     bookicon = pygame.image.load("data/menu/book.png").convert_alpha()
@@ -82,13 +65,16 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     health = pygame.transform.scale(health, (50, 50))
     feuille = pygame.image.load("data/menu/feuille.png").convert_alpha()
     feuille = pygame.transform.scale(feuille, (50, 50))
-    listeInfoButton = [("data/menu/scierie")]
+
+    for i in range(1,10):
+        im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png").convert_alpha()
+        annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
+    for i in range(1,10):
+        annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png").convert_alpha())
 
     tick_ressource=0
     move_ticker=0
-    cooldown=0
     tuile=False
-    fini=True
     librairie=False
     tickBatiment=1000
 
@@ -97,7 +83,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     for i in range(-1, 2):
         for j in range(-1, 2):
             game.deleteFog(game.joueur.posX+i, game.joueur.posY+j)
-    game.genererImg()
+    #game.genererImg()
 
 
     for deplacement in range(1675-infoObject.current_w):
@@ -118,6 +104,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
+    #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
+    #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
     #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
     #game.groupMob.add(Mob(game, "dragon", 100, 2,game.map[1][1], aerien=True))
     #game.groupMob.add(Mob(game, "mage", 50, 1, game.map[1][1]))
@@ -132,7 +120,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         
         modification=False
         cliqueItem = False
-        modification, tuileTemp = KEY_move(game, game.joueur, fenetrePygame)
+        modification = KEY_move(game, game.joueur, fenetrePygame)
         
         listeColide = game.checkCollision(game.joueur, game.groupMob)
         
@@ -148,6 +136,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     game.avoirTuileJoueur(mob).trou=False
                     mob.kill()
                     
+                    
             
             tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
             if not mob.pique and not mob.aerien and tuileMob.pieux:
@@ -159,7 +148,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
             elif tuileMob.sableMouvant and not mob.aerien:
                 mob.takeDamage(0.3)
-                pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
+                if pygame.time.get_ticks() - game.son.dernierSable >2000:
+                    pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
+                    game.son.dernierSable = pygame.time.get_ticks()
                 if not mob.slow:
                     mob.slow =True
                     
@@ -169,7 +160,10 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         
             elif tuileMob.ventilo and not mob.aerien:
                 mob.takeDamage(0.5)
-                pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
+                if pygame.time.get_ticks() - game.son.dernierVentilo >2000:
+                    pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
+                    game.son.dernierVentilo = pygame.time.get_ticks()
+
                 if not mob.slow:
                     mob.slow =True
                     
@@ -184,11 +178,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         for event in pygame.event.get():
             if event.type == QUIT:
                 continuer = False
-                
-                
-            
 
-        
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 
                 for item in inventaire.listeItem: 
@@ -198,8 +188,6 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         cliqueItem=True
                         if not batimentConstruit:
                             tickBatiment=0
-                            
-                            
 
                 if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
@@ -236,7 +224,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 if not mob.slow:
                     mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
                 else :
-                    if now%2==0:
+                    if now%2==0 :
                         mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
                         
                 if mob.fini and len(mob.the_path)>1:
@@ -266,6 +254,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 tick_ressource=600
                 game.joueur.ajouterRessources()
                 game.spawMob()
+
                 tuileCata = game.majCata()
                 if game.incendie and tuileCata:
                     annimIncendieListe.append(tuileCata)
@@ -280,10 +269,18 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 tick_ressource-=1
 
             if modification:
+                pass
+                #game.genererImg()
 
-                game.genererImg()
-
-            fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            for y in range(25):
+                for x in range(25):
+                    if game.map[y][x].isExplored:
+                        fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                    else :
+                        fenetrePygame.blit(game.imageFog2, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+            #fenetrePygame.blit(game.map[game.joueur.posY][game.joueur.posX].image, (0,0))
+            #fenetrePygame.blit(game.mapImg, (moveX, moveY))
+            #fenetrePygame.blit(game.mapImgSuperpose, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             fenetrePygame.blit(bookicon, (0,80))
             
@@ -388,21 +385,6 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         clock.tick(60)
            
 
-
-
-
-
-
-
-
-
-
-
-def affichage():
-        for i in range(len(tailleEcran)):
-            if tailleEcran[i][0] == infoObject.current_w and tailleEcran[i][1] == infoObject.current_h:
-                return i
-        return 2
     
 def KEY_move(game,joueur,fenetre):
     modification=False
@@ -411,6 +393,7 @@ def KEY_move(game,joueur,fenetre):
     
     if keys[K_d] or keys[K_RIGHT]:
         if joueur.deplacementAutorise("droite") :
+            deplacementCamDroite((infoObject.current_w - suiviePerso,0), game, game.joueur, game.groupMob)
             joueur.goRight()
             tuile = majSelectionJoueur(game, joueur.getFeet())
             joueur.setPos(tuile)
@@ -425,6 +408,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_q]or keys[K_LEFT]:
             if joueur.deplacementAutorise("gauche"):
                 #joueur.majBateau()
+                deplacementCamGauche((suiviePerso, 0), game, game.joueur, game.groupMob)
                 joueur.goLeft()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -437,6 +421,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_z] or keys[K_UP]:
             if joueur.deplacementAutorise("haut"):
                 #joueur.majBateau()
+                deplacementCamHaut((0,suiviePerso), game, game.joueur, game.groupMob)
                 joueur.goUp()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -447,6 +432,7 @@ def KEY_move(game,joueur,fenetre):
 
     if keys[K_s]or keys[K_DOWN]:
             if joueur.deplacementAutorise("bas"):
+                deplacementCamBas((0, infoObject.current_h-suiviePerso), game, game.joueur, game.groupMob)
                 joueur.goDown()
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
@@ -463,7 +449,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_v]:
         if game.map[joueur.posY][joueur.posX].port:
             joueur.bateau = False
-
+    
     return modification, tuile
 
 

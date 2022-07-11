@@ -13,6 +13,5 @@ def main():
             main_menu.startGame = False
             print("Lancement du jeu")
             pygame_gestion.pygameInit()
-                
     sys.exit()"""
 main()

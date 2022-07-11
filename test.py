@@ -1,5 +1,4 @@
-a =1
-if a :
-    print("if")
-else :
-    print("else")
+import random
+
+
+print(random.randint(-2, 4))
