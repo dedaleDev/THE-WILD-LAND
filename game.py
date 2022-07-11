@@ -101,8 +101,14 @@ class Game(pygame.sprite.Sprite):
         self.probaMage = 0
         self.probaDragon = 0
         self.probaYeti = 0
+        pygame.mixer.Sound.play(self.son.musique1)
         self.debutDePartie=0
         self.incendieDelay=0
+        self.troisMin = False
+        self.septMin = False
+        self.cinqMin=False
+        self.huitMin=False
+        
         self.incendie=False
         
     def openImageRessource(self):
@@ -144,28 +150,38 @@ class Game(pygame.sprite.Sprite):
             self.probaKraken = 2
             self.probaMage = 3
             self.probaYeti = 0
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*3.5: #7min 
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*4 and not self.huitMin: #8min 
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 2
             self.probaKraken = 1
             self.probaMage = 2
             self.probaYeti = 0
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*2: #4min 
+            self.huitMin=True
+            pygame.mixer.Sound.play(self.son.musique4)
+        
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*2.75 and not self.cinqMin : #5min30secondes 
+            self.cinqMin=True
+            pygame.mixer.Sound.play(self.son.musique3)
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*2 : #4min
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 1
             self.probaKraken = 1
             self.probaMage = 1
             self.probaYeti = 0
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*1.5: #3min 
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000*1.5 and not self.troisMin: #3min 
             self.probaDragon = 0
             self.probaGolemForet = 3
             self.probaOursin = 0
             self.probaKraken = 1
             self.probaMage = 0
             self.probaYeti = 0
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min 
+            self.troisMin=True
+            
+            pygame.mixer.Sound.play(self.son.musique2)
+            
+        elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min
             self.probaDragon = 0
             self.probaGolemForet = 2
             self.probaOursin = 0

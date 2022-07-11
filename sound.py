@@ -30,6 +30,13 @@ class Sound():
         self.dragonSpawn = pygame.mixer.Sound("data/son/effets/dragonSpawn.wav")
         self.oursinSpawn = pygame.mixer.Sound("data/son/effets/oursinSpawn.wav")
         self.yetiSpawn = pygame.mixer.Sound("data/son/effets/yetiSpawn.wav")
+        
+        ###MUSIQUE
+        
+        self.musique1 = pygame.mixer.Sound("data/son/musiques/musique1.wav")
+        self.musique2 = pygame.mixer.Sound("data/son/musiques/musique2.wav")
+        self.musique3 = pygame.mixer.Sound("data/son/musiques/musique3.wav")
+        self.musique4 = pygame.mixer.Sound("data/son/musiques/musique4.wav")
     #Delay entre son
         self.dernierVentilo = 0
         self.dernierSable = 0

@@ -59,7 +59,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     buttonHome = pygame.transform.scale(buttonHome, (70, 70))
     bookicon = pygame.image.load("data/menu/book.png").convert_alpha()
     bookicon = pygame.transform.scale(bookicon,(50,50))
-
+    pauseicon = pygame.image.load("data/menu/pause.png").convert_alpha()
+    pauseicon = pygame.transform.scale(pauseicon,(45,45))
     librairieIMG = pygame.image.load("data/personnages/infoBulle/librairie.png").convert_alpha()
     health = pygame.image.load("data/menu/health.png").convert_alpha()
     health = pygame.transform.scale(health, (50, 50))
@@ -102,7 +103,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[1][1]))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4]))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
@@ -188,11 +189,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         cliqueItem=True
                         if not batimentConstruit:
                             tickBatiment=0
-
-                if mouse[0] <= 75 and mouse[1] <= 75:  # detection si clic sur menu pricipal
+                if mouse[0] <= pauseicon.get_width()+76 and mouse[0]>80 and mouse[1] <= 20+pauseicon.get_height():  # detection si clic sur pause
+                    pause(pauseicon)
+                if mouse[0] <= 75  and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
                     main_menu.load =False
-                if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80:  # detection si clic sur menu pricipal
+                if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80:  # detection si clic sur librairie
                     if librairie ==True : 
                         librairie = False 
                     else : 
@@ -221,7 +223,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     
                     mob.last = now
                     mob.majCoolDown()
-                if not mob.slow:
+                if not mob.slow :
                     mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
                 else :
                     if now%2==0 :
@@ -253,7 +255,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             if tick_ressource==0:
                 tick_ressource=600
                 game.joueur.ajouterRessources()
-                game.spawMob()
+                if game.groupMob.__len__()<7:
+                    game.spawMob()
 
                 tuileCata = game.majCata()
                 if game.incendie and tuileCata:
@@ -283,6 +286,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             #fenetrePygame.blit(game.mapImgSuperpose, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             fenetrePygame.blit(bookicon, (0,80))
+            fenetrePygame.blit(pauseicon, (76,20))
             
             if tuile :  
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))  
@@ -547,3 +551,12 @@ def f(x):  #fonction vitesse deplacement cam
     if y>20:
         return 15
     return y
+
+def pause(pauseicon):
+    pause=True
+    while(pause):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse=pygame.mouse.get_pos()
+                if mouse[0] <= 76+pauseicon.get_width() and mouse[0]>76 and mouse[1] <= 20 + pauseicon.get_height():
+                    pause=False

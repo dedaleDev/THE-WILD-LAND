@@ -18,7 +18,7 @@ class Projectile(pygame.sprite.Sprite):
           self.rect.x = posDepartX
           self.rect.y = posDepartY
           self.degat = degat
-          if self.nom =="mage" or "yeti":
+          if self.nom =="mage" or self.nom=="yeti":
                 self.angle=False
                 
           else:

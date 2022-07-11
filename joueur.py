@@ -343,6 +343,7 @@ class Player(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].frigo = True
             self.nbFrigo+=1
             pygame.mixer.Sound.play(self.game.son.frigo, fade_ms=1000)
+            self.indiceEcolo-=10
         elif item.nom=="ventilo": 
             self.game.map[tuile.posY][tuile.posX].ventilo = True
 
