@@ -114,11 +114,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
     #game.groupProjectile.add(fleche)
     game.debutDePartie=pygame.time.get_ticks()
+
     while continuer == True:
         
         
         game.augmenterMob()
-        
+        game.son.jouerMusique()
         modification=False
         cliqueItem = False
         modification = KEY_move(game, game.joueur, fenetrePygame)
@@ -560,3 +561,4 @@ def pause(pauseicon):
                 mouse=pygame.mouse.get_pos()
                 if mouse[0] <= 76+pauseicon.get_width() and mouse[0]>76 and mouse[1] <= 20 + pauseicon.get_height():
                     pause=False
+                

@@ -101,7 +101,7 @@ class Game(pygame.sprite.Sprite):
         self.probaMage = 0
         self.probaDragon = 0
         self.probaYeti = 0
-        pygame.mixer.Sound.play(self.son.musique1)
+        #pygame.mixer.Sound.play(self.son.musique1)
         self.debutDePartie=0
         self.incendieDelay=0
         self.troisMin = False
@@ -136,12 +136,12 @@ class Game(pygame.sprite.Sprite):
     def augmenterMob(self):
         
         if pygame.time.get_ticks()-self.debutDePartie > 120000*6: #12min 
-            self.probaDragon = 2
+            self.probaDragon = 4
             self.probaGolemForet = 5
-            self.probaOursin = 3
+            self.probaOursin = 4
             self.probaKraken = 4
             self.probaMage = 4
-            self.probaYeti = 2
+            self.probaYeti = 4
             
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*5: #10min 
             self.probaDragon = 1
@@ -158,11 +158,11 @@ class Game(pygame.sprite.Sprite):
             self.probaMage = 2
             self.probaYeti = 0
             self.huitMin=True
-            pygame.mixer.Sound.play(self.son.musique4)
+            #pygame.mixer.Sound.play(self.son.musique4)
         
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*2.75 and not self.cinqMin : #5min30secondes 
             self.cinqMin=True
-            pygame.mixer.Sound.play(self.son.musique3)
+            #pygame.mixer.Sound.play(self.son.musique3)
         elif pygame.time.get_ticks()-self.debutDePartie > 120000*2 : #4min
             self.probaDragon = 0
             self.probaGolemForet = 4
@@ -179,7 +179,7 @@ class Game(pygame.sprite.Sprite):
             self.probaYeti = 0
             self.troisMin=True
             
-            pygame.mixer.Sound.play(self.son.musique2)
+            #pygame.mixer.Sound.play(self.son.musique2)
             
         elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min
             self.probaDragon = 0

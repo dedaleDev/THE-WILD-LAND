@@ -1,4 +1,5 @@
 import random
+import time
 
 
 from tuile import Tuile
@@ -178,9 +179,41 @@ def generation_matrice(game):
             liste_type.pop(biome)
         #GIGALISTE.append(copy.deepcopy(matriceMap))
 
+    
+    #La map est fini, on retire les mini biomes
+    controleMiniBiome(matriceMap)
+    
+    
+    
     #printMat(matriceMap)
     return (matriceMap)
 
+def controleMiniBiome(map):
+    for y in range(1,taille_matriceY-1):
+        for x in range(1, taille_matriceX-1):
+            listeTuileAutour=[]
+            for j in range(-1,2):
+                for i in range(-1,2):
+                    if j!=0 or i!=0:
+                        listeTuileAutour.append(map[y+j][x+i])
+            tuileDiff=True
+            indice=0
+            while tuileDiff and indice<len(listeTuileAutour): #on test si on a que des tuiles differentes autour de la tuile selectionnée
+                if listeTuileAutour[indice].type == map[y][x].type: 
+                    tuileDiff=False
+                indice+=1
+            
+            if tuileDiff: #la tuile est un mini biome
+                #print("la Tuile :",map[y][x].posX, map[y][x].posY)
+                type=maximumType(listeTuileAutour)
+                if type!=7 and map[y][x].type!=2 and map[y][x].type!=5 : #on veut pas remplacer par des volcans, et on veut pas replacer les tuiles de montagnes ni de neige
+                    map[y][x].setType(type)
+                
+def maximumType(liste): #recherche d'un type maximum present dans une liste
+    listeType=[0]*10 #on stock le nombre de type different ici, initialisé a 0 pour chacun
+    for tuile in liste:
+        listeType[tuile.type]+=1
+    return listeType.index(max(listeType))
 def generation_matriceMontagneMer(map):
     mapBool=[]
     mapMer=[]
