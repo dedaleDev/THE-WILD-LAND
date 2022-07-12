@@ -28,6 +28,7 @@ largeurEtHauteur = (0, 0)
 modification = False
 delayIncendie=500
 timeComtpeur=0
+
 def pygameInit():  # fonction servant à l'initialisation pygame
     
     global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie,nombreAnnimationIncendie, annimTremblementListe
@@ -44,7 +45,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
     pygame.mixer.init()
-
+    
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 30)
 
@@ -61,6 +62,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     bookicon = pygame.transform.scale(bookicon,(50,50))
     pauseicon = pygame.image.load("data/menu/pause.png").convert_alpha()
     pauseicon = pygame.transform.scale(pauseicon,(45,45))
+
     librairieIMG = pygame.image.load("data/personnages/infoBulle/librairie.png").convert_alpha()
     health = pygame.image.load("data/menu/health.png").convert_alpha()
     health = pygame.transform.scale(health, (50, 50))
@@ -103,7 +105,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
         moveY-=4
     
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4]))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4]))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2]))
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
@@ -181,6 +183,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             if event.type == QUIT:
                 continuer = False
 
+            
+            
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
                 
                 for item in inventaire.listeItem: 
@@ -275,13 +279,16 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             if modification:
                 pass
                 #game.genererImg()
-
+            alerteVille=False
             for y in range(25):
                 for x in range(25):
                     if game.map[y][x].isExplored:
                         fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
                     else :
                         fenetrePygame.blit(game.imageFog2, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                    if game.map[y][x].ville:
+                        alerteVille = True
+                        tuileVille = game.map[y][x]
             #fenetrePygame.blit(game.map[game.joueur.posY][game.joueur.posX].image, (0,0))
             #fenetrePygame.blit(game.mapImg, (moveX, moveY))
             #fenetrePygame.blit(game.mapImgSuperpose, (moveX, moveY))
@@ -289,8 +296,14 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             fenetrePygame.blit(bookicon, (0,80))
             fenetrePygame.blit(pauseicon, (76,20))
             
-            if tuile :  
-                fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))  
+            if tuile :
+                if not (abs(tuile.posX-game.joueur.posX)<2 and abs(tuile.posY-game.joueur.posY)<2):
+                    tuile.estSelect=False
+                    tuile=False
+                    print("ho")
+            if tuile :
+                fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
+                
                 if tuile.tour:      
                     #pygame.draw.circle(fenetrePygame, (155,155,155), (tuile.tour.rect.x+30, tuile.tour.rect.y), tuile.tour.range, width=3, )
                     pass
@@ -322,6 +335,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
+            
+            if alerteVille:
+                fenetrePygame.blit(game.images.ville, (tuileVille.rect.x+30, tuileVille.rect.y-260))
             
             if (annimIncendie or  game.incendie) and type(annimIncendieListe[-1])==Tuile :
                 if choixIncendie:
@@ -377,7 +393,10 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 for mob in game.groupMob : 
                     i+=1
                     fenetrePygame.blit(mob.infoBulle,(50*i,150))
-                    
+            if game.joueur.estMort:
+                mort(game)
+            if game.joueur.ville:
+                victoire(game)
             pygame.display.flip()
         
         else:
@@ -395,7 +414,8 @@ def KEY_move(game,joueur,fenetre):
     modification=False
     tuile=False
     keys=pygame.key.get_pressed()
-    
+    if keys[K_ESCAPE]:
+        pause()
     if keys[K_d] or keys[K_RIGHT]:
         if joueur.deplacementAutorise("droite") :
             deplacementCamDroite((infoObject.current_w - suiviePerso,0), game, game.joueur, game.groupMob)
@@ -464,14 +484,7 @@ def deplacement_cam(mouse, game, joueur, listeMob): #gestion du déplacement de 
     deplacementCamGauche(mouse, game, joueur, listeMob)
     deplacementCamHaut(mouse, game, joueur, listeMob)
     
-    
 
-    
-
-    
-        
-        
-    
 
 def deplacementCamBas(mouse, game, joueur, listeMob):
     global moveY, moveX
@@ -490,9 +503,6 @@ def deplacementCamBas(mouse, game, joueur, listeMob):
             projo.rect.y+=y
         for defense in game.groupDefense:
             defense.rect.y+=y
-    
-
-
         
 def deplacementCamHaut(mouse, game, joueur, listeMob):
     global moveY, moveX
@@ -546,7 +556,6 @@ def deplacementCamDroite(mouse, game, joueur, listeMob):
         for defense in game.groupDefense:
             defense.rect.x+=y
 
-
 def f(x):  #fonction vitesse deplacement cam
     y  = round(x*0.04-10)
     if y>20:
@@ -561,4 +570,11 @@ def pause(pauseicon):
                 mouse=pygame.mouse.get_pos()
                 if mouse[0] <= 76+pauseicon.get_width() and mouse[0]>76 and mouse[1] <= 20 + pauseicon.get_height():
                     pause=False
+        
                 
+def mort(game):
+    fenetrePygame.blit(game.images.mort, (200,100))
+    
+def victoire(game):
+    
+    fenetrePygame.blit(game.images.victoire, (200,100))

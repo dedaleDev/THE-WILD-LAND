@@ -9,7 +9,7 @@ class Sound():
     
     
     #Bruitage
-    
+        
 
         self.trou = pygame.mixer.Sound("data/son/effets/trou.wav")
         self.trou.set_volume(0.05)

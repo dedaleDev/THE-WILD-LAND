@@ -10,7 +10,15 @@ class ImageLoad():
         self.imgAcide = self.loadImgAcide()
         self.imgPotion = self.loadImgPotion()
         self.imgBouleDeNeige =self.loadImgBouleDeNeige()
-        
+        self.ville = self.loadImgVille()
+        self.mort = pygame.image.load("data/menu/defaite.png")
+        self.victoire = pygame.image.load("data/menu/victoire.png")
+    def loadImgVille(self):
+        im = pygame.image.load("data/batiments/ville.png")
+        im = pygame.transform.scale(im, (164, 351))    
+        return im
+    
+    
     def loadImg(self):
         
         listeImg = []
@@ -282,6 +290,11 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_ventilo.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("ventilo", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_ville.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("ville", imgTemp))
+        
         return listeImgItem
 
 

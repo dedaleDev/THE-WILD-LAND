@@ -27,6 +27,7 @@ class Tuile(pygame.sprite.Sprite):
         self.frigo=False
         self.sableMouvant=False
         self.trou=False
+        self.ville = False
         ####     GENREATION    ####
         self.probaSup_mer = 0
         self.probaSup_roche = 0

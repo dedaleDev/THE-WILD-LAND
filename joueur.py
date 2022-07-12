@@ -28,12 +28,12 @@ class Player(pygame.sprite.Sprite):
           self.rect.x = self.game.map[self.posY][self.posX].rect.x+40
           self.rect.y = self.game.map[self.posY][self.posX].rect.y
           self.estMort=False
-
+          self.ville=False
           #ressources du joueur
-          self.wood = 350
-          self.stone =150
-          self.food = 50
-          self.water = 100
+          self.wood = 1000#350
+          self.stone =1000#150
+          self.food = 1000#50
+          self.water = 1000#100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -93,7 +93,7 @@ class Player(pygame.sprite.Sprite):
      def setRessource(self, Wood, Stone, Food, Water):
          return self.setFood(Food) and self.setWood(Wood) and self.setStone(Stone) and self.setWater(Water)
     
-         
+     
      
      def initPos(self):
          borneMaxX = min(generation.taille_matriceX-2, 9)
@@ -283,7 +283,8 @@ class Player(pygame.sprite.Sprite):
             self.indiceEcolo+=1
             self.game.listeCaseBatiment.append(tuile)
             pygame.mixer.Sound.play(self.game.son.scierie)
-            
+        
+              
         elif item.nom == "moulin":
             self.game.map[tuile.posY][tuile.posX].moulin = True
             self.nbMoulin+=1
@@ -328,7 +329,7 @@ class Player(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
             self.indiceEcolo+=10
             #pygame.mixer.Sound.play(self.game.son.sableMouvant)
-            
+
         elif item.nom == "mortier":
             self.game.map[tuile.posY][tuile.posX].mortier = True
             mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
@@ -344,9 +345,11 @@ class Player(pygame.sprite.Sprite):
             self.nbFrigo+=1
             pygame.mixer.Sound.play(self.game.son.frigo, fade_ms=1000)
             self.indiceEcolo-=10
-        elif item.nom=="ventilo": 
+        elif item.nom=="ventilo":
             self.game.map[tuile.posY][tuile.posX].ventilo = True
-
+        elif item.nom=="ville":
+            self.game.map[tuile.posY][tuile.posX].ville = True
+            self.ville=True        
             
             
             
@@ -420,10 +423,12 @@ class Player(pygame.sprite.Sprite):
               imgTempO, imgTemp = self.chargerImPort(tuile)
               
           else:
-              imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
+              #imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
               imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
-          tuile.imageO = imgTempO.resize((246, 144))
-          tuile.image = pygame.transform.scale(imgTemp,(246, 144))
+          #tuile.imageO = imgTempO.resize((246, 144))
+          if nom != "ville" :
+            tuile.image = pygame.transform.scale(imgTemp,(246, 144))
+        
           tuile.aEteModifie=True
 
      def ajouterRessources(self):

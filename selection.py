@@ -50,29 +50,32 @@ def majSelectionJoueur(game, pos):
 
 def selectionDispoItem(game, tuile, joueur):
     optionDIspo = []
-    if tuile.isExplored and not joueur.bateau:
-        if tuile.type==1 and not tuile.elevage and not tuile.champs and not tuile.tour and not tuile.pieux:
+    if tuile.isExplored :
+        if tuile.type==1 and not tuile.elevage and not tuile.champs and not tuile.tour and not tuile.pieux and not tuile.ville:
             optionDIspo.append(Item(game, "elevage", 175, 25,0,0))
             optionDIspo.append(Item(game, "champs", 50, 0,0,0))
             optionDIspo.append(Item(game, "tour", 0, 0, 0, 300 ))
             optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
-        elif tuile.type==2 and not tuile.forge and not tuile.mine and not tuile.mortier:
+            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
+        elif tuile.type==2 and not tuile.forge and not tuile.mine and not tuile.mortier and not tuile.ville:
             optionDIspo.append(Item(game, "forge", 0,0,0,0))
             optionDIspo.append(Item(game, "mine", 0,0,50,50))
             optionDIspo.append(Item(game, "mortier", 0,0,0,200))
-        elif tuile.type==3 and not tuile.moulin and not tuile.port:
+        elif tuile.type==3 and not tuile.moulin and not tuile.port and not tuile.ville:
             optionDIspo.append(Item(game, "moulin", 0,0,100,0))
             if not game.avoirTuileJoueur(joueur).port:
                 optionDIspo.append(Item(game, "port", 0,0,250,0))
-        elif tuile.type==4 and not tuile.scierie:
+        elif tuile.type==4 and not tuile.scierie and not tuile.ville:
             optionDIspo.append(Item(game, "scierie", 0,0,100,0))
-        elif tuile.type==5 and not tuile.frigo and not tuile.ventilo:
+            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
+        elif tuile.type==5 and not tuile.frigo and not tuile.ventilo and not tuile.ville:
             optionDIspo.append(Item(game, "frigo", 300, 50, 0, 0))
             optionDIspo.append(Item(game, "ventilo", 0, 0, 500, 400))
-        elif tuile.type==6 and not tuile.sableMouvant and not tuile.trou:
+            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
+        elif tuile.type==6 and not tuile.sableMouvant and not tuile.trou and not tuile.ville:
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))
             optionDIspo.append(Item(game, "trou", 15,0, 10, 0))
-
+            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
     return optionDIspo
     
     
