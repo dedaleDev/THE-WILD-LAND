@@ -571,10 +571,9 @@ def pause(pauseicon):
                 if mouse[0] <= 76+pauseicon.get_width() and mouse[0]>76 and mouse[1] <= 20 + pauseicon.get_height():
                     pause=False
         
-                
 def mort(game):
-    fenetrePygame.blit(game.images.mort, (200,100))
+    fenetrePygame.blit(game.images.mort, (0,0))
     
 def victoire(game):
     
-    fenetrePygame.blit(game.images.victoire, (200,100))
+    fenetrePygame.blit(game.images.victoire, (0,0))
