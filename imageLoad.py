@@ -1,8 +1,10 @@
 import pygame
 import random
 from PIL import Image
+
 class ImageLoad():
     def __init__(self):
+        infoObject = pygame.display.Info()
         self.listeImg = self.loadImg()
         #self.listeImgO = self.loadImgO()
         self.listeImgItem = self.loadImgItem()
@@ -11,8 +13,10 @@ class ImageLoad():
         self.imgPotion = self.loadImgPotion()
         self.imgBouleDeNeige =self.loadImgBouleDeNeige()
         self.ville = self.loadImgVille()
-        self.mort = pygame.image.load("data/menu/defaite.png")
-        self.victoire = pygame.image.load("data/menu/victoire.png")
+        self.mort = pygame.image.load("data/menu/defaite.png").convert_alpha()
+        self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
+        self.victoire = pygame.image.load("data/menu/victoire.png").convert_alpha()
+        self.victoire = pygame.transform.scale(self.victoire,(infoObject.current_w,infoObject.current_h))
     def loadImgVille(self):
         im = pygame.image.load("data/batiments/ville.png")
         im = pygame.transform.scale(im, (164, 351))    
