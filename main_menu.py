@@ -1,128 +1,120 @@
-from tkinter import *
-from turtle import st
-from PIL import Image, ImageTk
-import tkinter.font as font
 import pygame
-import options
-import sys
+from pygame.constants import KEYDOWN, K_ESCAPE, MOUSEBUTTONDOWN
+import math
+import os
+"""
+pygame.init()
 
+GAME_RESOLUTION = (pygame.display.Info().current_w,pygame.display.Info().current_h)
+DISPLAY = pygame.display.set_mode(GAME_RESOLUTION)
+MUSIC = pygame.mixer.Channel(0)
+MUSIC.set_volume(0.2)
 
-fenetre = ""  # On crée une fenêtre, racine de l'interface Tk
-startGame =False
-loadMainMenu = True
+def scale(im, scale):
+    return pygame.transform.scale(im, (im.get_width()*scale, im.get_height()*scale))
 
-def musicPlayerMainTheme():
-    if options.music == True:
-        pygame.mixer.init()
-        mainTheme = pygame.mixer.music.load("data/Music/MainTheme.mp3")
-        pygame.mixer.music.play(10)
-    return
+def load_image(file):
+    im = pygame.image.load(os.path.join(os.path.dirname(__file__), 'data/menu', file))
+    if file=="start" or file=="title" or file=="button_options" or file=="button_quit":
+        im = pygame.transform.scale(im, (30, 30))
+        return im
+    return im
 
-def option ():
-    fenetre.destroy()
-    options.Menu_Options()
-def Quitter():
-    global startGame, loadMainMenu
-    startGame=False
-    loadMainMenu = False
-    fenetre.destroy()
-    sys.exit()
-    return
-    # fenetre.destroy()
-    # écran
+def load_sound(file):
+    return pygame.mixer.Sound(os.path.join(os.path.dirname(__file__), 'data/son/musiques', file))
+ 
+def fullscreen():
+    DISPLAY = pygame.display.set_mode(GAME_RESOLUTION, pygame.SCALED | pygame.FULLSCREEN)
+ 
+def windowed():
+    DISPLAY = pygame.display.set_mode(GAME_RESOLUTION)
 
+class Window():
+ 
+    def run(self):
+ 
+        if hasattr(self, 'music'):
+            MUSIC.play(self.music, -1)
+ 
+        self.running = True
+        while self.running:
+ 
+            if hasattr(self, 'background'):
+                DISPLAY.blit(self.background, self.pos)
+ 
+            if hasattr(self, 'title'):
+                self.bobbing()
+                #DISPLAY.blit(self.title, self.title_rect)
+ 
+            if hasattr(self, 'buttons'):
+                for button in self.buttons:
+                    DISPLAY.blit(button.image, button.rect)
+ 
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.running = False
+                if event.type == MOUSEBUTTONDOWN:
+                    for button in self.buttons:
+                        button.run()
+ 
+            pygame.display.update()
 
-def LaunchGame():
-    global startGame, loadMainMenu
-    startGame =True
-    fenetre.destroy()
+    def close(self):
+        self.running = False
+ 
+class Button():
+    def __init__(self, pos, image, function = None):
+ 
+        self.image = load_image(image)
 
+        self.rect = self.image.get_rect()
+        self.rect.topleft = pos
+ 
+        self.function = function
+ 
+    def run(self):
+        mouse_pos = pygame.mouse.get_pos()
+        if self.rect.collidepoint(mouse_pos):
+            self.function()
 
-def tailleEcran(redimensionner=1, fenetre="", pleinEcran=False):
-    # Cette fonction permet de redimmentioner une fenêtre TKINTER.
-    #  Par défaut elle modifie  directement l'écran il faut lui dire que le paramétre redimensionner =0 pour quelle ne le fasse pas.
-    # Il est OBLIGATOIRE de lui spécifier une fenetre  TKINTER à redimentionner.
-    screenScale = str(fenetre.winfo_screenwidth())
-    screenScale += "x"
-    screenScale += str(fenetre.winfo_screenheight())
-    print("taille d'écran détécté", screenScale)
-    if redimensionner == 1:
-        fenetre.geometry(screenScale)
-        return(screenScale)
-    else:
-        return(screenScale)
+########################
+#       WINDOWS        #
+########################
 
+class MainMenu(Window):
+    def __init__(self):
+        self.buttons = [
+            (Button((880, 460), 'button_quit.png', pygame.quit)),
+            (Button((416, 460), "start.png", self.close)),
+            (Button((20, 460), 'button_options.png', OPTIONS_MENU.run)),
+        ]
+        self.background = pygame.transform.scale(load_image('menu_1.png'), GAME_RESOLUTION)
+        self.pos = (0,0)
+        self.title = pygame.transform.scale(load_image('title.png'), GAME_RESOLUTION)
+        self.music = load_sound('menu.mp3')
 
-def Main_Menu():
-    global fenetre, startGame
-    startGame = False
-    # masque la fenêtre durant le chargement
-    fenetre = Tk()
-    fenetre.title("Mini-Jeu")  # titre
-    # taille de l’interface utilisateur par défaut
+        self.deg = 0
+        self.sin = 0
+ 
+    def bobbing(self):
+        self.deg += 0.1
+        if self.deg >= 180:
+            self.deg = 0
+        self.sin = math.sin(self.deg)
+        self.title_rect = self.title.get_rect()
+        self.title_rect.y += self.sin * 5
+ 
+class OptionsMenu(Window):
+    def __init__(self):
+        self.buttons = [
+            Button((416, 300), "fullscreen.png", fullscreen),
+            Button((416, 400), "windowed.png", windowed),
+            Button((20, 460), 'back.png', self.close),
+        ]
+        self.background = pygame.transform.scale(load_image('menu_2.png'), GAME_RESOLUTION)
+        self.pos = (0,0)
 
-    # lancement de l'audio
-    # musicPlayerMainTheme()
-
-    fenetre.configure(background="black")
-    f = font.Font(size=40)
-    tailleEcranUser = tailleEcran(fenetre=fenetre)  # redimentionne l'écran
-    # sépare taille ecran dans un p-uplet
-    tailleEcranUser = tailleEcranUser.split("x")
-    print(tailleEcranUser)
-    largeurE = tailleEcranUser[0]  # récupére taille largeur ecran
-    hauteurE = tailleEcranUser[1]  # récupére taille hauteur ecran
-    largeurE = int(largeurE)  # convertit en int
-    hauteurE = int(hauteurE)  # convertit en int
-
-    if options.modeHD == True:
-        fenetre.geometry("1920x1280")
-        largeurE = 1920  # convertit en int
-        hauteurE = 1080  # convertit en int
-
-    #fenetre.iconphoto(False, PhotoImage(file="data/logo/icon_Polgarok.png"))
-
-    # importation image arrière plan
-    imageBG = Image.open("data/menu/main_menu_background.png")
-    # redimentionne la taille de l'image en fonction de la taille de l'écran
-    resize_imageBG = imageBG.resize((largeurE, hauteurE))
-    imgBG = ImageTk.PhotoImage(resize_imageBG)  # convertit PIL en tkinter
-    # créer un label  pour afficher l'image
-    arrireplanLabel = Label(fenetre, image=imgBG)
-    arrireplanLabel.pack()
-    # affiche l'image.
-    arrireplanLabel.place(x=0, y=0)
-
-    # button jouer :
-    #imageButtonJouer = Image.open("data/Menu/button_Jouer.png")
-    #imageButtonJouer = ImageTk.PhotoImage(imageButtonJouer)
-    #image = imageButtonJouer
-    buttonJouer = Button(fenetre, command=LaunchGame,
-                         text="JOUER", relief=FLAT)
-    buttonJouer['font'] = f
-    buttonJouer.pack
-    buttonJouer.place(anchor="nw", relx=0.02, rely=0.05)
-
-    # button Options :
-    #imageButtonOptions = Image.open("data/Menu/button_Options.png")
-    #imageButtonOptions = ImageTk.PhotoImage(imageButtonOptions)
-    buttonOptions = Button(
-        fenetre, command=option,  text="OPTIONS", relief=FLAT)
-    buttonOptions['font'] = f
-    buttonOptions.pack()
-    buttonOptions.place(anchor="nw", relx=0.02, rely=0.18)
-
-    # button QUITTER :
-    #imageButtonQuitter = Image.open("data/Menu/button_Quitter.png")
-    #imageButtonQuitter = ImageTk.PhotoImage(imageButtonQuitter)
-    buttonQuitter = Button(
-        fenetre, command=Quitter, text="QUITTER", relief=FLAT)
-    buttonQuitter['font'] = f
-    buttonQuitter.pack()
-    buttonQuitter.place(anchor="nw", relx=0.02, rely=0.32)
-
-    # button reprendre  ce button se  charge si une ancienne sauvegarde à été déctécté dans Save.py. et il cache le button jouer
-
-    # redimentionne la taille de l'image en fonction de la taille de l'écran
-    resize_imageBG = imageBG.resize((largeurE, hauteurE))
-    fenetre.mainloop()  # raffraichisement de la fenetre tkinter
+OPTIONS_MENU = OptionsMenu()
+MAIN_MENU = MainMenu()
+MAIN_MENU.run()"""

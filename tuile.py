@@ -39,7 +39,7 @@ class Tuile(pygame.sprite.Sprite):
         
         
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
         
         ####     POSITION ET IMAGE    ####
         

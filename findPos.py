@@ -1,5 +1,5 @@
 from calendar import month_abbr
-from PIL import Image, ImageDraw
+#from PIL import Image, ImageDraw
 images = []
 import time
 
@@ -103,7 +103,7 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
     try:
         m[i][j] = 1
     except IndexError:
-        print("VOUS AVEZ TROUVE UN BUG !!! BRAVO, merci de l'envoyer aux créateurs avec tout le rapport d'erreur")
+        print("BUG !!! merci de l'envoyer avec tout le rapport d'erreur")
         print("fonction findPos, i,j=",i,j,"out of range try exept")
         print("posFin, posDebut=", end[0], end[1])
         print("hauteur = ", len(m), "largeur=", len(m[0]))

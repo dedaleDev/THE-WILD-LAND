@@ -1,6 +1,6 @@
 import pygame
 import random
-from PIL import Image
+#from PIL import Image
 
 class ImageLoad():
     def __init__(self):

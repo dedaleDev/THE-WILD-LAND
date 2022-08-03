@@ -2,12 +2,13 @@ import random
 import pygame
 import generation
 from imageLoad import ImageLoad
-from PIL import Image
+#from PIL import Image
 from mob import Mob
 from joueur import Player
 from sound import Sound
-background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
-background_pil_superpose = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
+#background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
+
+#background_pil_superpose = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
 modeFacile=True
 modeNormal = False
 modeDifficile=False
@@ -69,13 +70,13 @@ class Game(pygame.sprite.Sprite):
         self.imCollision = self.images.getImCollision()
         self.map = 0
         self.mapMontagneMer = 0
-        self.imageFog = self.openFog()
+        #self.imageFog = self.openFog()
         self.imageFog2 = self.openFog2()
         self.imageErreurRessource = self.openImageRessource()
         self.mapImg = 0
         self.mapImgO = 0
         self.mapImgO_superpose = 0
-        self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
+        #self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
         self.mapMer = 0
         self.mapVide = 0
         self.listeCaseMer = 0
@@ -190,7 +191,7 @@ class Game(pygame.sprite.Sprite):
             self.probaYeti = 0
 
     def verifierCo(self, x, y):
-        return  x<generation.taille_matriceX and x >0 and y < generation.taille_matriceY and y>0
+        return  x<generation.taille_matriceX and x >=0 and y < generation.taille_matriceY and y>=0
         
     def genererMatrice(self):
         self.map = generation.generation_matrice(self)

@@ -1,4 +1,4 @@
-from PIL import Image
+#from PIL import Image
 import pygame
 import random
 from selection import majSelectionJoueur
@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
           self.ville=False
           #ressources du joueur
-          self.wood = 1000#350
+          self.wood = 3000#350
           self.stone =1000#150
           self.food = 1000#50
           self.water = 1000#100
@@ -388,39 +388,46 @@ class Player(pygame.sprite.Sprite):
          tuile.aEteModifie=True
 
          return tuile
-     
-     def chargerImPort(self, tuile):
-         ecartX = tuile.posX-self.posX
-         ecartY = tuile.posY-self.posY
+
+     def chargerImPort(self, tuile, supX=0, supY=0): #sup = variable pour simuler un decalage joueur
+         ecartX = tuile.posX-self.posX-supX
+         ecartY = tuile.posY-self.posY-supY
+         print(supX, supY)
          if ecartX==0 and ecartY == 1:
-             imgTemp = Image.open("data/batiments/port/port2.png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port2.png").convert_alpha()
          if ecartX==-1 and ecartY == 0:
-             imgTemp = Image.open("data/batiments/port/port3.png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port3.png").convert_alpha()
          if ecartX==0 and ecartY == -1:
-             imgTemp = Image.open("data/batiments/port/port1.png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port1.png").convert_alpha()
          if ecartX == 1 and ecartY == 0:
-             imgTemp = Image.open("data/batiments/port/port0.png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port0.png").convert_alpha()
          if ecartX == 1 and ecartY == -1:
-             imgTemp = Image.open("data/batiments/port/port"+str(random.randint(0,1))+".png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.randint(0,1))+".png").convert_alpha()
          if ecartX == -1 and ecartY == 1:
-             imgTemp = Image.open("data/batiments/port/port"+str(random.randint(2,3))+".png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.randint(2,3))+".png").convert_alpha()
          if ecartX == 1 and ecartY == 1:
-             imgTemp = Image.open("data/batiments/port/port"+str(random.choice([0,2]))+".png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.choice([0,2]))+".png").convert_alpha()
          if ecartX == -1 and ecartY == -1:
-             imgTemp = Image.open("data/batiments/port/port"+str(random.choice([1,3]))+".png").convert('RGBA')
              imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.choice([1,3]))+".png").convert_alpha()
-         return imgTemp, imgTemp2
-     
+         if ecartX == 0 and ecartY == 0:
+             print("attention")
+             listeEcart=[]
+             for i in range(-1,2):
+                 for j in range(-1,2):
+                     if (i!=0 or j!=0) and not self.game.map[tuile.posY+i][tuile.posX+j].caseBloquante():
+                        listeEcart.append((i,j))
+             for i,j in listeEcart:
+                 if i==0 or j==0:
+                    self.game.map[self.posY+i][self.posX+j].isExplored=False
+                    return self.chargerImPort(tuile, supX=j, supY=i)
+             i,j = listeEcart[0]
+             self.game.map[self.posY+i][self.posX+j].isExplored=False
+             return self.chargerImPort(tuile, supX=j, supY=i)
+         return imgTemp2
+
      def changerImageBatiment(self, tuile, nom):
           if nom=="port":
-              imgTempO, imgTemp = self.chargerImPort(tuile)
+              imgTemp = self.chargerImPort(tuile)
               
           else:
               #imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
