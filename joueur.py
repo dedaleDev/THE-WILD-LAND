@@ -410,7 +410,6 @@ class Player(pygame.sprite.Sprite):
          if ecartX == -1 and ecartY == -1:
              imgTemp2 = pygame.image.load("data/batiments/port/port"+str(random.choice([1,3]))+".png").convert_alpha()
          if ecartX == 0 and ecartY == 0:
-             print("attention")
              listeEcart=[]
              for i in range(-1,2):
                  for j in range(-1,2):
@@ -418,10 +417,10 @@ class Player(pygame.sprite.Sprite):
                         listeEcart.append((i,j))
              for i,j in listeEcart:
                  if i==0 or j==0:
-                    self.game.map[self.posY+i][self.posX+j].isExplored=False
+
                     return self.chargerImPort(tuile, supX=j, supY=i)
              i,j = listeEcart[0]
-             self.game.map[self.posY+i][self.posX+j].isExplored=False
+
              return self.chargerImPort(tuile, supX=j, supY=i)
          return imgTemp2
 
