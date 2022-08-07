@@ -392,7 +392,6 @@ class Player(pygame.sprite.Sprite):
      def chargerImPort(self, tuile, supX=0, supY=0): #sup = variable pour simuler un decalage joueur
          ecartX = tuile.posX-self.posX-supX
          ecartY = tuile.posY-self.posY-supY
-         print(supX, supY)
          if ecartX==0 and ecartY == 1:
              imgTemp2 = pygame.image.load("data/batiments/port/port2.png").convert_alpha()
          if ecartX==-1 and ecartY == 0:

@@ -3,9 +3,9 @@ import pygame
 from pygame.locals import *
 #from PIL import *  # pour les images
 from inventaire import Inventaire
-import main_menu
 from generation import *
 from mob import Mob
+import main_menu
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
 from game import Game
 #from game import background_pil
@@ -13,29 +13,28 @@ from findPos import *
 fenetrePygame = ""
 infoObject = 0
 
-global moveY, moveX
-moveY=0
-moveX=0
-last = 0
-annimIncendieListe=[]
-annimTremblementListe=[]
-annimIncendie=0
-suiviePerso=140 #baisser la valeur pour un suivi plus rapide, 130 = suivi parfait
-nombreAnnimationIncendie=3
+global moveY, moveX, suiviePerso
 
-# initialise la taille de l'écran (largeur, hauteur) en pixel
-largeurEtHauteur = (0, 0)
-modification = False
-delayIncendie=500
-timeComtpeur=0
 
 def pygameInit():  # fonction servant à l'initialisation pygame
     
     global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie,nombreAnnimationIncendie, annimTremblementListe
-    global largeurEtHauteur, fenetrePygame, moveX, moveY, last
+    global fenetrePygame, moveX, moveY, last, suiviePerso
      #if Options.music == True:
     
-    
+    moveY=0
+    moveX=0
+    last = 0
+    annimIncendieListe=[]
+    annimTremblementListe=[]
+    annimIncendie=0
+    suiviePerso=140 #baisser la valeur pour un suivi plus rapide, 130 = suivi parfait
+    nombreAnnimationIncendie=3
+
+    # initialise la taille de l'écran (largeur, hauteur) en pixel
+    modification = False
+    delayIncendie=500
+    timeComtpeur=0
     #music = pygame.mixer.music.load("data/Music/level0.mp3")
     # pygame.mixer.music.play(10)
     print("Génération de la map")
@@ -184,7 +183,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     pause(pauseicon)
                 if mouse[0] <= 75  and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
-                    main_menu.load =False
+                    
+                    
                 if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80:  # detection si clic sur librairie
                     if librairie ==True : 
                         librairie = False 
@@ -387,12 +387,13 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         
         else:
             print("Fermeture du jeu & Lancement du menu principal")
-            #main_menu.Main_Menu()
+            main_menu.main_menu()
             pygame.display.quit()
             pygame.quit()  # ferme pygame et le jeu
             fenetrePygame=""
             return
         clock.tick(60)
+
            
 
     

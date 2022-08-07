@@ -58,6 +58,15 @@ elif modeDifficile :
 premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre):
+        with open('save.txt','r') as file: 
+            for line in file:
+                line = line.split()
+                if line[0]=="volumeBruitage":
+                    volumeBruitage = float(line[1])
+                elif line[0]=="volumeMusique":
+                    volumeMusique = float(line[1])
+                
+                
         self.infoObject=infoObject
         self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
         self.affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 4),(0.19, 2.77), (0.19, 2.77), (0, 0)]
@@ -260,7 +269,7 @@ class Game(pygame.sprite.Sprite):
                         if rand <= self.probaYeti:
                             self.groupMob.add(Mob(self, "yeti", 300, 2, tuile))
                             pygame.mixer.Sound.play(self.son.yetiSpawn)
-                            
+    """                            
     def genererImg(self):
         global background_pil, premierPAss
         modification=False
@@ -293,9 +302,10 @@ class Game(pygame.sprite.Sprite):
                 #pygame.image.frombuffer(a, background_pil.size, "RGBA").convert_alpha()
                 #self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
             self.mapImgO = background_pil
-            self.mapImgO_superpose = background_pil_superpose
+            self.mapImgO_superpose = background_pil_superpose""" 
+  
 
-
+ 
     def collerImageBackground(self, tuile):
         
         if tuile.isExplored:
@@ -304,11 +314,6 @@ class Game(pygame.sprite.Sprite):
             self.mapImgO.paste(self.imageFog, (tuile.Xoriginal, tuile.Yoriginal), self.imageFog)
         self.mapImg = pygame.image.frombuffer(self.mapImgO.tobytes(),self.mapImgO.size,'RGBA').convert_alpha()
             
-
-    def openFog(self):
-        imgTemp = Image.open("data/tuiles/0exploration.png").convert('RGBA')
-        imgTemp = imgTemp.resize((246, 144))
-        return imgTemp
     def openFog2(self):
         imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (246, 144))
