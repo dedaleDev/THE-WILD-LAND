@@ -58,14 +58,6 @@ elif modeDifficile :
 premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre):
-        with open('save.txt','r') as file: 
-            for line in file:
-                line = line.split()
-                if line[0]=="volumeBruitage":
-                    volumeBruitage = float(line[1])
-                elif line[0]=="volumeMusique":
-                    volumeMusique = float(line[1])
-                
                 
         self.infoObject=infoObject
         self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
