@@ -52,20 +52,36 @@ class Sound():
         
         ###MUSIQUE
         
-        self.musiqueCalme1 = pygame.mixer.Sound("data/son/musiques/musique1.mp3")
-        self.musiqueCalme1.set_volume(volumeMusique)
-        self.musiqueConstruction1 = pygame.mixer.Sound("data/son/musiques/musique2.mp3")
-        self.musiqueConstruction1.set_volume(volumeMusique)
-        self.musiqueCombat3 = pygame.mixer.Sound("data/son/musiques/musique3.mp3")
-        self.musiqueCombat3.set_volume(volumeMusique)
-        self.musiqueCombat4 = pygame.mixer.Sound("data/son/musiques/musique4.mp3")
-        self.musiqueCombat4.set_volume(volumeMusique)
-        self.musiqueCombat2 = pygame.mixer.Sound("data/son/musiques/musique5.mp3")
-        self.musiqueCombat2.set_volume(volumeMusique)
+        self.m1_0 = pygame.mixer.Sound("data/son/musiques/1_0.mp3")
+        self.m1_0.set_volume(volumeMusique)
+        self.m1_1 = pygame.mixer.Sound("data/son/musiques/1_1.mp3")
+        self.m1_1.set_volume(volumeMusique)
+        self.m1_2 = pygame.mixer.Sound("data/son/musiques/1_2.mp3")
+        self.m1_2.set_volume(volumeMusique)
+        self.m1_3 = pygame.mixer.Sound("data/son/musiques/1_3.mp3")
+        self.m1_3.set_volume(volumeMusique)
+        self.m2_0 = pygame.mixer.Sound("data/son/musiques/2_0.mp3")
+        self.m2_0.set_volume(volumeMusique)
+        self.m2_1 = pygame.mixer.Sound("data/son/musiques/2_1.mp3")
+        self.m2_1.set_volume(volumeMusique)
+        self.m2_2 = pygame.mixer.Sound("data/son/musiques/2_2.mp3")
+        self.m2_2.set_volume(volumeMusique)
+        self.m2_3 = pygame.mixer.Sound("data/son/musiques/2_3.mp3")
+        self.m2_3.set_volume(volumeMusique)
+        self.m3_0 = pygame.mixer.Sound("data/son/musiques/3_0.mp3")
+        self.m3_0.set_volume(volumeMusique)
+        self.m3_1 = pygame.mixer.Sound("data/son/musiques/3_1.mp3")
+        self.m3_1.set_volume(volumeMusique)
+        self.m3_2 = pygame.mixer.Sound("data/son/musiques/3_2.mp3")
+        self.m3_2.set_volume(volumeMusique)
+        self.m3_3 = pygame.mixer.Sound("data/son/musiques/3_3.mp3")
+        self.m3_3.set_volume(volumeMusique)
+
+
         
-        self.listeMusiqueCalme = [self.musiqueCalme1]
-        self.listeMusiqueConstruction = [self.musiqueConstruction1]
-        self.listeMusiqueCombat = [self.musiqueCombat2, self.musiqueCombat3, self.musiqueCombat3, self.musiqueCombat4]
+        self.listeMusiqueCalme = [self.m1_0, self.m1_1, self.m1_2, self.m1_3]
+        self.listeMusiqueConstruction = [self.m2_0, self.m2_1, self.m2_2, self.m2_3]
+        self.listeMusiqueCombat = [self.m3_0, self.m3_1, self.m3_2, self.m3_3]
         
         
         #taille de base des listes
