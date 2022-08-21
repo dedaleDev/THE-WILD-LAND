@@ -27,7 +27,7 @@ class Projectile(pygame.sprite.Sprite):
           self.rect = self.img.get_rect()
           self.rect.x = posDepartX
           self.rect.y = posDepartY
-          self.lancement=pygame.time.get_ticks()
+          self.lancement=self.game.tempsJeu()
           self.dureeMax = 1500
           self.dx, self.dy = self.cibleX - self.rect.x, self.cibleY - self.rect.y
 
@@ -51,7 +51,7 @@ class Projectile(pygame.sprite.Sprite):
             self.cible.takeDamage(self.degat)
             self.kill()
             #detruire le projo
-        elif pygame.time.get_ticks()-self.lancement>self.dureeMax:
+        elif self.game.tempsJeu()-self.lancement>self.dureeMax:
               self.kill()
         
 

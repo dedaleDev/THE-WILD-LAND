@@ -97,6 +97,7 @@ def options():
     return volume, volumeM
 
 def main_menu():
+
     continu=True
     
     
@@ -107,9 +108,9 @@ def main_menu():
     QUIT_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                         text_input="QUITTER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
 
-    while continu:
+    while True:
         SCREEN.blit(BG, (0, 0))
-
+        
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
 

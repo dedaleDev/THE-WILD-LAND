@@ -58,6 +58,7 @@ elif modeDifficile :
 premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre):
+        
                 
         self.infoObject=infoObject
         self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
@@ -92,6 +93,8 @@ class Game(pygame.sprite.Sprite):
         self.groupMob = pygame.sprite.Group()
         self.groupProjectile = pygame.sprite.Group()
         self.groupDefense = pygame.sprite.Group()
+        self.groupCoffre = pygame.sprite.Group()
+        
         self.genererMatrice()
         self.joueur = Player(self,"joueur_1", 5)
         self.groupJoueur=pygame.sprite.Group()
@@ -104,7 +107,6 @@ class Game(pygame.sprite.Sprite):
         self.probaDragon = 0
         self.probaYeti = 0
         #pygame.mixer.Sound.play(self.son.musique1)
-        self.debutDePartie=0
         self.incendieDelay=0
         self.troisMin = False
         self.septMin = False
@@ -113,19 +115,24 @@ class Game(pygame.sprite.Sprite):
         
         self.incendie=False
         
+        self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc
+        
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png")
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
         return im
     
+    def tempsJeu(self):
+        return pygame.time.get_ticks()- self.tempsMort
+    
     def majCata(self):
-        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and pygame.time.get_ticks()-self.incendieDelay > 60000 : #INCENDIE
+        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 60000 : #INCENDIE
             if not random.randint(0,2): #quand on tombe sur un 0, donc incendie toute les 3 min environ
                 indice=random.randint(0, len(self.listeCaseBatiment)-1)
                 tuile = self.listeCaseBatiment[indice]
                 self.listeCaseBatiment.pop(indice)
                 self.incendie=True
-                self.incendieDelay=pygame.time.get_ticks()
+                self.incendieDelay=self.tempsJeu()
                 return tuile
 
 
@@ -137,7 +144,7 @@ class Game(pygame.sprite.Sprite):
     
     def augmenterMob(self):
         
-        if pygame.time.get_ticks()-self.debutDePartie > 120000*6: #12min 
+        if self.tempsJeu() > 120000*6: #12min 
             self.probaDragon = 4
             self.probaGolemForet = 5
             self.probaOursin = 4
@@ -145,14 +152,14 @@ class Game(pygame.sprite.Sprite):
             self.probaMage = 4
             self.probaYeti = 4
             
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*5: #10min 
+        elif self.tempsJeu() > 120000*5: #10min 
             self.probaDragon = 1
             self.probaGolemForet = 4
             self.probaOursin = 2
             self.probaKraken = 2
             self.probaMage = 3
             self.probaYeti = 0
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*4 and not self.huitMin: #8min 
+        elif self.tempsJeu() > 120000*4 and not self.huitMin: #8min 
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 2
@@ -162,17 +169,17 @@ class Game(pygame.sprite.Sprite):
             self.huitMin=True
             #pygame.mixer.Sound.play(self.son.musique4)
         
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*2.75 and not self.cinqMin : #5min30secondes 
+        elif self.tempsJeu() > 120000*2.75 and not self.cinqMin : #5min30secondes 
             self.cinqMin=True
             #pygame.mixer.Sound.play(self.son.musique3)
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*2 : #4min
+        elif self.tempsJeu() > 120000*2 : #4min
             self.probaDragon = 0
             self.probaGolemForet = 4
             self.probaOursin = 1
             self.probaKraken = 1
             self.probaMage = 1
             self.probaYeti = 0
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000*1.5 and not self.troisMin: #3min 
+        elif self.tempsJeu() > 120000*1.5 and not self.troisMin: #3min 
             self.probaDragon = 0
             self.probaGolemForet = 3
             self.probaOursin = 0
@@ -183,7 +190,7 @@ class Game(pygame.sprite.Sprite):
             
             #pygame.mixer.Sound.play(self.son.musique2)
             
-        elif pygame.time.get_ticks()-self.debutDePartie > 120000: #2min
+        elif self.tempsJeu() > 120000: #2min
             self.probaDragon = 0
             self.probaGolemForet = 2
             self.probaOursin = 0
@@ -200,7 +207,7 @@ class Game(pygame.sprite.Sprite):
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]
-        now = pygame.time.get_ticks()
+        now = self.tempsJeu()
         for mob in listeMob :
             
             colide = mob.rect.colliderect(joueur.rect)

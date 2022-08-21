@@ -1,5 +1,6 @@
 #from PIL import Image
 import pygame
+from coffre import Coffre
 import random
 from selection import majSelectionJoueur
 import generation
@@ -30,10 +31,10 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
           self.ville=False
           #ressources du joueur
-          self.wood = 3000#350
-          self.stone =1000#150
-          self.food = 1000#50
-          self.water = 1000#100
+          self.wood = 0#3000#350
+          self.stone = 0 #1000#150
+          self.food = 0#1000#50
+          self.water = 0#1000#100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -69,7 +70,24 @@ class Player(pygame.sprite.Sprite):
         else :
             self.estMort=True
 
-            
+
+     def genererCoffre(self):
+         borneMin = 1#5 #Distance minimal entre le joueur et le spawn du coffre
+         borneMax = 5#10 #distance max ""   ""
+         
+         tuilesDispo = []
+         
+         for ligne in self.game.map:
+             for tuile in ligne :
+                 if tuile.type!=7 and tuile.type!=2:
+                     if abs(self.posX-tuile.posX) >= borneMin and abs(self.posX-tuile.posX)<=borneMax :
+                         tuilesDispo.append(tuile)
+                         
+         tuileCoffre = random.choice(tuilesDispo)
+         self.game.groupCoffre.add(Coffre(self.game, tuileCoffre, random.randint(0,100),random.randint(0,100),random.randint(0,100),random.randint(0,100)))
+         pygame.mixer.Sound.play(self.game.son.coffre)
+                     
+
      def getSkin(self):
          return self.skin
      def getName(self):
@@ -119,7 +137,7 @@ class Player(pygame.sprite.Sprite):
      def setArmor(self, armor):
                self.armor += armor
      def setFood(self, food):
-        if (self.food +food>=0) :
+        if (self.food + food>=0) :
             self.food += food
             self.compteurRessources(modif=food, type=1)
             return True

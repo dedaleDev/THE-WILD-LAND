@@ -17,6 +17,10 @@ class ImageLoad():
         self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
         self.victoire = pygame.image.load("data/menu/victoire.png").convert_alpha()
         self.victoire = pygame.transform.scale(self.victoire,(infoObject.current_w,infoObject.current_h))
+        self.coffre = pygame.image.load("data/ressources/coffre.png")
+        self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
+        self.etoile = pygame.image.load("data/ressources/etoile.png")
+        self.etoile = pygame.transform.scale(self.etoile, (self.etoile.get_height()*0.05,self.etoile.get_width()*0.05))
     def loadImgVille(self):
         im = pygame.image.load("data/batiments/ville.png")
         im = pygame.transform.scale(im, (164, 351))    

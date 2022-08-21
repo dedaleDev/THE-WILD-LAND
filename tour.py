@@ -43,7 +43,7 @@ class Tour(pygame.sprite.Sprite):
                    
          mob_proche.sort(key=lambda tup: tup[1]) #pour trier la liste selon la distance
          
-         now = pygame.time.get_ticks()
+         now = self.game.tempsJeu()
          
          if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]

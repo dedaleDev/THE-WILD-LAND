@@ -194,7 +194,7 @@ def controleMiniBiome(map):
             listeTuileAutour=[]
             for j in range(-1,2):
                 for i in range(-1,2):
-                    if j!=0 or i!=0:
+                    if (j!=0 or i!=0) and (i==0 or j ==0):
                         listeTuileAutour.append(map[y+j][x+i])
             tuileDiff=True
             indice=0

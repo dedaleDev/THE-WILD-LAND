@@ -9,6 +9,7 @@ import main_menu
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
 from game import Game
 #from game import background_pil
+from coffre import Coffre
 from findPos import *
 fenetrePygame = ""
 infoObject = 0
@@ -75,6 +76,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png").convert_alpha())
 
     tick_ressource=0
+    tirageCoffre = 0 #compte le nombre de tirage de coffre rate, 1 tirage toute les 10 secondes
     move_ticker=0
     tuile=False
     librairie=False
@@ -100,19 +102,20 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     #the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
     #game.groupProjectile.add(fleche)
-    game.debutDePartie=pygame.time.get_ticks()
-
+    game.tempsMort+=pygame.time.get_ticks()
+    fps = 0 #compte le nombre de fps
     while continuer == True:
-        
-        
+        if fps>=60:
+            fps =0
+        else:
+            fps+=1
         game.augmenterMob()
         game.son.jouerMusique()
         modification=False
         cliqueItem = False
+        
         modification = KEY_move(game, game.joueur, fenetrePygame)
-        
         listeColide = game.checkCollision(game.joueur, game.groupMob)
-        
         
         for mob in game.groupMob:#Gestion des pieux
             
@@ -128,6 +131,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     
             
             tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
+            
             if not mob.pique and not mob.aerien and tuileMob.pieux:
             #if game.map[mob.posY][mob.posX].pieux==True:
                 mob.takeDamage(0.1)
@@ -137,9 +141,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
             elif tuileMob.sableMouvant and not mob.aerien:
                 mob.takeDamage(0.3)
-                if pygame.time.get_ticks() - game.son.dernierSable >2000:
+                if game.tempsJeu() - game.son.dernierSable >2000:
                     pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
-                    game.son.dernierSable = pygame.time.get_ticks()
+                    game.son.dernierSable = game.tempsJeu()
                 if not mob.slow:
                     mob.slow =True
                     
@@ -149,9 +153,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         
             elif tuileMob.ventilo and not mob.aerien:
                 mob.takeDamage(0.5)
-                if pygame.time.get_ticks() - game.son.dernierVentilo >2000:
+                if game.tempsJeu() - game.son.dernierVentilo >2000:
                     pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
-                    game.son.dernierVentilo = pygame.time.get_ticks()
+                    game.son.dernierVentilo = game.tempsJeu()
 
                 if not mob.slow:
                     mob.slow =True
@@ -171,7 +175,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
             
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
-                
+                mouse = pygame.mouse.get_pos()
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
                         batimentConstruit = game.joueur.construireBatiment(tuile, item)
@@ -180,10 +184,11 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         if not batimentConstruit:
                             tickBatiment=0
                 if mouse[0] <= pauseicon.get_width()+76 and mouse[0]>80 and mouse[1] <= 20+pauseicon.get_height():  # detection si clic sur pause
-                    pause(pauseicon)
+                    tempsPasse = pause(pauseicon)
+                    game.tempsMort+=tempsPasse
                 if mouse[0] <= 75  and mouse[1] <= 75:  # detection si clic sur menu pricipal
                     continuer = False
-                    
+                    game.son.stop()
                     
                 if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80:  # detection si clic sur librairie
                     if librairie ==True : 
@@ -201,12 +206,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
                 
         if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
-            mouse = pygame.mouse.get_pos()
+            
             deplacement_cam(mouse, game)
             
            
             #### Deplacement des mobs
-            now = pygame.time.get_ticks()
+            now = game.tempsJeu()
             for mob in game.groupMob:
                 
                 if now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
@@ -240,13 +245,20 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 
                 
                 
-                
+
             modification=True
             #affichage selection
             if tick_ressource==0:
                 tick_ressource=600
                 game.joueur.ajouterRessources()
-                if game.groupMob.__len__()<7:
+                
+                chanceCoffre = random.randint(0,100)
+                if chanceCoffre < tirageCoffre :
+                    game.joueur.genererCoffre()
+                    tirageCoffre=0
+                else :
+                    tirageCoffre+=7
+                if game.groupMob.__len__()<9:
                     game.spawMob()
 
                 tuileCata = game.majCata()
@@ -261,11 +273,11 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         pass
             else:
                 tick_ressource-=1
-
+            
             if modification:
                 pass
                 #game.genererImg()
-            alerteVille=False
+            alerteVille=False #une ville est presente sur la map
             for y in range(25):
                 for x in range(25):
                     if game.map[y][x].isExplored:
@@ -275,18 +287,32 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     if game.map[y][x].ville:
                         alerteVille = True
                         tuileVille = game.map[y][x]
+            
+            
+
+            for coffre in game.groupCoffre:
+                if coffre.tuile.posX == game.joueur.posX and coffre.tuile.posY == game.joueur.posY:
+                    game.joueur.setRessource(coffre.wood, coffre.stone, coffre.food, coffre.water)
+                    pygame.mixer.Sound.play(game.son.coffreOuverture)
+                    coffre.kill()
+                if coffre.tuile.isExplored :
+                    fenetrePygame.blit(coffre.image, (coffre.rect.x+moveX, coffre.rect.y+moveY))
+                    fenetrePygame.blit(coffre.imEtoile, (coffre.etoileRect.x+moveX, coffre.etoileRect.y+moveY))  
+                    fenetrePygame.blit(coffre.imEtoile2, (coffre.etoileRect2.x+moveX, coffre.etoileRect2.y+moveY))  
+                    fenetrePygame.blit(coffre.imEtoile3, (coffre.etoileRect3.x+moveX, coffre.etoileRect3.y+moveY))  
+                    if fps%3==0:
+                        coffre.etoileAnnim()
             #fenetrePygame.blit(game.map[game.joueur.posY][game.joueur.posX].image, (0,0))
             #fenetrePygame.blit(game.mapImg, (moveX, moveY))
             #fenetrePygame.blit(game.mapImgSuperpose, (moveX, moveY))
             fenetrePygame.blit(buttonHome, (10, 10))
             fenetrePygame.blit(bookicon, (0,80))
             fenetrePygame.blit(pauseicon, (76,20))
-            
+
             if tuile :
                 if not (abs(tuile.posX-game.joueur.posX)<2 and abs(tuile.posY-game.joueur.posY)<2):
                     tuile.estSelect=False
                     tuile=False
-                    print("ho")
             if tuile :
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
                 
@@ -321,7 +347,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
-            
+                
             if alerteVille:
                 fenetrePygame.blit(game.images.ville, (tuileVille.rect.x+30, tuileVille.rect.y-260))
             
@@ -333,11 +359,11 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     entreImage=500
                     fenetrePygame.blit(annimTremblementListe[annimIncendie], (annimTremblementListe[-1].rect.x+50, annimTremblementListe[-1].rect.y-annimTremblementListe[annimIncendie].get_height()+100))
                 game.incendie=False
-                if pygame.time.get_ticks()-delayIncendie>entreImage:
+                if game.tempsJeu()-delayIncendie>entreImage:
                     annimIncendie+=1
 
                     
-                    delayIncendie=pygame.time.get_ticks()
+                    delayIncendie=game.tempsJeu()
                     if annimIncendie==9:
                         if nombreAnnimationIncendie>0:
                             annimIncendie=1
@@ -401,8 +427,6 @@ def KEY_move(game,joueur,fenetre):
     modification=False
     tuile=False
     keys=pygame.key.get_pressed()
-    if keys[K_ESCAPE]:
-        pause()
     if keys[K_d] or keys[K_RIGHT]:
         if joueur.deplacementAutorise("droite") :
             deplacementCamDroite((infoObject.current_w - suiviePerso,0), game)
@@ -565,12 +589,14 @@ def f(x):  #fonction vitesse deplacement cam
 
 def pause(pauseicon):
     pause=True
+    debutPause = pygame.time.get_ticks()
     while(pause):
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse=pygame.mouse.get_pos()
                 if mouse[0] <= 76+pauseicon.get_width() and mouse[0]>76 and mouse[1] <= 20 + pauseicon.get_height():
                     pause=False
+                    return pygame.time.get_ticks()-debutPause
         
 def mort(game):
     fenetrePygame.blit(game.images.mort, (0,0))
