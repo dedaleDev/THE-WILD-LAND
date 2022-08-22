@@ -1,4 +1,6 @@
 #from PIL import Image
+from msilib import init_database
+from ssl import ALERT_DESCRIPTION_UNRECOGNIZED_NAME
 import pygame
 from coffre import Coffre
 import random
@@ -15,9 +17,13 @@ class Player(pygame.sprite.Sprite):
           self.game = game
           self.bateau = False
           self.skinBateau = self.loadSkin("bateau")
-          self.skinMask = pygame.mask.from_surface(self.skin)
-
-
+          #self.skinMask = pygame.mask.from_surface(self.skin)
+          
+          
+          self.annimationDroite = self.annimLoadDroite()
+          self.annimationGauche = self.annimLoadGauche()
+          self.indiceDroite = 0
+          self.clockAnnim = 0
 
           #donnée du joueur
           self.health = 100
@@ -31,15 +37,15 @@ class Player(pygame.sprite.Sprite):
           self.estMort=False
           self.ville=False
           #ressources du joueur
-          self.wood = 0#3000#350
-          self.stone = 0 #1000#150
+          self.wood = 1100#3000#350
+          self.stone = 1110 #1000#150
           self.food = 0#1000#50
           self.water = 0#1000#100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
           self.ancientRessources =(0,0)#type de la dernière ressource actualisé puis sa valeur
-          
+          self.score = 0
           self.nbScierie = 0
           self.nbMoulin = 0
           self.nbMine = 0
@@ -59,7 +65,43 @@ class Player(pygame.sprite.Sprite):
           #deplacement
         
 
+     def changeAnnimDroite(self):
 
+         self.clockAnnim+=1
+         if self.clockAnnim==7:
+             
+            self.indiceDroite+=1
+            if self.indiceDroite >= len(self.annimationDroite):
+                self.indiceDroite=0
+            self.clockAnnim=0
+            self.skin = self.annimationDroite[self.indiceDroite] 
+            
+            
+     def changeAnnimGauche(self):
+         self.clockAnnim+=1
+         if self.clockAnnim==7:
+            self.indiceDroite+=1
+            if self.indiceDroite >= len(self.annimationDroite):
+                self.indiceDroite=0
+            self.clockAnnim=0
+            self.skin = self.annimationGauche[self.indiceDroite] 
+
+     def annimLoadDroite(self):
+         listeAnnimDroite = []
+         for i in range(11):
+             im = pygame.image.load("data/personnages/joueur/Joueur"+str(i)+".png").convert_alpha()
+             listeAnnimDroite.append(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)))
+         return listeAnnimDroite
+    
+    
+     def annimLoadGauche(self):
+         listeAnnimGauche = []
+         for i in range(11):
+             im = pygame.image.load("data/personnages/joueur/Joueur"+str(i)+".png").convert_alpha()
+             listeAnnimGauche.append(pygame.transform.flip(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)),True, False))
+
+         return listeAnnimGauche
+    
      def getFeet(self):
          return self.rect.x+35, self.rect.y+120
 
@@ -164,13 +206,13 @@ class Player(pygame.sprite.Sprite):
         return False
 
      def loadSkin(self, nomSkin):
-        if nomSkin=="joueur_1" or nomSkin=="joueur1-2":
+        if nomSkin=="joueur1" or nomSkin=="joueur1-2":
             scale = (472*0.13, 978*0.13)
         elif nomSkin=="bateau":
             scale= (512*0.2, 512*0.2)
         else:
             scale = (472*0.13, 978*0.13)
-        skin = pygame.image.load("data/personnages/"+nomSkin+".png")
+        skin = pygame.image.load("data/personnages/joueur/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
         return skin
     
@@ -220,14 +262,14 @@ class Player(pygame.sprite.Sprite):
         self.posX, self.posY = tuile.posX, tuile.posY
 
      def goLeft(self):
-            self.skin = self.loadSkin("joueur1-2")
+            self.changeAnnimGauche()
             self.rect.x-=self.velocity
      
      
         
         
      def goRight(self):
-        self.skin = self.loadSkin("joueur_1")
+        self.changeAnnimDroite()
         self.rect.x+=self.velocity
         
      def goUp(self):
@@ -255,7 +297,7 @@ class Player(pygame.sprite.Sprite):
         #2 stone
         #3 water
         #4 wood
-        smallfont = pygame.font.SysFont('Corbel', 50)  # definit la police utilisé
+        smallfont =pygame.font.SysFont("Corbe 1", 45)  # definit la police utilisé
         listeRessources=[self.food, self.stone, self.water, self.wood]
         listeRessourcesTEXT=["", "","",""]
         listeRessourcesInfoModified =  [False,False,False,False]
@@ -308,6 +350,8 @@ class Player(pygame.sprite.Sprite):
             self.nbMoulin+=1
             self.indiceEcolo+=1
             self.game.listeCaseBatiment.append(tuile)
+            tuile.annimation = self.game.images.moulinAnnim
+            tuile.clockAnnimMax = 6
             pygame.mixer.Sound.play(self.game.son.moulin)
         elif item.nom == "puit":
             self.game.map[tuile.posY][tuile.posX].puit = True
@@ -447,9 +491,10 @@ class Player(pygame.sprite.Sprite):
               
           else:
               #imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
-              imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
+              if nom!="moulin":
+                imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
           #tuile.imageO = imgTempO.resize((246, 144))
-          if nom != "ville" :
+          if nom != "ville" and nom!="moulin":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
         
           tuile.aEteModifie=True
@@ -496,8 +541,8 @@ class Player(pygame.sprite.Sprite):
             bar_color = (111, 210, 46)
 
         back_bar_color = (60,63,60)
-        bar_position = [20, 200, 30, self.MaxEcolo*2-self.indiceEcolo*2]
-        back_bar_position = [20, 200, 30, self.MaxEcolo*2]
+        bar_position = [20, 170+self.indiceEcolo*2, 30, self.MaxEcolo*2-self.indiceEcolo*2]
+        back_bar_position = [20, 170, 30, self.MaxEcolo*2]
         #dessiner la barre de vie
         
         pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)

@@ -5,7 +5,7 @@ from projectile import Projectile
 from selection import majSelectionJoueur
 class Mob(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse, tuile, pique=False, aquatique=False, aerien=False, attaque=10):
+     def __init__(self, game, nom, vie, vitesse, tuile, score, pique=False, aquatique=False, aerien=False, attaque=10):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -29,7 +29,7 @@ class Mob(pygame.sprite.Sprite):
           self.the_path = [[self.posY, self.posX]]
           self.fini = True
           self.cooldown = 0
-
+          self.score = score
           self.rect = self.skin.get_rect()
           self.rect.x, self.rect.y = self.initRect()
           
@@ -214,6 +214,7 @@ class Mob(pygame.sprite.Sprite):
             if self.name=="mage":
                 self.game.joueur.health+=15
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
+            self.game.joueur.score=+self.score
             self.kill()
 
 

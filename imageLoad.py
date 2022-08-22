@@ -21,6 +21,17 @@ class ImageLoad():
         self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
         self.etoile = pygame.image.load("data/ressources/etoile.png")
         self.etoile = pygame.transform.scale(self.etoile, (self.etoile.get_height()*0.05,self.etoile.get_width()*0.05))
+        
+        self.moulinAnnim = self.loadAnnimMoulin()
+        
+    def loadAnnimMoulin(self):
+        liste = []
+        for i in range(1, 23):    
+            if i != 6:
+                im = pygame.image.load("data/tuiles/moulin/Moulin_"+str(i)+".png").convert_alpha()
+                liste.append(im)
+            #im = pygame.transform.scale(im, (164, 351))  
+        return liste
     def loadImgVille(self):
         im = pygame.image.load("data/batiments/ville.png")
         im = pygame.transform.scale(im, (164, 351))    

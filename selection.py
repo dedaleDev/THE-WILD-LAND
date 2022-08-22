@@ -66,7 +66,7 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
         elif tuile.type==2 and not tuile.forge and not tuile.mine and not tuile.mortier and not tuile.ville:
-            optionDIspo.append(Item(game, "forge", 0,0,0,0))
+            #optionDIspo.append(Item(game, "forge", 0,0,0,0))
             optionDIspo.append(Item(game, "mine", 0,0,50,50))
             optionDIspo.append(Item(game, "mortier", 0,0,0,200))
         elif tuile.type==3 and not tuile.moulin and not tuile.port and not tuile.ville:

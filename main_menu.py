@@ -12,9 +12,9 @@ pygame.init()
 tailleEcran = pygame.display.Info().current_w, pygame.display.Info().current_h
 #tailleEcran = tailleEcran[0]//2, tailleEcran[1]//2
 diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
-taillePolice = round(4/100*diagonalEcran)
+taillePolice = round(3/100*diagonalEcran)
 scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1] #TAILLE DES BOUTONS
-
+scaleButtonMap = 1/3 * tailleEcran[0], 1/2*tailleEcran[1] #TAILLE DES BOUTONS
 SCREEN = pygame.display.set_mode(tailleEcran)
 pygame.display.set_caption("Menu")
 BG=pygame.image.load("data/menu/background.png")
@@ -22,6 +22,77 @@ BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
 
 def get_font(size):
     return pygame.font.Font("data/menu/font.ttf", size)
+
+
+def optionPartie():
+    continu = True
+    back = False
+    OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1.5/10, tailleEcran[1]*1/1.1), 
+                    text_input="retour", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    
+    OPTIONS_TEXT = get_font(taillePolice).render(" Nouvelle partie ", True, "Black")
+    OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*1/10))
+    MAP_TEXT = get_font(taillePolice).render(" Nouvelle partie ", True, "Black")
+    MAP_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*1/10))
+    posYMap = 0.8
+    posYDiff = 0.5
+    
+    miniMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*1.25/10, tailleEcran[1]*posYMap), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    
+    moyenneMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4-scaleButtonMap[0]//10, scaleButtonMap[1]//4-scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*0.5/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.01), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    
+    grandeMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*1.3/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.035), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+                  
+    ExtremeMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4+scaleButtonMap[0]//10, scaleButtonMap[1]//4+scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*2.45/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.06), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+
+    facile = Button(image=pygame.transform.scale(pygame.image.load("data/menu/facile.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7, tailleEcran[1]*posYDiff), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    normal = Button(image=pygame.transform.scale(pygame.image.load("data/menu/normal.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*10//100, tailleEcran[1]*posYDiff), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    difficile = Button(image=pygame.transform.scale(pygame.image.load("data/menu/difficile.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*20//100, tailleEcran[1]*posYDiff), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    extreme = Button(image=pygame.transform.scale(pygame.image.load("data/menu/extreme.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*30//100, tailleEcran[1]*posYDiff), 
+                text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    
+    
+    while continu:
+        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("white")
+        
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+        SCREEN.blit(MAP_TEXT, MAP_RECT)
+
+        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
+        grandeMap.changeColor(OPTIONS_MOUSE_POS)
+        ExtremeMap.changeColor(OPTIONS_MOUSE_POS)
+        moyenneMap.changeColor(OPTIONS_MOUSE_POS)
+        
+        OPTIONS_BACK.update(SCREEN)
+        grandeMap.update(SCREEN)
+        moyenneMap.update(SCREEN)
+        ExtremeMap.update(SCREEN)
+        miniMap.update(SCREEN)
+        facile.update(SCREEN)
+        normal.update(SCREEN)
+        difficile.update(SCREEN)
+        extreme.update(SCREEN)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    continu=False
+                    back=True
+        pygame.display.update()
+        
+        
+    return False#back
 
 def options():
     continu=True
@@ -97,7 +168,8 @@ def options():
     return volume, volumeM
 
 def main_menu():
-
+    pygame.mixer.music.load("data/son/musiques/menu.mp3")
+    pygame.mixer.music.play(loops=-1)
     continu=True
     
     
@@ -123,10 +195,13 @@ def main_menu():
                 pygame.quit()
                 continu=False
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN :
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
-                    pygame_gestion.pygameInit()
+                    back = optionPartie()
+                    if not back :
+                        pygame.mixer.music.stop()
+                        pygame_gestion.pygameInit()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
                     volume, volumeM = options()

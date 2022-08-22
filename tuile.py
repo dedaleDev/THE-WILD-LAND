@@ -38,12 +38,16 @@ class Tuile(pygame.sprite.Sprite):
         self.autoriserNeige = False 
         self.autoriserDesert = True
         
-        
+        self.clockAnnimMax = None
+        self.clockAnnim = 0
+        self.indiceAnnim=0
+        self.annimation = []
+    
         self.estSelect = False
         self.isExplored = self.type==7
-        
+        self.annimationFog = 256
         ####     POSITION ET IMAGE    ####
-        
+        self.imageFog = game.imageFog2.copy()
         self.posX = posX
         self.posY = posY
         self.image= game.images.returnImg(self.type)
@@ -162,3 +166,14 @@ class Tuile(pygame.sprite.Sprite):
         
     def decalerY(self, valeur):
         self.rect.y+=valeur
+
+
+    def changeAnnim(self):
+         self.clockAnnim+=1
+         if self.clockAnnim==self.clockAnnimMax:
+            
+            self.indiceAnnim+=1
+            if self.indiceAnnim >= len(self.annimation):
+                self.indiceAnnim=0
+            self.clockAnnim=0
+            self.image = self.annimation[self.indiceAnnim] 

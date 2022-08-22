@@ -66,8 +66,10 @@ class Game(pygame.sprite.Sprite):
         self.affichagePersonalise = self.affichage()
         self.decalageMontagneX = self.getAffichageTuile()[self.affichagePersonalise][0]/100*self.infoObject.current_w
         self.decalageMontagneY = self.affichageTuile[self.affichagePersonalise][1]/100*self.infoObject.current_h
+        
         self.images = ImageLoad()
         self.son = Sound()
+        
         
         self.imCollision = self.images.getImCollision()
         self.map = 0
@@ -96,7 +98,7 @@ class Game(pygame.sprite.Sprite):
         self.groupCoffre = pygame.sprite.Group()
         
         self.genererMatrice()
-        self.joueur = Player(self,"joueur_1", 5)
+        self.joueur = Player(self,"joueur0", 5)
         self.groupJoueur=pygame.sprite.Group()
         self.groupJoueur.add(self.joueur)
         
@@ -242,31 +244,31 @@ class Game(pygame.sprite.Sprite):
                     if tuile.type==2:
                         rand = random.randint(1,400)
                         if rand <= self.probaDragon:
-                            self.groupMob.add(Mob(self, "dragon", 300, 2, tuile, aerien=True))   
+                            self.groupMob.add(Mob(self, "dragon", 300, 2, tuile, 700,aerien=True))   
                             pygame.mixer.Sound.play(self.son.dragonSpawn)
                     if tuile.estForet():
                         rand = random.randint(1,400)
                         if rand <= self.probaGolemForet:
-                            self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile))
+                            self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile, 100))
                             pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)
                         rand = random.randint(1,400)
                         if rand<= self.probaMage:
-                            self.groupMob.add(Mob(self, "mage", 50, 1, tuile))
+                            self.groupMob.add(Mob(self, "mage", 50, 1, tuile, 125))
                             pygame.mixer.Sound.play(self.son.mageSpawn)
                     if tuile.estPlaine():
                         rand = random.randint(1,400)
                         if rand <= self.probaOursin:
-                            self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, pique=True))
+                            self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, 150, pique=True))
                             pygame.mixer.Sound.play(self.son.oursinSpawn)
                     if tuile.estMer():
                         rand = random.randint(1,400)
                         if rand <= self.probaKraken:
-                            self.groupMob.add(Mob(self, "kraken", 50, 1,tuile, aquatique=True))
+                            self.groupMob.add(Mob(self, "kraken", 50, 1,tuile, 100, aquatique=True))
                             pygame.mixer.Sound.play(self.son.krakenSpawn)
                     if tuile.type==5:
                         rand = random.randint(1,400)
                         if rand <= self.probaYeti:
-                            self.groupMob.add(Mob(self, "yeti", 300, 2, tuile))
+                            self.groupMob.add(Mob(self, "yeti", 300, 2, tuile, 500))
                             pygame.mixer.Sound.play(self.son.yetiSpawn)
     """                            
     def genererImg(self):
@@ -316,6 +318,7 @@ class Game(pygame.sprite.Sprite):
     def openFog2(self):
         imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (246, 144))
+        
         return imgTemp
 
     def deleteFog(self,x,y):

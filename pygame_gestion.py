@@ -1,3 +1,4 @@
+import math
 from random import randint
 import pygame
 from pygame.locals import *
@@ -45,12 +46,13 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
     pygame.mixer.init()
-    
+
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 30)
 
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
     fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
+    
     game = Game(infoObject, fenetrePygame)
     
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
@@ -104,7 +106,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     #game.groupProjectile.add(fleche)
     game.tempsMort+=pygame.time.get_ticks()
     fps = 0 #compte le nombre de fps
+    tailleEcran = pygame.display.Info().current_w, pygame.display.Info().current_h
+    diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
+    taillePolice = round(3/100*diagonalEcran)
     while continuer == True:
+        scoreText = get_font(taillePolice).render(str(game.joueur.score), True, "Black")
+        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*1.2/10))
         if fps>=60:
             fps =0
         else:
@@ -126,6 +133,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     modification=True
                     game.avoirTuileJoueur(mob).aEteModifie=True
                     game.avoirTuileJoueur(mob).trou=False
+                    game.joueur.score+=mob.score
                     mob.kill()
                     
                     
@@ -167,7 +175,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             elif mob.slow:
                  mob.slow =False
                  mob.velocity =mob.maxVelocity
-                 
+        mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == QUIT:
                 continuer = False
@@ -175,7 +183,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
             
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
-                mouse = pygame.mouse.get_pos()
+                
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
                         batimentConstruit = game.joueur.construireBatiment(tuile, item)
@@ -282,8 +290,17 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 for x in range(25):
                     if game.map[y][x].isExplored:
                         fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                        if game.map[y][x].annimation:
+                            game.map[y][x].changeAnnim()
+                            
+                    if game.map[y][x].annimationFog>0 and game.map[y][x].isExplored:
+                        
+                        fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                        game.map[y][x].annimationFog-=8
+                        game.map[y][x].imageFog.set_alpha(game.map[y][x].annimationFog)
                     else :
-                        fenetrePygame.blit(game.imageFog2, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                        fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                        
                     if game.map[y][x].ville:
                         alerteVille = True
                         tuileVille = game.map[y][x]
@@ -322,6 +339,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             #affichage personnage
             
             if not game.joueur.bateau:
+
                 fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored :
@@ -394,7 +412,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             game.joueur.update_health_bar()
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (120,15))
-            fenetrePygame.blit(feuille, (10,155))
+            fenetrePygame.blit(feuille, (10,368))
+            fenetrePygame.blit(scoreText, scoreRect)
             if tickBatiment<60:
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject.current_w-game.imageErreurRessource.get_width()-(infoObject.current_w-game.imageErreurRessource.get_width())/2,infoObject.current_h - 200))
                 tickBatiment+=1
@@ -604,3 +623,7 @@ def mort(game):
 def victoire(game):
     
     fenetrePygame.blit(game.images.victoire, (0,0))
+    
+def get_font(size):
+    return pygame.font.Font("data/menu/font.ttf", size)
+
