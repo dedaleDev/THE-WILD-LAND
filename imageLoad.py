@@ -28,7 +28,7 @@ class ImageLoad():
         liste = []
         for i in range(1, 23):    
             if i != 6:
-                im = pygame.image.load("data/tuiles/moulin/Moulin_"+str(i)+".png").convert_alpha()
+                im = pygame.image.load("data/batiments/moulin/Moulin_"+str(i)+".png").convert_alpha()
                 liste.append(im)
             #im = pygame.transform.scale(im, (164, 351))  
         return liste
