@@ -24,6 +24,7 @@ class ImageLoad():
         
         self.moulinAnnim = self.loadAnnimMoulin()
         
+        
     def loadAnnimMoulin(self):
         liste = []
         for i in range(1, 23):    
@@ -36,8 +37,21 @@ class ImageLoad():
         im = pygame.image.load("data/batiments/ville.png")
         im = pygame.transform.scale(im, (164, 351))    
         return im
-    
-    
+    """ 
+    def annimLoadOursin2(self):
+        listeAnnimOursin2 = []
+        for i in range(18):
+             listeAnnimOursin2.append(pygame.transform.flip(self.listeAnnimOursin[i], True, False))
+        return listeAnnimOursin2
+        
+    def annimLoadOursin(self):
+         listeAnnimOursin = []
+         for i in range(1,19):
+             im = pygame.image.load("data/personnages/oursin/oursin_"+str(i)+".png").convert_alpha()
+             listeAnnimOursin.append(pygame.transform.scale(im, (im.get_width()*0.50,im.get_height()*0.50)))
+         return listeAnnimOursin"""
+
+    #97* 19
     def loadImg(self):
         
         listeImg = []

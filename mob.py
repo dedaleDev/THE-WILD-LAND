@@ -38,10 +38,28 @@ class Mob(pygame.sprite.Sprite):
               self.speedProjectile=3
           else:
               self.speedProjectile=5
+              
           self.damageDistance = 5
           self.range=300
           self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater=0,0,0,0
           self.initRecompense(self.name)
+          if self.name=="oursin":
+            self.originSkin = self.skin
+            self.angle = 0
+            self.neg = False #sens de rotation
+          self.clockAnnim=0
+          self.indiceAnnim=0
+          
+          
+     def rotate(self, neg = False, angle = 4):
+         if not neg :
+            self.angle+=angle
+         else :
+             self.angle-=angle
+         self.skin = pygame.transform.rotozoom(self.originSkin, self.angle, 1)
+         self.rect = self.skin.get_rect(center=self.rect.center)
+     
+     
           
      def initRect(self):
         if self.name=="yeti":
@@ -97,28 +115,43 @@ class Mob(pygame.sprite.Sprite):
              self.recompenseStone=0
              self.recompenseFood=random.randint(10,20)
         
-
-         
+     def changeAnnimOursin(self):
+         self.clockAnnim+=1
+         if self.clockAnnim==5:
+            self.indiceAnnim+=1
+            if self.indiceAnnim >= len(self.listeAnnimOursin):
+                self.indiceAnnim=0
+            self.clockAnnim=0
+            self.skin = self.listeAnnimOursin[self.indiceAnnim]
+            
+     def changeAnnimOursin2(self):
+         self.clockAnnim+=1
+         if self.clockAnnim==5:
+            self.indiceAnnim+=1
+            if self.indiceAnnim >= len(self.listeAnnimOursin):
+                self.indiceAnnim=0
+            self.clockAnnim=0
+            self.skin = self.listeAnnimOursin2[self.indiceAnnim] 
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
          
         if posY == self.posY and posX-self.posX>0:
-            self.goUp()
-            self.goRight()
+            self.goUp(angle=2)
+            self.goRight(angle=2)
             newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]+142/4))
             self.setPos(newTuile)
         if posY==self.posY and posX-self.posX<0:
-            self.goDown()
-            self.goLeft()
+            self.goDown(angle=2)
+            self.goLeft(angle=2)
             newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]-142/4))
             self.setPos(newTuile)
         if posX==self.posX and posY-self.posY>0:
-            self.goRight()
-            self.goDown()
+            self.goRight(angle=2)
+            self.goDown(angle=2)
             newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]-142/4))
             self.setPos(newTuile)
         if posX==self.posX and posY-self.posY<0:
-            self.goUp()
-            self.goLeft()
+            self.goUp(angle=2)
+            self.goLeft(angle=2)
             newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]+142/4))
             self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY>0:
@@ -170,7 +203,7 @@ class Mob(pygame.sprite.Sprite):
         if nomSkin== "golem_des_forets":
             scale = (704*0.13, 613*0.13)
         elif nomSkin=="oursin":
-            scale = (751*0.13, 613*0.13)
+            scale = (175*0.56, 142*0.56)
         elif nomSkin=="kraken":
             scale = (756*0.13, 480*0.13)
         elif nomSkin=="dragon":
@@ -179,7 +212,7 @@ class Mob(pygame.sprite.Sprite):
             scale = (323*0.2, 612*0.2)
         elif nomSkin=="yeti":
             scale = (413*0.3,611*0.3)
-            
+            98*80
         skin = pygame.image.load("data/personnages/"+nomSkin+".png")
         skin = pygame.transform.scale(skin, scale)
         return skin
@@ -327,8 +360,7 @@ class Mob(pygame.sprite.Sprite):
      def setPos(self, tuile):
             self.posX, self.posY = tuile.posX, tuile.posY
 
-     def goLeft(self):
-            self.rect.x-=self.velocity
+
      
      
      def majCoolDown(self):
@@ -347,15 +379,28 @@ class Mob(pygame.sprite.Sprite):
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
         
-         
         
-     def goRight(self):
+        
+     def goLeft(self, angle=4):
+            if self.name=="oursin":    
+                self.rotate(angle=angle)
+                self.neg = False
+            self.rect.x-=self.velocity 
+        
+     def goRight(self, angle=4):
         self.rect.x+=self.velocity
+        if self.name=="oursin":
+            self.rotate(True, angle)
+            self.neg= True
         
-     def goUp(self):
+     def goUp(self, angle=4):
+         if self.name=="oursin":    
+                self.rotate(self.neg, angle)
          self.rect.y-=self.velocity
          
-     def goDown(self):
+     def goDown(self, angle=4):
+         if self.name=="oursin":    
+                self.rotate(self.neg, angle)
          self.rect.y+=self.velocity
 
      def update_health_bar(self):

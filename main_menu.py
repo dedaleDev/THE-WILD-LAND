@@ -34,8 +34,8 @@ def optionPartie():
     OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*1/10))
     MAP_TEXT = get_font(taillePolice).render(" Nouvelle partie ", True, "Black")
     MAP_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*1/10))
-    posYMap = 0.8
-    posYDiff = 0.5
+    posYMap = 0.6
+    posYDiff = 0.3
     
     miniMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*1.25/10, tailleEcran[1]*posYMap), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")

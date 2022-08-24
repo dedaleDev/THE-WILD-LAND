@@ -1,6 +1,4 @@
 #from PIL import Image
-from msilib import init_database
-from ssl import ALERT_DESCRIPTION_UNRECOGNIZED_NAME
 import pygame
 from coffre import Coffre
 import random
@@ -22,7 +20,11 @@ class Player(pygame.sprite.Sprite):
           
           self.annimationDroite = self.annimLoadDroite()
           self.annimationGauche = self.annimLoadGauche()
+          self.annimationBas = self.annimLoadBas()
+          self.annimationHaut = self.annimLoadHaut()
           self.indiceDroite = 0
+          self.indiceBas = 0
+          self.indiceHaut = 0
           self.clockAnnim = 0
 
           #donnée du joueur
@@ -68,7 +70,7 @@ class Player(pygame.sprite.Sprite):
      def changeAnnimDroite(self):
 
          self.clockAnnim+=1
-         if self.clockAnnim==7:
+         if self.clockAnnim==5:
              
             self.indiceDroite+=1
             if self.indiceDroite >= len(self.annimationDroite):
@@ -77,14 +79,35 @@ class Player(pygame.sprite.Sprite):
             self.skin = self.annimationDroite[self.indiceDroite] 
             
             
+     def changeAnnimHaut(self):
+
+         self.clockAnnim+=1
+         if self.clockAnnim==5:
+             
+            self.indiceHaut+=1
+            if self.indiceHaut >= len(self.annimationHaut):
+                self.indiceHaut=0
+            self.clockAnnim=0
+            self.skin = self.annimationHaut[self.indiceHaut] 
+            
      def changeAnnimGauche(self):
          self.clockAnnim+=1
-         if self.clockAnnim==7:
+         if self.clockAnnim==5:
             self.indiceDroite+=1
             if self.indiceDroite >= len(self.annimationDroite):
                 self.indiceDroite=0
             self.clockAnnim=0
             self.skin = self.annimationGauche[self.indiceDroite] 
+
+     def changeAnnimBas(self):
+         self.clockAnnim+=1
+         if self.clockAnnim==5:
+            self.indiceBas+=1
+            if self.indiceBas >= len(self.annimationBas):
+                self.indiceBas=0
+            self.clockAnnim=0
+            self.skin = self.annimationBas[self.indiceBas] 
+
 
      def annimLoadDroite(self):
          listeAnnimDroite = []
@@ -93,6 +116,19 @@ class Player(pygame.sprite.Sprite):
              listeAnnimDroite.append(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)))
          return listeAnnimDroite
     
+     def annimLoadBas(self):
+         listeAnnimBas = []
+         for i in range(1, 12):
+             im = pygame.image.load("data/personnages/joueur/JoueurAvant_"+str(i)+".png").convert_alpha()
+             listeAnnimBas.append(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)))
+         return listeAnnimBas
+    
+     def annimLoadHaut(self):
+         listeAnnimHaut = []
+         for i in range(1, 11):
+             im = pygame.image.load("data/personnages/joueur/JoueurHaut_"+str(i)+".png").convert_alpha()
+             listeAnnimHaut.append(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)))
+         return listeAnnimHaut
     
      def annimLoadGauche(self):
          listeAnnimGauche = []
@@ -273,9 +309,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.x+=self.velocity
         
      def goUp(self):
+         self.changeAnnimHaut()
          self.rect.y-=self.velocity
-         
+
      def goDown(self):
+         self.changeAnnimBas()
          self.rect.y+=self.velocity
 
      def majBateau(self):
@@ -297,7 +335,7 @@ class Player(pygame.sprite.Sprite):
         #2 stone
         #3 water
         #4 wood
-        smallfont =pygame.font.SysFont("Corbe 1", 45)  # definit la police utilisé
+        smallfont =pygame.font.SysFont("Corbel", 45)  # definit la police utilisé
         listeRessources=[self.food, self.stone, self.water, self.wood]
         listeRessourcesTEXT=["", "","",""]
         listeRessourcesInfoModified =  [False,False,False,False]
