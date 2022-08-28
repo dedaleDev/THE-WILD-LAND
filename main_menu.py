@@ -19,6 +19,7 @@ SCREEN = pygame.display.set_mode(tailleEcran)
 pygame.display.set_caption("Menu")
 pygame.display.set_caption("THE WILD LAND")
 pygame_icon = pygame.image.load('data/logo/icon_WL.png')
+pygame.display.set_icon(pygame_icon)
 BG=pygame.image.load("data/menu/background.png")
 BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
 
