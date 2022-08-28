@@ -116,7 +116,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         else:
             fps+=1
         game.augmenterMob()
-        game.son.jouerMusique()
+        game.son.jouerMusique2()
         modification=False
         cliqueItem = False
         
