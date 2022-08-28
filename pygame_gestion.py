@@ -2,7 +2,6 @@ import math
 from random import randint
 import pygame
 from pygame.locals import *
-#from PIL import *  # pour les images
 from inventaire import Inventaire
 from generation import *
 from mob import Mob
@@ -94,8 +93,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     centrerJoueur(game)
     
     
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4]))
-    game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
     #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
@@ -445,7 +444,21 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 def KEY_move(game,joueur,fenetre):
     modification=False
     tuile=False
+    haut=True
+    bas=True
     keys=pygame.key.get_pressed()
+    #gestion diagonale
+    if (keys[K_d] or keys[K_RIGHT]) and (keys[K_z] or keys[K_UP]): #diag haut droite
+        haut=False
+    elif (keys[K_d] or keys[K_RIGHT]) and (keys[K_s]or keys[K_DOWN]): #diag bas droite
+        bas=False
+    elif (keys[K_q]or keys[K_LEFT]) and (keys[K_s]or keys[K_DOWN]): #diag bas gauche
+        bas=False
+    elif (keys[K_q]or keys[K_LEFT]) and (keys[K_z] or keys[K_UP]): #diag haut gauche
+        haut=False
+    
+    
+    
     if keys[K_d] or keys[K_RIGHT]:
         if joueur.deplacementAutorise("droite") :
             deplacementCamDroite((infoObject.current_w - suiviePerso,0), game)
@@ -477,7 +490,7 @@ def KEY_move(game,joueur,fenetre):
             if joueur.deplacementAutorise("haut"):
                 #joueur.majBateau()
                 deplacementCamHaut((0,suiviePerso), game)
-                joueur.goUp()
+                joueur.goUp(haut)
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
                 for i in range(-1,2):
@@ -488,7 +501,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_s]or keys[K_DOWN]:
             if joueur.deplacementAutorise("bas"):
                 deplacementCamBas((0, infoObject.current_h-suiviePerso), game)
-                joueur.goDown()
+                joueur.goDown(bas)
                 tuile = majSelectionJoueur(game, joueur.getFeet())
                 joueur.setPos(tuile)
                 #joueur.majBateau()

@@ -64,6 +64,7 @@ class Player(pygame.sprite.Sprite):
           
           self.indiceEcolo=0
           self.MaxEcolo=100
+          
           #deplacement
         
 
@@ -308,12 +309,14 @@ class Player(pygame.sprite.Sprite):
         self.changeAnnimDroite()
         self.rect.x+=self.velocity
         
-     def goUp(self):
-         self.changeAnnimHaut()
+     def goUp(self, annim=True):
+         if annim:
+            self.changeAnnimHaut()
          self.rect.y-=self.velocity
 
-     def goDown(self):
-         self.changeAnnimBas()
+     def goDown(self, annim=True):
+         if annim:
+            self.changeAnnimBas()
          self.rect.y+=self.velocity
 
      def majBateau(self):
