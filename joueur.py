@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
           self.game = game
           self.bateau = False
           self.skinBateau = self.loadSkin("bateau")
-          #self.skinMask = pygame.mask.from_surface(self.skin)
+          self.skinMask = pygame.mask.from_surface(self.skin)
           
           
           self.annimationDroite = self.annimLoadDroite()
@@ -248,7 +248,7 @@ class Player(pygame.sprite.Sprite):
             scale= (512*0.2, 512*0.2)
         else:
             scale = (472*0.13, 978*0.13)
-        skin = pygame.image.load("data/personnages/joueur/"+nomSkin+".png")
+        skin = pygame.image.load("data/personnages/joueur/"+nomSkin+".png").convert_alpha()
         skin = pygame.transform.scale(skin, scale)
         return skin
     
@@ -528,7 +528,6 @@ class Player(pygame.sprite.Sprite):
      def changerImageBatiment(self, tuile, nom):
           if nom=="port":
               imgTemp = self.chargerImPort(tuile)
-              
           else:
               #imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
               if nom!="moulin":
@@ -536,7 +535,6 @@ class Player(pygame.sprite.Sprite):
           #tuile.imageO = imgTempO.resize((246, 144))
           if nom != "ville" and nom!="moulin":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
-        
           tuile.aEteModifie=True
 
      def ajouterRessources(self):

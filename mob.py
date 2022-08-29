@@ -47,9 +47,20 @@ class Mob(pygame.sprite.Sprite):
             self.originSkin = self.skin
             self.angle = 0
             self.neg = False #sens de rotation
+          if self.name=="golem_des_forets":
+              self.listeAnnimGolem = self.game.images.golemAnnim
+          if self.name=="kraken":
+              self.listeAnnimKraken = self.game.images.krakenAnnim
+          if self.name=="yeti":
+              self.listeAnnimYeti = self.game.images.yetiAnnim
+          if self.name=="mage":
+              self.listeAnnimMage = self.game.images.mageAnnim
+          if self.name=="dragon":
+              self.listeAnnimDragon = self.game.images.dragonAnnim
+              
           self.clockAnnim=0
           self.indiceAnnim=0
-          
+          self.droite = True
           
      def rotate(self, neg = False, angle = 4):
          if not neg :
@@ -114,7 +125,7 @@ class Mob(pygame.sprite.Sprite):
              self.recompenseWater=0
              self.recompenseStone=0
              self.recompenseFood=random.randint(10,20)
-        
+     """
      def changeAnnimOursin(self):
          self.clockAnnim+=1
          if self.clockAnnim==5:
@@ -131,7 +142,7 @@ class Mob(pygame.sprite.Sprite):
             if self.indiceAnnim >= len(self.listeAnnimOursin):
                 self.indiceAnnim=0
             self.clockAnnim=0
-            self.skin = self.listeAnnimOursin2[self.indiceAnnim] 
+            self.skin = self.listeAnnimOursin2[self.indiceAnnim] """
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
          
         if posY == self.posY and posX-self.posX>0:
@@ -201,19 +212,33 @@ class Mob(pygame.sprite.Sprite):
          return tuile.posX, tuile.posY
      def loadSkin(self, nomSkin):
         if nomSkin== "golem_des_forets":
-            scale = (704*0.13, 613*0.13)
+            scale = (241*0.32, 249*0.32)
+            skin = pygame.image.load("data/personnages/golem/golem_des_forets_1.png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
         elif nomSkin=="oursin":
             scale = (175*0.56, 142*0.56)
-        elif nomSkin=="kraken":
-            scale = (756*0.13, 480*0.13)
-        elif nomSkin=="dragon":
-            scale = (375*0.13, 612*0.13)
-        elif nomSkin=="mage":
-            scale = (323*0.2, 612*0.2)
         elif nomSkin=="yeti":
-            scale = (413*0.3,611*0.3)
-            98*80
-        skin = pygame.image.load("data/personnages/"+nomSkin+".png")
+            scale = (205*0.5, 318*0.5)
+            skin = pygame.image.load("data/personnages/yeti/yeti_1.png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
+        elif nomSkin=="dragon":
+            scale =(436*0.3, 473*0.3)
+            skin = pygame.image.load("data/personnages/dragon/dragon_2.png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
+        elif nomSkin=="mage":
+            scale =(111*0.62, 214*0.62)
+            skin = pygame.image.load("data/personnages/mage/mage_1.png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
+        elif nomSkin=="kraken":
+            scale = (279*0.5, 177*0.5)
+            skin = pygame.image.load("data/personnages/kraken/kraken_1.png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
+        skin = pygame.image.load("data/personnages/"+nomSkin+".png").convert_alpha()
         skin = pygame.transform.scale(skin, scale)
         return skin
 
@@ -378,31 +403,134 @@ class Mob(pygame.sprite.Sprite):
              self.cooldown=200
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
-        
-        
-        
+             
+             
+     def changeAnnimGolem(self):
+        self.clockAnnim+=1
+        if self.clockAnnim==5:
+            self.indiceAnnim+=1
+            if self.indiceAnnim>=len(self.listeAnnimGolem):
+                self.indiceAnnim=0
+            self.skin=self.listeAnnimGolem[self.indiceAnnim]
+            self.clockAnnim=0
+    
+    
+     def changeAnnimDragon(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==7:
+            self.indiceAnnim+=1
+            if self.indiceAnnim>=len(self.listeAnnimDragon):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimDragon[self.indiceAnnim]
+                print("droite")
+            else :
+                self.skin=pygame.transform.flip(self.listeAnnimDragon[self.indiceAnnim], True, False)
+                print("gauche")
+            self.clockAnnim=0
+     
+     def changeAnnimKraken(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==10:
+            self.indiceAnnim+=1
+            if self.indiceAnnim==len(self.listeAnnimKraken):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimKraken[self.indiceAnnim]
+            else:
+                self.skin=pygame.transform.flip(self.listeAnnimKraken[self.indiceAnnim], True, False)
+            self.clockAnnim=0
+            
+     def changeAnnimYeti(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==10:
+            self.indiceAnnim+=1
+            if self.indiceAnnim==len(self.listeAnnimYeti):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimYeti[self.indiceAnnim]
+            else:
+                self.skin=pygame.transform.flip(self.listeAnnimYeti[self.indiceAnnim], True, False)
+            self.clockAnnim=0
+     def changeAnnimMage(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==10:
+            self.indiceAnnim+=1
+            if self.indiceAnnim==len(self.listeAnnimMage):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimMage[self.indiceAnnim]
+            else :
+                self.skin = pygame.transform.flip(self.listeAnnimMage[self.indiceAnnim], True, False)
+            self.clockAnnim=0
+            
      def goLeft(self, angle=4):
-            if self.name=="oursin":    
-                self.rotate(angle=angle)
-                self.neg = False
-            self.rect.x-=self.velocity 
+        if self.name=="oursin":    
+            self.rotate(angle=angle)
+            self.neg = False
+        self.rect.x-=self.velocity 
+        if self.name=="golem_des_forets":
+            self.changeAnnimGolem()
+        if self.name=="kraken":
+            self.changeAnnimKraken()
+        if self.name=="yeti":
+            self.changeAnnimYeti(True)
+        if self.name=="mage":
+            self.changeAnnimMage(True)
+        if self.name=="dragon":
+            self.changeAnnimDragon(True)
+            print("gaucheG")
+        self.droite = True
         
      def goRight(self, angle=4):
         self.rect.x+=self.velocity
         if self.name=="oursin":
             self.rotate(True, angle)
             self.neg= True
+        if self.name=="golem_des_forets":
+            self.changeAnnimGolem()
+        if self.name=="kraken":
+            self.changeAnnimKraken(True)
+        if self.name=="yeti":
+            self.changeAnnimYeti()
+        if self.name=="mage":
+            self.changeAnnimMage()
+        if self.name=="dragon":
+            self.changeAnnimDragon()
+            print("droiteD")
+        self.droite=False
         
      def goUp(self, angle=4):
+         self.rect.y-=self.velocity
          if self.name=="oursin":    
                 self.rotate(self.neg, angle)
-         self.rect.y-=self.velocity
-         
+         if self.name=="golem_des_forets":
+            self.changeAnnimGolem()
+         if self.name=="kraken":
+            self.changeAnnimKraken(self.droite)
+         if self.name=="yeti":
+            self.changeAnnimYeti(self.droite)
+         if self.name=="mage":
+            self.changeAnnimMage(self.droite)
+         if self.name=="dragon":
+            self.changeAnnimDragon(self.droite)
+            
+            
      def goDown(self, angle=4):
          if self.name=="oursin":    
                 self.rotate(self.neg, angle)
          self.rect.y+=self.velocity
-
+         
+         if self.name=="golem_des_forets":
+             self.changeAnnimGolem()
+         if self.name=="kraken":
+            self.changeAnnimKraken(self.droite)
+         if self.name=="yeti":
+            self.changeAnnimYeti(self.droite)
+         if self.name=="mage":
+            self.changeAnnimMage(self.droite)
+         if self.name=="dragon":
+            self.changeAnnimDragon(self.droite)
      def update_health_bar(self):
         #def la couleur
         

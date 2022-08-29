@@ -121,7 +121,7 @@ class Game(pygame.sprite.Sprite):
         self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc
         
     def openImageRessource(self):
-        im = pygame.image.load("data/menu/alerteRessource.png")
+        im = pygame.image.load("data/menu/alerteRessource.png").convert_alpha()
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
         return im
     
@@ -212,7 +212,6 @@ class Game(pygame.sprite.Sprite):
         listeColide=[]
         now = self.tempsJeu()
         for mob in listeMob :
-            
             colide = mob.rect.colliderect(joueur.rect)
             if colide and now-joueur.lastDamage>joueur.cooldownDamage:
                 joueur.takeDamage(mob.attack)

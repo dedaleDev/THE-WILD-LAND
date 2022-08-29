@@ -36,7 +36,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     modification = False
     delayIncendie=500
     timeComtpeur=0
-    imDebug = pygame.image.load("data/tuiles/debug.png")
+    imDebug = pygame.image.load("data/tuiles/debug.png").convert_alpha()
     imDebug = pygame.transform.scale(imDebug, (2,2))
     BLACK = (0, 0, 0)
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
@@ -90,7 +90,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     centrerJoueur(game)
     
     
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    game.groupMob.add(Mob(game,"kraken", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
@@ -393,7 +393,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             
             
             #if game.joueur.estMort:
-            #    fenetrePygame.blit(pygame.image.load("data/menu/gameover.png").convert_alpha(), (200,200))
+            
             if librairie ==True :
                     fenetrePygame.blit(librairieIMG,(infoObject.current_w-librairieIMG.get_width()-(infoObject.current_w-librairieIMG.get_width())/2,200))
             for i in range(len(game.joueur.ressourcesIMG)):

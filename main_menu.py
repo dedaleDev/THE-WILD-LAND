@@ -20,7 +20,7 @@ pygame.display.set_caption("Menu")
 pygame.display.set_caption("THE WILD LAND")
 pygame_icon = pygame.image.load('data/logo/icon_WL.png')
 pygame.display.set_icon(pygame_icon)
-BG=pygame.image.load("data/menu/background.png")
+BG=pygame.image.load("data/menu/background.png").convert_alpha()
 BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
 
 def get_font(size):
@@ -30,9 +30,9 @@ def get_font(size):
 def optionPartie():
     continu = True
     back = False
-    OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1.5/10, tailleEcran[1]*1/1.1), 
+    OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1.5/10, tailleEcran[1]*1/1.1), 
                     text_input="retour", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    OPTIONS_GO = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*9/10, tailleEcran[1]*1/1.1), 
+    OPTIONS_GO = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*9/10, tailleEcran[1]*1/1.1), 
                     text_input="demarrer", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
     OPTIONS_TEXT = get_font(taillePolice).render(" Nouvelle partie ", True, "Black")
@@ -44,16 +44,16 @@ def optionPartie():
     
     tailleMap = 25
     
-    miniMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*1.25/10, tailleEcran[1]*posYMap), 
+    miniMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*1.25/10, tailleEcran[1]*posYMap), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
-    moyenneMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4-scaleButtonMap[0]//10, scaleButtonMap[1]//4-scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*0.5/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.01), 
+    moyenneMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//10, scaleButtonMap[1]//4-scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*0.5/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.01), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
-    grandeMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*1.3/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.035), 
+    grandeMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*1.3/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.035), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
                   
-    ExtremeMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png"), (scaleButtonMap[0]//4+scaleButtonMap[0]//10, scaleButtonMap[1]//4+scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*2.45/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.06), 
+    ExtremeMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4+scaleButtonMap[0]//10, scaleButtonMap[1]//4+scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*2.45/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.06), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     miniMap.image.set_alpha(50)
     moyenneMap.image.set_alpha(255)
@@ -63,13 +63,13 @@ def optionPartie():
 
     diff = "normal"
 
-    facile = Button(image=pygame.transform.scale(pygame.image.load("data/menu/facile.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7, tailleEcran[1]*posYDiff), 
+    facile = Button(image=pygame.transform.scale(pygame.image.load("data/menu/facile.png").convert_alpha(), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7, tailleEcran[1]*posYDiff), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    normal = Button(image=pygame.transform.scale(pygame.image.load("data/menu/normal.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*10//100, tailleEcran[1]*posYDiff), 
+    normal = Button(image=pygame.transform.scale(pygame.image.load("data/menu/normal.png").convert_alpha(), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*10//100, tailleEcran[1]*posYDiff), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    difficile = Button(image=pygame.transform.scale(pygame.image.load("data/menu/difficile.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*20//100, tailleEcran[1]*posYDiff), 
+    difficile = Button(image=pygame.transform.scale(pygame.image.load("data/menu/difficile.png").convert_alpha(), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*20//100, tailleEcran[1]*posYDiff), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    extreme = Button(image=pygame.transform.scale(pygame.image.load("data/menu/extreme.png"), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*30//100, tailleEcran[1]*posYDiff), 
+    extreme = Button(image=pygame.transform.scale(pygame.image.load("data/menu/extreme.png").convert_alpha(), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*30//100, tailleEcran[1]*posYDiff), 
                 text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     facile.image.set_alpha(255)
     normal.image.set_alpha(50)
@@ -170,19 +170,19 @@ def options():
     continu=True
     volume = 0.4
     volumeM = 0.5
-    OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
+    OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
                     text_input="BACK", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    volumeHigh = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2), 
+    volumeHigh = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2), 
                     text_input="haut", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    volumeMedium = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2), 
+    volumeMedium = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2), 
                     text_input="moyen", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    volumeLow = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
+    volumeLow = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                     text_input="faible", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    volumeHighM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
+    volumeHighM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
                     text_input="haut", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    volumeMediumM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
+    volumeMediumM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
                     text_input="moyen", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    volumeLowM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
+    volumeLowM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
                     text_input="faible", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
     while continu:
@@ -245,11 +245,11 @@ def main_menu():
     continu=True
     
     
-    PLAY_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/5), 
+    PLAY_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/5), 
                         text_input="JOUER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
-    OPTIONS_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/3), 
+    OPTIONS_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/3), 
                         text_input="OPTIONS", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
-    QUIT_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png"), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
+    QUIT_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                         text_input="QUITTER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
 
     while True:

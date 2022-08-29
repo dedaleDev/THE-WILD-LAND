@@ -14,7 +14,7 @@ if proba_mer<=6:
 proba_foret = random.randint(7,12)
 proba_neige= 0
 
-"""
+""" 
 proba_mer=0
 proba_roche=0
 
@@ -22,8 +22,7 @@ proba_desert=0
 proba_foret=0
 """
 
-proba_mer=0
-proba_roche=0
+
 
 
 nombre_biome = 5
@@ -37,7 +36,7 @@ def tirer_mer(matriceMap, i, j, game):
     temp = random.randint(1, 100)
     if temp <= proba_mer + matriceMap[j][i].getProbaMer():
         matriceMap[j][i] = Tuile(3, i, j, game)
-        majProba(matriceMap, i, j, 70, "mer")
+        majProba(matriceMap, i, j, 70, "mer", game)
         return True
     return False
 
@@ -64,8 +63,8 @@ def tirer_neige(matriceMap, i, j, game) :
     temp = random.randint(1, 100)
     if temp <= proba_neige + matriceMap[j][i].getProbaNeige() and matriceMap[j][i].getAutoriserNeige():
         matriceMap[j][i] = Tuile(5, i, j, game)
-        majNeigeAutoriser(matriceMap, i, j)
-        majProba(matriceMap, i, j, 15, "neige")
+        majNeigeAutoriser(matriceMap, i, j, game)
+        majProba(matriceMap, i, j, 15, "neige", game)
         majDesertInterdire(matriceMap, i, j, game)
         return True
     return False
@@ -74,7 +73,7 @@ def tirer_roche(matriceMap, i, j, game):
     temp = random.randint(1, 100)
     if temp <= proba_roche + matriceMap[j][i].getProbaRoche():
         matriceMap[j][i] = Tuile(2, i, j, game)
-        majProba(matriceMap, i, j, 25, nature= "roche")
+        majProba(matriceMap, i, j, 25,"roche", game)
         majNeigeAutoriser(matriceMap, i,j, game)
         majDesertInterdire(matriceMap, i,j, game)
         majProba(matriceMap, i,j,50, "neige", game)
@@ -203,6 +202,7 @@ def controleMiniBiome(map, game):
                 if listeTuileAutour[indice].type == map[y][x].type: 
                     tuileDiff=False
                 indice+=1
+
             
             if tuileDiff: #la tuile est un mini biome
                 #print("la Tuile :",map[y][x].posX, map[y][x].posY)

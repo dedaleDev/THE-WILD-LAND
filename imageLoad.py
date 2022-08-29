@@ -17,14 +17,17 @@ class ImageLoad():
         self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
         self.victoire = pygame.image.load("data/menu/victoire.png").convert_alpha()
         self.victoire = pygame.transform.scale(self.victoire,(infoObject.current_w,infoObject.current_h))
-        self.coffre = pygame.image.load("data/ressources/coffre.png")
+        self.coffre = pygame.image.load("data/ressources/coffre.png").convert_alpha()
         self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
-        self.etoile = pygame.image.load("data/ressources/etoile.png")
+        self.etoile = pygame.image.load("data/ressources/etoile.png").convert_alpha()
         self.etoile = pygame.transform.scale(self.etoile, (self.etoile.get_height()*0.05,self.etoile.get_width()*0.05))
         
         self.moulinAnnim = self.loadAnnimMoulin()
-        
-        
+        self.golemAnnim = self.loadAnnimGolem()
+        self.krakenAnnim = self.loadAnnimKraken()
+        self.yetiAnnim = self.loadAnnimYeti()
+        self.mageAnnim = self.loadAnnimMage()
+        self.dragonAnnim = self.loadAnnimDragon()
     def loadAnnimMoulin(self):
         liste = []
         for i in range(1, 23):    
@@ -34,24 +37,57 @@ class ImageLoad():
             #im = pygame.transform.scale(im, (164, 351))  
         return liste
     def loadImgVille(self):
-        im = pygame.image.load("data/batiments/ville.png")
+        im = pygame.image.load("data/batiments/ville.png").convert_alpha()
         im = pygame.transform.scale(im, (164, 351))    
         return im
-    """ 
-    def annimLoadOursin2(self):
-        listeAnnimOursin2 = []
-        for i in range(18):
-             listeAnnimOursin2.append(pygame.transform.flip(self.listeAnnimOursin[i], True, False))
-        return listeAnnimOursin2
-        
-    def annimLoadOursin(self):
-         listeAnnimOursin = []
-         for i in range(1,19):
-             im = pygame.image.load("data/personnages/oursin/oursin_"+str(i)+".png").convert_alpha()
-             listeAnnimOursin.append(pygame.transform.scale(im, (im.get_width()*0.50,im.get_height()*0.50)))
-         return listeAnnimOursin"""
-
     #97* 19
+    def loadAnnimGolem(self):
+        listeAnnim = []
+        for i in range(1,9):
+            im = pygame.image.load("data/personnages/golem/golem_des_forets_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (241*0.55, 249*0.50))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimKraken(self):
+        listeAnnim = []
+        for i in range(1,10):
+            im = pygame.image.load("data/personnages/kraken/kraken_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (279*0.5, 177*0.5))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimMage(self):
+        listeAnnim = []
+        for i in range(1,11):
+            im = pygame.image.load("data/personnages/mage/mage_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (111*0.62, 214*0.62))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimDragon(self):
+        listeAnnim = []
+        for i in range(2,31):
+            im = pygame.image.load("data/personnages/dragon/dragon_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (436*0.3, 473*0.3))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimYeti(self):
+        listeAnnim = []
+        for i in range(1,13):
+            im = pygame.image.load("data/personnages/yeti/yeti_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (205*0.5, 318*0.5))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimGolem(self):
+        listeAnnim = []
+        for i in range(1,9):
+            im = pygame.image.load("data/personnages/golem/golem_des_forets_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (241*0.55, 249*0.50))
+            listeAnnim.append(im)
+        return listeAnnim
     def loadImg(self):
         
         listeImg = []
@@ -291,23 +327,23 @@ class ImageLoad():
     
     def loadImgAcide(self):
         scale = (45*1, 47*1)
-        tempIgmg = pygame.image.load("data/projectiles/acide.png")
+        tempIgmg = pygame.image.load("data/projectiles/acide.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     
     def loadImgFleche(self):
         scale = (572*0.065, 70*0.065)
-        tempIgmg = pygame.image.load("data/projectiles/fleche.png")
+        tempIgmg = pygame.image.load("data/projectiles/fleche.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     def loadImgPotion(self):
         scale = (512*0.065, 712*0.065)
-        tempIgmg = pygame.image.load("data/projectiles/potion.png")
+        tempIgmg = pygame.image.load("data/projectiles/potion.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     def loadImgBouleDeNeige(self):
         scale = (381*0.15, 410*0.15)
-        tempIgmg = pygame.image.load("data/projectiles/bouleDeNeige.png")
+        tempIgmg = pygame.image.load("data/projectiles/bouleDeNeige.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
     
@@ -335,11 +371,11 @@ class ImageLoad():
         assert False, ("LoadImgProjectile n'as pas trouvé d'image correspondante a ", nom)
     
     def ImInfoBulleMob(self, nom, chemin="data/personnages/infoBulle/info_"):
-        img = pygame.image.load(chemin+nom+".png")
+        img = pygame.image.load(chemin+nom+".png").convert_alpha()
         return img
     
     def getImCollision(self):
-        im = pygame.image.load("data/personnages/degat.png")
+        im = pygame.image.load("data/personnages/degat.png").convert_alpha()
         return pygame.transform.scale(im ,(40,40))
     def returnImItem(self, nom):
         for elem in self.listeImgItem:
@@ -350,5 +386,5 @@ class ImageLoad():
 
 
     def ImInfoBullItem(self, nom, chemin="data/batiments/infoBulle/info_"):
-        img = pygame.image.load(chemin+nom+".png")
+        img = pygame.image.load(chemin+nom+".png").convert_alpha()
         return img
