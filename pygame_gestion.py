@@ -90,7 +90,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     centrerJoueur(game)
     
     
-    game.groupMob.add(Mob(game,"kraken", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"kraken", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
