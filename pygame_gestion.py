@@ -36,9 +36,6 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     modification = False
     delayIncendie=500
     timeComtpeur=0
-    #music = pygame.mixer.music.load("data/Music/level0.mp3")
-    # pygame.mixer.music.play(10)
-    print("Génération de la map")
     imDebug = pygame.image.load("data/tuiles/debug.png")
     imDebug = pygame.transform.scale(imDebug, (2,2))
     BLACK = (0, 0, 0)
@@ -93,7 +90,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     centrerJoueur(game)
     
     
-    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
     #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
@@ -103,6 +100,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     #the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
     #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
     #game.groupProjectile.add(fleche)
+    
     game.tempsMort+=pygame.time.get_ticks()
     fps = 0 #compte le nombre de fps
     tailleEcran = pygame.display.Info().current_w, pygame.display.Info().current_h
@@ -285,8 +283,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 pass
                 #game.genererImg()
             alerteVille=False #une ville est presente sur la map
-            for y in range(25):
-                for x in range(25):
+            for y in range(game.taille_matriceY):
+                for x in range(game.taille_matriceX):
                     if game.map[y][x].isExplored:
                         fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
                         if game.map[y][x].annimation:

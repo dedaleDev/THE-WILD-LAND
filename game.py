@@ -6,6 +6,7 @@ from imageLoad import ImageLoad
 from mob import Mob
 from joueur import Player
 from sound import Sound
+import aideCSV
 #background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
 
 #background_pil_superpose = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
@@ -89,8 +90,8 @@ class Game(pygame.sprite.Sprite):
         self.listeCaseMontagne=0
         self.fenetre = fenetre
         self.listeCaseBatiment=[]
-        self.taille_matriceY = generation.taille_matriceY
-        self.taille_matriceX = generation.taille_matriceX
+        self.taille_matriceY = int(aideCSV.valCorrespondante("taille_matriceY"))
+        self.taille_matriceX = int(aideCSV.valCorrespondante("taille_matriceX"))
         
         self.groupMob = pygame.sprite.Group()
         self.groupProjectile = pygame.sprite.Group()
@@ -201,11 +202,11 @@ class Game(pygame.sprite.Sprite):
             self.probaYeti = 0
 
     def verifierCo(self, x, y):
-        return  x<generation.taille_matriceX and x >=0 and y < generation.taille_matriceY and y>=0
+        return  x<self.taille_matriceX and x >=0 and y < self.taille_matriceY and y>=0
         
     def genererMatrice(self):
         self.map = generation.generation_matrice(self)
-        self.mapMontagneMer, self.mapMer, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map)
+        self.mapMontagneMer, self.mapMer, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]

@@ -108,9 +108,9 @@ class Sound():
         self.tailleListeMusiqueConstruction = len(self.listeMusiqueConstruction)
         self.tailleListeMusiqueCombat = len(self.listeMusiqueCombat)
         
-        self.tailleListeMusiqueCalme2 = len(self.listeMusiqueCalme2)
-        self.tailleListeMusiqueConstruction2 = len(self.listeMusiqueConstruction2)
-        self.tailleListeMusiqueCombat2 = len(self.listeMusiqueCombat2)
+        self.tailleListeMusiqueCalme2 = len(self.listeMusiqueCalme)
+        self.tailleListeMusiqueConstruction2 = len(self.listeMusiqueConstruction)
+        self.tailleListeMusiqueCombat2 = len(self.listeMusiqueCombat)
     #Delay entre son
         self.dernierVentilo = 0
         self.dernierSable = 0

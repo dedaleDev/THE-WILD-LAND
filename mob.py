@@ -49,7 +49,7 @@ class Mob(pygame.sprite.Sprite):
             self.neg = False #sens de rotation
           self.clockAnnim=0
           self.indiceAnnim=0
-        
+          
           
      def rotate(self, neg = False, angle = 4):
          if not neg :
@@ -115,21 +115,26 @@ class Mob(pygame.sprite.Sprite):
              self.recompenseStone=0
              self.recompenseFood=random.randint(10,20)
         
-     def changeAnnimGolem(self):
+     def changeAnnimOursin(self):
          self.clockAnnim+=1
          if self.clockAnnim==5:
             self.indiceAnnim+=1
-            if self.indiceAnnim >= len(self.game.images.golemAnnim):
+            if self.indiceAnnim >= len(self.listeAnnimOursin):
                 self.indiceAnnim=0
             self.clockAnnim=0
-            self.skin = self.game.images.golemAnnim[self.indiceAnnim]
+            self.skin = self.listeAnnimOursin[self.indiceAnnim]
             
-     
+     def changeAnnimOursin2(self):
+         self.clockAnnim+=1
+         if self.clockAnnim==5:
+            self.indiceAnnim+=1
+            if self.indiceAnnim >= len(self.listeAnnimOursin):
+                self.indiceAnnim=0
+            self.clockAnnim=0
+            self.skin = self.listeAnnimOursin2[self.indiceAnnim] 
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
-        if self.name=="golem_des_forets":
-             self.changeAnnimGolem()
+         
         if posY == self.posY and posX-self.posX>0:
-            
             self.goUp(angle=2)
             self.goRight(angle=2)
             newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]+142/4))
@@ -195,7 +200,7 @@ class Mob(pygame.sprite.Sprite):
              
          return tuile.posX, tuile.posY
      def loadSkin(self, nomSkin):
-        if nomSkin== "golem_des_forets": #91*80
+        if nomSkin== "golem_des_forets":
             scale = (704*0.13, 613*0.13)
         elif nomSkin=="oursin":
             scale = (175*0.56, 142*0.56)
@@ -207,13 +212,9 @@ class Mob(pygame.sprite.Sprite):
             scale = (323*0.2, 612*0.2)
         elif nomSkin=="yeti":
             scale = (413*0.3,611*0.3)
-            
-        if self.name=="golem_des_forets":
-            skin=pygame.image.load("data/personnages/golem_des_forets/GolemForet_1.png")
-        else:
-            skin = pygame.image.load("data/personnages/"+nomSkin+".png")
-            skin = pygame.transform.scale(skin, scale)
-        
+            98*80
+        skin = pygame.image.load("data/personnages/"+nomSkin+".png")
+        skin = pygame.transform.scale(skin, scale)
         return skin
 
      def lunchProjectile(self):
@@ -394,8 +395,7 @@ class Mob(pygame.sprite.Sprite):
         
      def goUp(self, angle=4):
          if self.name=="oursin":    
-            self.rotate(self.neg, angle)
-         
+                self.rotate(self.neg, angle)
          self.rect.y-=self.velocity
          
      def goDown(self, angle=4):

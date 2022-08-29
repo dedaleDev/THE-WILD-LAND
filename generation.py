@@ -1,10 +1,9 @@
 import random
 import time
-
+import aideCSV
 
 from tuile import Tuile
-taille_matriceX = 25
-taille_matriceY = 25 #25 bonne taille 
+
 
 
 proba_roche = random.randint(10,15) # en %
@@ -14,6 +13,7 @@ if proba_mer<=6:
     proba_desert+=5
 proba_foret = random.randint(7,12)
 proba_neige= 0
+
 """
 proba_mer=0
 proba_roche=0
@@ -46,7 +46,7 @@ def tirer_desert(matriceMap, i, j, game):
     temp = random.randint(1, 100)
     if temp <= proba_desert + matriceMap[j][i].getProbaDesert() and matriceMap[j][i].getAutoriserDesert():
         matriceMap[j][i] = Tuile(6, i, j, game)
-        majProba(matriceMap, i, j, 80, "desert")
+        majProba(matriceMap, i, j, 80, "desert", game)
         return True
     return False
         
@@ -55,7 +55,7 @@ def tirer_foret(matriceMap, i, j, game):
     temp = random.randint(1, 100)
     if temp <= proba_foret + matriceMap[j][i].getProbaForet():
         matriceMap[j][i] = Tuile(4, i, j, game)
-        majProba(matriceMap, i, j, 50, "foret")
+        majProba(matriceMap, i, j, 50, "foret", game)
         return True
     return False
 
@@ -75,9 +75,9 @@ def tirer_roche(matriceMap, i, j, game):
     if temp <= proba_roche + matriceMap[j][i].getProbaRoche():
         matriceMap[j][i] = Tuile(2, i, j, game)
         majProba(matriceMap, i, j, 25, nature= "roche")
-        majNeigeAutoriser(matriceMap, i,j)
+        majNeigeAutoriser(matriceMap, i,j, game)
         majDesertInterdire(matriceMap, i,j, game)
-        majProba(matriceMap, i,j,50, "neige")
+        majProba(matriceMap, i,j,50, "neige", game)
         return True
     return False
         
@@ -95,10 +95,10 @@ def tirer_biome(type, matriceMap, i, j, game):
         tire=tirer_desert(matriceMap, i, j, game)
     return tire
 
-def majProba(matriceMap, i, j, probaSup, nature):
+def majProba(matriceMap, i, j, probaSup, nature, game):
     for y in range(-1, 2):
         for x in range(-1, 2):
-            if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0 :
+            if i+x < game.taille_matriceX and j+y < game.taille_matriceY and i+x>= 0 and y+j>=0 :
                                                                                        
                 if nature == "roche":
                     matriceMap[j+y][i+x].augmenterProbaRoche(probaSup)
@@ -112,17 +112,17 @@ def majProba(matriceMap, i, j, probaSup, nature):
                     matriceMap[j+y][i+x].augmenterProbaNeige(probaSup)
 
 
-def majNeigeAutoriser(matriceMap, i, j):
+def majNeigeAutoriser(matriceMap, i, j, game):
     for y in range(-1, 2):
         for x in range(-1, 2):
-            if i+x < taille_matriceX and j+y < taille_matriceY and i+x>= 0 and y+j>=0:
+            if i+x < game.taille_matriceX and j+y < game.taille_matriceY and i+x>= 0 and y+j>=0:
                 matriceMap[j+y][i+x].setAutoriserNeige()
 
 
 def majDesertInterdire(matriceMap, i, j, game):
     for y in range(-1, 2):
         for x in range(-1, 2):
-            if i+x <  taille_matriceX and i+x >=0 and j+y < taille_matriceY and j+y >= 0:
+            if i+x <  game.taille_matriceX and i+x >=0 and j+y < game.taille_matriceY and j+y >= 0:
                 
                 matriceMap[j+y][i+x].setInterdireDesert()
                 if matriceMap[j+y][i+x].getType()==6:
@@ -139,28 +139,28 @@ def generation_matrice(game):
     #6 = desert
     
     
-    for i in range(1, taille_matriceX-1):
-        for j in range(1, taille_matriceY-1):
+    for i in range(1, game.taille_matriceX-1):
+        for j in range(1, game.taille_matriceY-1):
             liste_index.append((j,i))
 
     matriceMap = []
 
-    for i in range(taille_matriceY):
-        matriceMap.append([0]*taille_matriceX)
+    for i in range(game.taille_matriceY):
+        matriceMap.append([0]*game.taille_matriceX)
 
 
-    for j in range(taille_matriceY):
-        for i in range(taille_matriceX):
+    for j in range(game.taille_matriceY):
+        for i in range(game.taille_matriceX):
             # initialisation d'une carte remplie de vide
             matriceMap[j][i] = Tuile(1, i, j, game)
 
-    for i in range(taille_matriceX):
+    for i in range(game.taille_matriceX):
         matriceMap[0][i] = Tuile(7, i, 0, game)
-        matriceMap[taille_matriceY-1][i] = Tuile(7, i, taille_matriceY-1, game)
+        matriceMap[game.taille_matriceY-1][i] = Tuile(7, i, game.taille_matriceY-1, game)
 
-    for i in range (taille_matriceY):
+    for i in range (game.taille_matriceY):
         matriceMap[i][0] = Tuile(7, 0, i, game)
-        matriceMap[i][taille_matriceX-1] = Tuile(7 ,taille_matriceX-1, i, game)
+        matriceMap[i][game.taille_matriceX-1] = Tuile(7 ,game.taille_matriceX-1, i, game)
 
 
     
@@ -182,16 +182,16 @@ def generation_matrice(game):
 
     
     #La map est fini, on retire les mini biomes
-    controleMiniBiome(matriceMap)
+    controleMiniBiome(matriceMap, game)
     
     
     
     #printMat(matriceMap)
     return (matriceMap)
 
-def controleMiniBiome(map):
-    for y in range(1,taille_matriceY-1):
-        for x in range(1, taille_matriceX-1):
+def controleMiniBiome(map, game):
+    for y in range(1,game.taille_matriceY-1):
+        for x in range(1, game.taille_matriceX-1):
             listeTuileAutour=[]
             for j in range(-1,2):
                 for i in range(-1,2):
@@ -215,31 +215,31 @@ def maximumType(liste): #recherche d'un type maximum present dans une liste
     for tuile in liste:
         listeType[tuile.type]+=1
     return listeType.index(max(listeType))
-def generation_matriceMontagneMer(map):
+def generation_matriceMontagneMer(map, game):
     mapBool=[]
     mapMer=[]
     mapVide=[]
     
-    for i in range(taille_matriceY):
-        mapVide.append([0]*taille_matriceX)
+    for i in range(game.taille_matriceY):
+        mapVide.append([0]*game.taille_matriceX)
         
-    for i in range(taille_matriceX):
+    for i in range(game.taille_matriceX):
         mapVide[0][i] = 1
-        mapVide[taille_matriceY-1][i] = 1
+        mapVide[game.taille_matriceY-1][i] = 1
 
-    for i in range (taille_matriceY):
+    for i in range (game.taille_matriceY):
         mapVide[i][0] = 1
-        mapVide[i][taille_matriceX-1] = 1
+        mapVide[i][game.taille_matriceX-1] = 1
     
 
         
     
     listeCaseMer,listeCaseForet, listeCasePlaine,listeCaseMontagne=[], [], [],[]
-    for i in range(taille_matriceY):
-        mapBool.append([0]*taille_matriceX)
-        mapMer.append([0]*taille_matriceX)
-    for y in range(taille_matriceY):
-        for x in range(taille_matriceX):
+    for i in range(game.taille_matriceY):
+        mapBool.append([0]*game.taille_matriceX)
+        mapMer.append([0]*game.taille_matriceX)
+    for y in range(game.taille_matriceY):
+        for x in range(game.taille_matriceX):
             tuile = map[y][x]
             if tuile.tuileHaute() or tuile.estMer():
                 mapBool[y][x]=1
@@ -261,9 +261,9 @@ def generation_matriceMontagneMer(map):
     return mapBool,mapMer, mapVide ,listeCaseMer, listeCaseForet, listeCasePlaine, listeCaseMontagne
 
 
-def printMat(matriceMap):
-    for i in range(taille_matriceY):
+def printMat(matriceMap, game):
+    for i in range(game.taille_matriceY):
         print("\n")
-        for j in range(taille_matriceX):
+        for j in range(game.taille_matriceX):
             print(matriceMap[i][j].isExplored, matriceMap[i][j].type ,end=' ')
     print("fin\n\n\n\n\n")

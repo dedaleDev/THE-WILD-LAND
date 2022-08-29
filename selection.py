@@ -1,12 +1,12 @@
 
-import generation
+
 from item import Item
 def majSelection(game, pos, joueur=False):
     tuileSelect = False
     souris = pos
     if not joueur:
-        for i in range(generation.taille_matriceY):
-            for j in range(generation.taille_matriceX):
+        for i in range(game.taille_matriceY):
+            for j in range(game.taille_matriceX):
                 pos_in_mask = souris[0] - game.map[i][j].rect.x, souris[1] - game.map[i][j].rect.y
                 touching = game.map[i][j].rect.collidepoint(souris) and game.map[i][j].mask.get_at(pos_in_mask)
                 if touching :
@@ -35,8 +35,8 @@ def majSelection(game, pos, joueur=False):
 def majSelectionJoueur(game, pos):
     tuileSelect = False
     souris = pos
-    for i in range(generation.taille_matriceY):
-        for j in range(generation.taille_matriceX):
+    for i in range(game.taille_matriceY):
+        for j in range(game.taille_matriceX):
             pos_in_mask = souris[0] - game.map[i][j].rect.x, souris[1] - game.map[i][j].rect.y
             touching = game.map[i][j].rect.collidepoint(souris) and game.map[i][j].mask.get_at(pos_in_mask)
             if touching :

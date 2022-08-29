@@ -3,7 +3,6 @@ import pygame
 from coffre import Coffre
 import random
 from selection import majSelectionJoueur
-import generation
 from tour import Tour
 class Player(pygame.sprite.Sprite):
 
@@ -193,8 +192,8 @@ class Player(pygame.sprite.Sprite):
      
      
      def initPos(self):
-         borneMaxX = min(generation.taille_matriceX-2, 9)
-         borneMaxY = min(generation.taille_matriceY-2, 9)
+         borneMaxX = min(self.game.taille_matriceX-2, 9)
+         borneMaxY = min(self.game.taille_matriceY-2, 9)
          posX = random.randint(6,borneMaxX)
          posY = random.randint(6,borneMaxY)
          while self.game.map[posY][posX].caseBloquante() or self.caseBloquanteAutour(posX, posY):
