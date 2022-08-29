@@ -17,12 +17,11 @@ scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1] #TAILLE DES BOUTONS
 scaleButtonMap = 1/3 * tailleEcran[0], 1/2*tailleEcran[1] #TAILLE DES BOUTONS
 SCREEN = pygame.display.set_mode(tailleEcran)
 pygame.display.set_caption("Menu")
+BG=pygame.image.load("data/menu/background.png")
+BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
 pygame.display.set_caption("THE WILD LAND")
 pygame_icon = pygame.image.load('data/logo/icon_WL.png')
 pygame.display.set_icon(pygame_icon)
-BG=pygame.image.load("data/menu/background.png")
-BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
-
 def get_font(size):
     return pygame.font.Font("data/menu/font.ttf", size)
 

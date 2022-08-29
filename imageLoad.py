@@ -23,8 +23,15 @@ class ImageLoad():
         self.etoile = pygame.transform.scale(self.etoile, (self.etoile.get_height()*0.05,self.etoile.get_width()*0.05))
         
         self.moulinAnnim = self.loadAnnimMoulin()
+        self.golemAnnim = self.annimLoadGolem()
         
-        
+    def annimLoadGolem(self):
+         listeAnnimGolem = []
+         for i in range(1,9):
+             im = pygame.image.load("data/personnages/golem_des_forets/GolemForet_"+str(i)+".png").convert_alpha()
+             listeAnnimGolem.append(pygame.transform.scale(im, (100,90)))
+         return listeAnnimGolem
+        #im.get_width()*0.51,im.get_height()*0.51
     def loadAnnimMoulin(self):
         liste = []
         for i in range(1, 23):    
