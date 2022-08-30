@@ -8,6 +8,8 @@ def valCorrespondante(chaine): #renvoie la valeur en face d'une chaine de char
     for line in csvListe :
         if line[0]==chaine:
             return line[1]
+    print("valeur non trouvé")
+    assert(False)
 
 def remplacerVal(chaine, ecriture, ajout=False): #ajout = doit on ajouter la valeur si elle n'est pas trouvé
     save = csv.reader(open('save.csv', newline=''), delimiter=',')

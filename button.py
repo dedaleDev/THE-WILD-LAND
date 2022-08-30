@@ -22,11 +22,12 @@ class Button():
 		self.sonBoutonPress = pygame.mixer.Sound("data/son/effets/boutonPress.mp3")
 		self.sonBoutonPress.set_volume(0.1)
 		self.pressed = False
+		self.imageSelect = pygame.transform.scale(pygame.image.load("data/menu/backButtonMapS.png"), (self.image.get_width(), self.image.get_height()))
 		
-
 	def update(self, screen):
 		if self.image is not None:
 			screen.blit(self.image, self.rect)
+			screen.blit(self.imageSelect, self.rect)
 		screen.blit(self.text, self.text_rect)
 
 	def checkForInput(self, position):

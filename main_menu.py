@@ -37,8 +37,10 @@ def optionPartie():
     
     OPTIONS_TEXT = get_font(taillePolice).render(" Nouvelle partie ", True, "Black")
     OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*1/10))
-    MAP_TEXT = get_font(taillePolice).render(" Nouvelle partie ", True, "Black")
-    MAP_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*1/10))
+    
+    
+    MAP_TEXT = get_font(taillePolice//2).render(" Taille de la carte ", True, "Black")
+    MAP_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*4.5/10))
     posYMap = 0.6
     posYDiff = 0.3
     
@@ -241,6 +243,7 @@ def options():
 
 def main_menu():
     pygame.mixer.music.load("data/son/musiques/menu.mp3")
+    pygame.mixer.music.set_volume(float(aideCSV.valCorrespondante("volumeMusique")))
     pygame.mixer.music.play(loops=-1)
     continu=True
     

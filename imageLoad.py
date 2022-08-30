@@ -88,6 +88,7 @@ class ImageLoad():
             im = pygame.transform.scale(im, (241*0.55, 249*0.50))
             listeAnnim.append(im)
         return listeAnnim
+    
     def loadImg(self):
         
         listeImg = []
@@ -289,24 +290,27 @@ class ImageLoad():
         return self.listeImgO[type]
 
     def returnImg(self, type):
+        annim = []
+        clockMax = None
         if type==0:
-                print("probleme")
+                print("probleme de type")
+                assert(False)
         if type==6 or type==3 :
             rand = random.randint(0,4)
-            return self.listeImg[type][rand]
+            return self.listeImg[type][rand], clockMax, annim
         if  type==4 or type==2 or type==7:
             rand = random.randint(0, 3)
-            return self.listeImg[type][rand]
+            return self.listeImg[type][rand], clockMax, annim
         if type==5:
             rand = random.randint(0,6)
             if rand%2==0:
                 rand=2
-            if rand==1 or rand == 3:
+            if rand == 1 or rand == 3:
                 rand = 0
             if rand == 5:
                 rand=1
 
-            return self.listeImg[type][rand]
+            return self.listeImg[type][rand], clockMax, annim
         if type==1:
             rand= random.randint(0,12)
             if rand in [0,1, 10]:
@@ -320,9 +324,9 @@ class ImageLoad():
             if rand ==9:
                 rand = 4
             
-            return self.listeImg[type][rand]
+            return self.listeImg[type][rand], clockMax, annim
         print("probleme")
-        return self.listeImg[type]
+        return self.listeImg[type], clockMax, annim
 
     
     def loadImgAcide(self):

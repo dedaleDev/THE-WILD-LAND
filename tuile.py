@@ -38,10 +38,7 @@ class Tuile(pygame.sprite.Sprite):
         self.autoriserNeige = False 
         self.autoriserDesert = True
         
-        self.clockAnnimMax = None
-        self.clockAnnim = 0
-        self.indiceAnnim=0
-        self.annimation = []
+        
     
         self.estSelect = False
         self.isExplored = self.type==7
@@ -50,9 +47,10 @@ class Tuile(pygame.sprite.Sprite):
         self.imageFog = game.imageFog2.copy()
         self.posX = posX
         self.posY = posY
-        self.image= game.images.returnImg(self.type)
-        self.imageO=0#game.images.returnImgO(self.type)
-
+        self.image, self.clockAnnimMax, self.annimation = game.images.returnImg(self.type)
+        self.clockAnnim = 0
+        self.indiceAnnim=0
+        
         self.rect = self.image.get_rect()
         self.rect.x = self.avoirX()
         self.rect.y = self.avoirY()
@@ -93,8 +91,8 @@ class Tuile(pygame.sprite.Sprite):
     
     def setType(self, entier):
         self.type=entier
-        self.image = self.game.images.returnImg(entier)
-        #self.imageO = self.game.images.returnImgO(entier)
+        self.image, self.clockAnnimMax, self.annimation = self.game.images.returnImg(entier)
+
 
     
 

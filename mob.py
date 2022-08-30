@@ -10,7 +10,8 @@ class Mob(pygame.sprite.Sprite):
           #affichage et information
           self.name = nom
           self.skin = self.loadSkin(nom)
-          self.skinMask = pygame.mask.from_surface(self.skin)
+          self.image = self.skin
+          self.mask = pygame.mask.from_surface(self.skin)
           self.game = game
           self.bateau = False
           #self.skinBateau = self.loadSkin("bateau",(100, 150))
@@ -212,7 +213,7 @@ class Mob(pygame.sprite.Sprite):
          return tuile.posX, tuile.posY
      def loadSkin(self, nomSkin):
         if nomSkin== "golem_des_forets":
-            scale = (241*0.32, 249*0.32)
+            scale = (241*0.55, 249*0.50)
             skin = pygame.image.load("data/personnages/golem/golem_des_forets_1.png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
@@ -515,7 +516,7 @@ class Mob(pygame.sprite.Sprite):
          if self.name=="dragon":
             self.changeAnnimDragon(self.droite)
             
-            
+
      def goDown(self, angle=4):
          if self.name=="oursin":    
                 self.rotate(self.neg, angle)

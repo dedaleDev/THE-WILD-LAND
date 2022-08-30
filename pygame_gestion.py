@@ -90,23 +90,17 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     centrerJoueur(game)
     
     
-    #game.groupMob.add(Mob(game,"kraken", 100, 2, tuile=game.map[4][4], score=150))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
-    #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[1][1]))
-    #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[1][3]))
-    #game.groupMob.add(Mob(game, "kraken", 50, 1, aquatique=True))
-    #game.groupMob.add(Mob(game, "dragon", 100, 2,game.map[1][1], aerien=True))
-    #game.groupMob.add(Mob(game, "mage", 50, 1, game.map[1][1]))
-    #the_path = [[game.groupMob.sprites()[0].posY, game.groupMob.sprites()[0].posX]]
-    #fleche= Projectile(game, "fleche", 10, 0,0, game.joueur)
-    #game.groupProjectile.add(fleche)
-    
+    listefps=[]
     game.tempsMort+=pygame.time.get_ticks()
     fps = 0 #compte le nombre de fps
     tailleEcran = pygame.display.Info().current_w, pygame.display.Info().current_h
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
     taillePolice = round(3/100*diagonalEcran)
     while continuer == True:
+        debut = pygame.time.get_ticks()
         scoreText = get_font(taillePolice).render(str(game.joueur.score), True, "Black")
         scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*1.2/10))
         if fps>=60:
@@ -225,7 +219,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     mob.last = now
                     mob.majCoolDown()
                 if not mob.slow :
-                    mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
+                    #mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
+                    pass
                 else :
                     if now%2==0 :
                         mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
@@ -425,10 +420,19 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 mort(game)
             if game.joueur.ville:
                 victoire(game)
+            fin = pygame.time.get_ticks()
+            listefps.append(1/((fin-debut)/1000))
             pygame.display.flip()
         
         else:
-            print("Fermeture du jeu & Lancement du menu principal")
+            print("Fermeture du jeu")
+            moyenneFps=0
+            for elem in listefps :
+                
+                moyenneFps += elem
+            moyenneFps = moyenneFps/len(listefps)
+            print("moyenne des fps sur la session acutelle :", moyenneFps )
+            print("fps min et max :", min(listefps), max(listefps) )
             main_menu.main_menu()
             pygame.display.quit()
             pygame.quit()  # ferme pygame et le jeu
@@ -637,4 +641,3 @@ def victoire(game):
     
 def get_font(size):
     return pygame.font.Font("data/menu/font.ttf", size)
-

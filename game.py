@@ -212,12 +212,13 @@ class Game(pygame.sprite.Sprite):
         listeColide=[]
         now = self.tempsJeu()
         for mob in listeMob :
-            colide = mob.rect.colliderect(joueur.rect)
+            #colide = mob.rect.colliderect(joueur.rect)
+            colide = pygame.sprite.spritecollide(joueur, listeMob, False, pygame.sprite.collide_mask)
             if colide and now-joueur.lastDamage>joueur.cooldownDamage:
                 joueur.takeDamage(mob.attack)
                 joueur.lastDamage=now
                 listeColide.append(colide)
-            if mob.name=="mage" or mob.name=="yeti":
+            if mob.name=="mage" or mob.name=="yeti": 
                 mob.lunchProjectile()
                 
         return listeColide

@@ -11,10 +11,11 @@ class Player(pygame.sprite.Sprite):
           #affichage et information
           self.name = nom
           self.skin = self.loadSkin(nom)
+          self.image = self.skin
           self.game = game
           self.bateau = False
           self.skinBateau = self.loadSkin("bateau")
-          self.skinMask = pygame.mask.from_surface(self.skin)
+          self.mask = pygame.mask.from_surface(self.skin)
           
           
           self.annimationDroite = self.annimLoadDroite()
@@ -485,8 +486,7 @@ class Player(pygame.sprite.Sprite):
             self.nbPort-=1
          if tuile.pieux:
              tuile.pieux=False
-         tuile.image= self.game.images.returnImg(tuile.type)
-         #tuile.imageO=self.game.images.returnImgO(tuile.type)
+         tuile.image, tuile.clockAnnimMax, tuile.annimation = self.game.images.returnImg(tuile.type)
          tuile.aEteModifie=True
 
          return tuile
