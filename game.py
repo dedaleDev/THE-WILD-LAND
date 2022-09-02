@@ -58,7 +58,7 @@ elif modeDifficile :
 
 premierPAss=True
 class Game(pygame.sprite.Sprite):
-    def __init__(self, infoObject, fenetre):
+    def __init__(self, infoObject, fenetre, mapChoisie):
         
                 
         self.infoObject=infoObject
@@ -90,15 +90,21 @@ class Game(pygame.sprite.Sprite):
         self.listeCaseMontagne=0
         self.fenetre = fenetre
         self.listeCaseBatiment=[]
-        self.taille_matriceY = int(aideCSV.valCorrespondante("taille_matriceY"))
-        self.taille_matriceX = int(aideCSV.valCorrespondante("taille_matriceX"))
-        
+        if not mapChoisie:
+            self.taille_matriceY = int(aideCSV.valCorrespondante("taille_matriceY"))
+            self.taille_matriceX = int(aideCSV.valCorrespondante("taille_matriceX"))
+        else:
+            self.taille_matriceY = len(mapChoisie)
+            self.taille_matriceX = len(mapChoisie[0])
+            
+            
         self.groupMob = pygame.sprite.Group()
         self.groupProjectile = pygame.sprite.Group()
         self.groupDefense = pygame.sprite.Group()
         self.groupCoffre = pygame.sprite.Group()
+        self.groupLoot = pygame.sprite.Group()
         
-        self.genererMatrice()
+        self.genererMatrice(mapChoisie)
         self.joueur = Player(self,"joueur0", 5)
         self.groupJoueur=pygame.sprite.Group()
         self.groupJoueur.add(self.joueur)
@@ -129,8 +135,8 @@ class Game(pygame.sprite.Sprite):
         return pygame.time.get_ticks()- self.tempsMort
     
     def majCata(self):
-        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 60000 : #INCENDIE
-            if not random.randint(0,2): #quand on tombe sur un 0, donc incendie toute les 3 min environ
+        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 6000 : #INCENDIE
+            if not random.randint(0,2) or True: #quand on tombe sur un 0, donc incendie toute les 3 min environ
                 indice=random.randint(0, len(self.listeCaseBatiment)-1)
                 tuile = self.listeCaseBatiment[indice]
                 self.listeCaseBatiment.pop(indice)
@@ -139,6 +145,7 @@ class Game(pygame.sprite.Sprite):
                 return tuile
 
 
+        
         
         
         
@@ -204,8 +211,11 @@ class Game(pygame.sprite.Sprite):
     def verifierCo(self, x, y):
         return  x<self.taille_matriceX and x >=0 and y < self.taille_matriceY and y>=0
         
-    def genererMatrice(self):
-        self.map = generation.generation_matrice(self)
+    def genererMatrice(self, mapChoisie):
+        if not mapChoisie:
+            self.map = generation.generation_matrice(self)
+        else :
+            self.map = generation.typeToTuile(mapChoisie, self)
         self.mapMontagneMer, self.mapMer, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
         
     def checkCollision(self, joueur, listeMob):
@@ -318,7 +328,7 @@ class Game(pygame.sprite.Sprite):
             
     def openFog2(self):
         imgTemp = pygame.image.load("data/tuiles/0exploration.png").convert_alpha()
-        imgTemp = pygame.transform.scale(imgTemp, (246, 144))
+        imgTemp = pygame.transform.scale(imgTemp, (244, 142))
         
         return imgTemp
 

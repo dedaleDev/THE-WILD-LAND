@@ -5,17 +5,19 @@ import pygame
 class Coffre(pygame.sprite.Sprite):
     def __init__(self, game, tuile, wood, stone, food, water):
           super().__init__()
+          self.indice=0
           self.game = game
           self.tuile = tuile
           self.image = game.images.coffre
-          self.rect = self.image.get_rect()
+          self.rect = self.image[0].get_rect()
           self.rect.x = self.tuile.Xoriginal+80
           self.rect.y = self.tuile.Yoriginal+40
           self.wood = wood
           self.food = food
           self.stone = stone 
           self.water = water
-          
+          self.clock = 0
+          self.clockMax = 10
           #PREMIERE ETOILE
           self.imEtoile = self.game.images.etoile
           self.etoileRect = self.imEtoile.get_rect()

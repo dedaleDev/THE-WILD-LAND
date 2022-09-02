@@ -1,6 +1,7 @@
 from math import sqrt
 import pygame
 import random
+from loot import Loot
 from projectile import Projectile
 from selection import majSelectionJoueur
 class Mob(pygame.sprite.Sprite):
@@ -265,15 +266,18 @@ class Mob(pygame.sprite.Sprite):
             self.cooldown=1000
 
 
-     def takeDamage(self, entier):
+     def takeDamage(self, entier, moveX, moveY):
         if self.health >0 :
             self.health-=entier
             self.update_health_bar()
         if self.health<=0:
             if self.name=="mage":
                 self.game.joueur.health+=15
+                
+            self.game.groupLoot.add(Loot(self.recompenseWood, self.recompenseStone, self.recompenseWater, self.recompenseFood, self.rect.x+20-moveX, self.rect.y-30-moveY, self.game))
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
             self.game.joueur.score=+self.score
+
             self.kill()
 
 
@@ -424,10 +428,10 @@ class Mob(pygame.sprite.Sprite):
                 self.indiceAnnim=0
             if not flip:
                 self.skin=self.listeAnnimDragon[self.indiceAnnim]
-                print("droite")
+
             else :
                 self.skin=pygame.transform.flip(self.listeAnnimDragon[self.indiceAnnim], True, False)
-                print("gauche")
+
             self.clockAnnim=0
      
      def changeAnnimKraken(self, flip=False):
@@ -480,7 +484,7 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimMage(True)
         if self.name=="dragon":
             self.changeAnnimDragon(True)
-            print("gaucheG")
+
         self.droite = True
         
      def goRight(self, angle=4):
@@ -498,7 +502,7 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimMage()
         if self.name=="dragon":
             self.changeAnnimDragon()
-            print("droiteD")
+
         self.droite=False
         
      def goUp(self, angle=4):

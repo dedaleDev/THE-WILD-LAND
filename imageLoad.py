@@ -17,17 +17,79 @@ class ImageLoad():
         self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
         self.victoire = pygame.image.load("data/menu/victoire.png").convert_alpha()
         self.victoire = pygame.transform.scale(self.victoire,(infoObject.current_w,infoObject.current_h))
-        self.coffre = pygame.image.load("data/ressources/coffre.png").convert_alpha()
-        self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
         self.etoile = pygame.image.load("data/ressources/etoile.png").convert_alpha()
         self.etoile = pygame.transform.scale(self.etoile, (self.etoile.get_height()*0.05,self.etoile.get_width()*0.05))
+        self.coffre = pygame.image.load("data/ressources/coffre.png").convert_alpha()
+        self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
         
+        self.coffre = self.loadAnnimCoffre()
+
         self.moulinAnnim = self.loadAnnimMoulin()
+        self.ventiloAnnim = self.loadAnnimVentilo()
         self.golemAnnim = self.loadAnnimGolem()
         self.krakenAnnim = self.loadAnnimKraken()
         self.yetiAnnim = self.loadAnnimYeti()
         self.mageAnnim = self.loadAnnimMage()
         self.dragonAnnim = self.loadAnnimDragon()
+        
+        self.annim1Terre3 = self.loadAnnimTuile("1Terre3_", 1, 11)
+        self.annim1Terre4 = self.loadAnnimTuile("1Terre4_", 1, 17)
+        self.elevage = self.loadAnnimTuile("elevage_", 2, 19)
+        self.annim3eau0 = self.loadAnnimTuile("3eau0_", 1,14)
+        self.annim3eau4 = self.loadAnnimTuile("3eau4_", 1,21)
+        
+        self.annim4foret0 = self.loadAnnimTuile("4foret0_", 1,12)
+        self.annim4foret1 = self.loadAnnimTuile("4foret1_", 1,28)
+        self.annim4foret2 = self.loadAnnimTuile("4foret2_", 1,12)
+        
+        self.lootEau = self.loadAnnimRessource("eau", 1,21)
+        self.lootPierre = self.loadAnnimRessource("pierre", 1,20)
+        self.lootBois = self.loadAnnimRessource("bois", 1,22)
+        self.lootFood = self.loadAnnimRessource("viande", 1,20)
+        
+        for i in range(15):
+            self.annim3eau0.append(self.annim3eau0[-1])
+
+        for i in range(50):
+            self.annim3eau4.append(self.annim3eau0[-1])
+            self.annim4foret1.append(self.annim4foret1[-1])
+        self.annim3eau1 = self.loadAnnimTuile("3eau1_", 1,17)
+        for i in range(5):
+            self.annim3eau1.append(self.annim3eau0[-1])
+        self.annim3eau2 = self.loadAnnimTuile("3eau2_", 1,15)
+        for i in range(5):
+            self.annim3eau2.append(self.annim3eau0[-1])
+        
+    def loadAnnimTuile(self, nomTuile, idebut, ifin):
+        liste=[]
+        for i in range(idebut, ifin+1):
+            im = pygame.image.load("data/annimationTuiles/"+nomTuile+str(i)+".png").convert_alpha()
+            liste.append(im)
+            
+        return liste
+        
+    def loadAnnimRessource(self, nomRessource, idebut, ifin):
+        liste=[]
+        for i in range(idebut, ifin+1):
+            im=pygame.image.load("data/ressources/"+nomRessource+"/"+nomRessource+"_"+str(i)+".png").convert_alpha()
+            liste.append(pygame.transform.scale(im, (im.get_width()*0.3, im.get_height()*0.3)))
+        return liste
+    
+    def loadAnnimCoffre(self):
+        liste=[]
+        for i in range(1, 15):
+            im = pygame.image.load("data/ressources/coffre_"+str(i)+".png").convert_alpha()
+            liste.append(pygame.transform.scale(im, (100,100)))
+        return liste
+        
+    def loadAnnimVentilo(self):
+        liste = []
+        for i in range(1, 26):    
+            if i != 16:
+                im = pygame.image.load("data/batiments/ventilo/ventilo_"+str(i)+".png").convert_alpha()
+                liste.append(im)
+        return liste    
+    
     def loadAnnimMoulin(self):
         liste = []
         for i in range(1, 23):    
@@ -114,7 +176,13 @@ class ImageLoad():
         imgTemp4 = pygame.image.load("data/tuiles/1Terre4.png").convert_alpha()
         imgTemp4=pygame.transform.scale(imgTemp4, (246, 144))
         
-        listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3, imgTemp4))
+        imgTemp5 = pygame.image.load("data/tuiles/1Terre5.png").convert_alpha()
+        imgTemp5=pygame.transform.scale(imgTemp5, (246, 144))
+        
+        imgTemp6 = pygame.image.load("data/tuiles/1Terre6.png").convert_alpha()
+        imgTemp6=pygame.transform.scale(imgTemp6, (246, 144))
+        
+        listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3, imgTemp4, imgTemp5, imgTemp6))
     #Roche
         imgTemp0 = pygame.image.load("data/tuiles/2Roche0.png").convert_alpha()
         imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
@@ -255,40 +323,6 @@ class ImageLoad():
         
         return listeImgItem
 
-
-    def returnImgO(self, type):
-        if type==6 or type==3 :
-            rand = random.randint(0,4)
-            return self.listeImgO[type][rand]
-        if  type==4 or type==2 or type==7:
-            rand = random.randint(0, 3)
-            return self.listeImgO[type][rand]
-        if type==5:
-            rand = random.randint(0,6)
-            if rand%2==0:
-                rand=2
-            if rand==1 or rand == 3:
-                rand = 0
-            if rand == 5:
-                rand=1
-
-            return self.listeImgO[type][rand]
-        if type==1:
-            rand= random.randint(0,12)
-            if rand in [0,1, 10]:
-                rand = 0
-            if rand in [2,3,8, 11]:
-                rand = 1
-            if rand in [4,5,7,12]:
-                rand =2
-            if rand in [6]:
-                rand = 3
-            if rand ==9:
-                rand = 4
-
-            return self.listeImgO[type][rand]
-        return self.listeImgO[type]
-
     def returnImg(self, type):
         annim = []
         clockMax = None
@@ -296,37 +330,89 @@ class ImageLoad():
                 print("probleme de type")
                 assert(False)
         if type==6 or type==3 :
+            
             rand = random.randint(0,4)
-            return self.listeImg[type][rand], clockMax, annim
+            if rand==0 and type==3: #grande vagues
+                clockMax=7
+                annim=self.annim3eau0
+            elif rand==1 and type==3:
+                clockMax=7
+                annim=self.annim3eau1
+            elif rand==2 and type==3:
+                clockMax=7
+                annim=self.annim3eau2
+            if rand == 4 and type==3:
+                
+                clockMax=5
+                if random.randint(0,1):
+                    annim=self.annim3eau4
+                else :
+                    annim=[]
+            if annim :
+                clockAnnim=random.randint(0,len(annim)-1)
+            else :
+                clockAnnim=0
+            return self.listeImg[type][rand], clockMax, annim, clockAnnim
         if  type==4 or type==2 or type==7:
             rand = random.randint(0, 3)
-            return self.listeImg[type][rand], clockMax, annim
+            if type==4 and rand==1:
+                if random.randint(0,1):
+                    annim=self.annim4foret1
+                else :
+                    annim=[]
+                clockMax=10
+            if type==4 and rand==0:
+                annim=self.annim4foret0
+                clockMax=10
+            if type==4 and rand ==2:
+                annim=self.annim4foret2
+                clockMax=10
+            if annim :
+                clockAnnim=random.randint(0,len(annim)-1)
+            else :
+                clockAnnim=0
+            return self.listeImg[type][rand], clockMax, annim, clockAnnim
         if type==5:
             rand = random.randint(0,6)
             if rand%2==0:
                 rand=2
-            if rand == 1 or rand == 3:
+            elif rand == 1 or rand == 3:
                 rand = 0
-            if rand == 5:
+            elif rand == 5:
                 rand=1
-
-            return self.listeImg[type][rand], clockMax, annim
+            if annim :
+                clockAnnim=random.randint(0,len(annim)-1)
+            else :
+                clockAnnim=0
+            return self.listeImg[type][rand], clockMax, annim, clockAnnim
+        
         if type==1:
-            rand= random.randint(0,12)
+            rand = random.randint(0,12)
             if rand in [0,1, 10]:
                 rand = 0
-            if rand in [2,3,8, 11]:
-                rand = 1
-            if rand in [4,5,7,12]:
-                rand =2
-            if rand in [6]:
-                rand = 3
-            if rand ==9:
-                rand = 4
-            
-            return self.listeImg[type][rand], clockMax, annim
+            elif rand in [3,8, 11]:
+                rand = 1 #CLASSIQUE
+            elif rand in [5,7,12]:
+                rand = 2 #CLASSIQUE
+            elif rand in [4]:
+                rand = 5 #FLEURS 1
+            elif rand in [2]:
+                rand = 6 #FLEURS 2
+            elif rand in [6]:
+                rand = 3 #CLASSIQUE
+                annim=self.annim1Terre3
+                clockMax=10
+            elif rand ==9:
+                rand = 4 #ARBRE
+                annim=self.annim1Terre4
+                clockMax=10
+            if annim :
+                clockAnnim=random.randint(0,len(annim)-1)
+            else :
+                clockAnnim=0
+            return self.listeImg[type][rand], clockMax, annim, clockAnnim
         print("probleme")
-        return self.listeImg[type], clockMax, annim
+        return self.listeImg[type], clockMax, annim, random.randint(0,len(annim)-1)
 
     
     def loadImgAcide(self):

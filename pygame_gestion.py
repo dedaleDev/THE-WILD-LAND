@@ -4,6 +4,7 @@ import pygame
 from pygame.locals import *
 from inventaire import Inventaire
 from generation import *
+from loot import Loot
 from mob import Mob
 import main_menu
 from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
@@ -17,7 +18,7 @@ infoObject = 0
 global moveY, moveX, suiviePerso
 
 
-def pygameInit():  # fonction servant à l'initialisation pygame
+def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
     
     global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie,nombreAnnimationIncendie, annimTremblementListe
     global fenetrePygame, moveX, moveY, last, suiviePerso
@@ -31,6 +32,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     annimIncendie=0
     suiviePerso=140 #baisser la valeur pour un suivi plus rapide, 130 = suivi parfait
     nombreAnnimationIncendie=3
+    nombreAnnimationTremblement=3
 
     # initialise la taille de l'écran (largeur, hauteur) en pixel
     modification = False
@@ -49,7 +51,9 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
     fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
     
-    game = Game(infoObject, fenetrePygame)
+    game = Game(infoObject, fenetrePygame, mapChoisie)
+    
+    #test
     
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
@@ -61,6 +65,12 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     pauseicon = pygame.image.load("data/menu/pause.png").convert_alpha()
     pauseicon = pygame.transform.scale(pauseicon,(45,45))
 
+    
+    infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png")
+
+
+    infobulletremb = pygame.image.load("data/cata/infoBulle/info_tremblementDeTerre.png")
+    
     librairieIMG = pygame.image.load("data/personnages/infoBulle/librairie.png").convert_alpha()
     health = pygame.image.load("data/menu/health.png").convert_alpha()
     health = pygame.transform.scale(health, (50, 50))
@@ -71,7 +81,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
         im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png").convert_alpha()
         annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
     for i in range(1,10):
-        annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme"+str(i)+".png").convert_alpha())
+        annimIncendieListe.append(pygame.image.load("data/cata/feu/flamme_"+str(i)+".png").convert_alpha())
 
     tick_ressource=0
     tirageCoffre = 0 #compte le nombre de tirage de coffre rate, 1 tirage toute les 10 secondes
@@ -89,9 +99,13 @@ def pygameInit():  # fonction servant à l'initialisation pygame
 
     centrerJoueur(game)
     
-    
-    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
 
+    #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
     listefps=[]
     game.tempsMort+=pygame.time.get_ticks()
@@ -99,16 +113,21 @@ def pygameInit():  # fonction servant à l'initialisation pygame
     tailleEcran = pygame.display.Info().current_w, pygame.display.Info().current_h
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
     taillePolice = round(3/100*diagonalEcran)
+    police = get_font(taillePolice)
     while continuer == True:
-        debut = pygame.time.get_ticks()
-        scoreText = get_font(taillePolice).render(str(game.joueur.score), True, "Black")
+        
+        
+        scoreText = police.render(str(game.joueur.score), True, "Black")
         scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*1.2/10))
+        
         if fps>=60:
             fps =0
         else:
             fps+=1
+        
         game.augmenterMob()
         game.son.jouerMusique2()
+        
         modification=False
         cliqueItem = False
         
@@ -125,21 +144,24 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     game.avoirTuileJoueur(mob).aEteModifie=True
                     game.avoirTuileJoueur(mob).trou=False
                     game.joueur.score+=mob.score
+                    game.joueur.setRessource(mob.recompenseWood, mob.recompenseStone, mob.recompenseFood, mob.recompenseWater)
+                    game.groupLoot.add(Loot(mob.recompenseWood, mob.recompenseStone, mob.recompenseWater, mob.recompenseFood, mob.rect.x+20-moveX, mob.rect.y-30-moveY, game))
                     mob.kill()
                     
+        
                     
             
             tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
             
             if not mob.pique and not mob.aerien and tuileMob.pieux:
             #if game.map[mob.posY][mob.posX].pieux==True:
-                mob.takeDamage(0.1)
+                mob.takeDamage(0.1, moveX, moveY)
                 if not mob.slow:
                     mob.slow =True
 
 
             elif tuileMob.sableMouvant and not mob.aerien:
-                mob.takeDamage(0.3)
+                mob.takeDamage(0.3, moveX, moveY)
                 if game.tempsJeu() - game.son.dernierSable >2000:
                     pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
                     game.son.dernierSable = game.tempsJeu()
@@ -151,7 +173,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         mob.velocity=1
                         
             elif tuileMob.ventilo and not mob.aerien:
-                mob.takeDamage(0.5)
+                mob.takeDamage(0.5, moveX, moveY)
                 if game.tempsJeu() - game.son.dernierVentilo >2000:
                     pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
                     game.son.dernierVentilo = game.tempsJeu()
@@ -166,6 +188,8 @@ def pygameInit():  # fonction servant à l'initialisation pygame
             elif mob.slow:
                  mob.slow =False
                  mob.velocity =mob.maxVelocity
+        
+        
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -202,15 +226,17 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     if tuile:
                         tuile.estSelect=False
                     tuile=False
-            
+        
+        
                 
-        if continuer == True:  # récupère la position de la souris mais uniquement si la fenetre pygame est ouverte
+        if continuer == True: 
             
             deplacement_cam(mouse, game)
             
            
             #### Deplacement des mobs
             now = game.tempsJeu()
+            
             for mob in game.groupMob:
                 
                 if now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
@@ -219,7 +245,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     mob.last = now
                     mob.majCoolDown()
                 if not mob.slow :
-                    #mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
+                    mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
                     pass
                 else :
                     if now%2==0 :
@@ -227,7 +253,7 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         
                 if mob.fini and len(mob.the_path)>1:
                     mob.the_path = mob.the_path[1:]
-
+            
             for tour in game.groupDefense:
                 tour.attack()
             for projo in game.groupProjectile:
@@ -237,15 +263,18 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 move_ticker-=1
 
             # efface l'image pour pouvoir actualiser le jeu
+            
+            
             fenetrePygame.fill(BLACK)
-
+            
             ####CATASTROPHE
 
             
                 
                 
                 
-
+            
+            
             modification=True
             #affichage selection
             if tick_ressource==0:
@@ -278,13 +307,15 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 pass
                 #game.genererImg()
             alerteVille=False #une ville est presente sur la map
+            
+            
             for y in range(game.taille_matriceY):
                 for x in range(game.taille_matriceX):
                     if game.map[y][x].isExplored:
                         fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
                         if game.map[y][x].annimation:
                             game.map[y][x].changeAnnim()
-                            
+
                     if game.map[y][x].annimationFog>0 and game.map[y][x].isExplored:
                         
                         fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
@@ -298,22 +329,38 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                         tuileVille = game.map[y][x]
             
             
-
+            
             for coffre in game.groupCoffre:
                 if coffre.tuile.posX == game.joueur.posX and coffre.tuile.posY == game.joueur.posY:
-                    game.joueur.setRessource(coffre.wood, coffre.stone, coffre.food, coffre.water)
-                    pygame.mixer.Sound.play(game.son.coffreOuverture)
-                    coffre.kill()
+                    if coffre.clock==coffre.clockMax:
+                        coffre.indice+=1
+                        coffre.clock=0
+                        if coffre.indice==len(game.images.coffre)-1:
+                            game.joueur.setRessource(coffre.wood, coffre.stone, coffre.food, coffre.water)
+                            pygame.mixer.Sound.play(game.son.coffreOuverture)
+                            game.groupLoot.add(Loot(coffre.wood, coffre.stone, coffre.water, coffre.food, coffre.rect.x+20, coffre.rect.y-30, game))
+                            
+                            coffre.kill()
+                    else:
+                        coffre.clock+=1
+
+                else:
+                    coffre.indice=0
+
                 if coffre.tuile.isExplored :
-                    fenetrePygame.blit(coffre.image, (coffre.rect.x+moveX, coffre.rect.y+moveY))
+                    fenetrePygame.blit(coffre.image[coffre.indice], (coffre.rect.x+moveX, coffre.rect.y+moveY))
                     fenetrePygame.blit(coffre.imEtoile, (coffre.etoileRect.x+moveX, coffre.etoileRect.y+moveY))  
                     fenetrePygame.blit(coffre.imEtoile2, (coffre.etoileRect2.x+moveX, coffre.etoileRect2.y+moveY))  
                     fenetrePygame.blit(coffre.imEtoile3, (coffre.etoileRect3.x+moveX, coffre.etoileRect3.y+moveY))  
                     if fps%3==0:
                         coffre.etoileAnnim()
-            #fenetrePygame.blit(game.map[game.joueur.posY][game.joueur.posX].image, (0,0))
-            #fenetrePygame.blit(game.mapImg, (moveX, moveY))
-            #fenetrePygame.blit(game.mapImgSuperpose, (moveX, moveY))
+
+
+
+            for loot in game.groupLoot:
+                loot.update(fenetrePygame, moveX,moveY)
+            
+            
             fenetrePygame.blit(buttonHome, (10, 10))
             fenetrePygame.blit(bookicon, (0,80))
             fenetrePygame.blit(pauseicon, (76,20))
@@ -324,7 +371,6 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                     tuile=False
             if tuile :
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
-                
                 if tuile.tour:      
                     #pygame.draw.circle(fenetrePygame, (155,155,155), (tuile.tour.rect.x+30, tuile.tour.rect.y), tuile.tour.range, width=3, )
                     pass
@@ -365,28 +411,30 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 if choixIncendie:
                     entreImage=100
                     fenetrePygame.blit(annimIncendieListe[annimIncendie], (annimIncendieListe[-1].rect.x+50, annimIncendieListe[-1].rect.y-annimIncendieListe[annimIncendie].get_height()+100))
+                    fenetrePygame.blit(infobulleIncendie, (tailleEcran[0]- 400, tailleEcran[1] - 700))
                 else:
-                    entreImage=500
+                    entreImage=100
                     fenetrePygame.blit(annimTremblementListe[annimIncendie], (annimTremblementListe[-1].rect.x+50, annimTremblementListe[-1].rect.y-annimTremblementListe[annimIncendie].get_height()+100))
+                    fenetrePygame.blit(infobulletremb, (tailleEcran[0]- 400, tailleEcran[1] - 700))
                 game.incendie=False
                 if game.tempsJeu()-delayIncendie>entreImage:
                     annimIncendie+=1
-
-                    
                     delayIncendie=game.tempsJeu()
-                    if annimIncendie==9:
+                    if annimIncendie==9 :
                         if nombreAnnimationIncendie>0:
                             annimIncendie=1
                             nombreAnnimationIncendie-=1
+                        elif nombreAnnimationTremblement>0:
+                            annimIncendie=1
+                            nombreAnnimationTremblement-=1
                         else:
                             game.joueur.detruireBatimentRessource(annimIncendieListe[-1])
                             annimIncendieListe.pop(len(annimIncendieListe)-1)
                             annimTremblementListe.pop(len(annimTremblementListe)-1)
                             nombreAnnimationIncendie=3
+                            
                             annimIncendie=0
 
-            
-            
             #if game.joueur.estMort:
             
             if librairie ==True :
@@ -420,24 +468,27 @@ def pygameInit():  # fonction servant à l'initialisation pygame
                 mort(game)
             if game.joueur.ville:
                 victoire(game)
-            fin = pygame.time.get_ticks()
-            listefps.append(1/((fin-debut)/1000))
+            #listefps.append(1/((fin-debut)/1000))
             pygame.display.flip()
         
         else:
             print("Fermeture du jeu")
             moyenneFps=0
-            for elem in listefps :
-                
-                moyenneFps += elem
-            moyenneFps = moyenneFps/len(listefps)
-            print("moyenne des fps sur la session acutelle :", moyenneFps )
-            print("fps min et max :", min(listefps), max(listefps) )
+            if listefps:
+                for elem in listefps :
+                    
+                    moyenneFps += elem
+                moyenneFps = moyenneFps/len(listefps)
+                print("moyenne des fps sur la session acutelle :", moyenneFps )
+                listefps.sort()
+                print("fps min 1% et max 1% :", listefps[1//100*len(listefps)], listefps[99//100*len(listefps)-1] )
+                print("mesure sur "+str(len(listefps))+" fps")
             main_menu.main_menu()
             pygame.display.quit()
             pygame.quit()  # ferme pygame et le jeu
             fenetrePygame=""
             return
+        
         clock.tick(60)
 
            

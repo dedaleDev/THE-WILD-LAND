@@ -1,3 +1,4 @@
+import random
 import pygame
 
 class Tuile(pygame.sprite.Sprite):
@@ -41,23 +42,20 @@ class Tuile(pygame.sprite.Sprite):
         
     
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
         self.annimationFog = 256
         ####     POSITION ET IMAGE    ####
         self.imageFog = game.imageFog2.copy()
         self.posX = posX
         self.posY = posY
-        self.image, self.clockAnnimMax, self.annimation = game.images.returnImg(self.type)
-        self.clockAnnim = 0
-        self.indiceAnnim=0
-        
+        self.image, self.clockAnnimMax, self.annimation, self.indiceAnnim = game.images.returnImg(self.type)
+        self.clockAnnim=0
         self.rect = self.image.get_rect()
         self.rect.x = self.avoirX()
         self.rect.y = self.avoirY()
         self.Xoriginal = self.rect.x
         self.Yoriginal = self.rect.y
         self.mask=pygame.mask.from_surface(self.image)
-    
     
     def getExplored(self):
         return self.isExplored
@@ -91,7 +89,7 @@ class Tuile(pygame.sprite.Sprite):
     
     def setType(self, entier):
         self.type=entier
-        self.image, self.clockAnnimMax, self.annimation = self.game.images.returnImg(entier)
+        self.image, self.clockAnnimMax, self.annimation, self.indiceAnnim = self.game.images.returnImg(entier)
 
 
     
@@ -167,8 +165,9 @@ class Tuile(pygame.sprite.Sprite):
 
 
     def changeAnnim(self):
+        
          self.clockAnnim+=1
-         if self.clockAnnim==self.clockAnnimMax:
+         if self.clockAnnim>=self.clockAnnimMax:
             
             self.indiceAnnim+=1
             if self.indiceAnnim >= len(self.annimation):

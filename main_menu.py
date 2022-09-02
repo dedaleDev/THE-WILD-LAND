@@ -1,4 +1,5 @@
 import math
+from turtle import up
 import pygame, sys
 from button import Button
 import pygame_gestion
@@ -23,11 +24,40 @@ pygame.display.set_icon(pygame_icon)
 BG=pygame.image.load("data/menu/background.png").convert_alpha()
 BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
 
+mapPropose = []
+
+mapOcean = [[7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],   #1
+            [7,2,2,2,3,3,6,6,6,6,6,6,6,6,6,6,6,3,3,3,2,2,2,7],  #2
+            [7,2,2,2,3,3,3,6,6,6,6,6,6,6,6,6,3,3,3,3,2,2,2,7],  #3
+            [7,2,2,2,3,3,3,3,3,6,6,6,6,6,3,3,3,3,3,3,2,2,2,7],  #4
+            [7,3,3,3,3,3,3,3,3,3,3,6,3,3,3,3,3,3,3,3,3,3,3,7],  #5
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #6
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #7
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #8
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #9
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #10
+]
+
+mapPropose.append(pygame.transform.scale(pygame.image.load("data/menu/map.png"), scaleButtonMap))
+mapPropose.append(pygame.transform.scale(pygame.image.load("data/menu/background.png"), scaleButtonMap))
+mapPropose.append(pygame.transform.scale(pygame.image.load("data/menu/fullscreen.png"), scaleButtonMap))
+
+mapType = [[], [], [7,7,7],[7,3,7],[7,7,7]]
+
 def get_font(size):
     return pygame.font.Font("data/menu/font.ttf", size)
 
 
+def obtenirMap(indice):
+    return 
+
 def optionPartie():
+    indiceMap = 0
+    posYMap = 0.6
+    posYDiff = 0.3
+    posYMapChoix = 0.5
+    posYMapTXT=0.655
+    posYDiffTXT=0.3
     continu = True
     back = False
     OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1.5/10, tailleEcran[1]*1/1.1), 
@@ -36,17 +66,61 @@ def optionPartie():
                     text_input="demarrer", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
     OPTIONS_TEXT = get_font(taillePolice).render(" Nouvelle partie ", True, "Black")
-    OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*1/10))
+    OPTIONS_RECT = OPTIONS_TEXT.get_rect()
+    OPTIONS_RECT.x = tailleEcran[0]*0.3/10
+    OPTIONS_RECT.y = tailleEcran[1]*0.6/10
+    PETITE_TEXT = get_font(taillePolice//5).render(" Petite ", True, "Black")
+    PETITE_RECT = PETITE_TEXT.get_rect(center=(tailleEcran[0]*1.21/10, tailleEcran[1]*posYMapTXT-5))
+    
+    MOYENNE_TEXT = get_font(taillePolice//4).render(" Moyenne ", True, "Black")
+    MOYENNE_RECT = MOYENNE_TEXT.get_rect(center=((tailleEcran[0]*1.25/10+tailleEcran[0]*0.5/10, tailleEcran[1]*posYMapTXT-5)))
+    
+    GRANDE_TEXT = get_font(taillePolice//3).render(" Grande ", True, "Black")
+    GRANDE_RECT = GRANDE_TEXT.get_rect(center=(tailleEcran[0]*1.25/10+tailleEcran[0]*1.3/10, tailleEcran[1]*posYMapTXT-5))
+    
+    EXTREME_TEXT = get_font(taillePolice//2).render(" Extreme ", True, "Black")
+    EXTREME_RECT = EXTREME_TEXT.get_rect(center=(tailleEcran[0]*1.25/10+tailleEcran[0]*2.45/10, 0.06+tailleEcran[1]*posYMapTXT-5))
+    
+    PETITEDIFF_TEXT = get_font(taillePolice//5).render(" Facile ", True, "Black")
+    PETITEDIFF_RECT = PETITEDIFF_TEXT.get_rect(center=(tailleEcran[0]*1/7, tailleEcran[1]*posYDiffTXT))
+    
+    MOYENNEDIFF_TEXT = get_font(taillePolice//4).render(" Normale ", True, "Black")
+    MOYENNEDIFF_RECT = MOYENNEDIFF_TEXT.get_rect(center=((tailleEcran[0]*1/7+tailleEcran[0]*10//100, tailleEcran[1]*posYDiffTXT)))
+    
+    GRANDEDIFF_TEXT = get_font(taillePolice//3).render(" Difficile ", True, "Black")
+    GRANDEDIFF_RECT = GRANDEDIFF_TEXT.get_rect(center=(tailleEcran[0]*1/7+tailleEcran[0]*20//100, tailleEcran[1]*posYDiffTXT))
+    
+    EXTREMEDIFF_TEXT = get_font(taillePolice//2).render(" Extreme ", True, "Black")
+    EXTREMEDIFF_RECT = EXTREMEDIFF_TEXT.get_rect(center=(tailleEcran[0]*1/7+tailleEcran[0]*30//100, 0.06+tailleEcran[1]*posYDiffTXT))
+    
+    
     
     
     MAP_TEXT = get_font(taillePolice//2).render(" Taille de la carte ", True, "Black")
-    MAP_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/4, tailleEcran[1]*4.5/10))
-    posYMap = 0.6
-    posYDiff = 0.3
+    MAP_RECT = OPTIONS_TEXT.get_rect()
+    MAP_RECT.x = tailleEcran[0]*1/10
+    MAP_RECT.y = tailleEcran[1]*4.5/10
+    
+    DIFF_TEXT = get_font(taillePolice//2).render(" Difficulte ", True, "Black")
+    DIFF_RECT = OPTIONS_TEXT.get_rect()
+    DIFF_RECT.x = tailleEcran[0]*1/10
+    DIFF_RECT.y = tailleEcran[1]*2/10
     
     tailleMap = 25
     
-    miniMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*1.25/10, tailleEcran[1]*posYMap), 
+    
+    gaucheMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/feuille.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*5.5/10, tailleEcran[1]*posYMapChoix), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    
+    droiteMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/feuille.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*9.5/10, tailleEcran[1]*posYMapChoix), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    
+    Map = Button(image=mapPropose[indiceMap], pos=(tailleEcran[0]*7.5/10, tailleEcran[1]*posYMapChoix), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    
+    
+    
+    miniMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*1.21/10, tailleEcran[1]*posYMap), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
     moyenneMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//10, scaleButtonMap[1]//4-scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*0.5/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.01), 
@@ -79,12 +153,30 @@ def optionPartie():
     extreme.image.set_alpha(50)
     
     while continu:
+        mapChoisie = []
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
         
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
         SCREEN.blit(MAP_TEXT, MAP_RECT)
+        SCREEN.blit(DIFF_TEXT, DIFF_RECT)
+        SCREEN.blit(PETITE_TEXT, PETITE_RECT)
+        SCREEN.blit(MOYENNE_TEXT, MOYENNE_RECT)
+        SCREEN.blit(GRANDE_TEXT, GRANDE_RECT)
+        SCREEN.blit(EXTREME_TEXT, EXTREME_RECT)
+        
+        if diff!="facile" and facile.pressed2:
+            SCREEN.blit(PETITEDIFF_TEXT, PETITEDIFF_RECT)
+        if diff!="normale" and normal.pressed2:
+            SCREEN.blit(MOYENNEDIFF_TEXT, MOYENNEDIFF_RECT)
+        
+        
+        if diff!="difficile" and difficile.pressed2:
+            SCREEN.blit(GRANDEDIFF_TEXT, GRANDEDIFF_RECT)
+        if diff!="extreme" and extreme.pressed2:
+            SCREEN.blit(EXTREMEDIFF_TEXT, EXTREMEDIFF_RECT)
+        
         OPTIONS_GO.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         
@@ -99,6 +191,13 @@ def optionPartie():
         normal.update(SCREEN)
         difficile.update(SCREEN)
         extreme.update(SCREEN)
+        droiteMap.update(SCREEN)
+        gaucheMap.update(SCREEN)
+        Map.update(SCREEN)
+        
+        
+        
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -111,12 +210,15 @@ def optionPartie():
                 if OPTIONS_GO.checkForInput(OPTIONS_MOUSE_POS):
                     continu=False
                     back=False
+                
                 if miniMap.checkForInput(OPTIONS_MOUSE_POS):
-                    tailleMap = 10
+                
                     miniMap.image.set_alpha(255)
+                    tailleMap = 10
                     moyenneMap.image.set_alpha(50)
                     grandeMap.image.set_alpha(50)
                     ExtremeMap.image.set_alpha(50)
+                    
                 if moyenneMap.checkForInput(OPTIONS_MOUSE_POS):
                     tailleMap= 25
                     miniMap.image.set_alpha(50)
@@ -162,10 +264,145 @@ def optionPartie():
                     normal.image.set_alpha(50)
                     difficile.image.set_alpha(50)
                     extreme.image.set_alpha(255)
+                if droiteMap.checkForInput(OPTIONS_MOUSE_POS):
+                    indiceMap+=1
+                    if indiceMap>=len(mapPropose):
+                        indiceMap=0
+                    Map.image=mapPropose[indiceMap]
+                    mapChoisie = obtenirMap(indiceMap)
+                if gaucheMap.checkForInput(OPTIONS_MOUSE_POS):
+                    indiceMap-=1
+                    if indiceMap<0:
+                        indiceMap=len(mapPropose)-1
+                    Map.image=mapPropose[indiceMap]
+                    mapChoisie = obtenirMap(indiceMap)
+                
+            if droiteMap.checkForInput(OPTIONS_MOUSE_POS):
+                droiteMap.image.set_alpha(200)
+                gaucheMap.image.set_alpha(255)
+            
+            elif gaucheMap.checkForInput(OPTIONS_MOUSE_POS):
+                droiteMap.image.set_alpha(255)
+                gaucheMap.image.set_alpha(200)
+            else:
+                droiteMap.image.set_alpha(255)
+                gaucheMap.image.set_alpha(255)
+            if miniMap.checkForInput(OPTIONS_MOUSE_POS):
+                miniMap.pressed2=True
+                moyenneMap.pressed2=False
+                grandeMap.pressed2=False
+                ExtremeMap.pressed2=False
+            elif moyenneMap.checkForInput(OPTIONS_MOUSE_POS):
+                miniMap.pressed2=False
+                moyenneMap.pressed2=True
+                grandeMap.pressed2=False
+                ExtremeMap.pressed2=False
+            elif grandeMap.checkForInput(OPTIONS_MOUSE_POS):
+                miniMap.pressed2=False
+                moyenneMap.pressed2=False
+                grandeMap.pressed2=True
+                ExtremeMap.pressed2=False
+            elif ExtremeMap.checkForInput(OPTIONS_MOUSE_POS):
+                miniMap.pressed2=False
+                moyenneMap.pressed2=False
+                grandeMap.pressed2=False
+                ExtremeMap.pressed2=True
+            
+            elif facile.checkForInput(OPTIONS_MOUSE_POS):
+                facile.pressed2=True
+                normal.pressed2=False
+                difficile.pressed2=False
+                extreme.pressed2=False
+            elif normal.checkForInput(OPTIONS_MOUSE_POS):
+                facile.pressed2=False
+                normal.pressed2=True
+                difficile.pressed2=False
+                extreme.pressed2=False
+            elif difficile.checkForInput(OPTIONS_MOUSE_POS):
+                facile.pressed2=False
+                normal.pressed2=False
+                difficile.pressed2=True
+                extreme.pressed2=False
+            elif extreme.checkForInput(OPTIONS_MOUSE_POS):
+                facile.pressed2=False
+                normal.pressed2=False
+                difficile.pressed2=False
+                extreme.pressed2=True
+            else :
+                facile.pressed2=False
+                normal.pressed2=False
+                difficile.pressed2=False
+                extreme.pressed2=False
+                miniMap.pressed2=False
+                moyenneMap.pressed2=False
+                grandeMap.pressed2=False
+                ExtremeMap.pressed2=False
         pygame.display.update()
-
     
-    return back, diff, tailleMap
+    mapChoisie = [[7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],   #1
+            [7,2,2,2,3,3,6,6,6,6,6,6,6,6,6,6,6,3,3,3,2,2,2,7],  #2
+            [7,2,2,2,3,3,3,6,6,6,6,6,6,6,6,6,3,3,3,3,2,2,2,7],  #3
+            [7,2,2,2,3,3,3,3,3,6,6,6,6,6,3,3,3,3,3,3,2,2,2,7],  #4
+            [7,3,3,3,3,3,3,3,3,3,3,6,3,3,3,3,3,3,3,3,3,3,3,7],  #5
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #6
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #7
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #8
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #9
+            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #10
+]   
+    mapChoisie=[
+[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7], 
+[7, 3, 3, 3, 3, 3, 6, 1, 1, 1, 4, 4, 4, 4, 4, 6, 4, 1, 4, 4, 6, 1, 6, 3, 7], 
+[7, 6, 6, 3, 3, 6, 6, 6, 1, 1, 1, 4, 4, 1, 6, 6, 6, 4, 4, 6, 6, 6, 3, 3, 7], 
+[7, 6, 6, 3, 3, 3, 6, 6, 6, 6, 6, 4, 6, 6, 6, 6, 4, 4, 4, 6, 3, 3, 3, 6, 7], 
+[7, 6, 6, 6, 3, 3, 3, 6, 3, 6, 6, 6, 6, 6, 6, 3, 3, 3, 3, 3, 3, 6, 6, 1, 7], 
+[7, 6, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 4, 4, 6, 1, 1, 7], 
+[7, 6, 6, 6, 6, 6, 4, 6, 3, 3, 3, 3, 3, 4, 4, 6, 6, 6, 6, 4, 4, 4, 1, 1, 7], 
+[7, 6, 1, 6, 6, 4, 4, 4, 4, 3, 3, 4, 6, 6, 6, 4, 4, 4, 1, 4, 4, 4, 4, 1, 7], 
+[7, 3, 1, 6, 1, 4, 4, 1, 4, 3, 3, 4, 4, 4, 1, 1, 1, 1, 5, 5, 4, 1, 1, 1, 7], 
+[7, 1, 1, 6, 1, 1, 4, 1, 4, 3, 3, 4, 4, 4, 1, 1, 5, 5, 5, 5, 5, 5, 1, 1, 7], 
+[7, 3, 3, 4, 1, 1, 1, 1, 1, 3, 4, 4, 4, 4, 4, 4, 5, 4, 5, 2, 2, 5, 1, 1, 7], 
+[7, 1, 4, 4, 4, 4, 1, 1, 3, 3, 3, 4, 4, 1, 4, 4, 5, 5, 2, 2, 5, 1, 4, 1, 7], 
+[7, 1, 1, 4, 4, 4, 4, 1, 3, 4, 3, 3, 4, 4, 1, 4, 4, 5, 5, 5, 5, 1, 4, 1, 7], 
+[7, 1, 1, 1, 1, 4, 4, 3, 4, 4, 1, 3, 1, 1, 1, 1, 1, 2, 5, 1, 1, 4, 4, 1, 7], 
+[7, 1, 1, 4, 4, 4, 1, 4, 3, 1, 4, 3, 3, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 7], 
+[7, 1, 1, 1, 5, 1, 1, 4, 3, 3, 1, 4, 3, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 7], 
+[7, 1, 1, 5, 5, 1, 1, 3, 4, 3, 1, 4, 3, 1, 1, 1, 2, 4, 4, 5, 5, 5, 1, 1, 7], 
+[7, 2, 5, 5, 1, 1, 3, 3, 4, 4, 4, 4, 1, 4, 1, 3, 3, 4, 4, 4, 4, 4, 1, 1, 7], 
+[7, 2, 2, 5, 5, 3, 5, 1, 1, 1, 1, 1, 4, 1, 3, 3, 4, 4, 4, 4, 4, 5, 3, 1, 7], 
+[7, 2, 2, 5, 3, 5, 5, 1, 1, 5, 1, 4, 4, 1, 3, 3, 4, 1, 4, 4, 2, 2, 2, 1, 7], 
+[7, 2, 2, 5, 3, 5, 5, 5, 5, 5, 5, 4, 1, 1, 1, 3, 1, 1, 1, 5, 2, 5, 5, 1, 7], 
+[7, 2, 2, 3, 2, 5, 2, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 4, 1, 2, 1, 2, 1, 1, 7], 
+[7, 2, 3, 2, 2, 2, 2, 2, 2, 5, 5, 5, 1, 1, 1, 4, 4, 4, 1, 1, 4, 1, 1, 1, 7], 
+[7, 2, 2, 2, 2, 2, 3, 2, 5, 5, 1, 1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 1, 1, 1, 7], 
+[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] ]
+    mapChoisie = [
+[7, 7, 7, 7, 7, 7, 7, 2, 2, 7, 2, 7, 2, 2, 2, 2, 7, 2, 7, 2, 7, 7, 7, 7, 7], 
+[7, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7], 
+[7, 5, 2, 2, 5, 4, 2, 4, 4, 2, 2, 2, 2, 2, 2, 3, 5, 5, 2, 4, 4, 2, 5, 5, 7], 
+[7, 5, 2, 5, 5, 5, 5, 5, 4, 2, 4, 4, 2, 5, 4, 3, 3, 1, 4, 5, 4, 5, 4, 5, 7], 
+[7, 5, 5, 5, 4, 5, 4, 4, 5, 4, 5, 5, 5, 4, 1, 1, 3, 1, 4, 4, 5, 4, 4, 5, 7], 
+[7, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 3, 3, 4, 4, 4, 4, 4, 4, 7], 
+[7, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 5, 4, 3, 3, 3, 5, 5, 5, 4, 7], 
+[7, 4, 5, 5, 5, 3, 5, 5, 3, 3, 5, 5, 3, 5, 5, 5, 5, 3, 3, 3, 3, 5, 5, 5, 7], 
+[7, 3, 3, 3, 3, 3, 5, 5, 5, 3, 3, 5, 3, 3, 3, 5, 3, 3, 3, 3, 5, 3, 3, 3, 7], 
+[7, 3, 3, 3, 3, 5, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 7], 
+[7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 3, 3, 3, 4, 4, 4, 3, 6, 6, 3, 3, 3, 7], 
+[7, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7], 
+[7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 3, 7], 
+[7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 3, 3, 3, 6, 6, 6, 3, 6, 3, 7], 
+[7, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3, 3, 6, 6, 6, 3, 3, 6, 6, 6, 3, 6, 6, 3, 7], 
+[7, 6, 6, 6, 4, 4, 6, 6, 6, 6, 3, 3, 6, 6, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7], 
+[7, 4, 6, 4, 4, 6, 1, 1, 6, 3, 3, 6, 6, 6, 6, 6, 1, 6, 4, 6, 6, 6, 6, 6, 7], 
+[7, 6, 4, 4, 6, 6, 6, 1, 3, 3, 3, 6, 6, 6, 1, 6, 3, 1, 1, 4, 1, 4, 6, 6, 7], 
+[7, 6, 4, 6, 1, 6, 6, 3, 3, 6, 6, 6, 6, 6, 1, 3, 6, 1, 6, 6, 6, 4, 6, 6, 7], 
+[7, 1, 4, 1, 1, 6, 3, 3, 3, 6, 1, 6, 6, 6, 6, 1, 1, 4, 4, 4, 6, 4, 6, 6, 7], 
+[7, 6, 4, 3, 4, 3, 3, 3, 6, 1, 1, 1, 6, 6, 6, 6, 6, 4, 1, 6, 6, 6, 4, 6, 7], 
+[7, 4, 4, 1, 3, 3, 3, 6, 6, 6, 2, 2, 6, 3, 3, 1, 4, 4, 4, 6, 6, 6, 3, 6, 7], 
+[7, 1, 4, 3, 3, 3, 6, 6, 2, 2, 2, 2, 2, 6, 3, 6, 4, 6, 6, 6, 6, 3, 4, 6, 7], 
+[7, 1, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 6, 6, 6, 4, 6, 6, 6, 6, 6, 7], 
+[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] ]
+    return back, diff, tailleMap, mapChoisie
 
 
 def options():
@@ -273,13 +510,13 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN :
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
-                    back, difficulte, tailleMap  = optionPartie()
+                    back, difficulte, tailleMap, mapChoisie  = optionPartie()
                     aideCSV.remplacerVal("difficulte", difficulte, True)
                     aideCSV.remplacerVal("taille_matriceX", tailleMap, True)
                     aideCSV.remplacerVal("taille_matriceY", tailleMap, True)
                     if not back :
                         pygame.mixer.music.stop()
-                        pygame_gestion.pygameInit()
+                        pygame_gestion.pygameInit(mapChoisie)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
                     volume, volumeM = options()

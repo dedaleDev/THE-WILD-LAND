@@ -41,8 +41,8 @@ class Player(pygame.sprite.Sprite):
           #ressources du joueur
           self.wood = 1100#3000#350
           self.stone = 1110 #1000#150
-          self.food = 0#1000#50
-          self.water = 0#1000#100
+          self.food = 1100#1000#50
+          self.water = 1100#1000#100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -195,11 +195,11 @@ class Player(pygame.sprite.Sprite):
      def initPos(self):
          borneMaxX = min(self.game.taille_matriceX-2, 9)
          borneMaxY = min(self.game.taille_matriceY-2, 9)
-         posX = random.randint(6,borneMaxX)
-         posY = random.randint(6,borneMaxY)
+         posX = random.randint(0,borneMaxX)
+         posY = random.randint(0,borneMaxY)
          while self.game.map[posY][posX].caseBloquante() or self.caseBloquanteAutour(posX, posY):
-             posX = random.randint(6,borneMaxX)
-             posY = random.randint(6,borneMaxY)
+             posX = random.randint(0,borneMaxX)
+             posY = random.randint(0,borneMaxY)
          return posX, posY
 
      def caseBloquanteAutour(self, posX, posY):
@@ -347,7 +347,6 @@ class Player(pygame.sprite.Sprite):
         if not modif and type and modif<0:
             if self.ancientRessources[0]==type and self.ancientRessources[1]<=50:
                 calcul = modif + self.ancientRessources[1]
-                #print("Calculating", calcul, self.ancientRessources)
             else :
                 calcul = modif
             self.ancientRessources=(type,calcul)
@@ -383,6 +382,7 @@ class Player(pygame.sprite.Sprite):
             self.nbScierie+=1
             self.indiceEcolo+=1
             self.game.listeCaseBatiment.append(tuile)
+            tuile.annimation=[]
             pygame.mixer.Sound.play(self.game.son.scierie)
         
               
@@ -395,62 +395,78 @@ class Player(pygame.sprite.Sprite):
             tuile.clockAnnimMax = 6
             pygame.mixer.Sound.play(self.game.son.moulin)
         elif item.nom == "puit":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].puit = True
             self.nbPuit+=1
             self.game.listeCaseBatiment.append(tuile)
         elif item.nom == "champs":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].champs = True
             self.nbChamps+=1
             self.game.listeCaseBatiment.append(tuile)
 
         elif item.nom == "elevage":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].elevage = True
             self.nbElevage+=1
             self.indiceEcolo+=3
             self.game.listeCaseBatiment.append(tuile)
+            tuile.annimation = self.game.images.elevage
+            tuile.clockAnnimMax = 10
             pygame.mixer.Sound.play(self.game.son.vache)
         elif item.nom == "mine":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].mine = True
             self.nbMine+=1
             self.game.listeCaseBatiment.append(tuile)
             self.indiceEcolo+=2
             pygame.mixer.Sound.play(self.game.son.mine)
         elif item.nom == "port":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].port = True
             self.nbPort+=1
             self.indiceEcolo+=2
             self.game.listeCaseBatiment.append(tuile)
         elif item.nom == "tour":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].tour = True
             tour = Tour(self.game, tuile, 1000, "tour", 10, 300)
             self.game.groupDefense.add(tour)
             tuile.tour = tour
         elif item.nom == "pieux":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].pieux = True
 
         elif item.nom == "sableMouvant":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
             self.indiceEcolo+=10
             #pygame.mixer.Sound.play(self.game.son.sableMouvant)
 
         elif item.nom == "mortier":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].mortier = True
             mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
             self.game.groupDefense.add(mortier)
             tuile.mortier = mortier
             self.indiceEcolo+=10
         elif item.nom=="trou":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].trou = True
             pygame.mixer.Sound.play(self.game.son.trouCreuse, maxtime=900)
             
         elif item.nom=="frigo": 
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].frigo = True
             self.nbFrigo+=1
             pygame.mixer.Sound.play(self.game.son.frigo, fade_ms=1000)
             self.indiceEcolo-=10
         elif item.nom=="ventilo":
             self.game.map[tuile.posY][tuile.posX].ventilo = True
+            tuile.annimation = self.game.images.ventiloAnnim
+            tuile.clockAnnimMax = 1
         elif item.nom=="ville":
+            tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].ville = True
             self.ville=True        
             
@@ -486,7 +502,7 @@ class Player(pygame.sprite.Sprite):
             self.nbPort-=1
          if tuile.pieux:
              tuile.pieux=False
-         tuile.image, tuile.clockAnnimMax, tuile.annimation = self.game.images.returnImg(tuile.type)
+         tuile.image, tuile.clockAnnimMax, tuile.annimation, tuile.indiceAnnim = self.game.images.returnImg(tuile.type)
          tuile.aEteModifie=True
 
          return tuile
@@ -530,10 +546,10 @@ class Player(pygame.sprite.Sprite):
               imgTemp = self.chargerImPort(tuile)
           else:
               #imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
-              if nom!="moulin":
+              if nom!="moulin" and nom!="elevage":
                 imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
           #tuile.imageO = imgTempO.resize((246, 144))
-          if nom != "ville" and nom!="moulin":
+          if nom != "ville" and nom!="moulin"and nom!="elevage":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
           tuile.aEteModifie=True
 

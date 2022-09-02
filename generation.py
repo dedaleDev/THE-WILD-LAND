@@ -162,7 +162,7 @@ def generation_matrice(game):
         matriceMap[i][game.taille_matriceX-1] = Tuile(7 ,game.taille_matriceX-1, i, game)
 
 
-    
+
     while len(liste_index) != 0:
         num_case = random.randint(0, len(liste_index)-1)
         y=liste_index[num_case][0]
@@ -261,9 +261,17 @@ def generation_matriceMontagneMer(map, game):
     return mapBool,mapMer, mapVide ,listeCaseMer, listeCaseForet, listeCasePlaine, listeCaseMontagne
 
 
+def typeToTuile(mapType, game):
+    for y in range(len(mapType)):
+        for x in range(len(mapType[0])):
+            mapType[y][x] = Tuile(mapType[y][x], x, y, game)
+    return mapType
 def printMat(matriceMap, game):
     for i in range(game.taille_matriceY):
         print("\n")
         for j in range(game.taille_matriceX):
             print(matriceMap[i][j].isExplored, matriceMap[i][j].type ,end=' ')
     print("fin\n\n\n\n\n")
+    
+    
+    
