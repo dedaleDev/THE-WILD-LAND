@@ -122,6 +122,7 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
         
         if fps>=60:
             fps =0
+            listefps.append(clock.get_fps())
         else:
             fps+=1
         
