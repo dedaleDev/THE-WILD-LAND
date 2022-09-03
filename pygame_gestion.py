@@ -66,10 +66,10 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
     pauseicon = pygame.transform.scale(pauseicon,(45,45))
 
     
-    infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png")
+    infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png").convert_alpha()
 
 
-    infobulletremb = pygame.image.load("data/cata/infoBulle/info_tremblementDeTerre.png")
+    infobulletremb = pygame.image.load("data/cata/infoBulle/info_tremblementDeTerre.png").convert_alpha()
     
     librairieIMG = pygame.image.load("data/personnages/infoBulle/librairie.png").convert_alpha()
     health = pygame.image.load("data/menu/health.png").convert_alpha()
