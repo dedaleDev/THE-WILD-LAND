@@ -23,7 +23,7 @@ class Button():
 		self.sonBoutonPress.set_volume(0.1)
 		self.pressed2 = False
 		self.pressed=False
-		self.imageSelect = pygame.transform.scale(pygame.image.load("data/menu/backButtonMapS.png"), (self.image.get_width(), self.image.get_height()))
+		self.imageSelect = pygame.transform.scale(pygame.image.load("data/menu/backButtonMapS.png").convert_alpha(), (self.image.get_width(), self.image.get_height()))
 	def update(self, screen):
 		if self.image is not None:
 			screen.blit(self.image, self.rect)
