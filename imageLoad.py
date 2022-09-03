@@ -63,7 +63,7 @@ class ImageLoad():
     def loadAnnimTuile(self, nomTuile, idebut, ifin):
         liste=[]
         for i in range(idebut, ifin+1):
-            im = pygame.image.load("data/annimationTuiles/"+nomTuile+str(i)+".png").convert_alpha()
+            im = pygame.image.load("data/animationTuiles/"+nomTuile+str(i)+".png").convert_alpha()
             liste.append(im)
             
         return liste
