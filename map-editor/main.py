@@ -1,23 +1,36 @@
 import pygame
 from pygame.locals import *
-import sys
 from button import Button
-
+import os 
+import filecmp
 background_colour = (255, 0, 0)
 
 pygame.init()
-screen = pygame.display.set_mode((1500, 800))
-
+infoObject = pygame.display.Info()
+screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 
 pygame.display.set_caption('editeur de map')
-info  = pygame.image.load("infoBulle.png").convert_alpha()
-info = pygame.transform.scale(info, (info.get_width()/1.5,info.get_height()/1.5))
+scaleInfo = infoObject.current_w/1.2
+print(scaleInfo)
+info  = pygame.image.load("map-editor/infoBulle.png").convert_alpha()
+info = pygame.transform.scale(info, ((info.get_width()+infoObject.current_w)*0.3,(info.get_height()+infoObject.current_h)*0.5))
+buttonSave = pygame.image.load("map-editor/buttonSave.png").convert_alpha()
+buttonSave = pygame.transform.scale(buttonSave,(buttonSave.get_width()/4,buttonSave.get_height()/4))
+buttonErase = pygame.image.load("map-editor/buttonErase.png").convert_alpha()
+buttonErase = pygame.transform.scale(buttonErase,(buttonErase.get_width()/4,buttonErase.get_height()/4))
+buttonLoad = pygame.image.load("map-editor/buttonLoad.png").convert_alpha()
+buttonLoad = pygame.transform.scale(buttonLoad,(buttonLoad.get_width()/4,buttonLoad.get_height()/4))
 pygame.display.flip()
 taille_matriceY = 25
 taille_matriceX = 25
+scale =infoObject.current_w//52
 running = True
 theMap=[]
 
+export = Button((50,5),(200,42), 9)
+importMap = Button((250,5),(200,42), "o")
+erase = Button((infoObject.current_w-202,5),(200,42), "e")
+#importMap = Button(())
 for i in range(taille_matriceY):
         theMap.append([0]*taille_matriceX)
 
@@ -28,15 +41,15 @@ for i in range(taille_matriceY):
 for j in range(taille_matriceY):
     for i in range(taille_matriceX):
         # initialisation d'une carte remplie de vide
-        theMap[j][i] = Button((30*i+30, 30*j+30), 1)
+        theMap[j][i] = Button((scale*i+scale, scale*j+scale),(scale,scale), 1)
         
 for i in range(taille_matriceX):
-        theMap[0][i] = Button((30*i+30, 30), 7)
-        theMap[taille_matriceY-1][i] = Button((30*i+30, 30*(taille_matriceY-1)+30), 7)
+        theMap[0][i] = Button((scale*i+scale, scale),(scale,scale),  7)
+        theMap[taille_matriceY-1][i] = Button((scale*i+scale, scale*(taille_matriceY-1)+scale), (scale,scale), 7)
 
 for i in range (taille_matriceY):
-    theMap[i][0] = Button((30, 30*i+30), 7)
-    theMap[i][taille_matriceX-1] = Button((30*(taille_matriceX-1)+30, 30+30*i), 7)
+    theMap[i][0] = Button((scale, scale*i+scale),(scale,scale),  7)
+    theMap[i][taille_matriceX-1] = Button((scale*(taille_matriceX-1)+scale, scale+scale*i),(scale,scale),  7)
 
 
 
@@ -58,8 +71,8 @@ def getColor(i):
         color = (177, 48, 19)
     return color
 
-select = pygame.image.load("selection.png")
-select = pygame.transform.scale(select,(30,30,))
+select = pygame.image.load("map-editor/selection.png").convert_alpha()
+select = pygame.transform.scale(select,(scale,scale))
 clock = pygame.time.Clock()
 posSelect=(0,0)
 
@@ -79,6 +92,27 @@ def printMat(matriceMap):
                     print(str(matriceMap[i][j].valeur)+']' ,end=' ')
     print("]", end='')
     print("\n\nmerci d'avoir utilisé le generateur de map, la voici\n\n\n\n\n")
+
+
+
+def stringMap(map) :
+    string =""
+    string += "["
+    for i in range(taille_matriceY):
+        for j in range(taille_matriceX):
+            if j==0:
+                string += "["
+            if j!=taille_matriceX-1:
+                string += str(map[i][j].valeur)+ ","
+            else :
+                if i!=taille_matriceY-1:
+                    string += str(map[i][j].valeur)+'],'
+                else :
+                    string += str(map[i][j].valeur)+']' 
+    string += "]"
+    print(string)
+    return string
+
 valEnCours=1
 while running:
     
@@ -87,13 +121,19 @@ while running:
         for x in range(taille_matriceX):  
             
             if not theMap[y][x].pressed:
-                pygame.draw.rect(screen, getColor(theMap[y][x].valeur), pygame.Rect(30*x+30, 30*y+30, 30, 30))
+                pygame.draw.rect(screen, getColor(theMap[y][x].valeur), pygame.Rect(scale*x+scale, scale*y+scale, scale, scale))
             else:
-                posSelect = (30*x+30, 30*y+30)
-                pygame.draw.rect(screen, getColor(theMap[y][x].valeur), pygame.Rect(30*x+30, 30*y+30, 30, 30))
+                posSelect = (scale*x+scale, scale*y+scale)
+                pygame.draw.rect(screen, getColor(theMap[y][x].valeur), pygame.Rect(scale*x+scale, scale*y+scale, scale, scale))
+
+    
+
 
     screen.blit(select, posSelect)
-    screen.blit(info, (1500-600,100))
+    screen.blit(buttonSave,(50,5))
+    screen.blit(buttonLoad,(250,5))
+    screen.blit(buttonErase,(infoObject.current_w-203,5))
+    screen.blit(info, (infoObject.current_w-info.get_width()-100,100))
     
     pygame.display.flip()
     clock.tick(60)
@@ -103,12 +143,52 @@ while running:
     
     for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
+            mouse = pygame.mouse.get_pos()
+            fichierSuppr = 0
+            if export.checkForInput(mouse) :#exporter map 
+                nbMap =0
+                path = os.path.dirname(__file__)
+                path = path[:-10] 
+                path += "data/map/"
+                print(path)
+                for filename in os.listdir(path):
+                    f = os.path.join(path, filename)
+                    nbMap +=1
+                nomMap = "map"+str(nbMap+1)+".txt"
+                map = open(path+nomMap, "w+")
+                map.write(stringMap(theMap))
+                map.close()
+                
+                f = os.path.join(path, "map"+str(nbMap+1)+".txt")
+                for filename in os.listdir(path):
+                    f2 =  os.path.join(path, filename)
+                    if filecmp.cmp(f,f2, False) and f!= f2:
+                        fichierSuppr = f
+                if fichierSuppr:
+                    os.remove(fichierSuppr)    
+
+
+            if erase.checkForInput(mouse) : #erase map 
+                for j in range(taille_matriceY):
+                    for i in range(taille_matriceX):
+                        # initialisation d'une carte remplie de vide
+                        theMap[j][i] = Button((scale*i+scale, scale*j+scale),(scale,scale), 1)
+            
+                for i in range(taille_matriceX):
+                    theMap[0][i] = Button((scale*i+scale, scale),(scale,scale),  7)
+                    theMap[taille_matriceY-1][i] = Button((scale*i+scale, scale*(taille_matriceY-1)+scale), (scale,scale), 7)
+
+                for i in range (taille_matriceY):
+                    theMap[i][0] = Button((scale, scale*i+scale),(scale,scale),  7)
+                    theMap[i][taille_matriceX-1] = Button((scale*(taille_matriceX-1)+scale, scale+scale*i),(scale,scale),  7)
+
+
             for y in range(taille_matriceY):
                 for x in range(taille_matriceX):
-                    mouse = pygame.mouse.get_pos()
                     theMap[y][x].pressed = theMap[y][x].checkForInput(mouse)
                     if theMap[y][x].pressed:
                         theMap[y][x].valeur = valEnCours 
+
         if event.type==pygame.KEYDOWN:
             if event.key == pygame.K_1:
                 for y in range(taille_matriceY):
@@ -152,8 +232,6 @@ while running:
                         if theMap[y][x].pressed :
                             theMap[y][x].valeur=7
                             valEnCours =7
-            if event.key == pygame.K_9:
-                printMat(theMap)
         keys = keys=pygame.key.get_pressed()
         if keys[K_LALT] :
             for y in range(taille_matriceY):
@@ -162,6 +240,7 @@ while running:
                     theMap[y][x].pressed = theMap[y][x].checkForInput(mouse)
                     if theMap[y][x].pressed:
                         theMap[y][x].valeur = valEnCours
+
         if event.type == pygame.QUIT:
             running = False
 

@@ -4,8 +4,8 @@ import pygame
 
 
 class Button():
-	def __init__(self,pos, valeur):
-		self.rect=pygame.Rect(pos[0], pos[1], 30,30)
+	def __init__(self,pos,taille, valeur):
+		self.rect=pygame.Rect(pos[0], pos[1], taille[0],taille[1])
 
 		self.pressed=False
 		self.valeur = valeur
