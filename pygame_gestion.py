@@ -41,9 +41,10 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
     imDebug = pygame.image.load("data/tuiles/debug.png").convert_alpha()
     imDebug = pygame.transform.scale(imDebug, (2,2))
     BLACK = (0, 0, 0)
+    pygame.mixer.init()
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
-    pygame.mixer.init()
+    
 
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 30)
@@ -115,7 +116,7 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
     taillePolice = round(3/100*diagonalEcran)
     police = get_font(taillePolice)
     while continuer == True:
-        
+        debut = pygame.time.get_ticks()
         
         scoreText = police.render(str(game.joueur.score), True, "Black")
         scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*1.2/10))
@@ -269,11 +270,6 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
             fenetrePygame.fill(BLACK)
             
             ####CATASTROPHE
-
-            
-                
-                
-                
             
             
             modification=True
@@ -313,7 +309,8 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
             for y in range(game.taille_matriceY):
                 for x in range(game.taille_matriceX):
                     if game.map[y][x].isExplored:
-                        fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                        if moveX+game.map[y][x].Xoriginal < infoObject.current_w and moveY+game.map[y][x].Yoriginal<infoObject.current_h: #si la tuile est dans l'ecran
+                            fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
                         if game.map[y][x].annimation:
                             game.map[y][x].changeAnnim()
 
@@ -322,7 +319,8 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
                         fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
                         game.map[y][x].annimationFog-=8
                         game.map[y][x].imageFog.set_alpha(game.map[y][x].annimationFog)
-                    else :
+                        
+                    elif not game.map[y][x].isExplored:
                         fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
                         
                     if game.map[y][x].ville:
@@ -470,8 +468,9 @@ def pygameInit(mapChoisie):  # fonction servant à l'initialisation pygame
             if game.joueur.ville:
                 victoire(game)
             #listefps.append(1/((fin-debut)/1000))
+            print(pygame.time.get_ticks()-debut)
             pygame.display.flip()
-        
+            
         else:
             print("Fermeture du jeu")
             moyenneFps=0
