@@ -27,19 +27,19 @@ class Button():
 		self.listeType = listeType #une map
 	def getColor(self, i):
 		if i == 1:
-			color= (149, 199, 95)
+			color= (20, 163, 107)
 		if i == 2:
-			color = (114, 114, 114)
+			color = (117, 119, 119)
 		if i == 3:
-			color = (38,1,112)
+			color = (53,81,149)
 		if i == 4:
-			color = (63, 111, 65)
+			color = (52, 125, 107)
 		if i==5:
-			color = (194,218,225)
+			color = (215,217,209)
 		if i == 6:
-			color = (255,235, 230)
+			color = (215,163, 107)
 		if i == 7:
-			color = (147, 34, 2)
+			color = (94, 20, 30)
 		return color
 
 
@@ -52,9 +52,9 @@ class Button():
 				screen.blit(self.imageSelect, self.rect)
 		elif self.listeType:
 			infoObject = pygame.display.Info()
-			scale =infoObject.current_w//90
-			posX = infoObject.current_w//1.7
-			posY = infoObject.current_h//5
+			scale =infoObject.current_w//120
+			posX = infoObject.current_w//1.57
+			posY = infoObject.current_h//3.42
 			for y in range(len(self.listeType)):
 				for x in range(len(self.listeType[y])):  
 					pygame.draw.rect(screen, self.getColor(self.listeType[y][x]), pygame.Rect(scale*x+scale+posX, scale*y+scale+posY, scale, scale))

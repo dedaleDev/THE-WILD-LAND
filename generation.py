@@ -14,7 +14,7 @@ if proba_mer<=6:
 proba_foret = random.randint(7,12)
 proba_neige= 0
 
-""" 
+"""
 proba_mer=0
 proba_roche=0
 
@@ -79,7 +79,7 @@ def tirer_roche(matriceMap, i, j, game):
         majProba(matriceMap, i,j,50, "neige", game)
         return True
     return False
-        
+
 
 def tirer_biome(type, matriceMap, i, j, game):
     if type==2:
@@ -263,9 +263,13 @@ def generation_matriceMontagneMer(map, game):
 
 def typeToTuile(mapType, game):
     for y in range(len(mapType)):
-        for x in range(len(mapType[0])):
+        for x in range(len(mapType[y])):
             mapType[y][x] = Tuile(mapType[y][x], x, y, game)
+            if y==0 or x == 0 or y==len(mapType)-1 or x ==len(mapType[0])-1:
+                mapType[y][x].isExplored=True
     return mapType
+
+
 def printMat(matriceMap, game):
     for i in range(game.taille_matriceY):
         print("\n")

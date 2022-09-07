@@ -43,7 +43,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     pygame.mixer.init()
     continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
-    
+
 
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 30)
@@ -378,7 +378,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             if game.joueur.bateau:
                 fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
-                
+
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored:
                     mob.update_health_bar()

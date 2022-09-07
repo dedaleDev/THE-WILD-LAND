@@ -23,6 +23,7 @@ pygame.display.set_caption("THE WILD LAND")
 pygame_icon = pygame.image.load('data/logo/icon_WL.png').convert_alpha()
 pygame.display.set_icon(pygame_icon)
 BG=pygame.image.load("data/menu/background.png").convert_alpha()
+
 BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
 
 
@@ -35,7 +36,10 @@ def get_font(size):
 def optionPartie():
     mapPropose = []
     path = os.path.dirname(__file__)
-    print(path)
+    fondMap =pygame.image.load("data/menu/fondMap.png").convert_alpha()
+    fondMap = pygame.transform.scale(fondMap, (diagonalEcran*fondMap.get_width()*0.0002, diagonalEcran*fondMap.get_height()*0.0002))
+    fissure = pygame.image.load("data/menu/fissure.png").convert_alpha()
+    fissure = pygame.transform.scale(fissure, (diagonalEcran*fondMap.get_width()*0.000445, diagonalEcran*fondMap.get_height()*0.000635))
     path += "/data/map/"
     for filename in os.listdir(path):
         f = os.path.join(path, filename)
@@ -192,7 +196,11 @@ def optionPartie():
         extreme.update(SCREEN)
         droiteMap.update(SCREEN)
         gaucheMap.update(SCREEN)
+        
+        SCREEN.blit(fondMap, (56/100*pygame.display.Info().current_w, 25 /100*pygame.display.Info().current_h))
         Map.update(SCREEN)
+        SCREEN.blit(fissure, (60.2/100*pygame.display.Info().current_w, 22.6 /100*pygame.display.Info().current_h))
+        
 
         
         
@@ -452,6 +460,7 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN :
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
+                    
                     back, difficulte, tailleMap, mapChoisie, pointSpawn  = optionPartie()
                     aideCSV.remplacerVal("difficulte", difficulte, True)
                     aideCSV.remplacerVal("taille_matriceX", tailleMap, True)
