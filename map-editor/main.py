@@ -1,3 +1,4 @@
+from math import sqrt
 import pygame
 from pygame.locals import *
 from button import Button
@@ -10,20 +11,24 @@ infoObject = pygame.display.Info()
 screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 
 pygame.display.set_caption('editeur de map')
+
 scaleInfo = infoObject.current_w/1.2
-print(scaleInfo)
-info  = pygame.image.load("map-editor/infoBulle.png").convert_alpha()
-info = pygame.transform.scale(info, ((info.get_width()+infoObject.current_w)*0.3,(info.get_height()+infoObject.current_h)*0.5))
-buttonSave = pygame.image.load("map-editor/buttonSave.png").convert_alpha()
+
+info  = pygame.image.load("data/infoBulle.png").convert_alpha()
+diag = sqrt(infoObject.current_w**2+infoObject.current_h**2)
+tailleInfoX = info.get_width()*0.0005*diag
+tailleinfoY = info.get_height()*0.0005*diag
+info = pygame.transform.scale(info, (tailleInfoX, tailleinfoY))
+buttonSave = pygame.image.load("data/buttonSave.png").convert_alpha()
 buttonSave = pygame.transform.scale(buttonSave,(buttonSave.get_width()/4,buttonSave.get_height()/4))
-buttonErase = pygame.image.load("map-editor/buttonErase.png").convert_alpha()
+buttonErase = pygame.image.load("data/buttonErase.png").convert_alpha()
 buttonErase = pygame.transform.scale(buttonErase,(buttonErase.get_width()/4,buttonErase.get_height()/4))
-buttonLoad = pygame.image.load("map-editor/buttonLoad.png").convert_alpha()
+buttonLoad = pygame.image.load("data/buttonLoad.png").convert_alpha()
 buttonLoad = pygame.transform.scale(buttonLoad,(buttonLoad.get_width()/4,buttonLoad.get_height()/4))
 pygame.display.flip()
 taille_matriceY = 25
 taille_matriceX = 25
-scale =infoObject.current_w//52
+scale =diag//60
 running = True
 theMap=[]
 
@@ -50,9 +55,6 @@ for i in range (taille_matriceY):
     theMap[i][0] = Button((scale, scale*i+scale),(scale,scale),  7)
     theMap[i][taille_matriceX-1] = Button((scale*(taille_matriceX-1)+scale, scale+scale*i),(scale,scale),  7)
 
-
-
-    
 def getColor(i):
     if i == 1:
         color= (145, 236, 0)
@@ -148,7 +150,7 @@ while running:
             mouse = pygame.mouse.get_pos()
             fichierSuppr = 0
             if export.checkForInput(mouse) :#exporter map 
-                nbMap =0
+                nbMap = 0
                 path = os.path.dirname(__file__)
                 path = path[:-10] 
                 path += "data/map/"
