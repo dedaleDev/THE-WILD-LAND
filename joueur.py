@@ -1,4 +1,5 @@
 #from PIL import Image
+from ctypes import pointer
 import pygame
 from coffre import Coffre
 import random
@@ -6,7 +7,7 @@ from selection import majSelectionJoueur
 from tour import Tour
 class Player(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vitesse):
+     def __init__(self, game, nom, vitesse, pointSpawn):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -32,7 +33,7 @@ class Player(pygame.sprite.Sprite):
           self.max_health=100
           self.velocity = vitesse
           self.armor = 0
-          self.posX, self.posY = self.initPos()
+          self.posX, self.posY = self.initPos(pointSpawn)
           self.rect = self.skin.get_rect()
           self.rect.x = self.game.map[self.posY][self.posX].rect.x+40
           self.rect.y = self.game.map[self.posY][self.posX].rect.y
@@ -77,7 +78,7 @@ class Player(pygame.sprite.Sprite):
             if self.indiceDroite >= len(self.annimationDroite):
                 self.indiceDroite=0
             self.clockAnnim=0
-            self.skin = self.annimationDroite[self.indiceDroite] 
+            self.skin = self.annimationDroite[self.indiceDroite]
             
             
      def changeAnnimHaut(self):
@@ -107,35 +108,35 @@ class Player(pygame.sprite.Sprite):
             if self.indiceBas >= len(self.annimationBas):
                 self.indiceBas=0
             self.clockAnnim=0
-            self.skin = self.annimationBas[self.indiceBas] 
+            self.skin = self.annimationBas[self.indiceBas]
 
 
      def annimLoadDroite(self):
          listeAnnimDroite = []
          for i in range(11):
              im = pygame.image.load("data/personnages/joueur/Joueur"+str(i)+".png").convert_alpha()
-             listeAnnimDroite.append(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)))
+             listeAnnimDroite.append(pygame.transform.scale(im, (48,97)))
          return listeAnnimDroite
     
      def annimLoadBas(self):
          listeAnnimBas = []
          for i in range(1, 12):
              im = pygame.image.load("data/personnages/joueur/JoueurAvant_"+str(i)+".png").convert_alpha()
-             listeAnnimBas.append(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)))
+             listeAnnimBas.append(pygame.transform.scale(im, (48,97)))
          return listeAnnimBas
     
      def annimLoadHaut(self):
          listeAnnimHaut = []
          for i in range(1, 11):
              im = pygame.image.load("data/personnages/joueur/JoueurHaut_"+str(i)+".png").convert_alpha()
-             listeAnnimHaut.append(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)))
+             listeAnnimHaut.append(pygame.transform.scale(im, (48,97)))
          return listeAnnimHaut
     
      def annimLoadGauche(self):
          listeAnnimGauche = []
          for i in range(11):
              im = pygame.image.load("data/personnages/joueur/Joueur"+str(i)+".png").convert_alpha()
-             listeAnnimGauche.append(pygame.transform.flip(pygame.transform.scale(im, (im.get_width()*0.13,im.get_height()*0.13)),True, False))
+             listeAnnimGauche.append(pygame.transform.flip(pygame.transform.scale(im, (48,97)),True, False))
 
          return listeAnnimGauche
     
@@ -192,7 +193,13 @@ class Player(pygame.sprite.Sprite):
     
      
      
-     def initPos(self):
+     def initPos(self, pointSpawn):
+         if pointSpawn :
+             print("les points de spawn sont",pointSpawn)
+             
+             a =random.choice(pointSpawn)
+             print("point choisit :",a)
+             return a
          borneMaxX = min(self.game.taille_matriceX-2, 9)
          borneMaxY = min(self.game.taille_matriceY-2, 9)
          posX = random.randint(0,borneMaxX)
@@ -244,7 +251,7 @@ class Player(pygame.sprite.Sprite):
 
      def loadSkin(self, nomSkin):
         if nomSkin=="joueur1" or nomSkin=="joueur1-2":
-            scale = (472*0.13, 978*0.13)
+            scale = (48, 97) #48, 97
         elif nomSkin=="bateau":
             scale= (512*0.2, 512*0.2)
         else:

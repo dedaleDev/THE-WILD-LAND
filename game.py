@@ -1,3 +1,6 @@
+from email import feedparser
+import math
+from multiprocessing.util import info
 import random
 import pygame
 import generation
@@ -7,9 +10,6 @@ from mob import Mob
 from joueur import Player
 from sound import Sound
 import aideCSV
-#background_pil = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
-
-#background_pil_superpose = Image.new('RGBA',(170*generation.taille_matriceX,170*generation.taille_matriceY), 0)
 modeFacile=True
 modeNormal = False
 modeDifficile=False
@@ -58,30 +58,32 @@ elif modeDifficile :
 
 premierPAss=True
 class Game(pygame.sprite.Sprite):
-    def __init__(self, infoObject, fenetre, mapChoisie):
-        
-                
+    def __init__(self, infoObject, fenetre, mapChoisie, pointSpawn):
+        posRectChargement = infoObject.current_w*1/4, infoObject.current_h*3/4
         self.infoObject=infoObject
-        self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
+        diagonalEcran = math.sqrt(infoObject.current_w**2 + infoObject.current_h**2)
+        taillePolice = round(3/100*diagonalEcran)
+        font = pygame.font.Font("data/menu/font.ttf", taillePolice//2)
+        
+        self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
+        
+        
+        """self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
         self.affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 4),(0.19, 2.77), (0.19, 2.77), (0, 0)]
-        self.affichagePersonalise = self.affichage()
-        self.decalageMontagneX = self.getAffichageTuile()[self.affichagePersonalise][0]/100*self.infoObject.current_w
-        self.decalageMontagneY = self.affichageTuile[self.affichagePersonalise][1]/100*self.infoObject.current_h
-        
+        self.affichagePersonalise = self.affichage()"""
         self.images = ImageLoad()
+        self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
         self.son = Sound()
-        
+        self.updateBar(fenetre, 75, posRectChargement, "chargement de la carte...", font)
         
         self.imCollision = self.images.getImCollision()
         self.map = 0
         self.mapMontagneMer = 0
-        #self.imageFog = self.openFog()
         self.imageFog2 = self.openFog2()
         self.imageErreurRessource = self.openImageRessource()
         self.mapImg = 0
         self.mapImgO = 0
         self.mapImgO_superpose = 0
-        #self.mapImgSuperpose = pygame.image.frombuffer(background_pil_superpose.tobytes(), background_pil.size, "RGBA").convert_alpha()
         self.mapMer = 0
         self.mapVide = 0
         self.listeCaseMer = 0
@@ -105,7 +107,8 @@ class Game(pygame.sprite.Sprite):
         self.groupLoot = pygame.sprite.Group()
         
         self.genererMatrice(mapChoisie)
-        self.joueur = Player(self,"joueur0", 5)
+        self.updateBar(fenetre, 100, posRectChargement, "preparez vous...", font)
+        self.joueur = Player(self,"joueur0", 5, pointSpawn)
         self.groupJoueur=pygame.sprite.Group()
         self.groupJoueur.add(self.joueur)
         
@@ -115,7 +118,6 @@ class Game(pygame.sprite.Sprite):
         self.probaMage = 0
         self.probaDragon = 0
         self.probaYeti = 0
-        #pygame.mixer.Sound.play(self.son.musique1)
         self.incendieDelay=0
         self.troisMin = False
         self.septMin = False
@@ -125,6 +127,7 @@ class Game(pygame.sprite.Sprite):
         self.incendie=False
         
         self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc
+        self.lastPause = 0
         
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png").convert_alpha()
@@ -133,6 +136,17 @@ class Game(pygame.sprite.Sprite):
     
     def tempsJeu(self):
         return pygame.time.get_ticks()- self.tempsMort
+    
+    def updateBar(self, fenetre, valeurChargement, posRectChargement, texte, font):
+        valeurChargement = valeurChargement/100
+
+        texte = font.render(texte, True, "White")
+        pygame.draw.rect(fenetre, (70,70,70), (posRectChargement, (100*self.infoObject.current_w*0.005 , 3)))
+        pygame.draw.rect(fenetre, (255,255,255), (posRectChargement, (100*self.infoObject.current_w*0.005*valeurChargement , 3)))
+        
+        pygame.draw.rect(fenetre, (0,0,0), ((posRectChargement[0], posRectChargement[1]+10), (1000 , 1000))) #actualisation du texte
+        fenetre.blit(texte, (posRectChargement[0], posRectChargement[1]+10))
+        pygame.display.flip()
     
     def majCata(self):
         if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 6000 : #INCENDIE
@@ -234,14 +248,14 @@ class Game(pygame.sprite.Sprite):
         return listeColide
                 
 
-    def affichage(self):
+    """def affichage(self):
         for i in range(len(self.tailleEcran)):
             if self.tailleEcran[i][0] == self.infoObject.current_w and self.tailleEcran[i][1] == self.infoObject.current_h:
                 return i
-        return 2
+        return 2"""
     
-    def getAffichageTuile(self):
-        return self.affichageTuile
+    """def getAffichageTuile(self):
+        return self.affichageTuile"""
 
     def avoirTuileJoueur(self, joueur):
         return self.map[joueur.posY][joueur.posX]

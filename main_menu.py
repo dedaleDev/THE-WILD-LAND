@@ -1,11 +1,12 @@
 import math
+from pathlib import Path
 from turtle import up
 import pygame, sys
 from button import Button
 import pygame_gestion
 import aideCSV
-
-
+import os
+from map import MapEditor
 pygame.init()
 
 #TEXTE ET BOUTONS RESPONSIVE
@@ -24,35 +25,31 @@ pygame.display.set_icon(pygame_icon)
 BG=pygame.image.load("data/menu/background.png").convert_alpha()
 BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
 
-mapPropose = []
 
-mapOcean = [[7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],   #1
-            [7,2,2,2,3,3,6,6,6,6,6,6,6,6,6,6,6,3,3,3,2,2,2,7],  #2
-            [7,2,2,2,3,3,3,6,6,6,6,6,6,6,6,6,3,3,3,3,2,2,2,7],  #3
-            [7,2,2,2,3,3,3,3,3,6,6,6,6,6,3,3,3,3,3,3,2,2,2,7],  #4
-            [7,3,3,3,3,3,3,3,3,3,3,6,3,3,3,3,3,3,3,3,3,3,3,7],  #5
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #6
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #7
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #8
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #9
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #10
-]
-
-mapPropose.append(pygame.transform.scale(pygame.image.load("data/menu/map.png"), scaleButtonMap))
-mapPropose.append(pygame.transform.scale(pygame.image.load("data/menu/background.png"), scaleButtonMap))
-mapPropose.append(pygame.transform.scale(pygame.image.load("data/menu/fullscreen.png"), scaleButtonMap))
-
-mapType = [[], [], [7,7,7],[7,3,7],[7,7,7]]
 
 def get_font(size):
     return pygame.font.Font("data/menu/font.ttf", size)
 
 
-def obtenirMap(indice):
-    return 
 
 def optionPartie():
+    mapPropose = []
+    path = os.path.dirname(__file__)
+    print(path)
+    path += "/data/map/"
+    for filename in os.listdir(path):
+        f = os.path.join(path, filename)
+        map = open(f, "r")
+        
+        listeType = eval(map.read())[0]
+        map.close()
+        map = open(f, "r")
+        pointSpawnTemp = eval(map.read())[1]
+        map.close()
+        mapPropose.append(MapEditor(listeType, None, pointSpawnTemp, Path(map.name).stem)) #dernier argument = nom du fichier sans .txt
+        
     indiceMap = 0
+    
     posYMap = 0.6
     posYDiff = 0.3
     posYMapChoix = 0.5
@@ -115,11 +112,12 @@ def optionPartie():
     droiteMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/feuille.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*9.5/10, tailleEcran[1]*posYMapChoix), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
-    Map = Button(image=mapPropose[indiceMap], pos=(tailleEcran[0]*7.5/10, tailleEcran[1]*posYMapChoix), 
-                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+    Map = Button(image=mapPropose[indiceMap].image, pos=(tailleEcran[0]*7.5/10, tailleEcran[1]*posYMapChoix), 
+                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999", listeType=mapPropose[indiceMap].listeType)
     
-    
-    
+    Map.image=None #A cause d'un leger bug d'initialisation d'un bouton, pas important
+
+
     miniMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*1.21/10, tailleEcran[1]*posYMap), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
@@ -151,9 +149,10 @@ def optionPartie():
     normal.image.set_alpha(50)
     difficile.image.set_alpha(50)
     extreme.image.set_alpha(50)
-    
+    mapChoisie = mapPropose[indiceMap].listeType
+    pointSpawn = mapPropose[indiceMap].listePointSpawn
     while continu:
-        mapChoisie = []
+        
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
@@ -194,7 +193,7 @@ def optionPartie():
         droiteMap.update(SCREEN)
         gaucheMap.update(SCREEN)
         Map.update(SCREEN)
-        
+
         
         
         
@@ -268,14 +267,21 @@ def optionPartie():
                     indiceMap+=1
                     if indiceMap>=len(mapPropose):
                         indiceMap=0
-                    Map.image=mapPropose[indiceMap]
-                    mapChoisie = obtenirMap(indiceMap)
+                    Map.image=mapPropose[indiceMap].image
+                    Map.listeType=mapPropose[indiceMap].listeType
+                    
+                    mapChoisie = mapPropose[indiceMap].listeType
+                    
+                    
+                    pointSpawn = mapPropose[indiceMap].listePointSpawn
                 if gaucheMap.checkForInput(OPTIONS_MOUSE_POS):
                     indiceMap-=1
                     if indiceMap<0:
                         indiceMap=len(mapPropose)-1
-                    Map.image=mapPropose[indiceMap]
-                    mapChoisie = obtenirMap(indiceMap)
+                    Map.image=mapPropose[indiceMap].image
+                    Map.listeType=mapPropose[indiceMap].listeType
+                    mapChoisie = mapPropose[indiceMap].listeType
+                    pointSpawn = mapPropose[indiceMap].listePointSpawn
                 
             if droiteMap.checkForInput(OPTIONS_MOUSE_POS):
                 droiteMap.image.set_alpha(200)
@@ -338,71 +344,7 @@ def optionPartie():
                 grandeMap.pressed2=False
                 ExtremeMap.pressed2=False
         pygame.display.update()
-    
-    mapChoisie = [[7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7],   #1
-            [7,2,2,2,3,3,6,6,6,6,6,6,6,6,6,6,6,3,3,3,2,2,2,7],  #2
-            [7,2,2,2,3,3,3,6,6,6,6,6,6,6,6,6,3,3,3,3,2,2,2,7],  #3
-            [7,2,2,2,3,3,3,3,3,6,6,6,6,6,3,3,3,3,3,3,2,2,2,7],  #4
-            [7,3,3,3,3,3,3,3,3,3,3,6,3,3,3,3,3,3,3,3,3,3,3,7],  #5
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #6
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #7
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #8
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #9
-            [7,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,7],  #10
-]   
-    mapChoisie=[
-[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7], 
-[7, 3, 3, 3, 3, 3, 6, 1, 1, 1, 4, 4, 4, 4, 4, 6, 4, 1, 4, 4, 6, 1, 6, 3, 7], 
-[7, 6, 6, 3, 3, 6, 6, 6, 1, 1, 1, 4, 4, 1, 6, 6, 6, 4, 4, 6, 6, 6, 3, 3, 7], 
-[7, 6, 6, 3, 3, 3, 6, 6, 6, 6, 6, 4, 6, 6, 6, 6, 4, 4, 4, 6, 3, 3, 3, 6, 7], 
-[7, 6, 6, 6, 3, 3, 3, 6, 3, 6, 6, 6, 6, 6, 6, 3, 3, 3, 3, 3, 3, 6, 6, 1, 7], 
-[7, 6, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 4, 4, 6, 1, 1, 7], 
-[7, 6, 6, 6, 6, 6, 4, 6, 3, 3, 3, 3, 3, 4, 4, 6, 6, 6, 6, 4, 4, 4, 1, 1, 7], 
-[7, 6, 1, 6, 6, 4, 4, 4, 4, 3, 3, 4, 6, 6, 6, 4, 4, 4, 1, 4, 4, 4, 4, 1, 7], 
-[7, 3, 1, 6, 1, 4, 4, 1, 4, 3, 3, 4, 4, 4, 1, 1, 1, 1, 5, 5, 4, 1, 1, 1, 7], 
-[7, 1, 1, 6, 1, 1, 4, 1, 4, 3, 3, 4, 4, 4, 1, 1, 5, 5, 5, 5, 5, 5, 1, 1, 7], 
-[7, 3, 3, 4, 1, 1, 1, 1, 1, 3, 4, 4, 4, 4, 4, 4, 5, 4, 5, 2, 2, 5, 1, 1, 7], 
-[7, 1, 4, 4, 4, 4, 1, 1, 3, 3, 3, 4, 4, 1, 4, 4, 5, 5, 2, 2, 5, 1, 4, 1, 7], 
-[7, 1, 1, 4, 4, 4, 4, 1, 3, 4, 3, 3, 4, 4, 1, 4, 4, 5, 5, 5, 5, 1, 4, 1, 7], 
-[7, 1, 1, 1, 1, 4, 4, 3, 4, 4, 1, 3, 1, 1, 1, 1, 1, 2, 5, 1, 1, 4, 4, 1, 7], 
-[7, 1, 1, 4, 4, 4, 1, 4, 3, 1, 4, 3, 3, 4, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 7], 
-[7, 1, 1, 1, 5, 1, 1, 4, 3, 3, 1, 4, 3, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 7], 
-[7, 1, 1, 5, 5, 1, 1, 3, 4, 3, 1, 4, 3, 1, 1, 1, 2, 4, 4, 5, 5, 5, 1, 1, 7], 
-[7, 2, 5, 5, 1, 1, 3, 3, 4, 4, 4, 4, 1, 4, 1, 3, 3, 4, 4, 4, 4, 4, 1, 1, 7], 
-[7, 2, 2, 5, 5, 3, 5, 1, 1, 1, 1, 1, 4, 1, 3, 3, 4, 4, 4, 4, 4, 5, 3, 1, 7], 
-[7, 2, 2, 5, 3, 5, 5, 1, 1, 5, 1, 4, 4, 1, 3, 3, 4, 1, 4, 4, 2, 2, 2, 1, 7], 
-[7, 2, 2, 5, 3, 5, 5, 5, 5, 5, 5, 4, 1, 1, 1, 3, 1, 1, 1, 5, 2, 5, 5, 1, 7], 
-[7, 2, 2, 3, 2, 5, 2, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 4, 1, 2, 1, 2, 1, 1, 7], 
-[7, 2, 3, 2, 2, 2, 2, 2, 2, 5, 5, 5, 1, 1, 1, 4, 4, 4, 1, 1, 4, 1, 1, 1, 7], 
-[7, 2, 2, 2, 2, 2, 3, 2, 5, 5, 1, 1, 1, 1, 4, 4, 4, 1, 4, 4, 1, 1, 1, 1, 7], 
-[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] ]
-    mapChoisie = [
-[7, 7, 7, 7, 7, 7, 7, 2, 2, 7, 2, 7, 2, 2, 2, 2, 7, 2, 7, 2, 7, 7, 7, 7, 7], 
-[7, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7], 
-[7, 5, 2, 2, 5, 4, 2, 4, 4, 2, 2, 2, 2, 2, 2, 3, 5, 5, 2, 4, 4, 2, 5, 5, 7], 
-[7, 5, 2, 5, 5, 5, 5, 5, 4, 2, 4, 4, 2, 5, 4, 3, 3, 1, 4, 5, 4, 5, 4, 5, 7], 
-[7, 5, 5, 5, 4, 5, 4, 4, 5, 4, 5, 5, 5, 4, 1, 1, 3, 1, 4, 4, 5, 4, 4, 5, 7], 
-[7, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 3, 3, 4, 4, 4, 4, 4, 4, 7], 
-[7, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 5, 4, 3, 3, 3, 5, 5, 5, 4, 7], 
-[7, 4, 5, 5, 5, 3, 5, 5, 3, 3, 5, 5, 3, 5, 5, 5, 5, 3, 3, 3, 3, 5, 5, 5, 7], 
-[7, 3, 3, 3, 3, 3, 5, 5, 5, 3, 3, 5, 3, 3, 3, 5, 3, 3, 3, 3, 5, 3, 3, 3, 7], 
-[7, 3, 3, 3, 3, 5, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 7], 
-[7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 3, 3, 3, 4, 4, 4, 3, 6, 6, 3, 3, 3, 7], 
-[7, 3, 3, 3, 3, 3, 3, 3, 3, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 7], 
-[7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 3, 7], 
-[7, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 3, 3, 3, 6, 6, 6, 3, 6, 3, 7], 
-[7, 6, 6, 6, 3, 3, 3, 3, 3, 3, 3, 3, 6, 6, 6, 3, 3, 6, 6, 6, 3, 6, 6, 3, 7], 
-[7, 6, 6, 6, 4, 4, 6, 6, 6, 6, 3, 3, 6, 6, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7], 
-[7, 4, 6, 4, 4, 6, 1, 1, 6, 3, 3, 6, 6, 6, 6, 6, 1, 6, 4, 6, 6, 6, 6, 6, 7], 
-[7, 6, 4, 4, 6, 6, 6, 1, 3, 3, 3, 6, 6, 6, 1, 6, 3, 1, 1, 4, 1, 4, 6, 6, 7], 
-[7, 6, 4, 6, 1, 6, 6, 3, 3, 6, 6, 6, 6, 6, 1, 3, 6, 1, 6, 6, 6, 4, 6, 6, 7], 
-[7, 1, 4, 1, 1, 6, 3, 3, 3, 6, 1, 6, 6, 6, 6, 1, 1, 4, 4, 4, 6, 4, 6, 6, 7], 
-[7, 6, 4, 3, 4, 3, 3, 3, 6, 1, 1, 1, 6, 6, 6, 6, 6, 4, 1, 6, 6, 6, 4, 6, 7], 
-[7, 4, 4, 1, 3, 3, 3, 6, 6, 6, 2, 2, 6, 3, 3, 1, 4, 4, 4, 6, 6, 6, 3, 6, 7], 
-[7, 1, 4, 3, 3, 3, 6, 6, 2, 2, 2, 2, 2, 6, 3, 6, 4, 6, 6, 6, 6, 3, 4, 6, 7], 
-[7, 1, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 6, 6, 6, 4, 6, 6, 6, 6, 6, 7], 
-[7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7] ]
-    return back, diff, tailleMap, mapChoisie
+    return back, diff, tailleMap, mapChoisie, pointSpawn
 
 
 def options():
@@ -510,13 +452,13 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN :
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
-                    back, difficulte, tailleMap, mapChoisie  = optionPartie()
+                    back, difficulte, tailleMap, mapChoisie, pointSpawn  = optionPartie()
                     aideCSV.remplacerVal("difficulte", difficulte, True)
                     aideCSV.remplacerVal("taille_matriceX", tailleMap, True)
                     aideCSV.remplacerVal("taille_matriceY", tailleMap, True)
                     if not back :
                         pygame.mixer.music.stop()
-                        pygame_gestion.pygameInit(mapChoisie)
+                        pygame_gestion.pygameInit(mapChoisie, pointSpawn)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
                     volume, volumeM = options()

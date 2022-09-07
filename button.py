@@ -4,7 +4,7 @@ import pygame
 
 
 class Button():
-	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
+	def __init__(self, image, pos, text_input, font, base_color, hovering_color, listeType=[]):
 		self.image = image
 		self.x_pos = pos[0]
 		self.y_pos = pos[1]
@@ -24,12 +24,41 @@ class Button():
 		self.pressed2 = False
 		self.pressed=False
 		self.imageSelect = pygame.transform.scale(pygame.image.load("data/menu/backButtonMapS.png").convert_alpha(), (self.image.get_width(), self.image.get_height()))
+		self.listeType = listeType #une map
+	def getColor(self, i):
+		if i == 1:
+			color= (149, 199, 95)
+		if i == 2:
+			color = (114, 114, 114)
+		if i == 3:
+			color = (38,1,112)
+		if i == 4:
+			color = (63, 111, 65)
+		if i==5:
+			color = (194,218,225)
+		if i == 6:
+			color = (255,235, 230)
+		if i == 7:
+			color = (147, 34, 2)
+		return color
+
+
 	def update(self, screen):
+		
 		if self.image is not None:
 			screen.blit(self.image, self.rect)
 			if self.pressed2:
 
 				screen.blit(self.imageSelect, self.rect)
+		elif self.listeType:
+			infoObject = pygame.display.Info()
+			scale =infoObject.current_w//90
+			posX = infoObject.current_w//1.7
+			posY = infoObject.current_h//5
+			for y in range(len(self.listeType)):
+				for x in range(len(self.listeType[y])):  
+					pygame.draw.rect(screen, self.getColor(self.listeType[y][x]), pygame.Rect(scale*x+scale+posX, scale*y+scale+posY, scale, scale))
+
 		screen.blit(self.text, self.text_rect)
 
 	def checkForInput(self, position):
