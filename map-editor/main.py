@@ -30,7 +30,6 @@ theMap=[]
 export = Button((50,5),(200,42), 9)
 importMap = Button((250,5),(200,42), "o")
 erase = Button((infoObject.current_w-202,5),(200,42), "e")
-#importMap = Button(())
 for i in range(taille_matriceY):
         theMap.append([0]*taille_matriceX)
 
@@ -71,8 +70,6 @@ def getColor(i):
         color = (177, 48, 19)
     return color
 
-select = pygame.image.load("map-editor/selection.png").convert_alpha()
-select = pygame.transform.scale(select,(scale,scale))
 clock = pygame.time.Clock()
 posSelect=(0,0)
 
@@ -96,10 +93,13 @@ def printMat(matriceMap):
 
 
 def stringMap(map) :
+    listeSpawn = []
     string =""
-    string += "["
+    string += "[["
     for i in range(taille_matriceY):
         for j in range(taille_matriceX):
+            if map[i][j].spawn:
+                listeSpawn.append([j,i])
             if j==0:
                 string += "["
             if j!=taille_matriceX-1:
@@ -109,9 +109,12 @@ def stringMap(map) :
                     string += str(map[i][j].valeur)+'],'
                 else :
                     string += str(map[i][j].valeur)+']' 
+    string += "],"
+    #POINTS DE SPAWN
+    string += str(listeSpawn)
     string += "]"
-    print(string)
     return string
+
 
 valEnCours=1
 while running:
@@ -125,11 +128,10 @@ while running:
             else:
                 posSelect = (scale*x+scale, scale*y+scale)
                 pygame.draw.rect(screen, getColor(theMap[y][x].valeur), pygame.Rect(scale*x+scale, scale*y+scale, scale, scale))
+                pygame.draw.rect(screen, (255,255,255), pygame.Rect(scale*x+scale, scale*y+scale, scale, scale),1)
+            if theMap[y][x].spawn:
+                pygame.draw.circle(screen, (255,255,255),(scale*x+scale+scale//2, scale*y+scale+scale//2), scale//4)
 
-    
-
-
-    screen.blit(select, posSelect)
     screen.blit(buttonSave,(50,5))
     screen.blit(buttonLoad,(250,5))
     screen.blit(buttonErase,(infoObject.current_w-203,5))
@@ -150,7 +152,6 @@ while running:
                 path = os.path.dirname(__file__)
                 path = path[:-10] 
                 path += "data/map/"
-                print(path)
                 for filename in os.listdir(path):
                     f = os.path.join(path, filename)
                     nbMap +=1
@@ -187,7 +188,10 @@ while running:
                 for x in range(taille_matriceX):
                     theMap[y][x].pressed = theMap[y][x].checkForInput(mouse)
                     if theMap[y][x].pressed:
-                        theMap[y][x].valeur = valEnCours 
+                        if valEnCours == "spawn":
+                            theMap[y][x].spawn = not theMap[y][x].spawn
+                        else:
+                            theMap[y][x].valeur = valEnCours 
 
         if event.type==pygame.KEYDOWN:
             if event.key == pygame.K_1:
@@ -231,7 +235,14 @@ while running:
                     for x in range(taille_matriceX):
                         if theMap[y][x].pressed :
                             theMap[y][x].valeur=7
-                            valEnCours =7
+                            valEnCours = 7
+            if event.key == pygame.K_s :
+                for y in range(taille_matriceY):
+                    for x in range(taille_matriceX):
+                        if theMap[y][x].pressed :
+                            theMap[y][x].spawn = not theMap[y][x].spawn
+                            valEnCours = "spawn"
+                            
         keys = keys=pygame.key.get_pressed()
         if keys[K_LALT] :
             for y in range(taille_matriceY):
@@ -239,11 +250,10 @@ while running:
                     mouse = pygame.mouse.get_pos()
                     theMap[y][x].pressed = theMap[y][x].checkForInput(mouse)
                     if theMap[y][x].pressed:
-                        theMap[y][x].valeur = valEnCours
+                        if valEnCours == "spawn":
+                            theMap[y][x].spawn = True
+                        else:
+                            theMap[y][x].valeur = valEnCours
 
         if event.type == pygame.QUIT:
             running = False
-
-
-            
-            
