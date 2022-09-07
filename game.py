@@ -123,7 +123,6 @@ class Game(pygame.sprite.Sprite):
         self.septMin = False
         self.cinqMin=False
         self.huitMin=False
-        
         self.incendie=False
         
         self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc

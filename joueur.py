@@ -583,8 +583,8 @@ class Player(pygame.sprite.Sprite):
         else : 
             bar_color = (255, 0, 0)
         back_bar_color = (60,63,60)
-        bar_position = [160, 20, self.health*3, 40]
-        back_bar_position = [160, 20, self.max_health*3, 40]
+        bar_position = [60, 20, self.health*3, 40]
+        back_bar_position = [60, 20, self.max_health*3, 40]
         #dessiner la barre de vie
         
         pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)

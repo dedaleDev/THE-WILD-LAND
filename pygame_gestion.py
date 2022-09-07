@@ -75,7 +75,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
     infobulletremb = pygame.image.load("data/cata/infoBulle/info_tremblementDeTerre.png").convert_alpha()
     
-    librairieIMG = pygame.image.load("data/personnages/infoBulle/librairie.png").convert_alpha()
     health = pygame.image.load("data/menu/health.png").convert_alpha()
     health = pygame.transform.scale(health, (50, 50))
     feuille = pygame.image.load("data/menu/feuille.png").convert_alpha()
@@ -91,7 +90,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     tirageCoffre = 0 #compte le nombre de tirage de coffre rate, 1 tirage toute les 10 secondes
     move_ticker=0
     tuile=False
-    librairie=False
     tickBatiment=1000
 
     inventaire=Inventaire(0,0, [])
@@ -122,7 +120,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         
         scoreText = police.render(str(game.joueur.score), True, "Black")
-        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*1.2/10))
+        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*9.7/10))
         
         if fps>=60:
             fps =0
@@ -217,18 +215,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         cliqueItem=True
                         if not batimentConstruit:
                             tickBatiment=0
-                
-                if mouse[0] <= 75  and mouse[1] <= 75:  # detection si clic sur menu pricipal
-                    continuer = False
-                    game.son.stop()
-                    
-                if mouse[0] <= bookicon.get_width() and mouse[1] <= bookicon.get_height()+80 and mouse[1] >= 80:  # detection si clic sur librairie
-                    if librairie ==True : 
-                        librairie = False 
-                    else : 
-                        librairie = True 
-                else :
-                    librairie = False
                 if not cliqueItem:
                     tuile = majSelection(game, pygame.mouse.get_pos(), game.joueur)
                 else :
@@ -367,9 +353,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 loot.update(fenetrePygame, moveX,moveY)
             
             
-            fenetrePygame.blit(buttonHome, (10, 10))
+            """fenetrePygame.blit(buttonHome, (10, 10))
             fenetrePygame.blit(bookicon, (0,80))
-            fenetrePygame.blit(pauseicon, (76,20))
+            fenetrePygame.blit(pauseicon, (76,20))"""
 
             if tuile :
                 if not (abs(tuile.posX-game.joueur.posX)<2 and abs(tuile.posY-game.joueur.posY)<2):
@@ -440,11 +426,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             nombreAnnimationIncendie=3
                             
                             annimIncendie=0
-
-            #if game.joueur.estMort:
             
-            if librairie ==True :
-                    fenetrePygame.blit(librairieIMG,(infoObject.current_w-librairieIMG.get_width()-(infoObject.current_w-librairieIMG.get_width())/2,200))
             for i in range(len(game.joueur.ressourcesIMG)):
                 fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
                 fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject.current_w-120-(190*i), 3/100*infoObject.current_h))
@@ -457,19 +439,13 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         game.joueur.resetRessourcesModified()
             game.joueur.update_health_bar()
             game.joueur.update_ecolo_bar()
-            fenetrePygame.blit(health, (120,15))
+            fenetrePygame.blit(health, (20,15))
             fenetrePygame.blit(feuille, (10,368))
             fenetrePygame.blit(scoreText, scoreRect)
             if tickBatiment<60:
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject.current_w-game.imageErreurRessource.get_width()-(infoObject.current_w-game.imageErreurRessource.get_width())/2,infoObject.current_h - 200))
                 tickBatiment+=1
 
-
-            if librairie ==True : 
-                i =0
-                for mob in game.groupMob : 
-                    i+=1
-                    fenetrePygame.blit(mob.infoBulle,(50*i,150))
             if game.joueur.estMort:
                 mort(game)
             if game.joueur.ville:
@@ -692,11 +668,13 @@ def pause(fenetre):
     clock = pygame.time.Clock()
     font = pygame.font.Font("data/menu/font.ttf", round(3/100*diagonalEcran))
     imBouton = pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), scaleButton)
-    menu = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3), "menu", font, "white", "#999999")
-    reprendre = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+20/100*tailleEcran[1]), "reprendre", font, "white", "#999999")
-    documentation = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+40/100*tailleEcran[1]), "documentation", font, "white", "#999999")
+    menu = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+40/100*tailleEcran[1]), "menu", font, "white", "#999999")
+    reprendre = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3), "reprendre", font, "white", "#999999")
+    documentation = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+20/100*tailleEcran[1]), "documentation", font, "white", "#999999")
     fermer = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+55/100*tailleEcran[1]), "fermer", font, "white", "#999999")
+    pause = Button(None, (tailleEcran[0]*1/2, tailleEcran[1]*1/3-20/100*tailleEcran[1]), "pause", font, "black", "#999999")
     librairie = False
+    
     while(pause):
         mouse = pygame.mouse.get_pos()
         keys=pygame.key.get_pressed()
@@ -729,6 +707,7 @@ def pause(fenetre):
             documentation.update(fenetre)
             menu.changeColor(pygame.mouse.get_pos())
             menu.update(fenetre)
+        pause.update(fenetre)
         pygame.display.flip()
         pygame.event.pump()
         clock.tick(60)
