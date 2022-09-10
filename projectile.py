@@ -48,7 +48,8 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.x += self.dx * self.velocity
             self.rect.y += self.dy * self.velocity
         if self.rect.colliderect(self.cible.rect):
-            self.cible.takeDamage(self.degat)
+            self.cible.takeDamage(self.degat, self.game.moveX, self.game.moveY)
+            
             self.kill()
             #detruire le projo
         elif self.game.tempsJeu()-self.lancement>self.dureeMax:

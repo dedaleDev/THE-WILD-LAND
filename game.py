@@ -66,11 +66,6 @@ class Game(pygame.sprite.Sprite):
         font = pygame.font.Font("data/menu/font.ttf", taillePolice//2)
         
         self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
-        
-        
-        """self.tailleEcran = [(3840, 2160), (2560, 1440), (1920, 1080),(1536,864),(1280, 720), (800, 600), (640, 480)]
-        self.affichageTuile = [(0.19, 2.77), (0.19, 2.77), (0.19, 2.77),(0.19, 4),(0.19, 2.77), (0.19, 2.77), (0, 0)]
-        self.affichagePersonalise = self.affichage()"""
         self.images = ImageLoad()
         self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
         self.son = Sound()
@@ -127,6 +122,8 @@ class Game(pygame.sprite.Sprite):
         
         self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc
         self.lastPause = 0
+        
+        self.moveX, self.moveY = 0,0
         
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png").convert_alpha()
@@ -229,23 +226,31 @@ class Game(pygame.sprite.Sprite):
             self.map = generation.generation_matrice(self)
         else :
             self.map = generation.typeToTuile(mapChoisie, self)
-        self.mapMontagneMer, self.mapMer, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
+        self.mapMontagneMer, self.mapMer, self.mapDesert, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
+
+    def spawnAnnimal(self, spawnChameau=10):
+        for y in range(self.taille_matriceY):
+            for x in range(self.taille_matriceX):
+                if self.map[y][x].type==6:
+                    rand = random.randint(0,100)
+                    if rand<spawnChameau:
+                        self.groupMob.add(Mob(self,"chameau", 100, 1, tuile=self.map[y][x], score=0, desertique=True, annimal=True, attaque=0))
+        
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]
         now = self.tempsJeu()
         for mob in listeMob :
-            #colide = mob.rect.colliderect(joueur.rect)
-            colide = pygame.sprite.spritecollide(joueur, listeMob, False, pygame.sprite.collide_mask)
-            if colide and now-joueur.lastDamage>joueur.cooldownDamage:
-                joueur.takeDamage(mob.attack)
-                joueur.lastDamage=now
-                listeColide.append(colide)
-            if mob.name=="mage" or mob.name=="yeti": 
-                mob.lunchProjectile()
-                
+            if mob.attack>0:
+                colide = pygame.sprite.spritecollide(joueur, listeMob, False, pygame.sprite.collide_mask)
+                if colide and now-joueur.lastDamage>joueur.cooldownDamage:
+                    joueur.takeDamage(mob.attack)
+                    joueur.lastDamage=now
+                    listeColide.append(colide)
+                if mob.name=="mage" or mob.name=="yeti": 
+                    mob.lunchProjectile()
         return listeColide
-                
+
 
     """def affichage(self):
         for i in range(len(self.tailleEcran)):

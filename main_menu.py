@@ -52,11 +52,12 @@ def optionPartie():
         map.close()
         mapPropose.append(MapEditor(listeType, None, pointSpawnTemp, Path(map.name).stem)) #dernier argument = nom du fichier sans .txt
         
+    
     indiceMap = 0
     
     posYMap = 0.6
     posYDiff = 0.3
-    posYMapChoix = 0.5
+    posYMapChoix = 0.47
     posYMapTXT=0.655
     posYDiffTXT=0.3
     continu = True
@@ -110,14 +111,14 @@ def optionPartie():
     tailleMap = 25
     
     
-    gaucheMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/feuille.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*5.5/10, tailleEcran[1]*posYMapChoix), 
+    gaucheMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/angle-left.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*6.15/10, tailleEcran[1]*posYMapChoix), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
-    droiteMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/feuille.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*9.5/10, tailleEcran[1]*posYMapChoix), 
+    droiteMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/angle-right.png").convert_alpha(), (scaleButtonMap[0]//4-scaleButtonMap[0]//7, scaleButtonMap[1]//4-scaleButtonMap[1]//7)), pos=(tailleEcran[0]*8.7/10, tailleEcran[1]*posYMapChoix), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
     Map = Button(image=mapPropose[indiceMap].image, pos=(tailleEcran[0]*7.5/10, tailleEcran[1]*posYMapChoix), 
-                    text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999", listeType=mapPropose[indiceMap].listeType)
+                    text_input=mapPropose[indiceMap].nom, font=get_font(taillePolice//2), base_color="white", hovering_color="#999999", listeType=mapPropose[indiceMap].listeType)
     
     Map.image=None #A cause d'un leger bug d'initialisation d'un bouton, pas important
 
@@ -194,17 +195,16 @@ def optionPartie():
         normal.update(SCREEN)
         difficile.update(SCREEN)
         extreme.update(SCREEN)
-        droiteMap.update(SCREEN)
-        gaucheMap.update(SCREEN)
+        
         
         SCREEN.blit(fondMap, (56/100*pygame.display.Info().current_w, 25 /100*pygame.display.Info().current_h))
         Map.update(SCREEN)
-        SCREEN.blit(fissure, (60.2/100*pygame.display.Info().current_w, 22.6 /100*pygame.display.Info().current_h))
-        
+        if Map.listeType:
+            SCREEN.blit(fissure, (60.2/100*pygame.display.Info().current_w, 22.6 /100*pygame.display.Info().current_h))
+        SCREEN.blit(Map.text, (60.2/100*pygame.display.Info().current_w, 22.6 /100*pygame.display.Info().current_h))
+        droiteMap.update(SCREEN)
+        gaucheMap.update(SCREEN)
 
-        
-        
-        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -277,7 +277,7 @@ def optionPartie():
                         indiceMap=0
                     Map.image=mapPropose[indiceMap].image
                     Map.listeType=mapPropose[indiceMap].listeType
-                    
+                    Map.text = Map.font.render(mapPropose[indiceMap].nom, True, (0,0,0)) 
                     mapChoisie = mapPropose[indiceMap].listeType
                     
                     
@@ -288,16 +288,17 @@ def optionPartie():
                         indiceMap=len(mapPropose)-1
                     Map.image=mapPropose[indiceMap].image
                     Map.listeType=mapPropose[indiceMap].listeType
+                    Map.text = Map.font.render(mapPropose[indiceMap].nom, True, (0,0,0)) 
                     mapChoisie = mapPropose[indiceMap].listeType
                     pointSpawn = mapPropose[indiceMap].listePointSpawn
-                
+            
             if droiteMap.checkForInput(OPTIONS_MOUSE_POS):
-                droiteMap.image.set_alpha(200)
+                droiteMap.image.set_alpha(100)
                 gaucheMap.image.set_alpha(255)
             
             elif gaucheMap.checkForInput(OPTIONS_MOUSE_POS):
                 droiteMap.image.set_alpha(255)
-                gaucheMap.image.set_alpha(200)
+                gaucheMap.image.set_alpha(100)
             else:
                 droiteMap.image.set_alpha(255)
                 gaucheMap.image.set_alpha(255)

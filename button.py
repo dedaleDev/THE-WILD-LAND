@@ -4,7 +4,7 @@ import pygame
 
 
 class Button():
-	def __init__(self, image, pos, text_input, font, base_color, hovering_color, listeType=[]):
+	def __init__(self, image, pos, text_input, font, base_color, hovering_color, listeType=[], nomMap=""):
 		self.image = image
 		self.x_pos = pos[0]
 		self.y_pos = pos[1]
@@ -23,8 +23,15 @@ class Button():
 		self.sonBoutonPress.set_volume(0.1)
 		self.pressed2 = False
 		self.pressed=False
+		self.scale=False
+		self.nomMap = nomMap
 		self.imageSelect = pygame.transform.scale(pygame.image.load("data/menu/backButtonMapS.png").convert_alpha(), (self.image.get_width(), self.image.get_height()))
 		self.listeType = listeType #une map
+		self.aleatoire = pygame.image.load("data/menu/aleatoire.png")
+  
+	#def setTxt(self, str):
+        
+  
 	def getColor(self, i):
 		if i == 1:
 			color= (20, 163, 107)
@@ -58,8 +65,17 @@ class Button():
 			for y in range(len(self.listeType)):
 				for x in range(len(self.listeType[y])):  
 					pygame.draw.rect(screen, self.getColor(self.listeType[y][x]), pygame.Rect(scale*x+scale+posX, scale*y+scale+posY, scale, scale))
-
-		screen.blit(self.text, self.text_rect)
+		else:
+			infoObject = pygame.display.Info()
+			
+			scale =infoObject.current_w//120
+			posX = infoObject.current_w//1.57
+			posY = infoObject.current_h//3.42
+			if not self.scale:
+				self.aleatoire = pygame.transform.scale(self.aleatoire, (posX/3.3, posY+20/100*posY))
+				self.scale = True
+			screen.blit(self.aleatoire,  (scale+posX, scale+posY)) 
+		screen.blit(self.text,self.text_rect)
 
 	def checkForInput(self, position):
 		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):

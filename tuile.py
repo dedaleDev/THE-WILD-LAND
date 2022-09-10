@@ -39,7 +39,7 @@ class Tuile():
         self.autoriserDesert = True
         
         
-    
+        self.traceMob = False
         self.estSelect = False
         self.isExplored = True#self.type==7
         self.annimationFog = 256
@@ -48,6 +48,9 @@ class Tuile():
         self.posX = posX
         self.posY = posY
         self.image, self.clockAnnimMax, self.annimation, self.indiceAnnim = game.images.returnImg(self.type)
+        if self.type==3:
+            self.image = pygame.transform.flip(self.image, random.randint(0,1), False)
+
         self.clockAnnim=0
         self.rect = self.image.get_rect()
         self.rect.x = self.avoirX()

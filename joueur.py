@@ -39,6 +39,7 @@ class Player(pygame.sprite.Sprite):
           self.rect.y = self.game.map[self.posY][self.posX].rect.y
           self.estMort=False
           self.ville=False
+          self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
           self.wood = 1100#3000#350
           self.stone = 1110 #1000#150
@@ -194,11 +195,8 @@ class Player(pygame.sprite.Sprite):
      
      
      def initPos(self, pointSpawn):
-         if pointSpawn :
-             print("les points de spawn sont",pointSpawn)
-             
+         if pointSpawn : 
              a =random.choice(pointSpawn)
-             print("point choisit :",a)
              return a
          borneMaxX = min(self.game.taille_matriceX-2, 9)
          borneMaxY = min(self.game.taille_matriceY-2, 9)
@@ -264,37 +262,37 @@ class Player(pygame.sprite.Sprite):
     
      def deplacementAutorise(self, direction):
          if direction=="bas":
-             tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity))
+             tuile = majSelectionJoueur(self.game, 0, self.velocity)
          if direction=="droite":
-            tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1]))
+            tuile = majSelectionJoueur(self.game, self.velocity, 0)
             
          if direction=="gauche":
-            tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1]))
+            tuile = majSelectionJoueur(self.game, -self.velocity, 0)
             
          if direction=="haut":
-            tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity))
+            tuile = majSelectionJoueur(self.game, 0, -self.velocity)
             
          
          if tuile:
             if self.tuileInterdit(tuile): #gestion de deplacement entre 2 cases
                 if direction=="bas":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity+30))
+                    tuile = majSelectionJoueur(self.game, 0, self.velocity+30)
                     
                 if direction=="droite":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity+70, self.getFeet()[1]))
+                    tuile = majSelectionJoueur(self.game, self.velocity+70, 0)
             
                 if direction=="gauche":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity-70, self.getFeet()[1]))
+                    tuile = majSelectionJoueur(self.game, -self.velocity-70, 0)
                     
                 if direction=="haut":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity-30))
+                    tuile = majSelectionJoueur(self.game, 0, -self.velocity-30)
                     
             
             return not self.tuileInterdit(tuile)
         
          else:
              print("erreur dans fonction joueur.deplacement autorisé")
-             return False
+             return None
          
          
      def tuileInterdit(self, tuile):
@@ -366,6 +364,10 @@ class Player(pygame.sprite.Sprite):
     
     
     ####        CONSTRUCTION        ####
+    
+     def cout(self, item):
+        return self.wood - item.coutWood >=0 and self.food - item.coutFood >=0 and self.stone - item.coutStone >=0 and self.water - item.coutWater >=0
+    
     
      def majCout(self, item):
         if self.wood - item.coutWood >=0 and self.food - item.coutFood >=0 and self.stone - item.coutStone >=0 and self.water - item.coutWater >=0:
@@ -451,12 +453,14 @@ class Player(pygame.sprite.Sprite):
             #pygame.mixer.Sound.play(self.game.son.sableMouvant)
 
         elif item.nom == "mortier":
-            tuile.annimation=[]
+            tuile.annimation=self.game.images.mortierAnnim
+            tuile.clockAnnimMax = 5
             self.game.map[tuile.posY][tuile.posX].mortier = True
             mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
             self.game.groupDefense.add(mortier)
             tuile.mortier = mortier
             self.indiceEcolo+=10
+            
         elif item.nom=="trou":
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].trou = True
@@ -467,6 +471,8 @@ class Player(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].frigo = True
             self.nbFrigo+=1
             pygame.mixer.Sound.play(self.game.son.frigo, fade_ms=1000)
+            tuile.annimation = self.game.images.frigoAnnim
+            tuile.clockAnnimMax = 7
             self.indiceEcolo-=10
         elif item.nom=="ventilo":
             self.game.map[tuile.posY][tuile.posX].ventilo = True
@@ -556,7 +562,7 @@ class Player(pygame.sprite.Sprite):
               if nom!="moulin" and nom!="elevage":
                 imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
           #tuile.imageO = imgTempO.resize((246, 144))
-          if nom != "ville" and nom!="moulin"and nom!="elevage":
+          if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
           tuile.aEteModifie=True
 

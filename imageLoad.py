@@ -25,22 +25,39 @@ class ImageLoad():
         self.coffre = self.loadAnnimCoffre()
 
         self.moulinAnnim = self.loadAnnimMoulin()
+        self.mortierAnnim = self.loadAnnimMortier()
         self.ventiloAnnim = self.loadAnnimVentilo()
+        self.frigoAnnim = self.loadAnnimFrigo()
         self.golemAnnim = self.loadAnnimGolem()
         self.krakenAnnim = self.loadAnnimKraken()
         self.yetiAnnim = self.loadAnnimYeti()
         self.mageAnnim = self.loadAnnimMage()
         self.dragonAnnim = self.loadAnnimDragon()
+        self.oiseauAnnim = self.loadAnnimOiseau()
+        self.oiseau2Annim = self.loadAnnimOiseau2()
+        self.chameauAnnim = self.loadAnnimChameau()
         
         self.annim1Terre3 = self.loadAnnimTuile("1Terre3_", 1, 11)
         self.annim1Terre4 = self.loadAnnimTuile("1Terre4_", 1, 17)
         self.elevage = self.loadAnnimTuile("elevage_", 2, 19)
-        self.annim3eau0 = self.loadAnnimTuile("3eau0_", 1,14)
+        self.annim3eau0 = self.loadAnnimTuile("3eau0_", 1,9)
         self.annim3eau4 = self.loadAnnimTuile("3eau4_", 1,21)
+        
+        self.annim2Roche1 = self.loadAnnimTuile("2Roche1_", 1,1)
+        self.annim2Roche2 = self.loadAnnimTuile("2Roche2_", 1,1)
+        self.annim2Roche3 = self.loadAnnimTuile("2Roche3_", 1,1)
+        self.annim2Roche4 = self.loadAnnimTuile("2Roche4_", 1,2)
+        
+        self.annim7Barriere0 = self.loadAnnimTuile("7Barriere0_", 1,1)
+        self.annim7Barriere1 = self.loadAnnimTuile("7Barriere1_", 1,1)
+        self.annim7Barriere2 = self.loadAnnimTuile("7Barriere2_", 1,1)
+        self.annim7Barriere3 = self.loadAnnimTuile("7Barriere3_", 1,1)
         
         self.annim4foret0 = self.loadAnnimTuile("4foret0_", 1,12)
         self.annim4foret1 = self.loadAnnimTuile("4foret1_", 1,28)
         self.annim4foret2 = self.loadAnnimTuile("4foret2_", 1,12)
+        
+        self.annim6desert4 = self.loadAnnimTuile("6desert4_", 1,16)
         
         self.lootEau = self.loadAnnimRessource("eau", 1,21)
         self.lootPierre = self.loadAnnimRessource("pierre", 1,20)
@@ -49,10 +66,20 @@ class ImageLoad():
         
         for i in range(15):
             self.annim3eau0.append(self.annim3eau0[-1])
-
+        
+        for i in range(5):
+            self.annim2Roche1.append(self.annim2Roche1[0])
+            self.annim2Roche2.append(self.annim2Roche2[0])
+            self.annim2Roche3.append(self.annim2Roche3[0])
+            self.annim3eau0.append(self.annim3eau0[-1])
+        for i in range(30):
+            self.frigoAnnim.append(self.frigoAnnim[0])
+        
         for i in range(50):
             self.annim3eau4.append(self.annim3eau0[-1])
             self.annim4foret1.append(self.annim4foret1[-1])
+            self.annim6desert4.append(self.annim6desert4[-1])
+            
         self.annim3eau1 = self.loadAnnimTuile("3eau1_", 1,17)
         for i in range(5):
             self.annim3eau1.append(self.annim3eau0[-1])
@@ -81,7 +108,15 @@ class ImageLoad():
             im = pygame.image.load("data/ressources/coffre_"+str(i)+".png").convert_alpha()
             liste.append(pygame.transform.scale(im, (100,100)))
         return liste
-        
+    
+    def loadAnnimFrigo(self):
+        liste = []
+        for i in range(1, 15):    
+            if i != 16:
+                im = pygame.image.load("data/batiments/frigo/frigo_"+str(i)+".png").convert_alpha()
+                liste.append(im)
+        return liste    
+    
     def loadAnnimVentilo(self):
         liste = []
         for i in range(1, 26):    
@@ -98,6 +133,18 @@ class ImageLoad():
                 liste.append(im)
             #im = pygame.transform.scale(im, (164, 351))  
         return liste
+    
+    def loadAnnimMortier(self):
+        liste = []
+        for i in range(1, 12):    
+            if i != 6:
+                im = pygame.image.load("data/batiments/mortier/mortier"+str(i)+".png").convert_alpha()
+                liste.append(im)
+            #im = pygame.transform.scale(im, (164, 351))  
+        for i in range(12):
+            liste.append(liste[0])
+        return liste
+    
     def loadImgVille(self):
         im = pygame.image.load("data/batiments/ville.png").convert_alpha()
         im = pygame.transform.scale(im, (164, 351))    
@@ -116,6 +163,7 @@ class ImageLoad():
         for i in range(1,10):
             im = pygame.image.load("data/personnages/kraken/kraken_"+str(i)+".png").convert_alpha()
             im = pygame.transform.scale(im, (279*0.5, 177*0.5))
+            im=pygame.transform.flip(im, True, False)
             listeAnnim.append(im)
         return listeAnnim
     
@@ -132,6 +180,31 @@ class ImageLoad():
         for i in range(2,31):
             im = pygame.image.load("data/personnages/dragon/dragon_"+str(i)+".png").convert_alpha()
             im = pygame.transform.scale(im, (436*0.3, 473*0.3))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimOiseau(self):
+        listeAnnim = []
+        for i in range(1,21):
+            im = pygame.image.load("data/personnages/oiseau/oiseau ("+str(i)+").png").convert_alpha()
+            im = pygame.transform.scale(im, (240*0.3, 314*0.3))
+            im=pygame.transform.flip(im, True, False)
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimOiseau2(self):
+        listeAnnim = []
+        for i in range(1,10):
+            im = pygame.image.load("data/personnages/oiseau/oiseau2 ("+str(i)+").png").convert_alpha()
+            im = pygame.transform.scale(im, (240*0.3, 314*0.3))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimChameau(self):
+        listeAnnim = []
+        for i in range(1,18):
+            im = pygame.image.load("data/personnages/chameau/chameau ("+str(i)+").png").convert_alpha()
+            im = pygame.transform.scale(im, (127, 110))
             listeAnnim.append(im)
         return listeAnnim
     
@@ -332,6 +405,9 @@ class ImageLoad():
         if type==6 or type==3 :
             
             rand = random.randint(0,4)
+            if rand == 4 and type==6: #arbre desert
+                clockMax=7
+                annim=self.annim6desert4
             if rand==0 and type==3: #grande vagues
                 clockMax=7
                 annim=self.annim3eau0
@@ -355,6 +431,30 @@ class ImageLoad():
             return self.listeImg[type][rand], clockMax, annim, clockAnnim
         if  type==4 or type==2 or type==7:
             rand = random.randint(0, 3)
+            if type==7 and rand==1: #roche haut basique
+                annim=self.annim7Barriere1
+                clockMax=5
+            if type==7 and rand==2: #roche haut +1 pique
+                annim=self.annim7Barriere2
+                clockMax=5
+            if type==7 and rand==3: #roche haut basique
+                annim=self.annim7Barriere3
+                clockMax=5
+            if type==7 and rand==0: #roche eau
+                annim=self.annim7Barriere0
+                clockMax=5
+            if type==2 and rand==1: #roche haut basique
+                annim=self.annim2Roche1
+                clockMax=5
+            if type==2 and rand==2: #roche haut +1 pique
+                annim=self.annim2Roche2
+                clockMax=5
+            if type==2 and rand==3: #roche haut basique
+                annim=self.annim2Roche3
+                clockMax=5
+            if type==2 and rand==0: #roche eau
+                annim=self.annim2Roche4
+                clockMax=5
             if type==4 and rand==1:
                 if random.randint(0,1):
                     annim=self.annim4foret1
@@ -371,6 +471,7 @@ class ImageLoad():
                 clockAnnim=random.randint(0,len(annim)-1)
             else :
                 clockAnnim=0
+                
             return self.listeImg[type][rand], clockMax, annim, clockAnnim
         if type==5:
             rand = random.randint(0,6)
@@ -388,6 +489,7 @@ class ImageLoad():
         
         if type==1:
             rand = random.randint(0,12)
+            rand = 0
             if rand in [0,1, 10]:
                 rand = 0
             elif rand in [3,8, 11]:

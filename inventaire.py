@@ -12,13 +12,18 @@ class Inventaire(pygame.sprite.Sprite):
             listeItem[i].rect.x = self.rect.x+14+60*i
             listeItem[i].rect.y = self.rect.y+12
 
+
+    def blitInventaire(self, fenetre, joueur):
         
-    def blitInventaire(self, fenetre):
         fenetre.blit(self.image, (self.rect.x, self.rect.y))
         for i in range (len(self.listeItem)) :
-
-            fenetre.blit(self.listeItem[i].image, (self.listeItem[i].rect.x,self.listeItem[i].rect.y))
-
+            ##changer les alpha
+            if joueur.cout(self.listeItem[i]):
+                self.listeItem[i].image.set_alpha(255)
+                fenetre.blit(self.listeItem[i].image, (self.listeItem[i].rect.x,self.listeItem[i].rect.y))
+            else :
+                self.listeItem[i].image.set_alpha(100)
+                fenetre.blit(self.listeItem[i].image, (self.listeItem[i].rect.x,self.listeItem[i].rect.y))
     def loadInventaire(self):
         im = pygame.image.load("data/menu/menu_tuile.png").convert_alpha()
         im = pygame.transform.scale(im, (643/2,178/2))
@@ -29,4 +34,5 @@ class Inventaire(pygame.sprite.Sprite):
         return imgTemp
     
     def blitInfoBulle(self, fenetre, item):
-        fenetre.blit(item.infoBulle,(item.rect.x-175, self.rect.y-260))
+        if item.infoBulle :
+            fenetre.blit(item.infoBulle,(item.rect.x-175, self.rect.y-260))

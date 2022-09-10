@@ -7,7 +7,7 @@ from generation import *
 from loot import Loot
 from mob import Mob
 import main_menu
-from selection import colisionItem, majSelection, majSelectionJoueur, selectionDispoItem
+from selection import colisionItem, majSelection, majSelectionJoueur, majSelectionMob, selectionDispoItem
 from game import Game
 #from game import background_pil
 from coffre import Coffre
@@ -57,8 +57,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     pygame.display.flip()
     game = Game(infoObject, fenetrePygame, mapChoisie, pointSpawn)
     
-    #test
-    
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
@@ -100,10 +98,15 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     #game.genererImg()
 
     centrerJoueur(game)
+    #game.spawnAnnimal(5)
     
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
+    #game.groupMob.add(Mob(game,"chameau", 100, 1, tuile=game.map[4][4], score=150, desertique=True, annimal=True, attaque=0))
+    #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
+    #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
+    #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 1, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
 
@@ -139,60 +142,13 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         listeColide = game.checkCollision(game.joueur, game.groupMob)
         
-        for mob in game.groupMob:#Gestion des pieux
-            
-            if mob.name=="oursin":
-                if game.avoirTuileJoueur(mob).trou:
-                    game.joueur.changerImageBatiment(game.avoirTuileJoueur(mob), "trou_bouche")
-                    pygame.mixer.Sound.play(game.son.trou)
-                    modification=True
-                    game.avoirTuileJoueur(mob).aEteModifie=True
-                    game.avoirTuileJoueur(mob).trou=False
-                    game.joueur.score+=mob.score
-                    game.joueur.setRessource(mob.recompenseWood, mob.recompenseStone, mob.recompenseFood, mob.recompenseWater)
-                    game.groupLoot.add(Loot(mob.recompenseWood, mob.recompenseStone, mob.recompenseWater, mob.recompenseFood, mob.rect.x+20-moveX, mob.rect.y-30-moveY, game))
-                    mob.kill()
-                    
         
-                    
+        
+        
+        
+        
+        gestionMob(game, fps)
             
-            tuileMob=majSelectionJoueur(game, pos=(mob.getFeet()))
-            
-            if not mob.pique and not mob.aerien and tuileMob.pieux:
-            #if game.map[mob.posY][mob.posX].pieux==True:
-                mob.takeDamage(0.1, moveX, moveY)
-                if not mob.slow:
-                    mob.slow =True
-
-
-            elif tuileMob.sableMouvant and not mob.aerien:
-                mob.takeDamage(0.3, moveX, moveY)
-                if game.tempsJeu() - game.son.dernierSable >2000:
-                    pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
-                    game.son.dernierSable = game.tempsJeu()
-                if not mob.slow:
-                    mob.slow =True
-                    
-                    mob.velocity=mob.velocity/3
-                    if mob.velocity<1:
-                        mob.velocity=1
-                        
-            elif tuileMob.ventilo and not mob.aerien:
-                mob.takeDamage(0.5, moveX, moveY)
-                if game.tempsJeu() - game.son.dernierVentilo >2000:
-                    pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
-                    game.son.dernierVentilo = game.tempsJeu()
-
-                if not mob.slow:
-                    mob.slow =True
-                    
-                    mob.velocity=mob.velocity/3
-                    if mob.velocity<1:
-                        mob.velocity=1
-                        
-            elif mob.slow:
-                 mob.slow =False
-                 mob.velocity =mob.maxVelocity
         
         keys=pygame.key.get_pressed()
         if keys[K_ESCAPE] and pygame.time.get_ticks() - game.lastPause > 250:
@@ -222,32 +178,20 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         tuile.estSelect=False
                     tuile=False
         
+       
         
-                
+        
         if continuer == True: 
             
             deplacement_cam(mouse, game)
             
            
             #### Deplacement des mobs
-            now = game.tempsJeu()
             
-            for mob in game.groupMob:
-                
-                if now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
-                    mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
-                    
-                    mob.last = now
-                    mob.majCoolDown()
-                if not mob.slow :
-                    mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
-                    pass
-                else :
-                    if now%2==0 :
-                        mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
-                        
-                if mob.fini and len(mob.the_path)>1:
-                    mob.the_path = mob.the_path[1:]
+            
+            
+            
+            
             
             for tour in game.groupDefense:
                 tour.attack()
@@ -256,9 +200,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             if move_ticker>0:
                 move_ticker-=1
-
-            # efface l'image pour pouvoir actualiser le jeu
-            
             
             fenetrePygame.fill(BLACK)
             
@@ -277,8 +218,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     tirageCoffre=0
                 else :
                     tirageCoffre+=7
-                if game.groupMob.__len__()<9:
-                    game.spawMob()
+                if game.groupMob.__len__()<9: # a corriger
+                    #game.spawMob()
+                    pass
 
                 tuileCata = game.majCata()
                 if game.incendie and tuileCata:
@@ -297,16 +239,20 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 pass
                 #game.genererImg()
             alerteVille=False #une ville est presente sur la map
-            
-            
+            game.moveX, game.moveY = moveX, moveY
+            listeMontagne=[]
             for y in range(game.taille_matriceY):
                 for x in range(game.taille_matriceX):
                     if game.map[y][x].isExplored:
-                        if moveX+game.map[y][x].Xoriginal < infoObject.current_w and moveY+game.map[y][x].Yoriginal<infoObject.current_h: #si la tuile est dans l'ecran
-                            fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                        if (moveX+game.map[y][x].Xoriginal < infoObject.current_w and moveY+game.map[y][x].Yoriginal<infoObject.current_h) or True: #si la tuile est dans l'ecran
+                            if game.map[y][x].type==2 or game.map[y][x].type==7:
+                                listeMontagne.append(game.map[y][x])
+                            else:
+                                fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
                         if game.map[y][x].annimation:
                             game.map[y][x].changeAnnim()
-
+                    if game.map[y][x].traceMob:
+                        fenetrePygame.blit(Imselection, (game.map[y][x].getRectX(), game.map[y][x].getRectY()))
                     if game.map[y][x].annimationFog>0 and game.map[y][x].isExplored:
                         
                         fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
@@ -319,7 +265,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     if game.map[y][x].ville:
                         alerteVille = True
                         tuileVille = game.map[y][x]
-            
+                        
+            listeMontagne.sort(key=lambda x: x.posX, reverse=True)
             
             
             for coffre in game.groupCoffre:
@@ -352,10 +299,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             for loot in game.groupLoot:
                 loot.update(fenetrePygame, moveX,moveY)
             
-            
-            """fenetrePygame.blit(buttonHome, (10, 10))
-            fenetrePygame.blit(bookicon, (0,80))
-            fenetrePygame.blit(pauseicon, (76,20))"""
 
             if tuile :
                 if not (abs(tuile.posX-game.joueur.posX)<2 and abs(tuile.posY-game.joueur.posY)<2):
@@ -368,24 +311,35 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     pass
             #affichage personnage
             
-            if not game.joueur.bateau:
-
-                fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
+            
+            
+            debut = time.time()
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored :
                     fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
+                    pass
                 fenetrePygame.blit(imDebug, mob.getFeet())
-
-            if game.joueur.bateau:
+            
+            
+            
+            if not game.joueur.bateau:
+                fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
+            elif game.joueur.bateau:
                 fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
-
+            
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored:
-                    mob.update_health_bar()
+                    if not mob.annimal:
+                        mob.update_health_bar()
+            for tuile2 in listeMontagne:
+                if tuile2.type==2:
+                    fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
+                else:
+                    fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
             if tuile :
                 liste = selectionDispoItem(game, tuile, game.joueur)
                 inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
-                inventaire.blitInventaire(fenetrePygame)
+                inventaire.blitInventaire(fenetrePygame, game.joueur)
                 for item in inventaire.listeItem:
                         if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##
                             inventaire.blitInfoBulle(fenetrePygame, item)
@@ -450,7 +404,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 mort(game)
             if game.joueur.ville:
                 victoire(game)
-            #listefps.append(1/((fin-debut)/1000))
             
             pygame.display.flip()
             
@@ -497,11 +450,11 @@ def KEY_move(game,joueur,fenetre):
     
     
     if keys[K_d] or keys[K_RIGHT]:
-        if joueur.deplacementAutorise("droite") :
+        if bug:=joueur.deplacementAutorise("droite") :
             
             deplacementCamDroite((infoObject.current_w - suiviePerso,0), game)
             joueur.goRight()
-            tuile = majSelectionJoueur(game, joueur.getFeet())
+            tuile = majSelectionJoueur(game)
             joueur.setPos(tuile)
             #joueur.majBateau()
             
@@ -513,11 +466,11 @@ def KEY_move(game,joueur,fenetre):
                 
                 
     if keys[K_q]or keys[K_LEFT]:
-            if joueur.deplacementAutorise("gauche"):
+            if bug:=joueur.deplacementAutorise("gauche"):
                 #joueur.majBateau()
                 deplacementCamGauche((suiviePerso, 0), game)
                 joueur.goLeft()
-                tuile = majSelectionJoueur(game, joueur.getFeet())
+                tuile = majSelectionJoueur(game)
                 joueur.setPos(tuile)
                 for i in range(-1,2):
                     for j in range(-1, 2):
@@ -526,11 +479,11 @@ def KEY_move(game,joueur,fenetre):
     
 
     if keys[K_z] or keys[K_UP]:
-            if joueur.deplacementAutorise("haut"):
+            if bug:=joueur.deplacementAutorise("haut"):
                 #joueur.majBateau()
                 deplacementCamHaut((0,suiviePerso), game)
                 joueur.goUp(haut)
-                tuile = majSelectionJoueur(game, joueur.getFeet())
+                tuile = majSelectionJoueur(game)
                 joueur.setPos(tuile)
                 for i in range(-1,2):
                     for j in range(-1, 2):
@@ -538,10 +491,10 @@ def KEY_move(game,joueur,fenetre):
                             modification=True
 
     if keys[K_s]or keys[K_DOWN]:
-            if joueur.deplacementAutorise("bas"):
+            if bug:=joueur.deplacementAutorise("bas"):
                 deplacementCamBas((0, infoObject.current_h-suiviePerso), game)
                 joueur.goDown(bas)
-                tuile = majSelectionJoueur(game, joueur.getFeet())
+                tuile = majSelectionJoueur(game)
                 joueur.setPos(tuile)
                 #joueur.majBateau()
                 for i in range(-1,2):
@@ -556,7 +509,10 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_v]:
         if game.map[joueur.posY][joueur.posX].port:
             joueur.bateau = False
-    
+    if bug==None:
+        print("bug")
+        tuile = majSelectionJoueur(game)
+        joueur.setPos(tuile)
     return modification, tuile
 
 
@@ -721,3 +677,93 @@ def victoire(game):
     
 def get_font(size):
     return pygame.font.Font("data/menu/font.ttf", size)
+
+def surEcran(entite, moveX, moveY, infoObject):
+    return entite.rect.x>=0 and entite.rect.x<=infoObject.current_w and entite.rect.y>=0 and entite.rect.y<=infoObject.current_h
+
+
+def gestionMob(game, fps):
+    now = game.tempsJeu()
+    for mob in game.groupMob:
+        majSelectionMob(game, mob)
+        if mob.name=="oursin":
+            if game.avoirTuileJoueur(mob).trou:
+                game.joueur.changerImageBatiment(game.avoirTuileJoueur(mob), "trou_bouche")
+                pygame.mixer.Sound.play(game.son.trou)
+                modification=True
+                game.avoirTuileJoueur(mob).aEteModifie=True
+                game.avoirTuileJoueur(mob).trou=False
+                game.joueur.score+=mob.score
+                game.joueur.setRessource(mob.recompenseWood, mob.recompenseStone, mob.recompenseFood, mob.recompenseWater)
+                game.groupLoot.add(Loot(mob.recompenseWood, mob.recompenseStone, mob.recompenseWater, mob.recompenseFood, mob.rect.x+20-moveX, mob.rect.y-30-moveY, game))
+                mob.kill()
+        
+        
+        if not mob.pique and not mob.aerien and mob.tuileMob.pieux and not mob.annimal:
+            mob.takeDamage(0.1, moveX, moveY)
+            if not mob.slow:
+                mob.slow =True
+
+
+        elif mob.tuileMob.sableMouvant and not mob.aerien and not mob.annimal:
+            mob.takeDamage(0.3, moveX, moveY)
+            if game.tempsJeu() - game.son.dernierSable >2000:
+                pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
+                game.son.dernierSable = game.tempsJeu()
+            if not mob.slow:
+                mob.slow =True
+                
+                mob.velocity=mob.velocity/3
+                if mob.velocity<1:
+                    mob.velocity=1
+                    
+        elif mob.tuileMob.ventilo and not mob.aerien and not mob.annimal:
+            mob.takeDamage(0.5, moveX, moveY)
+            if game.tempsJeu() - game.son.dernierVentilo >2000:
+                pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
+                game.son.dernierVentilo = game.tempsJeu()
+
+            if not mob.slow:
+                mob.slow =True
+                
+                mob.velocity=mob.velocity/3
+                if mob.velocity<1:
+                    mob.velocity=1
+                    
+        elif mob.slow:
+            mob.slow =False
+            mob.velocity = mob.maxVelocity
+            
+        if mob.annimal and surEcran(mob, moveX, moveY, infoObject) and now-mob.last>=mob.cooldown:
+            
+            destY, destX  = mob.destAnnimal()
+            
+            #commenter l'une ou l'autre et voir
+            mob.the_path=[(destY, destX)]
+            #mob.the_path= findPos(game, destX, destY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien, desertique=mob.desertique)
+            mob.last = now
+            
+        elif now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
+            mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
+            mob.last = now
+            if True:
+                traceMob(game, mob.the_path)
+            
+
+        if not mob.slow :
+            
+            mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
+        else :
+            if fps%2==0 :
+                mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
+                
+        if mob.fini and len(mob.the_path)>1:
+            mob.the_path = mob.the_path[1:]
+            
+            
+def traceMob(game, the_path):
+    for y in range(game.taille_matriceY):
+        for x in range(game.taille_matriceX):
+            game.map[y][x].traceMob=False
+    for posY, posX in the_path:
+            game.map[posY][posX].traceMob=True

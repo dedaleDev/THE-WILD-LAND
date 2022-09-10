@@ -219,7 +219,7 @@ def generation_matriceMontagneMer(map, game):
     mapBool=[]
     mapMer=[]
     mapVide=[]
-    
+    mapDesert = []
     for i in range(game.taille_matriceY):
         mapVide.append([0]*game.taille_matriceX)
         
@@ -238,6 +238,7 @@ def generation_matriceMontagneMer(map, game):
     for i in range(game.taille_matriceY):
         mapBool.append([0]*game.taille_matriceX)
         mapMer.append([0]*game.taille_matriceX)
+        mapDesert.append([0]*game.taille_matriceX)
     for y in range(game.taille_matriceY):
         for x in range(game.taille_matriceX):
             tuile = map[y][x]
@@ -248,8 +249,11 @@ def generation_matriceMontagneMer(map, game):
             if tuile.estMer():
                 listeCaseMer.append(tuile)
                 mapMer[y][x]=0
+            if tuile.type==6:
+                mapDesert[y][x]=0
             else :
                 mapMer[y][x]=1
+                mapDesert[y][x]=1
                 
             if tuile.estPlaine():
                 listeCasePlaine.append(tuile)
@@ -258,7 +262,7 @@ def generation_matriceMontagneMer(map, game):
             if tuile.type==2:
                 listeCaseMontagne.append(tuile)
             
-    return mapBool,mapMer, mapVide ,listeCaseMer, listeCaseForet, listeCasePlaine, listeCaseMontagne
+    return mapBool,mapMer, mapDesert,mapVide ,listeCaseMer, listeCaseForet, listeCasePlaine, listeCaseMontagne
 
 
 def typeToTuile(mapType, game):

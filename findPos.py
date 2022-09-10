@@ -73,13 +73,18 @@ def draw_matrix(a, m, zoom, start, end, borders, the_path = []):
     images.append(im)
 
 
-def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=False):
-    startTime = time.time()
-    if aerien:
 
+
+def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=False, desertique=False):
+    
+    startTime = time.time()
+    
+    if aerien:
         a=game.mapVide
     elif not aqua :
         a = game.mapMontagneMer
+    elif desertique:
+        a = game.mapDesert
     else :
         a = game.mapMer
     

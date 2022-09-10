@@ -1,12 +1,13 @@
 from math import sqrt
+import time
 import pygame
 import random
 from loot import Loot
 from projectile import Projectile
-from selection import majSelectionJoueur
+from selection import majSelectionMob
 class Mob(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse, tuile, score, pique=False, aquatique=False, aerien=False, attaque=10):
+     def __init__(self, game, nom, vie, vitesse, tuile, score, pique=False, aquatique=False, aerien=False, attaque=10, annimal=False, desertique=False):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -15,26 +16,29 @@ class Mob(pygame.sprite.Sprite):
           self.mask = pygame.mask.from_surface(self.skin)
           self.game = game
           self.bateau = False
+          self.annimal=annimal
           #self.skinBateau = self.loadSkin("bateau",(100, 150))
           self.health = vie
           self.max_health =vie
           self.pique = pique
           self.aquatique = aquatique
           self.aerien = aerien
+          self.desertique = desertique
           self.attack = attaque
           self.velocity = vitesse
           self.maxVelocity = self.velocity
           self.slow =False
           self.armor = 0
           self.posX, self.posY = tuile.posX, tuile.posY
-          self.last=0
+          
           self.the_path = [[self.posY, self.posX]]
           self.fini = True
-          self.cooldown = 0
+          self.cooldown = self.majCoolDown()
+          self.last=random.randint(0,self.cooldown-1)
           self.score = score
           self.rect = self.skin.get_rect()
           self.rect.x, self.rect.y = self.initRect()
-          
+          self.tuileMob = 0
           self.lastProjectile=0
           if self.name=="mage":
               self.speedProjectile=3
@@ -59,7 +63,10 @@ class Mob(pygame.sprite.Sprite):
               self.listeAnnimMage = self.game.images.mageAnnim
           if self.name=="dragon":
               self.listeAnnimDragon = self.game.images.dragonAnnim
-              
+          if self.name == "oiseau":
+              self.listeAnnimOiseau = self.game.images.oiseauAnnim
+          if self.name == "chameau":
+              self.listeAnnimChameau =self.game.images.chameauAnnim
           self.clockAnnim=0
           self.indiceAnnim=0
           self.droite = True
@@ -99,6 +106,14 @@ class Mob(pygame.sprite.Sprite):
             x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
             y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
             return x,y
+        if self.name=="oiseau":
+            x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        if self.name=="chameau":
+            x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
         print("oublie de calibrage du mob en rect.x et rect.y") 
         assert(False)
 
@@ -127,62 +142,56 @@ class Mob(pygame.sprite.Sprite):
              self.recompenseWater=0
              self.recompenseStone=0
              self.recompenseFood=random.randint(10,20)
-     """
-     def changeAnnimOursin(self):
-         self.clockAnnim+=1
-         if self.clockAnnim==5:
-            self.indiceAnnim+=1
-            if self.indiceAnnim >= len(self.listeAnnimOursin):
-                self.indiceAnnim=0
-            self.clockAnnim=0
-            self.skin = self.listeAnnimOursin[self.indiceAnnim]
-            
-     def changeAnnimOursin2(self):
-         self.clockAnnim+=1
-         if self.clockAnnim==5:
-            self.indiceAnnim+=1
-            if self.indiceAnnim >= len(self.listeAnnimOursin):
-                self.indiceAnnim=0
-            self.clockAnnim=0
-            self.skin = self.listeAnnimOursin2[self.indiceAnnim] """
+    
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
-         
+        
         if posY == self.posY and posX-self.posX>0:
-            self.goUp(angle=2)
-            self.goRight(angle=2)
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]+142/4))
-            self.setPos(newTuile)
+
+                self.goUp(angle=2)
+                self.goRight(angle=2)
+                
+                newTuile = majSelectionMob(self.game, self, -244/4, 142/4)
+                
+                self.setPos(newTuile)
         if posY==self.posY and posX-self.posX<0:
-            self.goDown(angle=2)
-            self.goLeft(angle=2)
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]-142/4))
-            self.setPos(newTuile)
+
+                self.goDown(angle=2)
+                self.goLeft(angle=2)
+                newTuile = majSelectionMob(self.game, self,244/4, -142/4)
+                self.setPos(newTuile)
         if posX==self.posX and posY-self.posY>0:
-            self.goRight(angle=2)
-            self.goDown(angle=2)
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/4, self.getFeet()[1]-142/4))
-            self.setPos(newTuile)
+
+                self.goRight(angle=2)
+                self.goDown(angle=2)
+                newTuile = majSelectionMob(self.game, self,-244/4, -142/4)
+                self.setPos(newTuile)
         if posX==self.posX and posY-self.posY<0:
-            self.goUp(angle=2)
-            self.goLeft(angle=2)
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/4, self.getFeet()[1]+142/4))
-            self.setPos(newTuile)
+
+                self.goUp(angle=2)
+                self.goLeft(angle=2)
+                newTuile = majSelectionMob(self.game, self,244/4, 142/4)
+                self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY>0:
-            self.goRight()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]-244/2, self.getFeet()[1]))
-            self.setPos(newTuile)
+            if self.deplacementAutorise("droite"):
+                self.goRight()
+                newTuile = majSelectionMob(self.game, self,-244/2, 0)
+                self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY<0:
-            self.goUp()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+142/2))
-            self.setPos(newTuile)
+
+                self.goUp()
+                newTuile = majSelectionMob(self.game, self,0, 142/2)
+                self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY<0:
-            self.goLeft()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0]+244/2, self.getFeet()[1]))
-            self.setPos(newTuile)
+
+                self.goLeft()
+                newTuile = majSelectionMob(self.game, self,244/2, 0)
+                self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY>0:
-            self.goDown()
-            newTuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-142/2))
-            self.setPos(newTuile)
+
+                self.goDown()
+                newTuile = majSelectionMob(self.game, self,0, -142/2)
+                self.setPos(newTuile)
+        
         return self.posX == posX and self.posY==posY
 
      def getFeet(self):
@@ -240,9 +249,45 @@ class Mob(pygame.sprite.Sprite):
             skin = pygame.image.load("data/personnages/kraken/kraken_1.png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
+        elif nomSkin=="oiseau":
+            scale = (979*0.2,735*0.2)
+            skin = pygame.image.load("data/personnages/oiseau/oiseau (1).png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
+        elif nomSkin=="chameau":
+            scale = (979*0.2,735*0.2)
+            skin = pygame.image.load("data/personnages/chameau/chameau (1).png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
         skin = pygame.image.load("data/personnages/"+nomSkin+".png").convert_alpha()
         skin = pygame.transform.scale(skin, scale)
         return skin
+
+     def destAnnimal(self):
+         if self.name=="oiseau":
+            x=self.posX
+            y=self.posY
+            while abs(self.posX-x)+abs(self.posY-y)<4:
+                x = random.randint(1, self.game.taille_matriceX-1)
+                y = random.randint(1, self.game.taille_matriceY-1)
+            return x,y
+         if self.name=="chameau":
+             casePossible = []
+             for i in range(-1,2):
+                 for j in range(-1,2):
+                     if self.game.verifierCo(self.posX+j, self.posY+i):
+                        if (i!=0 or j!=0) and self.game.map[self.posY+i][self.posX+j].type==6:
+                            casePossible.append(self.game.map[self.posY+i][self.posX+j])
+             if casePossible:
+                if random.randint(0,4):
+                    tuile = random.choice(casePossible)
+                    return tuile.posX,tuile.posY
+                else:
+                    return self.posX,self.posY
+             else:
+                 print(self.name, "bloque en", self.posX, self.posY)
+                 return self.posX, self.posY
+            
 
      def lunchProjectile(self):
         mob_proche = []
@@ -259,8 +304,6 @@ class Mob(pygame.sprite.Sprite):
          
         if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]
-            
-            
             self.game.groupProjectile.add(Projectile(self.game, self.name, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche))
             self.lastProjectile = now
             self.cooldown=1000
@@ -281,7 +324,7 @@ class Mob(pygame.sprite.Sprite):
             self.kill()
 
 
-     def moveMob(self, joueur):
+     """def moveMob(self, joueur):
         diffX = self.rect.x - joueur.rect.x
         diffY = self.rect.y - joueur.rect.y
         if diffY >= 0 and diffX>=0: #le joueur est en haut a gauche
@@ -341,42 +384,44 @@ class Mob(pygame.sprite.Sprite):
      def mobBas(self):
         if self.deplacementAutorise("bas"):
             self.goDown()
-            tuile = majSelectionJoueur(self.game, self.getFeet())
+            tuile = majSelectionJoueur(self.game)
             self.setPos(tuile)
             return True
         return False        
         
      def mobHaut(self):
         self.goUp()
-        tuile = majSelectionJoueur(self.game, self.getFeet())
-        self.setPos(tuile)      
+        tuile = majSelectionJoueur(self.game)
+        self.setPos(tuile)      """
     
      def deplacementAutorise(self, direction):
          if direction=="droite":
-            tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity, self.getFeet()[1]))
+            tuile = majSelectionMob(self.game, self, self.velocity, 0)
             
          if direction=="gauche":
-            tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity, self.getFeet()[1]))
+            tuile = majSelectionMob(self.game, self, -self.velocity, 0)
             
          if direction=="haut":
-            tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity))
+            tuile = majSelectionMob(self.game, self,0, -self.velocity)
             
          if direction=="bas":
-             tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity))
+             tuile = majSelectionMob(self.game, self,0, self.velocity)
          if tuile:
             if self.tuileInterdit(tuile):
                 
                 if direction=="droite":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]+self.velocity+10, self.getFeet()[1]))
+                    tuile = majSelectionMob(self.game, self,self.velocity+10, 0)
             
                 if direction=="gauche":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0]-self.velocity-10, self.getFeet()[1]))
+                    tuile = majSelectionMob(self.game, self,-self.velocity-10, 0)
                     
                 if direction=="haut":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]-self.velocity-10))
+                    tuile = majSelectionMob(self.game, self,0, -self.velocity-10)
                     
                 if direction=="bas":
-                    tuile = majSelectionJoueur(self.game, (self.getFeet()[0], self.getFeet()[1]+self.velocity+10))
+                    tuile = majSelectionMob(self.game, self,0, self.velocity+10)
+            
+            print(not self.tuileInterdit(tuile), (self.posY, self.posX), direction)
             return not self.tuileInterdit(tuile)
         
          else:
@@ -384,7 +429,10 @@ class Mob(pygame.sprite.Sprite):
              return False
         
      def tuileInterdit(self, tuile):
+          if self.name=="chameau":
+            return tuile.type!=6 #uniquement les deserts
           return tuile.tuileHaute() or (tuile.estMer() and tuile.pasPort() and not self.bateau) or (not tuile.estMer() and tuile.pasPort() and self.bateau)
+          
          
          
      def setPos(self, tuile):
@@ -395,19 +443,25 @@ class Mob(pygame.sprite.Sprite):
      
      def majCoolDown(self):
          if self.name=="kraken":
-             self.cooldown=3000
+             cooldown=3000
          elif self.name=="golem_des_forets":
-             self.cooldown=500
+             cooldown=500
          elif self.name=="oursin":
-             self.cooldown=1000
+             cooldown=1000
          elif self.name=="dragon":
-             self.cooldown=2000
+             cooldown=2000
          elif self.name=="mage":
-             self.cooldown=2000
+             cooldown=2000
          elif self.name=="yeti":
-             self.cooldown=200
+             cooldown=200
+         elif self.name=="oiseau":
+             cooldown=5000
+         elif self.name=="chameau":
+             cooldown=3000
+            
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
+         return cooldown
              
              
      def changeAnnimGolem(self):
@@ -433,7 +487,31 @@ class Mob(pygame.sprite.Sprite):
                 self.skin=pygame.transform.flip(self.listeAnnimDragon[self.indiceAnnim], True, False)
 
             self.clockAnnim=0
-     
+     def changeAnnimOiseau(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==4:
+            self.indiceAnnim+=1
+            if self.indiceAnnim>=len(self.listeAnnimOiseau):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimOiseau[self.indiceAnnim]
+            else :
+                self.skin=pygame.transform.flip(self.listeAnnimOiseau[self.indiceAnnim], True, False)
+            self.clockAnnim=0
+            
+     def changeAnnimChameau(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==10:
+            self.indiceAnnim+=1
+            if self.indiceAnnim>=len(self.listeAnnimChameau):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimChameau[self.indiceAnnim]
+            else :
+                self.skin=pygame.transform.flip(self.listeAnnimChameau[self.indiceAnnim], True, False)
+
+            self.clockAnnim=0
+            
      def changeAnnimKraken(self, flip=False):
         self.clockAnnim+=1
         if self.clockAnnim==10:
@@ -477,13 +555,17 @@ class Mob(pygame.sprite.Sprite):
         if self.name=="golem_des_forets":
             self.changeAnnimGolem()
         if self.name=="kraken":
-            self.changeAnnimKraken()
+            self.changeAnnimKraken(True)
         if self.name=="yeti":
             self.changeAnnimYeti(True)
         if self.name=="mage":
             self.changeAnnimMage(True)
         if self.name=="dragon":
             self.changeAnnimDragon(True)
+        if self.name=="oiseau":
+            self.changeAnnimOiseau(True)
+        if self.name=="chameau":
+            self.changeAnnimChameau(True)
 
         self.droite = True
         
@@ -495,13 +577,17 @@ class Mob(pygame.sprite.Sprite):
         if self.name=="golem_des_forets":
             self.changeAnnimGolem()
         if self.name=="kraken":
-            self.changeAnnimKraken(True)
+            self.changeAnnimKraken()
         if self.name=="yeti":
             self.changeAnnimYeti()
         if self.name=="mage":
             self.changeAnnimMage()
         if self.name=="dragon":
             self.changeAnnimDragon()
+        if self.name=="oiseau":
+            self.changeAnnimOiseau()
+        if self.name=="chameau":
+            self.changeAnnimChameau()
 
         self.droite=False
         
@@ -519,6 +605,10 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimMage(self.droite)
          if self.name=="dragon":
             self.changeAnnimDragon(self.droite)
+         if self.name=="oiseau":
+            self.changeAnnimOiseau(self.droite)
+         if self.name=="chameau":
+            self.changeAnnimChameau(self.droite)
             
 
      def goDown(self, angle=4):
@@ -536,6 +626,10 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimMage(self.droite)
          if self.name=="dragon":
             self.changeAnnimDragon(self.droite)
+         if self.name=="oiseau":
+            self.changeAnnimOiseau(self.droite)
+         if self.name=="chameau":
+            self.changeAnnimChameau(self.droite)
      def update_health_bar(self):
         #def la couleur
         
