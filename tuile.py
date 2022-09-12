@@ -14,6 +14,10 @@ class Tuile():
         self.moulin = False
         self.puit= False
         self.forge = False
+        self.forge1 = False
+        self.forge2 = False
+        self.forge3 = False
+        self.forge4 = False
         self.port = False
         self.mine=False
         self.pieux=False
@@ -57,6 +61,7 @@ class Tuile():
         self.rect.y = self.avoirY()
         self.Xoriginal = self.rect.x
         self.Yoriginal = self.rect.y
+        self.centerOriginal = self.rect.center
         self.mask=pygame.mask.from_surface(self.image)
     
     def getExplored(self):

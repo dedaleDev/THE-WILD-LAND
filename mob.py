@@ -25,6 +25,7 @@ class Mob(pygame.sprite.Sprite):
           self.aerien = aerien
           self.desertique = desertique
           self.attack = attaque
+          print("debut",self.name, self.attack)
           self.velocity = vitesse
           self.maxVelocity = self.velocity
           self.slow =False
@@ -151,56 +152,67 @@ class Mob(pygame.sprite.Sprite):
                 self.goRight(angle=2)
                 
                 newTuile = majSelectionMob(self.game, self, -244/4, 142/4)
-                
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
         if posY==self.posY and posX-self.posX<0:
 
                 self.goDown(angle=2)
                 self.goLeft(angle=2)
                 newTuile = majSelectionMob(self.game, self,244/4, -142/4)
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
+                
         if posX==self.posX and posY-self.posY>0:
 
                 self.goRight(angle=2)
                 self.goDown(angle=2)
                 newTuile = majSelectionMob(self.game, self,-244/4, -142/4)
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
         if posX==self.posX and posY-self.posY<0:
 
                 self.goUp(angle=2)
                 self.goLeft(angle=2)
                 newTuile = majSelectionMob(self.game, self,244/4, 142/4)
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
+                
         if posX-self.posX>0 and posY-self.posY>0:
-            if self.deplacementAutorise("droite"):
+
                 self.goRight()
                 newTuile = majSelectionMob(self.game, self,-244/2, 0)
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
         if posX-self.posX>0 and posY-self.posY<0:
 
                 self.goUp()
                 newTuile = majSelectionMob(self.game, self,0, 142/2)
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY<0:
 
                 self.goLeft()
                 newTuile = majSelectionMob(self.game, self,244/2, 0)
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
         if posX-self.posX<0 and posY-self.posY>0:
 
                 self.goDown()
                 newTuile = majSelectionMob(self.game, self,0, -142/2)
-                self.setPos(newTuile)
+                if newTuile!=None:
+                    self.setPos(newTuile)
         
         return self.posX == posX and self.posY==posY
 
      def getFeet(self):
+         if self.name=="golem_des_forets":
+             return self.rect.x+65, self.rect.y+90
          if self.name == "mage":
-             return self.rect.x+30, self.rect.y+100
+             return self.rect.x+30, self.rect.y+110
          if self.name == "yeti":
              return self.rect.x+40, self.rect.y+150
          if self.name == "dragon":
-             return self.rect.x, self.rect.y+150
+             return self.rect.x+75, self.rect.y+90
          return self.rect.x+45, self.rect.y+50
      
      def caseBloquanteAutour(self, posX, posY):
@@ -276,8 +288,9 @@ class Mob(pygame.sprite.Sprite):
              for i in range(-1,2):
                  for j in range(-1,2):
                      if self.game.verifierCo(self.posX+j, self.posY+i):
-                        if (i!=0 or j!=0) and self.game.map[self.posY+i][self.posX+j].type==6:
+                        if (i!=0 or j!=0) and (j!=1 or i!=-1) and self.game.map[self.posY+i][self.posX+j].type==6:
                             casePossible.append(self.game.map[self.posY+i][self.posX+j])
+                            
              if casePossible:
                 if random.randint(0,4):
                     tuile = random.choice(casePossible)
@@ -320,7 +333,9 @@ class Mob(pygame.sprite.Sprite):
             self.game.groupLoot.add(Loot(self.recompenseWood, self.recompenseStone, self.recompenseWater, self.recompenseFood, self.rect.x+20-moveX, self.rect.y-30-moveY, self.game))
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
             self.game.joueur.score=+self.score
-
+            if self.name=="chameau":
+                self.game.joueur.indiceEcolo+=5
+                self.game.infoMortAnnimal = 440
             self.kill()
 
 
@@ -421,7 +436,6 @@ class Mob(pygame.sprite.Sprite):
                 if direction=="bas":
                     tuile = majSelectionMob(self.game, self,0, self.velocity+10)
             
-            print(not self.tuileInterdit(tuile), (self.posY, self.posX), direction)
             return not self.tuileInterdit(tuile)
         
          else:
@@ -457,7 +471,7 @@ class Mob(pygame.sprite.Sprite):
          elif self.name=="oiseau":
              cooldown=5000
          elif self.name=="chameau":
-             cooldown=3000
+             cooldown=1000
             
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   

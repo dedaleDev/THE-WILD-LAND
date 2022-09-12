@@ -57,7 +57,9 @@ class Player(pygame.sprite.Sprite):
           self.nbElevage=0
           self.nbChamps=0
           self.nbFrigo=0
+          self.blit = False
           
+          self.imageArmure = None
           
           self.listeTour=[]
           
@@ -116,7 +118,7 @@ class Player(pygame.sprite.Sprite):
          listeAnnimDroite = []
          for i in range(11):
              im = pygame.image.load("data/personnages/joueur/Joueur"+str(i)+".png").convert_alpha()
-             listeAnnimDroite.append(pygame.transform.scale(im, (48,97)))
+             listeAnnimDroite.append(pygame.transform.scale(im, (48,97))) 
          return listeAnnimDroite
     
      def annimLoadBas(self):
@@ -142,9 +144,9 @@ class Player(pygame.sprite.Sprite):
          return listeAnnimGauche
     
      def getFeet(self):
-         return self.rect.x+35, self.rect.y+120
+         return self.rect.x+25, self.rect.y+80
 
-     def takeDamage(self, entier):
+     def takeDamage(self, entier, moveX=0, moveY=0):
         if self.health >=0 :
             self.health-=entier
             self.update_health_bar()
@@ -292,7 +294,7 @@ class Player(pygame.sprite.Sprite):
         
          else:
              print("erreur dans fonction joueur.deplacement autorisé")
-             return None
+             return True
          
          
      def tuileInterdit(self, tuile):
@@ -424,7 +426,8 @@ class Player(pygame.sprite.Sprite):
             tuile.clockAnnimMax = 10
             pygame.mixer.Sound.play(self.game.son.vache)
         elif item.nom == "mine":
-            tuile.annimation=[]
+            tuile.annimation=self.game.images.mineAnnim
+            tuile.clockAnnimMax = 6
             self.game.map[tuile.posY][tuile.posX].mine = True
             self.nbMine+=1
             self.game.listeCaseBatiment.append(tuile)
@@ -481,12 +484,22 @@ class Player(pygame.sprite.Sprite):
         elif item.nom=="ville":
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].ville = True
-            self.ville=True        
+            self.ville=True   
             
-            
-            
-            
-        self.changerImageBatiment(tuile, item.nom)
+        elif item.nom=="forge":
+            tuile.annimation=self.game.images.forgeAnnim
+            tuile.clockAnnimMax = 6
+            self.game.map[tuile.posY][tuile.posX].forge = True
+        elif item.nom=="forge1":
+            self.game.map[tuile.posY][tuile.posX].forge1 = True
+        elif item.nom=="forge2":
+            self.game.map[tuile.posY][tuile.posX].forge2 = True
+        elif item.nom=="forge3":
+            self.game.map[tuile.posY][tuile.posX].forge3 = True
+        elif item.nom=="forge4":
+            self.game.map[tuile.posY][tuile.posX].forge4 = True
+        if item.nom!="forge" or item.nom!="forge1" or item.nom!="forge2" or item.nom!="forge3" or item.nom!="forge4" or item.nom!="mine":
+            self.changerImageBatiment(tuile, item.nom)
         
         
             

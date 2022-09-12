@@ -69,7 +69,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
     
     infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png").convert_alpha()
-
+    infoMortAnnimal = pygame.image.load("data/cata/infoBulle/infoMort.png").convert_alpha()
 
     infobulletremb = pygame.image.load("data/cata/infoBulle/info_tremblementDeTerre.png").convert_alpha()
     
@@ -102,11 +102,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
-    #game.groupMob.add(Mob(game,"chameau", 100, 1, tuile=game.map[4][4], score=150, desertique=True, annimal=True, attaque=0))
+    #game.groupMob.add(Mob(game,"chameau", 100, 1, tuile=game.map[3][3], score=0, desertique=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
-    game.groupMob.add(Mob(game,"golem_des_forets", 100, 1, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"oursin", 100, 1, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
 
@@ -120,7 +120,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     taillePolice = round(3/100*diagonalEcran)
     police = get_font(taillePolice)
     while continuer == True:
-        
+        game.joueur.blit=False
         
         scoreText = police.render(str(game.joueur.score), True, "Black")
         scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*9.7/10))
@@ -183,7 +183,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         if continuer == True: 
             
-            deplacement_cam(mouse, game)
+            deplacement_cam(mouse, game, True)
             
            
             #### Deplacement des mobs
@@ -205,7 +205,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             ####CATASTROPHE
             
-            
+                
             modification=True
             #affichage selection
             if tick_ressource==0:
@@ -218,10 +218,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     tirageCoffre=0
                 else :
                     tirageCoffre+=7
-                if game.groupMob.__len__()<9: # a corriger
+                if game.groupMob.__len__()-game.nbAnnimaux<9:
                     #game.spawMob()
                     pass
-
+                
                 tuileCata = game.majCata()
                 if game.incendie and tuileCata:
                     annimIncendieListe.append(tuileCata)
@@ -266,7 +266,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         alerteVille = True
                         tuileVille = game.map[y][x]
                         
-            listeMontagne.sort(key=lambda x: x.posX, reverse=True)
+            
             
             
             for coffre in game.groupCoffre:
@@ -304,49 +304,70 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 if not (abs(tuile.posX-game.joueur.posX)<2 and abs(tuile.posY-game.joueur.posY)<2):
                     tuile.estSelect=False
                     tuile=False
+            
+            #affichage personnage
+            
+            
+            listeOrdre = []
+            #debut = time.time()
+            for mob in game.groupMob:
+                if game.map[mob.posY][mob.posX].isExplored :
+                    #fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
+                    listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1]))
+                    pass
+                
+
+
+
+            for mob in game.groupMob:
+                if game.map[mob.posY][mob.posX].isExplored:
+                    if not mob.annimal:
+                        mob.update_health_bar()
+
+            ####PASSAGE DES MONTAGNES
             if tuile :
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
                 if tuile.tour:      
                     #pygame.draw.circle(fenetrePygame, (155,155,155), (tuile.tour.rect.x+30, tuile.tour.rect.y), tuile.tour.range, width=3, )
                     pass
-            #affichage personnage
-            
-            
-            
-            debut = time.time()
-            for mob in game.groupMob:
-                if game.map[mob.posY][mob.posX].isExplored :
-                    fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
-                    pass
-                fenetrePygame.blit(imDebug, mob.getFeet())
-            
-            
-            
+            decalageYcentre = -100
+            for tuile2 in listeMontagne:
+                if tuile2.type==2 :
+                    #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
+                    center = tuile2.centerOriginal
+                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre))
+                else :
+
+                    #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
+                    center = tuile2.centerOriginal
+                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre))
+
             if not game.joueur.bateau:
                 fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
+                center = game.joueur.rect.center
+                listeOrdre.append((game.joueur.skin, game.joueur.rect.x, game.joueur.rect.y, center[1]))
+
             elif game.joueur.bateau:
-                fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
+                #fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
+                center = game.joueur.rect.center
+                
+                listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30))
+            listeOrdre.sort(key=lambda x: x[3])
+            for image, posX, posY, center in listeOrdre:
+                fenetrePygame.blit(image, (posX, posY))
             
-            for mob in game.groupMob:
-                if game.map[mob.posY][mob.posX].isExplored:
-                    if not mob.annimal:
-                        mob.update_health_bar()
-            for tuile2 in listeMontagne:
-                if tuile2.type==2:
-                    fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
-                else:
-                    fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
+            
             if tuile :
                 liste = selectionDispoItem(game, tuile, game.joueur)
-                inventaire = Inventaire(tuile.getRectX()-85, tuile.getRectY()-25, liste)
+                inventaire = Inventaire(tuile.getRectX()-50, tuile.getRectY()-25, liste)
                 inventaire.blitInventaire(fenetrePygame, game.joueur)
                 for item in inventaire.listeItem:
                         if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##
                             inventaire.blitInfoBulle(fenetrePygame, item)
             for projectile in game.groupProjectile:              
-                fenetrePygame.blit(projectile.img, (projectile.rect.x, projectile.rect.y))                
+                fenetrePygame.blit(projectile.img, (projectile.rect.x, projectile.rect.y))
 
-            
+
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
                 
@@ -392,6 +413,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         timeComtpeur = 0
                         game.joueur.resetRessourcesModified()
             game.joueur.update_health_bar()
+            
+            if game.joueur.imageArmure:
+                fenetrePygame.blit(joueur.imageArmure, (10,368))
+            for mob in game.groupMob:
+                fenetrePygame.blit(imDebug, mob.getFeet())
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (20,15))
             fenetrePygame.blit(feuille, (10,368))
@@ -399,7 +425,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             if tickBatiment<60:
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject.current_w-game.imageErreurRessource.get_width()-(infoObject.current_w-game.imageErreurRessource.get_width())/2,infoObject.current_h - 200))
                 tickBatiment+=1
-
+            if game.infoMortAnnimal>0:
+                print("mort")
+                fenetrePygame.blit(infoMortAnnimal, (tailleEcran[0]- 400, tailleEcran[1] - 700))
+                game.infoMortAnnimal-=1
             if game.joueur.estMort:
                 mort(game)
             if game.joueur.ville:
@@ -427,9 +456,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         clock.tick(60)
 
-           
 
-    
 def KEY_move(game,joueur,fenetre):
     modification=False
     tuile=False
@@ -448,14 +475,15 @@ def KEY_move(game,joueur,fenetre):
         haut=False
     
     
-    
+    bug=False
     if keys[K_d] or keys[K_RIGHT]:
         if bug:=joueur.deplacementAutorise("droite") :
             
-            deplacementCamDroite((infoObject.current_w - suiviePerso,0), game)
+            deplacementCamDroite((infoObject.current_w - suiviePerso,0), game, True)
             joueur.goRight()
             tuile = majSelectionJoueur(game)
-            joueur.setPos(tuile)
+            if tuile!=None:
+                    joueur.setPos(tuile)
             #joueur.majBateau()
             
             for i in range(-1,2):
@@ -468,10 +496,11 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_q]or keys[K_LEFT]:
             if bug:=joueur.deplacementAutorise("gauche"):
                 #joueur.majBateau()
-                deplacementCamGauche((suiviePerso, 0), game)
+                deplacementCamGauche((suiviePerso, 0), game, True)
                 joueur.goLeft()
                 tuile = majSelectionJoueur(game)
-                joueur.setPos(tuile)
+                if tuile!=None:
+                    joueur.setPos(tuile)
                 for i in range(-1,2):
                     for j in range(-1, 2):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -481,10 +510,11 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_z] or keys[K_UP]:
             if bug:=joueur.deplacementAutorise("haut"):
                 #joueur.majBateau()
-                deplacementCamHaut((0,suiviePerso), game)
+                deplacementCamHaut((0,suiviePerso), game, True)
                 joueur.goUp(haut)
                 tuile = majSelectionJoueur(game)
-                joueur.setPos(tuile)
+                if tuile!=None:
+                    joueur.setPos(tuile)
                 for i in range(-1,2):
                     for j in range(-1, 2):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
@@ -492,10 +522,11 @@ def KEY_move(game,joueur,fenetre):
 
     if keys[K_s]or keys[K_DOWN]:
             if bug:=joueur.deplacementAutorise("bas"):
-                deplacementCamBas((0, infoObject.current_h-suiviePerso), game)
+                deplacementCamBas((0, infoObject.current_h-suiviePerso), game, True)
                 joueur.goDown(bas)
                 tuile = majSelectionJoueur(game)
-                joueur.setPos(tuile)
+                if tuile!=None:
+                    joueur.setPos(tuile)
                 #joueur.majBateau()
                 for i in range(-1,2):
                     for j in range(-1, 2):
@@ -512,101 +543,107 @@ def KEY_move(game,joueur,fenetre):
     if bug==None:
         print("bug")
         tuile = majSelectionJoueur(game)
-        joueur.setPos(tuile)
+        if tuile!=None:
+            print(tuile.posY, tuile.posX, "bug resolu")
+            joueur.setPos(tuile)
     return modification, tuile
 
 
-def deplacement_cam(mouse, game): #gestion du déplacement de la caméra 
-    deplacementCamBas(mouse, game)
-    deplacementCamDroite(mouse, game)
-    deplacementCamGauche(mouse, game)
-    deplacementCamHaut(mouse, game)
+def deplacement_cam(mouse, game, bloquage=False): #gestion du déplacement de la caméra 
+    deplacementCamBas(mouse, game, bloquage)
+    deplacementCamDroite(mouse, game, bloquage)
+    deplacementCamGauche(mouse, game, bloquage)
+    deplacementCamHaut(mouse, game, bloquage)
     
 def centrerJoueur(game):
     while game.joueur.rect.x < infoObject.current_w//2-10:
-        deplacementCamGauche((199,0), game)
+        deplacementCamGauche((199,0), game, False)
 
     while game.joueur.rect.x > infoObject.current_w//2+10:
-        deplacementCamDroite((infoObject.current_w-199,0), game)
+        deplacementCamDroite((infoObject.current_w-199,0), game, False)
 
 
     while game.joueur.rect.y > infoObject.current_h//2-10:
-        deplacementCamBas((0,infoObject.current_h-199), game)
+        deplacementCamBas((0,infoObject.current_h-199), game, False)
 
     while game.joueur.rect.y < infoObject.current_h//2+10:
-        deplacementCamHaut((0,199), game)
+        deplacementCamHaut((0,199), game, False)
 
 
 
-def deplacementCamBas(mouse, game):
+def deplacementCamBas(mouse, game, bloquage):
     global moveY, moveX
     x=infoObject.current_h-mouse[1]
     y=f(x)
     if x < 200 :  # Si souris en bas
-        
-        for i in range(len(game.map)):
-            for j in range(len(game.map[0])):
-                game.map[i][j].decalerY(y)
-        game.joueur.rect.y+=y
-        moveY+=y
-        for mob in game.groupMob:
-            mob.rect.y+=y
-        for projo in game.groupProjectile:
-            projo.rect.y+=y
-        for defense in game.groupDefense:
-            defense.rect.y+=y
-        
-def deplacementCamHaut(mouse, game):
+        if not bloquage or (game.map[-1][0].Yoriginal+moveY>infoObject.current_h-250):
+            for i in range(len(game.map)):
+                for j in range(len(game.map[0])):
+                    game.map[i][j].decalerY(y)
+            game.joueur.rect.y+=y
+            moveY+=y
+            for mob in game.groupMob:
+                mob.rect.y+=y
+            for projo in game.groupProjectile:
+                projo.rect.y+=y
+            for defense in game.groupDefense:
+                defense.rect.y+=y
+            
+def deplacementCamHaut(mouse, game, bloquage):
     global moveY, moveX
     x = mouse[1]
     y = -f(x)
     if x < 200 : #Si souris en haut
-        for i in range(len(game.map)):
-            for j in range(len(game.map[0])):
-                game.map[i][j].decalerY(y)
-        game.joueur.rect.y+=y
-        moveY+=y
-        for mob in game.groupMob:
-            mob.rect.y+=y
-        for projo in game.groupProjectile:
-            projo.rect.y+=y
-        for defense in game.groupDefense:
-            defense.rect.y+=y
+        if not bloquage or (game.map[0][-1].rect.y+moveY<100):
+            for i in range(len(game.map)):
+                for j in range(len(game.map[0])):
+                    game.map[i][j].decalerY(y)
+            game.joueur.rect.y+=y
+            moveY+=y
+            for mob in game.groupMob:
+                mob.rect.y+=y
+            for projo in game.groupProjectile:
+                projo.rect.y+=y
+            for defense in game.groupDefense:
+                defense.rect.y+=y
         
-def deplacementCamGauche(mouse, game):
+def deplacementCamGauche(mouse, game, bloquage):
     global moveY, moveX
     x= mouse[0]
     y = -f(x)
     if x < 200:  # Si souris à gauche
-        for i in range(len(game.map)):
-            for j in range(len(game.map[0])):
-                game.map[i][j].decalerX(y)
-        game.joueur.rect.x+=y
-        for mob in game.groupMob:
-            mob.rect.x+=y
-        moveX+=y
-        for projo in game.groupProjectile:
-            projo.rect.x+=y
-        for defense in game.groupDefense:
-            defense.rect.x+=y
+        if not bloquage or (game.map[0][0].rect.x+moveX<100):
+            for i in range(len(game.map)):
+                for j in range(len(game.map[0])):
+                    game.map[i][j].decalerX(y)
+            game.joueur.rect.x+=y
+            for mob in game.groupMob:
+                mob.rect.x+=y
+            moveX+=y
+            for projo in game.groupProjectile:
+                projo.rect.x+=y
+            for defense in game.groupDefense:
+                defense.rect.x+=y
         
-def deplacementCamDroite(mouse, game):
+def deplacementCamDroite(mouse, game, bloquage):
     global moveY, moveX
     x = infoObject.current_w-mouse[0]
     y=f(x)
 
+
     if x < 200:  # Si souris à droite
-        for i in range(len(game.map)):
-            for j in range(len(game.map[0])):
-                game.map[i][j].decalerX(y)
-        game.joueur.rect.x+=y
-        moveX+=y
-        for mob in game.groupMob:
-            mob.rect.x+=y
-        for projo in game.groupProjectile:
-            projo.rect.x+=y
-        for defense in game.groupDefense:
-            defense.rect.x+=y
+        if not bloquage or (game.map[-1][-1].Xoriginal+moveX>infoObject.current_w-400):
+            for i in range(len(game.map)):
+                for j in range(len(game.map[0])):
+                    game.map[i][j].decalerX(y)
+            game.joueur.rect.x+=y
+            moveX+=y
+            for mob in game.groupMob:
+                mob.rect.x+=y
+            for projo in game.groupProjectile:
+                projo.rect.x+=y
+            for defense in game.groupDefense:
+                defense.rect.x+=y
 
 def f(x):  #fonction vitesse deplacement cam
     y  = round(x*0.04-10)
@@ -699,13 +736,13 @@ def gestionMob(game, fps):
                 mob.kill()
         
         
-        if not mob.pique and not mob.aerien and mob.tuileMob.pieux and not mob.annimal:
+        if not mob.pique and not mob.aerien and mob.tuileMob.pieux:
             mob.takeDamage(0.1, moveX, moveY)
             if not mob.slow:
                 mob.slow =True
 
 
-        elif mob.tuileMob.sableMouvant and not mob.aerien and not mob.annimal:
+        elif mob.tuileMob.sableMouvant and not mob.aerien :
             mob.takeDamage(0.3, moveX, moveY)
             if game.tempsJeu() - game.son.dernierSable >2000:
                 pygame.mixer.Sound.play(game.son.sableMouvantPassage, maxtime=2000)
@@ -717,7 +754,7 @@ def gestionMob(game, fps):
                 if mob.velocity<1:
                     mob.velocity=1
                     
-        elif mob.tuileMob.ventilo and not mob.aerien and not mob.annimal:
+        elif mob.tuileMob.ventilo and not mob.aerien:
             mob.takeDamage(0.5, moveX, moveY)
             if game.tempsJeu() - game.son.dernierVentilo >2000:
                 pygame.mixer.Sound.play(game.son.ventilo, maxtime=2000)
@@ -733,12 +770,13 @@ def gestionMob(game, fps):
         elif mob.slow:
             mob.slow =False
             mob.velocity = mob.maxVelocity
-            
-        if mob.annimal and surEcran(mob, moveX, moveY, infoObject) and now-mob.last>=mob.cooldown:
-            
-            destY, destX  = mob.destAnnimal()
-            
-            #commenter l'une ou l'autre et voir
+        
+        if mob.annimal and now-mob.last>=mob.cooldown:
+            for i in range(game.taille_matriceY):
+                for j in range(game.taille_matriceX):
+                    game.map[i][j].traceMob=False
+            destX, destY  = mob.destAnnimal()
+
             mob.the_path=[(destY, destX)]
             #mob.the_path= findPos(game, destX, destY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien, desertique=mob.desertique)
             mob.last = now
@@ -746,7 +784,7 @@ def gestionMob(game, fps):
         elif now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
             mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
             mob.last = now
-            if True:
+            if False:
                 traceMob(game, mob.the_path)
             
 
@@ -767,3 +805,12 @@ def traceMob(game, the_path):
             game.map[y][x].traceMob=False
     for posY, posX in the_path:
             game.map[posY][posX].traceMob=True
+            
+def blitJoueur(fenetrePygame, game):
+    if not game.joueur.blit:
+        if not game.joueur.bateau:
+            fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
+            game.joueur.blit=True
+        elif game.joueur.bateau:
+            fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
+            game.joueur.blit=True

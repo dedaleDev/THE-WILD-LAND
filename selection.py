@@ -50,10 +50,11 @@ def majSelectionJoueur(game, xSup=0, ySup=0): #xSup decalage en x
             if touching :
                 tuileSelect = game.map[game.joueur.posY+i][game.joueur.posX+j]
                 return tuileSelect
+
     if not tuileSelect:
         print("attention majSelectionJoueur n'a pas trouvé de tuile en", souris)
         #Pour ne pas crash, decommenter la ligne suivante, après avoir fait suivre le bug
-        return game.map[1][1]
+        return None
         assert(False)
     return tuileSelect
 
@@ -74,7 +75,7 @@ def majSelectionMob(game, mob, supX=0, supY=0): #version ultra opti de maj selec
     if not tuileSelect:
         print("attention majSelectionMob n'a pas trouvé de tuile en", souris)
         #Pour ne pas crash, decommenter la ligne suivante, après avoir fait suivre le bug
-        return game.map[1][1]
+        return None
         assert(False)
     return tuileSelect
 
@@ -96,7 +97,7 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
         elif tuile.type==2 and not tuile.forge and not tuile.mine and not tuile.mortier and not tuile.ville and not tuile.forge:
-            optionDIspo.append(Item(game, "forge", 0,0,0,0))
+            
             optionDIspo.append(Item(game, "mine", 0,0,50,50))
             optionDIspo.append(Item(game, "mortier", 0,0,0,200))
         elif tuile.type==3 and not tuile.moulin and not tuile.port and not tuile.ville:
@@ -117,8 +118,10 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))
             optionDIspo.append(Item(game, "trou", 15,0, 10, 0))
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
+        elif tuile.type==7:
+            optionDIspo.append(Item(game, "forge", 0,0,0,0))
         if tuile.forge:
-            optionDIspo.append(Item(game, "armure", 0, 0,0,0, infobulle=False))
+            optionDIspo.append(Item(game, "armure1", 0, 0,0,0, infobulle=False))
     return optionDIspo
 
 

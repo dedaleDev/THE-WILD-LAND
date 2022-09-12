@@ -22,6 +22,8 @@ class ImageLoad():
         self.coffre = pygame.image.load("data/ressources/coffre.png").convert_alpha()
         self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
         
+        
+        
         self.coffre = self.loadAnnimCoffre()
 
         self.moulinAnnim = self.loadAnnimMoulin()
@@ -46,7 +48,10 @@ class ImageLoad():
         self.annim2Roche1 = self.loadAnnimTuile("2Roche1_", 1,1)
         self.annim2Roche2 = self.loadAnnimTuile("2Roche2_", 1,1)
         self.annim2Roche3 = self.loadAnnimTuile("2Roche3_", 1,1)
-        self.annim2Roche4 = self.loadAnnimTuile("2Roche4_", 1,2)
+        self.annim2Roche4 = self.loadAnnimTuile("2Roche4_", 1,6)
+        
+        self.mineAnnim = self.loadAnnimTuile("mine_", 1,1)
+        self.forgeAnnim = self.loadAnnimTuile("forge_", 1,18)
         
         self.annim7Barriere0 = self.loadAnnimTuile("7Barriere0_", 1,1)
         self.annim7Barriere1 = self.loadAnnimTuile("7Barriere1_", 1,1)
@@ -309,7 +314,10 @@ class ImageLoad():
         
         imgTemp2 = pygame.image.load("data/tuiles/5Neige2.png").convert_alpha()
         imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
-        listeImg.append((imgTemp0, imgTemp1, imgTemp2))
+
+        imgTemp3 = pygame.image.load("data/tuiles/5Neige3.png").convert_alpha()
+        imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
+        listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
     #Desert
         imgTemp = pygame.image.load("data/tuiles/6Desert0.png").convert_alpha()
         imgTemp=pygame.transform.scale(imgTemp, (246, 144))
@@ -394,6 +402,22 @@ class ImageLoad():
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("ville", imgTemp))
         
+        imgTemp = pygame.image.load("data/batiments/icon/armure1.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("armure1", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/armure2.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("armure2", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/armure3.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("armure3", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/armure4.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("armure4", imgTemp))
+        
         return listeImgItem
 
     def returnImg(self, type):
@@ -405,6 +429,7 @@ class ImageLoad():
         if type==6 or type==3 :
             
             rand = random.randint(0,4)
+            
             if rand == 4 and type==6: #arbre desert
                 clockMax=7
                 annim=self.annim6desert4
@@ -422,8 +447,11 @@ class ImageLoad():
                 clockMax=5
                 if random.randint(0,1):
                     annim=self.annim3eau4
+                    clockMax=7
                 else :
-                    annim=[]
+                    annim=[pygame.image.load("data/animationTuiles/3Eau0_9.png")]
+            if type==3 and (rand==1 or rand==2):
+                annim=[pygame.image.load("data/animationTuiles/3Eau0_9.png")]
             if annim :
                 clockAnnim=random.randint(0,len(annim)-1)
             else :
@@ -431,16 +459,16 @@ class ImageLoad():
             return self.listeImg[type][rand], clockMax, annim, clockAnnim
         if  type==4 or type==2 or type==7:
             rand = random.randint(0, 3)
-            if type==7 and rand==1: #roche haut basique
+            if type==7 and rand==1: 
                 annim=self.annim7Barriere1
                 clockMax=5
-            if type==7 and rand==2: #roche haut +1 pique
+            if type==7 and rand==2: 
                 annim=self.annim7Barriere2
                 clockMax=5
-            if type==7 and rand==3: #roche haut basique
+            if type==7 and rand==3: 
                 annim=self.annim7Barriere3
                 clockMax=5
-            if type==7 and rand==0: #roche eau
+            if type==7 and rand==0: 
                 annim=self.annim7Barriere0
                 clockMax=5
             if type==2 and rand==1: #roche haut basique
@@ -454,7 +482,7 @@ class ImageLoad():
                 clockMax=5
             if type==2 and rand==0: #roche eau
                 annim=self.annim2Roche4
-                clockMax=5
+                clockMax=10
             if type==4 and rand==1:
                 if random.randint(0,1):
                     annim=self.annim4foret1
@@ -477,7 +505,7 @@ class ImageLoad():
             rand = random.randint(0,6)
             if rand%2==0:
                 rand=2
-            elif rand == 1 or rand == 3:
+            elif rand == 1:
                 rand = 0
             elif rand == 5:
                 rand=1
@@ -516,7 +544,7 @@ class ImageLoad():
         print("probleme")
         return self.listeImg[type], clockMax, annim, random.randint(0,len(annim)-1)
 
-    
+
     def loadImgAcide(self):
         scale = (45*1, 47*1)
         tempIgmg = pygame.image.load("data/projectiles/acide.png").convert_alpha()
@@ -569,10 +597,12 @@ class ImageLoad():
     def getImCollision(self):
         im = pygame.image.load("data/personnages/degat.png").convert_alpha()
         return pygame.transform.scale(im ,(40,40))
+    
     def returnImItem(self, nom):
         for elem in self.listeImgItem:
             if elem[0]==nom:
                 return elem[1]
+            
         assert(False)
         #Pas d'image d'item trouvé
 

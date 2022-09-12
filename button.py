@@ -74,8 +74,9 @@ class Button():
 			if not self.scale:
 				self.aleatoire = pygame.transform.scale(self.aleatoire, (posX/3.3, posY+20/100*posY))
 				self.scale = True
-			screen.blit(self.aleatoire,  (scale+posX, scale+posY)) 
-		screen.blit(self.text,self.text_rect)
+			screen.blit(self.aleatoire,  (scale+posX, scale+posY))
+		if not self.listeType:
+			screen.blit(self.text,self.text_rect)
 
 	def checkForInput(self, position):
 		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):

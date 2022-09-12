@@ -87,6 +87,7 @@ class Game(pygame.sprite.Sprite):
         self.listeCaseMontagne=0
         self.fenetre = fenetre
         self.listeCaseBatiment=[]
+        self.nbAnnimaux=0
         if not mapChoisie:
             self.taille_matriceY = int(aideCSV.valCorrespondante("taille_matriceY"))
             self.taille_matriceX = int(aideCSV.valCorrespondante("taille_matriceX"))
@@ -94,7 +95,7 @@ class Game(pygame.sprite.Sprite):
             self.taille_matriceY = len(mapChoisie)
             self.taille_matriceX = len(mapChoisie[0])
             
-            
+        self.infoMortAnnimal = 0
         self.groupMob = pygame.sprite.Group()
         self.groupProjectile = pygame.sprite.Group()
         self.groupDefense = pygame.sprite.Group()
@@ -235,14 +236,16 @@ class Game(pygame.sprite.Sprite):
                     rand = random.randint(0,100)
                     if rand<spawnChameau:
                         self.groupMob.add(Mob(self,"chameau", 100, 1, tuile=self.map[y][x], score=0, desertique=True, annimal=True, attaque=0))
-        
+                        self.nbAnnimaux+=1
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]
         now = self.tempsJeu()
         for mob in listeMob :
+            
             if mob.attack>0:
-                colide = pygame.sprite.spritecollide(joueur, listeMob, False, pygame.sprite.collide_mask)
+                
+                colide = pygame.sprite.collide_mask(joueur, mob)
                 if colide and now-joueur.lastDamage>joueur.cooldownDamage:
                     joueur.takeDamage(mob.attack)
                     joueur.lastDamage=now
