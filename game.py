@@ -229,14 +229,18 @@ class Game(pygame.sprite.Sprite):
             self.map = generation.typeToTuile(mapChoisie, self)
         self.mapMontagneMer, self.mapMer, self.mapDesert, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
 
-    def spawnAnnimal(self, spawnChameau=10):
+    def spawnAnnimal(self, spawnChameau=10, spawnOiseau=1):
         for y in range(self.taille_matriceY):
             for x in range(self.taille_matriceX):
                 if self.map[y][x].type==6:
                     rand = random.randint(0,100)
-                    if rand<spawnChameau:
+                    if rand<spawnChameau :
                         self.groupMob.add(Mob(self,"chameau", 100, 1, tuile=self.map[y][x], score=0, desertique=True, annimal=True, attaque=0))
                         self.nbAnnimaux+=1
+                rand = random.randint(0,200)
+                if rand<spawnOiseau :
+                    self.groupMob.add(Mob(self,"oiseau", 100, 1, tuile=self.map[y][x], score=0, annimal=True, attaque=0, aerien=True))
+                    self.nbAnnimaux+=1
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]
@@ -253,16 +257,6 @@ class Game(pygame.sprite.Sprite):
                 if mob.name=="mage" or mob.name=="yeti": 
                     mob.lunchProjectile()
         return listeColide
-
-
-    """def affichage(self):
-        for i in range(len(self.tailleEcran)):
-            if self.tailleEcran[i][0] == self.infoObject.current_w and self.tailleEcran[i][1] == self.infoObject.current_h:
-                return i
-        return 2"""
-    
-    """def getAffichageTuile(self):
-        return self.affichageTuile"""
 
     def avoirTuileJoueur(self, joueur):
         return self.map[joueur.posY][joueur.posX]

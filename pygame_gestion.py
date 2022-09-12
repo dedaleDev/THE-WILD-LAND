@@ -98,7 +98,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     #game.genererImg()
 
     centrerJoueur(game)
-    #game.spawnAnnimal(5)
+    game.spawnAnnimal(5)
     
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
@@ -219,8 +219,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 else :
                     tirageCoffre+=7
                 if game.groupMob.__len__()-game.nbAnnimaux<9:
-                    #game.spawMob()
-                    pass
+                    game.spawMob()
+                    
                 
                 tuileCata = game.majCata()
                 if game.incendie and tuileCata:
@@ -337,7 +337,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     center = tuile2.centerOriginal
                     listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre))
                 else :
-
+                    
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
                     center = tuile2.centerOriginal
                     listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre))

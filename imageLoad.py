@@ -56,7 +56,7 @@ class ImageLoad():
         self.annim7Barriere0 = self.loadAnnimTuile("7Barriere0_", 1,1)
         self.annim7Barriere1 = self.loadAnnimTuile("7Barriere1_", 1,1)
         self.annim7Barriere2 = self.loadAnnimTuile("7Barriere2_", 1,1)
-        self.annim7Barriere3 = self.loadAnnimTuile("7Barriere3_", 1,1)
+        self.annim7Barriere3 = self.loadAnnimTuile("7Barriere3_", 1,12)
         
         self.annim4foret0 = self.loadAnnimTuile("4foret0_", 1,12)
         self.annim4foret1 = self.loadAnnimTuile("4foret1_", 1,28)
@@ -71,6 +71,7 @@ class ImageLoad():
         
         for i in range(15):
             self.annim3eau0.append(self.annim3eau0[-1])
+            self.annim7Barriere3.append(self.annim7Barriere3[-1])
         
         for i in range(5):
             self.annim2Roche1.append(self.annim2Roche1[0])
@@ -467,7 +468,7 @@ class ImageLoad():
                 clockMax=5
             if type==7 and rand==3: 
                 annim=self.annim7Barriere3
-                clockMax=5
+                clockMax=7
             if type==7 and rand==0: 
                 annim=self.annim7Barriere0
                 clockMax=5
