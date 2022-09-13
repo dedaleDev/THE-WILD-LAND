@@ -38,6 +38,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     delayIncendie=500
     timeComtpeur=0
     imDebug = pygame.image.load("data/tuiles/debug.png").convert_alpha()
+    imDebug2 = pygame.transform.scale(imDebug, (20,20))
     imDebug = pygame.transform.scale(imDebug, (2,2))
     BLACK = (0, 0, 0)
     pygame.mixer.init()
@@ -333,13 +334,18 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             decalageYcentre = -100
             for tuile2 in listeMontagne:
                 if tuile2.type==2 :
-                    #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
                     center = tuile2.centerOriginal
-                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre))
+                    if tuile2.mortier:
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre))
+                    #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
+                    else:
+                        
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre))
                 else :
+                    center = tuile2.centerOriginal
                     
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
-                    center = tuile2.centerOriginal
+                    
                     listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre))
 
             if not game.joueur.bateau:
@@ -429,6 +435,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 print("mort")
                 fenetrePygame.blit(infoMortAnnimal, (tailleEcran[0]- 400, tailleEcran[1] - 700))
                 game.infoMortAnnimal-=1
+            
+            for pos in game.listeDebug:
+                fenetrePygame.blit(imDebug2, pos)
+
             if game.joueur.estMort:
                 mort(game)
             if game.joueur.ville:

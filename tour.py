@@ -27,7 +27,6 @@ class Tour(pygame.sprite.Sprite):
 
 
      def attack(self):
-         
          mob_proche = []
          for mob in self.game.groupMob:
             if not mob.annimal:

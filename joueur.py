@@ -571,10 +571,8 @@ class Player(pygame.sprite.Sprite):
           if nom=="port":
               imgTemp = self.chargerImPort(tuile)
           else:
-              #imgTempO = Image.open("data/batiments/"+nom+".png").convert('RGBA')
-              if nom!="moulin" and nom!="elevage":
+              if nom!="moulin" and nom!="elevage" and nom!="mortier":
                 imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
-          #tuile.imageO = imgTempO.resize((246, 144))
           if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
           tuile.aEteModifie=True

@@ -25,7 +25,6 @@ class Mob(pygame.sprite.Sprite):
           self.aerien = aerien
           self.desertique = desertique
           self.attack = attaque
-          print("debut",self.name, self.attack)
           self.velocity = vitesse
           self.maxVelocity = self.velocity
           self.slow =False
@@ -68,6 +67,10 @@ class Mob(pygame.sprite.Sprite):
               self.listeAnnimOiseau = self.game.images.oiseauAnnim
           if self.name == "chameau":
               self.listeAnnimChameau =self.game.images.chameauAnnim
+          if self.name == "lapin":
+              self.listeAnnimLapin =self.game.images.lapinAnnim
+          if self.name == "oiseau2":
+              self.listeAnnimOiseau2 =self.game.images.oiseau2Annim
           self.clockAnnim=0
           self.indiceAnnim=0
           self.droite = True
@@ -112,6 +115,14 @@ class Mob(pygame.sprite.Sprite):
             y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
             return x,y
         if self.name=="chameau":
+            x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        if self.name=="lapin":
+            x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        if self.name=="oiseau2":
             x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
             y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
             return x,y
@@ -266,11 +277,22 @@ class Mob(pygame.sprite.Sprite):
             skin = pygame.image.load("data/personnages/oiseau/oiseau (1).png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
+        elif nomSkin=="lapin":
+            scale = (979*0.2,735*0.2)
+            skin = pygame.image.load("data/personnages/lapin/lapin (1).png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
+        elif nomSkin=="oiseau2":
+            scale = (979*0.2,735*0.2)
+            skin = pygame.image.load("data/personnages/oiseau/oiseau2 (1).png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
         elif nomSkin=="chameau":
             scale = (979*0.2,735*0.2)
             skin = pygame.image.load("data/personnages/chameau/chameau (1).png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
+        
         skin = pygame.image.load("data/personnages/"+nomSkin+".png").convert_alpha()
         skin = pygame.transform.scale(skin, scale)
         return skin
@@ -283,23 +305,29 @@ class Mob(pygame.sprite.Sprite):
                 x = random.randint(1, self.game.taille_matriceX-1)
                 y = random.randint(1, self.game.taille_matriceY-1)
             return x,y
+        
          if self.name=="chameau":
-             casePossible = []
-             for i in range(-1,2):
-                 for j in range(-1,2):
-                     if self.game.verifierCo(self.posX+j, self.posY+i):
-                        if (i!=0 or j!=0) and (j!=1 or i!=-1) and self.game.map[self.posY+i][self.posX+j].type==6:
+             type=[6]
+         if self.name=="lapin":
+             type=[1, 4]
+         if self.name=="oiseau2":
+             type=[4]
+         casePossible = []
+         for i in range(-1,2):
+                for j in range(-1,2):
+                    if self.game.verifierCo(self.posX+j, self.posY+i):
+                        if (i!=0 or j!=0) and (j!=1 or i!=-1) and (j!=-1 or i!=1) and self.game.map[self.posY+i][self.posX+j].type in type:
                             casePossible.append(self.game.map[self.posY+i][self.posX+j])
-                            
-             if casePossible:
-                if random.randint(0,4):
-                    tuile = random.choice(casePossible)
-                    return tuile.posX,tuile.posY
-                else:
-                    return self.posX,self.posY
-             else:
-                 print(self.name, "bloque en", self.posX, self.posY)
-                 return self.posX, self.posY
+            
+         if casePossible:
+            if random.randint(0,4) or self.name=="lapin" or self.name=="oiseau2":
+                tuile = random.choice(casePossible)
+                return tuile.posX,tuile.posY
+            else:
+                return self.posX,self.posY
+         else:
+            print(self.name, "bloque en", self.posX, self.posY)
+            return self.posX, self.posY
             
 
      def lunchProjectile(self):
@@ -333,7 +361,7 @@ class Mob(pygame.sprite.Sprite):
             self.game.groupLoot.add(Loot(self.recompenseWood, self.recompenseStone, self.recompenseWater, self.recompenseFood, self.rect.x+20-moveX, self.rect.y-30-moveY, self.game))
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
             self.game.joueur.score=+self.score
-            if self.name=="chameau":
+            if self.name=="chameau" or "lapin":
                 self.game.joueur.indiceEcolo+=5
                 self.game.infoMortAnnimal = 440
             self.kill()
@@ -471,8 +499,11 @@ class Mob(pygame.sprite.Sprite):
          elif self.name=="oiseau":
              cooldown=5000
          elif self.name=="chameau":
-             cooldown=1000
-            
+             cooldown=3000
+         elif self.name=="lapin":
+             cooldown=600
+         elif self.name=="oiseau2":
+             cooldown=600
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
          return cooldown
@@ -512,6 +543,17 @@ class Mob(pygame.sprite.Sprite):
             else :
                 self.skin=pygame.transform.flip(self.listeAnnimOiseau[self.indiceAnnim], True, False)
             self.clockAnnim=0
+     def changeAnnimOiseau2(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==7:
+            self.indiceAnnim+=1
+            if self.indiceAnnim>=len(self.listeAnnimOiseau2):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimOiseau2[self.indiceAnnim]
+            else :
+                self.skin=pygame.transform.flip(self.listeAnnimOiseau2[self.indiceAnnim], True, False)
+            self.clockAnnim=0
             
      def changeAnnimChameau(self, flip=False):
         self.clockAnnim+=1
@@ -525,7 +567,18 @@ class Mob(pygame.sprite.Sprite):
                 self.skin=pygame.transform.flip(self.listeAnnimChameau[self.indiceAnnim], True, False)
 
             self.clockAnnim=0
-            
+     def changeAnnimLapin(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==4:
+            self.indiceAnnim+=1
+            if self.indiceAnnim>=len(self.listeAnnimLapin):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimLapin[self.indiceAnnim]
+            else :
+                self.skin=pygame.transform.flip(self.listeAnnimLapin[self.indiceAnnim], True, False)
+
+            self.clockAnnim=0
      def changeAnnimKraken(self, flip=False):
         self.clockAnnim+=1
         if self.clockAnnim==10:
@@ -580,7 +633,10 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimOiseau(True)
         if self.name=="chameau":
             self.changeAnnimChameau(True)
-
+        if self.name=="lapin":
+            self.changeAnnimLapin(True)
+        if self.name=="oiseau2":
+            self.changeAnnimOiseau2(True)
         self.droite = True
         
      def goRight(self, angle=4):
@@ -602,7 +658,10 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimOiseau()
         if self.name=="chameau":
             self.changeAnnimChameau()
-
+        if self.name=="lapin":
+            self.changeAnnimLapin()
+        if self.name=="oiseau2":
+            self.changeAnnimOiseau2()
         self.droite=False
         
      def goUp(self, angle=4):
@@ -623,8 +682,10 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimOiseau(self.droite)
          if self.name=="chameau":
             self.changeAnnimChameau(self.droite)
-            
-
+         if self.name=="lapin":
+            self.changeAnnimLapin(self.droite)
+         if self.name=="oiseau2":
+            self.changeAnnimOiseau2(self.droite)
      def goDown(self, angle=4):
          if self.name=="oursin":    
                 self.rotate(self.neg, angle)
@@ -644,6 +705,10 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimOiseau(self.droite)
          if self.name=="chameau":
             self.changeAnnimChameau(self.droite)
+         if self.name=="lapin":
+            self.changeAnnimLapin(self.droite)
+         if self.name=="oiseau2":
+            self.changeAnnimOiseau2(self.droite)
      def update_health_bar(self):
         #def la couleur
         

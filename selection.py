@@ -74,6 +74,7 @@ def majSelectionMob(game, mob, supX=0, supY=0): #version ultra opti de maj selec
 
     if not tuileSelect:
         print("attention majSelectionMob n'a pas trouvé de tuile en", souris)
+        game.listeDebug.append(souris)
         #Pour ne pas crash, decommenter la ligne suivante, après avoir fait suivre le bug
         return None
         assert(False)

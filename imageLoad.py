@@ -38,6 +38,8 @@ class ImageLoad():
         self.oiseauAnnim = self.loadAnnimOiseau()
         self.oiseau2Annim = self.loadAnnimOiseau2()
         self.chameauAnnim = self.loadAnnimChameau()
+        self.lapinAnnim = self.loadAnnimLapin()
+        
         
         self.annim1Terre3 = self.loadAnnimTuile("1Terre3_", 1, 11)
         self.annim1Terre4 = self.loadAnnimTuile("1Terre4_", 1, 17)
@@ -181,6 +183,8 @@ class ImageLoad():
             listeAnnim.append(im)
         return listeAnnim
     
+    
+    
     def loadAnnimDragon(self):
         listeAnnim = []
         for i in range(2,31):
@@ -195,6 +199,15 @@ class ImageLoad():
             im = pygame.image.load("data/personnages/oiseau/oiseau ("+str(i)+").png").convert_alpha()
             im = pygame.transform.scale(im, (240*0.3, 314*0.3))
             im=pygame.transform.flip(im, True, False)
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    def loadAnnimLapin(self):
+        listeAnnim = []
+        for i in range(1,25):
+            im = pygame.image.load("data/personnages/lapin/lapin ("+str(i)+").png").convert_alpha()
+            im = pygame.transform.scale(im, (im.get_width()*0.5, im.get_height()*0.5))
+            #im=pygame.transform.flip(im, True, False)
             listeAnnim.append(im)
         return listeAnnim
     

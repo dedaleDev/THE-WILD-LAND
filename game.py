@@ -120,7 +120,7 @@ class Game(pygame.sprite.Sprite):
         self.cinqMin=False
         self.huitMin=False
         self.incendie=False
-        
+        self.listeDebug = [(100,100)]
         self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc
         self.lastPause = 0
         
@@ -229,7 +229,7 @@ class Game(pygame.sprite.Sprite):
             self.map = generation.typeToTuile(mapChoisie, self)
         self.mapMontagneMer, self.mapMer, self.mapDesert, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
 
-    def spawnAnnimal(self, spawnChameau=10, spawnOiseau=1):
+    def spawnAnnimal(self, spawnChameau=10, spawnOiseau=1, spawnLapin = 4, spawnOiseau2 = 5):
         for y in range(self.taille_matriceY):
             for x in range(self.taille_matriceX):
                 if self.map[y][x].type==6:
@@ -241,6 +241,16 @@ class Game(pygame.sprite.Sprite):
                 if rand<spawnOiseau :
                     self.groupMob.add(Mob(self,"oiseau", 100, 1, tuile=self.map[y][x], score=0, annimal=True, attaque=0, aerien=True))
                     self.nbAnnimaux+=1
+                if self.map[y][x].type==1:
+                    rand = random.randint(0,100)
+                    if rand<spawnLapin :
+                        self.groupMob.add(Mob(self,"lapin", 100, 2, tuile=self.map[y][x], score=0, annimal=True, attaque=0))
+                        self.nbAnnimaux+=1
+                if self.map[y][x].type==4:
+                    rand = random.randint(0,50)
+                    if rand<spawnOiseau2 :
+                        self.groupMob.add(Mob(self,"oiseau2", 100, 1, tuile=self.map[y][x], score=0, annimal=True, attaque=0))
+                        self.nbAnnimaux+=1
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]

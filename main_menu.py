@@ -1,5 +1,6 @@
 import math
 from pathlib import Path
+import pathlib
 from turtle import up
 import pygame, sys
 from button import Button
@@ -42,16 +43,13 @@ def optionPartie():
     fissure = pygame.transform.scale(fissure, (diagonalEcran*fondMap.get_width()*0.000445, diagonalEcran*fondMap.get_height()*0.000635))
     path += "/data/map/"
     for filename in os.listdir(path):
-        f = os.path.join(path, filename)
-        map = open(f, "r")
-        
-        listeType = eval(map.read())[0]
-        map.close()
-        map = open(f, "r")
-        pointSpawnTemp = eval(map.read())[1]
-        map.close()
-        mapPropose.append(MapEditor(listeType, None, pointSpawnTemp, Path(map.name).stem)) #dernier argument = nom du fichier sans .txt
-        
+        if str(filename)[-4:]== ".txt" : 
+            print(filename)
+            f = str(pathlib.Path(__file__).parent.absolute())+"/data/map/"+  filename
+            map = open(f, "r")
+            listeType, pointSpawnTemp = eval(map.read())
+            map.close()
+            mapPropose.append(MapEditor(listeType, None, pointSpawnTemp, pathlib.Path(map.name).stem)) #dernier argument = nom du fichier sans .txt
     
     indiceMap = 0
     
