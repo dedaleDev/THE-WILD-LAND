@@ -107,7 +107,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oursin", 100, 1, tuile=game.map[4][4], score=150))
-    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
 
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[4][4], score=150))
