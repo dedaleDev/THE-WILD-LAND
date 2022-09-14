@@ -96,7 +96,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     for i in range(-1, 2):
         for j in range(-1, 2):
             game.deleteFog(game.joueur.posX+i, game.joueur.posY+j)
-    #game.genererImg()
 
     centrerJoueur(game)
     game.spawnAnnimal(5)
@@ -108,7 +107,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oursin", 100, 1, tuile=game.map[4][4], score=150))
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
 
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[4][4], score=150))
@@ -297,8 +296,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
 
 
-            for loot in game.groupLoot:
-                loot.update(fenetrePygame, moveX,moveY)
             
 
             if tuile :
@@ -317,7 +314,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1]))
                     pass
                 
-
+            
 
 
             for mob in game.groupMob:
@@ -347,7 +344,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
                     
                     listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre))
-
+            
             if not game.joueur.bateau:
                 fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
                 center = game.joueur.rect.center
@@ -361,6 +358,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             listeOrdre.sort(key=lambda x: x[3])
             for image, posX, posY, center in listeOrdre:
                 fenetrePygame.blit(image, (posX, posY))
+            for loot in game.groupLoot:
+                loot.update(fenetrePygame, moveX,moveY)
             
             
             if tuile :
@@ -421,7 +420,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             game.joueur.update_health_bar()
             
             if game.joueur.imageArmure:
-                fenetrePygame.blit(joueur.imageArmure, (10,368))
+                fenetrePygame.blit(game.joueur.imageArmure, (22,80))
             for mob in game.groupMob:
                 fenetrePygame.blit(imDebug, mob.getFeet())
             game.joueur.update_ecolo_bar()

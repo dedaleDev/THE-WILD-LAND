@@ -23,7 +23,7 @@ class ImageLoad():
         self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
         
         
-        
+        self.armure = self.loadImArmure()
         self.coffre = self.loadAnnimCoffre()
 
         self.moulinAnnim = self.loadAnnimMoulin()
@@ -102,7 +102,13 @@ class ImageLoad():
             liste.append(im)
             
         return liste
-        
+    
+    def loadImArmure(self):
+        liste=[]
+        for i in range(1,5):
+            liste.append(pygame.transform.scale(pygame.image.load("data/personnages/armure"+str(i)+".png").convert_alpha(), (75,75)))
+        return liste
+    
     def loadAnnimRessource(self, nomRessource, idebut, ifin):
         liste=[]
         for i in range(idebut, ifin+1):

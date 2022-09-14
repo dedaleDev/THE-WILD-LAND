@@ -120,9 +120,17 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "trou", 15,0, 10, 0))
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
         elif tuile.type==7:
-            optionDIspo.append(Item(game, "forge", 0,0,0,0))
-        if tuile.forge:
-            optionDIspo.append(Item(game, "armure1", 0, 0,0,0, infobulle=False))
+            if not tuile.forge:
+                optionDIspo.append(Item(game, "forge", 0,0,0,0))
+            else:
+                if joueur.nomArmure==None:
+                    optionDIspo.append(Item(game, "armure1", 0, 0,0,0, infobulle=False))
+                elif joueur.nomArmure=="armure1":
+                    optionDIspo.append(Item(game, "armure2", 0, 0,0,0, infobulle=False))
+                elif joueur.nomArmure=="armure2":
+                    optionDIspo.append(Item(game, "armure3", 0, 0,0,0, infobulle=False))
+                elif joueur.nomArmure=="armure3":
+                    optionDIspo.append(Item(game, "armure4", 0, 0,0,0, infobulle=False))
     return optionDIspo
 
 

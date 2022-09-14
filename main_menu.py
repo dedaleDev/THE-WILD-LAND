@@ -40,11 +40,10 @@ def optionPartie():
     fondMap =pygame.image.load("data/menu/fondMap.png").convert_alpha()
     fondMap = pygame.transform.scale(fondMap, (diagonalEcran*fondMap.get_width()*0.0002, diagonalEcran*fondMap.get_height()*0.0002))
     fissure = pygame.image.load("data/menu/fissure.png").convert_alpha()
-    fissure = pygame.transform.scale(fissure, (diagonalEcran*fondMap.get_width()*0.000445, diagonalEcran*fondMap.get_height()*0.000635))
+    fissure = pygame.transform.scale(fissure, (diagonalEcran*fissure.get_width()*0.000235, diagonalEcran*fissure.get_height()*0.000235))
     path += "/data/map/"
     for filename in os.listdir(path):
         if str(filename)[-4:]== ".txt" : 
-            print(filename)
             f = str(pathlib.Path(__file__).parent.absolute())+"/data/map/"+  filename
             map = open(f, "r")
             listeType, pointSpawnTemp = eval(map.read())

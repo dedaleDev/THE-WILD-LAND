@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
           self.health = 100
           self.max_health=100
           self.velocity = vitesse
-          self.armor = 0
+          self.armure = 0
           self.posX, self.posY = self.initPos(pointSpawn)
           self.rect = self.skin.get_rect()
           self.rect.x = self.game.map[self.posY][self.posX].rect.x+40
@@ -60,6 +60,7 @@ class Player(pygame.sprite.Sprite):
           self.blit = False
           
           self.imageArmure = None
+          self.nomArmure = None
           
           self.listeTour=[]
           
@@ -147,6 +148,10 @@ class Player(pygame.sprite.Sprite):
          return self.rect.x+25, self.rect.y+80
 
      def takeDamage(self, entier, moveX=0, moveY=0):
+        resistance = 100-self.armure
+        print("de base",entier)
+        entier=int(resistance/100*entier)
+        print("prit", entier)
         if self.health >=0 :
             self.health-=entier
             self.update_health_bar()
@@ -490,14 +495,22 @@ class Player(pygame.sprite.Sprite):
             tuile.annimation=self.game.images.forgeAnnim
             tuile.clockAnnimMax = 6
             self.game.map[tuile.posY][tuile.posX].forge = True
-        elif item.nom=="forge1":
-            self.game.map[tuile.posY][tuile.posX].forge1 = True
-        elif item.nom=="forge2":
-            self.game.map[tuile.posY][tuile.posX].forge2 = True
-        elif item.nom=="forge3":
-            self.game.map[tuile.posY][tuile.posX].forge3 = True
-        elif item.nom=="forge4":
-            self.game.map[tuile.posY][tuile.posX].forge4 = True
+        elif item.nom=="armure1":
+            self.nomArmure="armure1"
+            self.imageArmure = self.game.images.armure[0]
+            self.armure=5
+        elif item.nom=="armure2":
+            self.nomArmure="armure2"
+            self.imageArmure = self.game.images.armure[1]
+            self.armure=15
+        elif item.nom=="armure3":
+            self.nomArmure="armure3"
+            self.imageArmure = self.game.images.armure[2]
+            self.armure=25
+        elif item.nom=="armure4":
+            self.nomArmure="armure4"
+            self.imageArmure = self.game.images.armure[3]
+            self.armure=35
         if item.nom!="forge" or item.nom!="forge1" or item.nom!="forge2" or item.nom!="forge3" or item.nom!="forge4" or item.nom!="mine":
             self.changerImageBatiment(tuile, item.nom)
         
@@ -571,9 +584,9 @@ class Player(pygame.sprite.Sprite):
           if nom=="port":
               imgTemp = self.chargerImPort(tuile)
           else:
-              if nom!="moulin" and nom!="elevage" and nom!="mortier":
+              if nom!="moulin" and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure":
                 imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
-          if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier":
+          if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure" and nom!="forge":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
           tuile.aEteModifie=True
 
