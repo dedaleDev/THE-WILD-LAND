@@ -622,11 +622,12 @@ class ImageLoad():
         for elem in self.listeImgItem:
             if elem[0]==nom:
                 return elem[1]
-            
+
         assert(False)
         #Pas d'image d'item trouvé
 
 
     def ImInfoBullItem(self, nom, chemin="data/batiments/infoBulle/info_"):
         img = pygame.image.load(chemin+nom+".png").convert_alpha()
+        img = pygame.transform.scale(img, (411,257))
         return img

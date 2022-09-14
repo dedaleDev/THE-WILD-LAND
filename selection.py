@@ -124,13 +124,13 @@ def selectionDispoItem(game, tuile, joueur):
                 optionDIspo.append(Item(game, "forge", 0,0,0,0))
             else:
                 if joueur.nomArmure==None:
-                    optionDIspo.append(Item(game, "armure1", 0, 0,0,0, infobulle=False))
+                    optionDIspo.append(Item(game, "armure1", 0, 0,0,0))
                 elif joueur.nomArmure=="armure1":
-                    optionDIspo.append(Item(game, "armure2", 0, 0,0,0, infobulle=False))
+                    optionDIspo.append(Item(game, "armure2", 0, 0,0,0))
                 elif joueur.nomArmure=="armure2":
-                    optionDIspo.append(Item(game, "armure3", 0, 0,0,0, infobulle=False))
+                    optionDIspo.append(Item(game, "armure3", 0, 0,0,0))
                 elif joueur.nomArmure=="armure3":
-                    optionDIspo.append(Item(game, "armure4", 0, 0,0,0, infobulle=False))
+                    optionDIspo.append(Item(game, "armure4", 0, 0,0,0))
     return optionDIspo
 
 
