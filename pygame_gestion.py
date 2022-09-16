@@ -120,6 +120,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     taillePolice = round(3/100*diagonalEcran)
     police = get_font(taillePolice)
     while continuer == True:
+        debut = pygame.time.get_ticks()
         game.joueur.blit=False
         
         scoreText = police.render(str(game.joueur.score), True, "Black")
@@ -148,7 +149,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         
         gestionMob(game, fps)
-            
+        #print(pygame.time.get_ticks()-debut)
         
         keys=pygame.key.get_pressed()
         if keys[K_ESCAPE] and pygame.time.get_ticks() - game.lastPause > 250:
@@ -248,7 +249,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             if game.map[y][x].type==2 or game.map[y][x].type==7:
                                 listeMontagne.append(game.map[y][x])
                             else:
-                                fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                                #fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                                fenetrePygame.blit(game.map[y][x].image, game.map[y][x].rect)
                         if game.map[y][x].annimation:
                             game.map[y][x].changeAnnim()
                     if game.map[y][x].traceMob:
@@ -442,7 +444,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 mort(game)
             if game.joueur.ville:
                 victoire(game)
-            
+            test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))
+            fenetrePygame.blit(test, (0,100))
             pygame.display.flip()
             
         else:
@@ -731,6 +734,7 @@ def surEcran(entite, moveX, moveY, infoObject):
 def gestionMob(game, fps):
     now = game.tempsJeu()
     for mob in game.groupMob:
+        a=1
         majSelectionMob(game, mob)
         if mob.name=="oursin":
             if game.avoirTuileJoueur(mob).trou:

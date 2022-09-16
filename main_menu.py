@@ -7,6 +7,7 @@ from button import Button
 import pygame_gestion
 import aideCSV
 import os
+import mainEditor
 from map import MapEditor
 pygame.init()
 
@@ -355,8 +356,8 @@ def optionPartie():
 
 def options():
     continu=True
-    volume = 0.4
-    volumeM = 0.5
+    volume = aideCSV.valCorrespondante("volumeBruitage")
+    volumeM = aideCSV.valCorrespondante("volumeMusique")
     OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
                     text_input="BACK", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     volumeHigh = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2), 
@@ -437,16 +438,17 @@ def main_menu():
                         text_input="JOUER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
     OPTIONS_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/3), 
                         text_input="OPTIONS", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
-    QUIT_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
+    QUIT_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*6/7), 
                         text_input="QUITTER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
-
+    EDITOR_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
+                        text_input="Editeur", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
     while True:
         SCREEN.blit(BG, (0, 0))
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON, EDITOR_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
             
@@ -471,6 +473,10 @@ def main_menu():
                     volume, volumeM = options()
                     aideCSV.remplacerVal("volumeBruitage", volume, True)
                     aideCSV.remplacerVal("volumeMusique", volumeM, True)
+                    
+                if EDITOR_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
+                    mainEditor.editor()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
                     pygame.quit()

@@ -229,7 +229,7 @@ class Game(pygame.sprite.Sprite):
             self.map = generation.typeToTuile(mapChoisie, self)
         self.mapMontagneMer, self.mapMer, self.mapDesert, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
 
-    def spawnAnnimal(self, spawnChameau=10, spawnOiseau=1, spawnLapin = 4, spawnOiseau2 = 5):
+    def spawnAnnimal(self, spawnChameau=10, spawnOiseau=1, spawnLapin = 3, spawnOiseau2 = 2):
         for y in range(self.taille_matriceY):
             for x in range(self.taille_matriceX):
                 if self.map[y][x].type==6:
