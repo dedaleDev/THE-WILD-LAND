@@ -35,7 +35,8 @@ class ImageLoad():
         self.yetiAnnim = self.loadAnnimYeti()
         self.mageAnnim = self.loadAnnimMage()
         self.dragonAnnim = self.loadAnnimDragon()
-        self.oiseauAnnim = self.loadAnnimOiseau()
+        self.oiseauAnnim = self.loadAnnimOiseau(random.randint(0,1))
+        
         self.oiseau2Annim = self.loadAnnimOiseau2()
         self.chameauAnnim = self.loadAnnimChameau()
         self.lapinAnnim = self.loadAnnimLapin()
@@ -199,14 +200,22 @@ class ImageLoad():
             listeAnnim.append(im)
         return listeAnnim
     
-    def loadAnnimOiseau(self):
+    def loadAnnimOiseau(self, int2):
         listeAnnim = []
-        for i in range(1,21):
-            im = pygame.image.load("data/personnages/oiseau/oiseau ("+str(i)+").png").convert_alpha()
-            im = pygame.transform.scale(im, (240*0.3, 314*0.3))
-            im=pygame.transform.flip(im, True, False)
-            listeAnnim.append(im)
-        return listeAnnim
+        if int2:
+            for i in range(1,21):
+                im = pygame.image.load("data/personnages/oiseau/oiseau ("+str(i)+").png").convert_alpha()
+                im = pygame.transform.scale(im, (240*0.3, 314*0.3))
+                im=pygame.transform.flip(im, True, False)
+                listeAnnim.append(im)
+            return listeAnnim
+        else:
+            for i in range(21,33):
+                im = pygame.image.load("data/personnages/oiseau/oiseau ("+str(i)+").png").convert_alpha()
+                #im = pygame.transform.scale(im, (240*0.3, 314*0.3))
+                #im=pygame.transform.flip(im, True, False)
+                listeAnnim.append(im)
+            return listeAnnim
     
     def loadAnnimLapin(self):
         listeAnnim = []
@@ -449,7 +458,8 @@ class ImageLoad():
         if type==6 or type==3 :
             
             rand = random.randint(0,4)
-            
+            if type==3:
+                rand = 3
             if rand == 4 and type==6: #arbre desert
                 clockMax=7
                 annim=self.annim6desert4

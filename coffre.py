@@ -1,5 +1,3 @@
-from logging.config import stopListening
-from xml.dom import WRONG_DOCUMENT_ERR
 import pygame
 
 class Coffre(pygame.sprite.Sprite):

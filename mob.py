@@ -361,11 +361,10 @@ class Mob(pygame.sprite.Sprite):
             self.game.groupLoot.add(Loot(self.recompenseWood, self.recompenseStone, self.recompenseWater, self.recompenseFood, self.rect.x+20-moveX, self.rect.y-30-moveY, self.game))
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
             self.game.joueur.score=+self.score
-            if self.name=="chameau" or "lapin":
+            if self.name=="chameau" or self.name=="lapin":
                 self.game.joueur.indiceEcolo+=5
                 self.game.infoMortAnnimal = 440
             self.kill()
-
 
      """def moveMob(self, joueur):
         diffX = self.rect.x - joueur.rect.x

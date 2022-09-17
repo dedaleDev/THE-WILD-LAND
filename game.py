@@ -146,7 +146,7 @@ class Game(pygame.sprite.Sprite):
         pygame.display.flip()
     
     def majCata(self):
-        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 6000 : #INCENDIE
+        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 15000 : #INCENDIE
             if not random.randint(0,2) or True: #quand on tombe sur un 0, donc incendie toute les 3 min environ
                 indice=random.randint(0, len(self.listeCaseBatiment)-1)
                 tuile = self.listeCaseBatiment[indice]
@@ -154,31 +154,24 @@ class Game(pygame.sprite.Sprite):
                 self.incendie=True
                 self.incendieDelay=self.tempsJeu()
                 return tuile
-
-
-        
-        
-        
-        
-        
     
     
     def augmenterMob(self):
         
         if self.tempsJeu() > 120000*6: #12min 
-            self.probaDragon = 4
-            self.probaGolemForet = 5
-            self.probaOursin = 4
-            self.probaKraken = 4
-            self.probaMage = 4
-            self.probaYeti = 4
+            self.probaDragon = 2
+            self.probaGolemForet = 4
+            self.probaOursin = 3
+            self.probaKraken = 3
+            self.probaMage = 3
+            self.probaYeti = 2
             
         elif self.tempsJeu() > 120000*5: #10min 
             self.probaDragon = 1
             self.probaGolemForet = 4
             self.probaOursin = 2
             self.probaKraken = 2
-            self.probaMage = 3
+            self.probaMage = 2
             self.probaYeti = 0
         elif self.tempsJeu() > 120000*4 and not self.huitMin: #8min 
             self.probaDragon = 0
@@ -195,7 +188,7 @@ class Game(pygame.sprite.Sprite):
             #pygame.mixer.Sound.play(self.son.musique3)
         elif self.tempsJeu() > 120000*2 : #4min
             self.probaDragon = 0
-            self.probaGolemForet = 4
+            self.probaGolemForet = 3
             self.probaOursin = 1
             self.probaKraken = 1
             self.probaMage = 1
@@ -278,35 +271,35 @@ class Game(pygame.sprite.Sprite):
                 if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y) and (y!=0 or x!=0):
                     tuile = self.map[self.joueur.posY+y][self.joueur.posX+x]
                     if tuile.type==2:
-                        rand = random.randint(1,400)
+                        rand = random.randint(1,4000)
                         if rand <= self.probaDragon:
-                            self.groupMob.add(Mob(self, "dragon", 300, 2, tuile, 700,aerien=True))   
+                            self.groupMob.add(Mob(self, "dragon", 400, 2, tuile, 700,aerien=True, attaque=20))   
                             pygame.mixer.Sound.play(self.son.dragonSpawn)
                     if tuile.estForet():
-                        rand = random.randint(1,400)
+                        rand = random.randint(1,4000)
                         if rand <= self.probaGolemForet:
                             self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile, 100))
                             pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)
-                        rand = random.randint(1,400)
+                        rand = random.randint(1,4000)
                         if rand<= self.probaMage:
-                            self.groupMob.add(Mob(self, "mage", 50, 1, tuile, 125))
+                            self.groupMob.add(Mob(self, "mage", 75, 1, tuile, 125))
                             pygame.mixer.Sound.play(self.son.mageSpawn)
                     if tuile.estPlaine():
-                        rand = random.randint(1,400)
+                        rand = random.randint(1,4000)
                         if rand <= self.probaOursin:
-                            self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, 150, pique=True))
+                            self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, 150, pique=True, attaque=7))
                             pygame.mixer.Sound.play(self.son.oursinSpawn)
                     if tuile.estMer():
-                        rand = random.randint(1,400)
+                        rand = random.randint(1,4000)
                         if rand <= self.probaKraken:
-                            self.groupMob.add(Mob(self, "kraken", 50, 1,tuile, 100, aquatique=True))
+                            self.groupMob.add(Mob(self, "kraken", 75, 1,tuile, 100, aquatique=True))
                             pygame.mixer.Sound.play(self.son.krakenSpawn)
                     if tuile.type==5:
-                        rand = random.randint(1,400)
+                        rand = random.randint(1,4000)
                         if rand <= self.probaYeti:
-                            self.groupMob.add(Mob(self, "yeti", 300, 2, tuile, 500))
+                            self.groupMob.add(Mob(self, "yeti", 500, 2, tuile, 500, attaque=30))
                             pygame.mixer.Sound.play(self.son.yetiSpawn)
-    """                            
+    """
     def genererImg(self):
         global background_pil, premierPAss
         modification=False

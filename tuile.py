@@ -45,7 +45,7 @@ class Tuile():
         
         self.traceMob = False
         self.estSelect = False
-        self.isExplored = True#self.type==7
+        self.isExplored = self.type==7
         self.annimationFog = 256
         ####     POSITION ET IMAGE    ####
         self.imageFog = game.imageFog2.copy()
@@ -53,8 +53,8 @@ class Tuile():
         self.posY = posY
         self.image, self.clockAnnimMax, self.annimation, self.indiceAnnim = game.images.returnImg(self.type)
         if self.type==3:
-            self.image = pygame.transform.flip(self.image, random.randint(0,1), False)
-
+            #self.image = pygame.transform.flip(self.image, random.randint(0,1), False)
+            pass
         self.clockAnnim=0
         self.rect = self.image.get_rect()
         self.rect.x = self.avoirX()

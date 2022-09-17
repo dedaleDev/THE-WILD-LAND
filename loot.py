@@ -1,7 +1,7 @@
 import pygame
 
 class Loot(pygame.sprite.Sprite): #Classe servant a annimer un loot (de mob, coffre...)
-    def __init__(self, bois, pierre, eau, food, x, y, game):
+    def __init__(self, bois, pierre, eau, food, x, y, game, coffre=False, coffreX=False, coffreY=False):
         super().__init__()
         
         
@@ -34,7 +34,9 @@ class Loot(pygame.sprite.Sprite): #Classe servant a annimer un loot (de mob, cof
         self.fontPierre = self.font.render("+"+str(self.pierre), True, "black")
         self.fontEau = self.font.render("+"+str(self.eau), True, "black")
         self.fontFood = self.font.render("+"+str(self.food), True, "black")
-        
+        self.coffre=coffre
+        self.coffreX=coffreX
+        self.coffreY=coffreY
         
     def update(self, screen, moveX, moveY):
         self.clockAnnim+=1

@@ -1,7 +1,5 @@
 import math
-from pathlib import Path
 import pathlib
-from turtle import up
 import pygame, sys
 from button import Button
 import pygame_gestion
@@ -92,8 +90,6 @@ def optionPartie():
     
     EXTREMEDIFF_TEXT = get_font(taillePolice//2).render(" Extreme ", True, "Black")
     EXTREMEDIFF_RECT = EXTREMEDIFF_TEXT.get_rect(center=(tailleEcran[0]*1/7+tailleEcran[0]*30//100, 0.06+tailleEcran[1]*posYDiffTXT))
-    
-    
     
     
     MAP_TEXT = get_font(taillePolice//2).render(" Taille de la carte ", True, "Black")

@@ -1,16 +1,13 @@
 import math
-from random import randint
 import pygame
 from pygame.locals import *
 from inventaire import Inventaire
 from generation import *
 from loot import Loot
-from mob import Mob
 import main_menu
 from selection import colisionItem, majSelection, majSelectionJoueur, majSelectionMob, selectionDispoItem
 from game import Game
 #from game import background_pil
-from coffre import Coffre
 from button import Button
 from findPos import *
 fenetrePygame = ""
@@ -206,7 +203,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             ####CATASTROPHE
             
-                
+            if fps==0 or fps==30:
+                if game.groupMob.__len__()-game.nbAnnimaux<9:
+                    game.spawMob()
+            
+            
             modification=True
             #affichage selection
             if tick_ressource==0:
@@ -219,11 +220,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     tirageCoffre=0
                 else :
                     tirageCoffre+=7
-                if game.groupMob.__len__()-game.nbAnnimaux<9:
-                    game.spawMob()
-                    
                 
-                tuileCata = game.majCata()
+                    
+                if not random.randint(0,((game.joueur.MaxEcolo-game.joueur.indiceEcolo)%10)):
+                    tuileCata = game.majCata()
                 if game.incendie and tuileCata:
                     annimIncendieListe.append(tuileCata)
                     annimTremblementListe.append(tuileCata)
@@ -433,7 +433,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject.current_w-game.imageErreurRessource.get_width()-(infoObject.current_w-game.imageErreurRessource.get_width())/2,infoObject.current_h - 200))
                 tickBatiment+=1
             if game.infoMortAnnimal>0:
-                print("mort")
                 fenetrePygame.blit(infoMortAnnimal, (tailleEcran[0]- 400, tailleEcran[1] - 700))
                 game.infoMortAnnimal-=1
             
