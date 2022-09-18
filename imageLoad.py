@@ -93,8 +93,19 @@ class ImageLoad():
         for i in range(5):
             self.annim3eau1.append(self.annim3eau0[-1])
         self.annim3eau2 = self.loadAnnimTuile("3eau2_", 1,15)
+        self.annim3eau3 = self.loadAnnimTuileEau()
         for i in range(5):
             self.annim3eau2.append(self.annim3eau0[-1])
+        
+        
+    def loadAnnimTuileEau(self):
+        liste=[]
+        for i in range(1, 193):
+            im = pygame.image.load("data/animationTuiles/eau/3eau3 ("+str(i)+").png").convert_alpha()
+            liste.append(im)
+            
+        return liste
+        
         
     def loadAnnimTuile(self, nomTuile, idebut, ifin):
         liste=[]
@@ -472,6 +483,9 @@ class ImageLoad():
             elif rand==2 and type==3:
                 clockMax=7
                 annim=self.annim3eau2
+            elif rand==3 and type==3: #mer classique
+                clockMax=2
+                annim=self.annim3eau3
             if rand == 4 and type==3:
                 
                 clockMax=5
