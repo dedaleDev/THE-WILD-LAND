@@ -41,6 +41,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     imDebug = pygame.image.load("data/tuiles/debug.png").convert_alpha()
     imDebug2 = pygame.transform.scale(imDebug, (60,60))
     imDebug = pygame.transform.scale(imDebug, (2,2))
+    
+    
+    
+    
+    
     BLACK = (0, 0, 0)
     pygame.mixer.init()
     continuer = 1
@@ -51,6 +56,12 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     pygame.key.set_repeat(1, 30)
 
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
+    tailleEcran = infoObject.current_w, infoObject.current_h 
+    diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
+    statImg = pygame.image.load("data/menu/stat.png").convert_alpha()
+    statImg = pygame.transform.scale(statImg, (statImg.get_width()*diagonalEcran*0.0002, statImg.get_height()*diagonalEcran*0.0002))
+    
+    
     opti = int(aideCSV.valCorrespondante("optimisation"))
     if not opti:
         fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
@@ -113,6 +124,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     game.spawnAnnimal(5)
 
 
+    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"chameau", 100, 1, tuile=game.map[3][3], score=0, desertique=True, annimal=True, attaque=0))
@@ -120,8 +133,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oursin", 100, 1, tuile=game.map[4][4], score=150))
-    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
-    game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[4][4], score=150))
+    
+    #game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game,"kraken", 100, 2, tuile=game.map[4][4], score=150, aquatique=True))
     
     
@@ -462,6 +475,15 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 victoire(game)
             test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))
             fenetrePygame.blit(test, (0,100))
+            
+            
+            ###STAT
+            
+            productionWood, productionWood, productionWater, productionFood, recuperationEcolo, nbAnnimauxMort, ennemieDegat = stat(game)
+            #a transformer en str et les blit
+            
+            fenetrePygame.blit(statImg, (infoObject.current_w*0.4,infoObject.current_h*0.1))
+            
             pygame.display.flip()
             
         else:
@@ -476,8 +498,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 listefps.sort()
                 print("fps min 1% et max 1% :", listefps[1//100*len(listefps)], listefps[99//100*len(listefps)-1] )
                 print("mesure sur "+str(len(listefps))+" fps")
-            f = open("save2.txt", "w+")
-            pickle.dump(game.joueur, f)
+           
             
             main_menu.main_menu()
             pygame.display.quit()
@@ -859,7 +880,7 @@ def stat(game:Game): #specification du type game
     
     #multiplication par 6 pour mettre en minute
     productionWood = 5*game.joueur.nbScierie*6
-    productionStone = 4*game.joueur.nbMine*6
+    productionWood = 4*game.joueur.nbMine*6
     productionWater = 3*game.joueur.nbMoulin*6
     productionFood = 4*game.joueur.nbElevage*6 + 1*game.joueur.nbChamps*6
     recuperationEcolo = game.joueur.nbFrigo*0.5*6
@@ -869,5 +890,5 @@ def stat(game:Game): #specification du type game
     
     
     
-    return
+    return productionWood, productionWood, productionWater, productionFood, recuperationEcolo, nbAnnimauxMort, ennemieDegat
     
