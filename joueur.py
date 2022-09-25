@@ -70,6 +70,8 @@ class Player(pygame.sprite.Sprite):
           self.indiceEcolo=0
           self.MaxEcolo=100
           
+          self.nbAnnimauxTue = 0
+          self.dictioDegatMob = {"golem_des_forets":0, "mage":0, "dragon":0, "yeti":0, "kraken":0, "oursin":0}
           #deplacement
         
 
@@ -598,6 +600,7 @@ class Player(pygame.sprite.Sprite):
          self.setWater(3*self.nbMoulin)
          self.setFood(4*self.nbElevage + 1*self.nbChamps)
          self.indiceEcolo-=self.nbFrigo*0.5
+         
      def update_health_bar(self):
         #def la couleur
         

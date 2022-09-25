@@ -44,17 +44,19 @@ class Mob(pygame.sprite.Sprite):
               self.speedProjectile=3
           else:
               self.speedProjectile=5
-              
+          self.stop=1
           self.damageDistance = 5
           self.range=300
           self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater=0,0,0,0
           self.initRecompense(self.name)
           if self.name=="oursin":
-            self.originSkin = self.skin
+            self.listeAnnimOursin = self.game.images.oursinAnnim
+            self.originSkin = self.game.images.oursinAnnim[:]
             self.angle = 0
             self.neg = False #sens de rotation
           if self.name=="golem_des_forets":
               self.listeAnnimGolem = self.game.images.golemAnnim
+              self.listeAnnimGolemSpawn = self.game.images.golemAnnimSpawn[:]
           if self.name=="kraken":
               self.listeAnnimKraken = self.game.images.krakenAnnim
           if self.name=="yeti":
@@ -80,7 +82,7 @@ class Mob(pygame.sprite.Sprite):
             self.angle+=angle
          else :
              self.angle-=angle
-         self.skin = pygame.transform.rotozoom(self.originSkin, self.angle, 1)
+         self.skin = pygame.transform.rotozoom(self.originSkin[self.indiceAnnim], self.angle, 1)
          self.rect = self.skin.get_rect(center=self.rect.center)
      
      
@@ -269,7 +271,7 @@ class Mob(pygame.sprite.Sprite):
             return skin
         elif nomSkin=="kraken":
             scale = (279*0.5, 177*0.5)
-            skin = pygame.image.load("data/personnages/kraken/kraken_1.png").convert_alpha()
+            skin = pygame.image.load("data/personnages/kraken/kraken (1).png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
         elif nomSkin=="oiseau":
@@ -326,7 +328,8 @@ class Mob(pygame.sprite.Sprite):
             else:
                 return self.posX,self.posY
          else:
-            print(self.name, "bloque en", self.posX, self.posY)
+            print(self.name, "bloque en", self.posX, self.posY, "de type", self.game.map[self.posY][self.posX].type, "suppression de", self.name)
+            self.kill()
             return self.posX, self.posY
             
 
@@ -345,7 +348,7 @@ class Mob(pygame.sprite.Sprite):
          
         if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]
-            self.game.groupProjectile.add(Projectile(self.game, self.name, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche))
+            self.game.groupProjectile.add(Projectile(self.game, self.name, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
             self.lastProjectile = now
             self.cooldown=1000
 
@@ -362,8 +365,9 @@ class Mob(pygame.sprite.Sprite):
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
             self.game.joueur.score=+self.score
             if self.name=="chameau" or self.name=="lapin":
-                self.game.joueur.indiceEcolo+=5
+                self.game.joueur.indiceEcolo+=3
                 self.game.infoMortAnnimal = 440
+                self.game.joueur.nbAnnimauxTue+=1
             self.kill()
 
      """def moveMob(self, joueur):
@@ -506,15 +510,18 @@ class Mob(pygame.sprite.Sprite):
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
          return cooldown
-             
-             
+
      def changeAnnimGolem(self):
         self.clockAnnim+=1
         if self.clockAnnim==5:
             self.indiceAnnim+=1
             if self.indiceAnnim>=len(self.listeAnnimGolem):
                 self.indiceAnnim=0
-            self.skin=self.listeAnnimGolem[self.indiceAnnim]
+            if self.listeAnnimGolemSpawn:
+                self.skin=self.listeAnnimGolemSpawn[0]
+                self.listeAnnimGolemSpawn.pop(0)
+            else :
+                self.skin=self.listeAnnimGolem[self.indiceAnnim]
             self.clockAnnim=0
     
     
@@ -576,11 +583,11 @@ class Mob(pygame.sprite.Sprite):
                 self.skin=self.listeAnnimLapin[self.indiceAnnim]
             else :
                 self.skin=pygame.transform.flip(self.listeAnnimLapin[self.indiceAnnim], True, False)
-
             self.clockAnnim=0
+            
      def changeAnnimKraken(self, flip=False):
         self.clockAnnim+=1
-        if self.clockAnnim==10:
+        if self.clockAnnim==3:
             self.indiceAnnim+=1
             if self.indiceAnnim==len(self.listeAnnimKraken):
                 self.indiceAnnim=0
@@ -589,6 +596,20 @@ class Mob(pygame.sprite.Sprite):
             else:
                 self.skin=pygame.transform.flip(self.listeAnnimKraken[self.indiceAnnim], True, False)
             self.clockAnnim=0
+            
+    
+     def changeAnnimOursin(self, flip=False):
+
+         self.clockAnnim+=1
+         if self.clockAnnim==2:
+
+            self.indiceAnnim+=1
+            if self.indiceAnnim==len(self.listeAnnimOursin):
+                self.indiceAnnim=0
+                self.clockAnnim=-300
+            else:
+                self.clockAnnim=0
+         
             
      def changeAnnimYeti(self, flip=False):
         self.clockAnnim+=1
@@ -622,6 +643,9 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimGolem()
         if self.name=="kraken":
             self.changeAnnimKraken(True)
+        if self.name=="oursin":
+            self.changeAnnimOursin(True)
+            
         if self.name=="yeti":
             self.changeAnnimYeti(True)
         if self.name=="mage":
@@ -649,6 +673,9 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimKraken()
         if self.name=="yeti":
             self.changeAnnimYeti()
+        if self.name=="oursin":
+            self.changeAnnimOursin()
+            
         if self.name=="mage":
             self.changeAnnimMage()
         if self.name=="dragon":
@@ -669,6 +696,8 @@ class Mob(pygame.sprite.Sprite):
                 self.rotate(self.neg, angle)
          if self.name=="golem_des_forets":
             self.changeAnnimGolem()
+         if self.name=="oursin":
+            self.changeAnnimOursin(True)
          if self.name=="kraken":
             self.changeAnnimKraken(self.droite)
          if self.name=="yeti":
@@ -689,7 +718,8 @@ class Mob(pygame.sprite.Sprite):
          if self.name=="oursin":    
                 self.rotate(self.neg, angle)
          self.rect.y+=self.velocity
-         
+         if self.name=="oursin":
+            self.changeAnnimOursin(True)
          if self.name=="golem_des_forets":
              self.changeAnnimGolem()
          if self.name=="kraken":

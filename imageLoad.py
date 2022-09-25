@@ -30,7 +30,8 @@ class ImageLoad():
         self.mortierAnnim = self.loadAnnimMortier()
         self.ventiloAnnim = self.loadAnnimVentilo()
         self.frigoAnnim = self.loadAnnimFrigo()
-        self.golemAnnim = self.loadAnnimGolem()
+        self.golemAnnim, self.golemAnnimSpawn = self.loadAnnimGolem()
+        self.oursinAnnim = self.loadAnnimOursin()
         self.krakenAnnim = self.loadAnnimKraken()
         self.yetiAnnim = self.loadAnnimYeti()
         self.mageAnnim = self.loadAnnimMage()
@@ -57,8 +58,8 @@ class ImageLoad():
         self.forgeAnnim = self.loadAnnimTuile("forge_", 1,18)
         
         self.annim7Barriere0 = self.loadAnnimTuile("7Barriere0_", 1,1)
-        self.annim7Barriere1 = self.loadAnnimTuile("7Barriere1_", 1,1)
-        self.annim7Barriere2 = self.loadAnnimTuile("7Barriere2_", 1,1)
+        self.annim7Barriere1 = self.loadAnnimTuile("7Barriere1_", 1,24)
+        self.annim7Barriere2 = self.loadAnnimTuile("7Barriere2_", 0,220)
         self.annim7Barriere3 = self.loadAnnimTuile("7Barriere3_", 1,12)
         
         self.annim4foret0 = self.loadAnnimTuile("4foret0_", 1,12)
@@ -176,22 +177,40 @@ class ImageLoad():
         im = pygame.transform.scale(im, (164, 351))    
         return im
     #97* 19
+
     def loadAnnimGolem(self):
         listeAnnim = []
         for i in range(1,9):
             im = pygame.image.load("data/personnages/golem/golem_des_forets_"+str(i)+".png").convert_alpha()
             im = pygame.transform.scale(im, (241*0.55, 249*0.50))
             listeAnnim.append(im)
-        return listeAnnim
+        ###SPAWN
+        listeAnnimSpawn=[]
+        for i in range(56):
+            im = pygame.image.load("data/personnages/golem/golem_des_forets_spawn"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (241*0.55, 249*0.50))
+            listeAnnimSpawn.append(im)
+        return listeAnnim, listeAnnimSpawn
     
     def loadAnnimKraken(self):
         listeAnnim = []
-        for i in range(1,10):
-            im = pygame.image.load("data/personnages/kraken/kraken_"+str(i)+".png").convert_alpha()
+        for i in range(1,69):
+            im = pygame.image.load("data/personnages/kraken/kraken ("+str(i)+").png").convert_alpha()
             im = pygame.transform.scale(im, (279*0.5, 177*0.5))
             im=pygame.transform.flip(im, True, False)
             listeAnnim.append(im)
         return listeAnnim
+    
+    
+    def loadAnnimOursin(self):
+        listeAnnim = []
+        for i in range(0,46):
+            im = pygame.image.load("data/personnages/oursin/oursinSpawn"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (175*0.56, 142*0.56))
+            listeAnnim.append(im)
+        return listeAnnim
+    
+    
     
     def loadAnnimMage(self):
         listeAnnim = []
@@ -260,15 +279,7 @@ class ImageLoad():
             im = pygame.transform.scale(im, (205*0.5, 318*0.5))
             listeAnnim.append(im)
         return listeAnnim
-    
-    def loadAnnimGolem(self):
-        listeAnnim = []
-        for i in range(1,9):
-            im = pygame.image.load("data/personnages/golem/golem_des_forets_"+str(i)+".png").convert_alpha()
-            im = pygame.transform.scale(im, (241*0.55, 249*0.50))
-            listeAnnim.append(im)
-        return listeAnnim
-    
+
     def loadImg(self):
         
         listeImg = []
@@ -547,12 +558,14 @@ class ImageLoad():
             return self.listeImg[type][rand], clockMax, annim, clockAnnim
         if type==5:
             rand = random.randint(0,6)
+            
             if rand%2==0:
                 rand=2
             elif rand == 1:
                 rand = 0
             elif rand == 5:
                 rand=1
+            
             if annim :
                 clockAnnim=random.randint(0,len(annim)-1)
             else :

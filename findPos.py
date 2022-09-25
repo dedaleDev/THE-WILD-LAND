@@ -80,14 +80,14 @@ def findPos(game, posDebutX, posDebutY, posFinX, posFinY, aqua=False, aerien=Fal
     startTime = time.time()
     
     if aerien:
+
         a=game.mapVide
     elif not aqua :
+
         a = game.mapMontagneMer
-    elif desertique:
-        a = game.mapDesert
     else :
         a = game.mapMer
-    
+        
     if not type(posDebutX)==int and type(posDebutY)==int and type(posFinX)==int and type(posFinY)==int and game.verifierCo(posDebutX, posDebutY) and game.verifierCo(posFinX, posDebutY):
         print("ATTENTION BUG : posDebutX, posDebutY=", posDebutX, posDebutY, "posFinX, posFinY=", posFinX, posFinY)
         return [[posFinX, posFinY]]

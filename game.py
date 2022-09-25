@@ -110,7 +110,7 @@ class Game(pygame.sprite.Sprite):
         
         self.probaGolemForet = 2
         self.probaOursin = 0
-        self.probaKraken = 0
+        self.probaKraken = 10
         self.probaMage = 0
         self.probaDragon = 0
         self.probaYeti = 0
@@ -120,7 +120,7 @@ class Game(pygame.sprite.Sprite):
         self.cinqMin=False
         self.huitMin=False
         self.incendie=False
-        self.listeDebug = [(100,100)]
+        self.listeDebug = []
         self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc
         self.lastPause = 0
         
@@ -206,7 +206,7 @@ class Game(pygame.sprite.Sprite):
             
         elif self.tempsJeu() > 120000: #2min
             self.probaDragon = 0
-            self.probaGolemForet = 2
+            self.probaGolemForet = 1
             self.probaOursin = 0
             self.probaKraken = 0
             self.probaMage = 0
@@ -255,6 +255,7 @@ class Game(pygame.sprite.Sprite):
                 colide = pygame.sprite.collide_mask(joueur, mob)
                 if colide and now-joueur.lastDamage>joueur.cooldownDamage:
                     joueur.takeDamage(mob.attack)
+                    joueur.dictioDegatMob[mob.name]+=mob.attack
                     joueur.lastDamage=now
                     listeColide.append(colide)
                 if mob.name=="mage" or mob.name=="yeti": 
@@ -263,8 +264,7 @@ class Game(pygame.sprite.Sprite):
 
     def avoirTuileJoueur(self, joueur):
         return self.map[joueur.posY][joueur.posX]
-    
-    
+
     def spawMob(self):
         for y in range(-5, 5):
             for x in range(-5,5):

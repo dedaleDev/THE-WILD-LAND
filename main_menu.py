@@ -16,15 +16,19 @@ tailleEcran = pygame.display.Info().current_w, pygame.display.Info().current_h
 diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
 taillePolice = round(3/100*diagonalEcran)
 scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1] #TAILLE DES BOUTONS
+scaleButtonBarre = 0.6/2 * tailleEcran[0], 0.6/30*tailleEcran[1]
+scaleButtonR = 0.6/3.5 * tailleEcran[0], 0.6/2*tailleEcran[1]
 scaleButtonMap = 1/3 * tailleEcran[0], 1/2*tailleEcran[1] #TAILLE DES BOUTONS
+scaleButtonSon = 1/3 * tailleEcran[0], 1/2*tailleEcran[1]
+
 SCREEN = pygame.display.set_mode(tailleEcran)
 pygame.display.set_caption("Menu")
 pygame.display.set_caption("THE WILD LAND")
 pygame_icon = pygame.image.load('data/logo/icon_WL.png').convert_alpha()
 pygame.display.set_icon(pygame_icon)
 BG=pygame.image.load("data/menu/background.png").convert_alpha()
-
 BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
+
 
 
 
@@ -41,16 +45,23 @@ def optionPartie():
     fissure = pygame.image.load("data/menu/fissure.png").convert_alpha()
     fissure = pygame.transform.scale(fissure, (diagonalEcran*fissure.get_width()*0.000235, diagonalEcran*fissure.get_height()*0.000235))
     path += "/data/map/"
+    al=0
+    indiceMap=None
     for filename in os.listdir(path):
         if str(filename)[-4:]== ".txt" : 
+            
             f = str(pathlib.Path(__file__).parent.absolute())+"/data/map/"+  filename
             map = open(f, "r")
             listeType, pointSpawnTemp = eval(map.read())
             map.close()
+            if str(filename)=="aleatoire.txt":
+                indiceMap=al
+            al+=1
             mapPropose.append(MapEditor(listeType, None, pointSpawnTemp, pathlib.Path(map.name).stem)) #dernier argument = nom du fichier sans .txt
     
-    indiceMap = 0
     
+    if indiceMap==None:
+        indiceMap = 0
     posYMap = 0.6
     posYDiff = 0.3
     posYMapChoix = 0.47
@@ -150,12 +161,14 @@ def optionPartie():
     extreme.image.set_alpha(50)
     mapChoisie = mapPropose[indiceMap].listeType
     pointSpawn = mapPropose[indiceMap].listePointSpawn
+    clock = pygame.time.Clock()
     while continu:
-        
+        clock.tick(60)
+        BG.set_alpha(80)
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
-        
+        SCREEN.blit(BG, (0,0))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
         SCREEN.blit(MAP_TEXT, MAP_RECT)
         SCREEN.blit(DIFF_TEXT, DIFF_RECT)
@@ -351,6 +364,9 @@ def optionPartie():
 
 
 def options():
+    barre = pygame.transform.scale(pygame.image.load("data/menu/barre.png"), scaleButtonBarre)
+    
+    
     continu=True
     volume = aideCSV.valCorrespondante("volumeBruitage")
     volumeM = aideCSV.valCorrespondante("volumeMusique")
@@ -369,11 +385,35 @@ def options():
     volumeLowM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
                     text_input="faible", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
+    
+    
+    bas = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonRond.png").convert_alpha(),(scaleButtonR[0]//6, scaleButtonR[1]//6)), pos=(tailleEcran[0]*3.93/10, tailleEcran[1]*0.26), 
+                    text_input="bas", font=get_font(taillePolice//4), base_color="white", hovering_color="#999999")
+    moyen = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonRond.png").convert_alpha(),(scaleButtonR[0]//5, scaleButtonR[1]//5)), pos=(tailleEcran[0]*3.93/10+tailleEcran[0]*1/10, tailleEcran[1]*0.26), 
+                    text_input="moyen", font=get_font(taillePolice//4), base_color="white", hovering_color="#999999")
+    haut = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonRond.png").convert_alpha(),(scaleButtonR[0]//4, scaleButtonR[1]//4)), pos=(tailleEcran[0]*3.93/10+tailleEcran[0]*2/10, tailleEcran[1]*0.26), 
+                    text_input="haut", font=get_font(taillePolice//4), base_color="white", hovering_color="#999999")
+    opti = int(aideCSV.valCorrespondante("optimisation"))
+    if opti==0:
+        moyen.image.set_alpha(150)
+        haut.image.set_alpha(255)
+        bas.image.set_alpha(150)
+    elif opti==1:
+        moyen.image.set_alpha(255)
+        haut.image.set_alpha(150)
+        bas.image.set_alpha(150)
+    elif opti==2:
+        moyen.image.set_alpha(150)
+        haut.image.set_alpha(150)
+        bas.image.set_alpha(255)
+    clock = pygame.time.Clock()
     while continu:
+        clock.tick(60)
+        BG.set_alpha(80)
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
-
+        SCREEN.blit(BG, (0,0))
         OPTIONS_TEXT = get_font(taillePolice).render(" OPTIONS ", True, "Black")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/2, tailleEcran[1]*1/10))
         volume_TEXT = get_font(taillePolice-5).render(" Volume ", True, "Black")
@@ -386,9 +426,14 @@ def options():
         volumeHigh.changeColor(OPTIONS_MOUSE_POS)
         volumeMedium.changeColor(OPTIONS_MOUSE_POS)
         volumeLow.changeColor(OPTIONS_MOUSE_POS)
+        bas.changeColor(OPTIONS_MOUSE_POS)
+        moyen.changeColor(OPTIONS_MOUSE_POS)
+        haut.changeColor(OPTIONS_MOUSE_POS)
         volumeHighM.changeColor(OPTIONS_MOUSE_POS)
         volumeMediumM.changeColor(OPTIONS_MOUSE_POS)
         volumeLowM.changeColor(OPTIONS_MOUSE_POS)
+        
+        SCREEN.blit(barre, (tailleEcran[0]*0.345, tailleEcran[1]*0.25))
         
         volumeHigh.update(SCREEN)
         volumeLow.update(SCREEN)
@@ -397,7 +442,11 @@ def options():
         volumeLowM.update(SCREEN)
         volumeMediumM.update(SCREEN)
         OPTIONS_BACK.update(SCREEN)
+        bas.update(SCREEN)
+        moyen.update(SCREEN)
+        haut.update(SCREEN)
 
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -420,6 +469,23 @@ def options():
                     volumeM = 0.05
                 if volumeMediumM.checkForInput(OPTIONS_MOUSE_POS):
                     volumeM = 0.5
+                if bas.checkForInput(OPTIONS_MOUSE_POS):
+                    aideCSV.remplacerVal("optimisation", 2)
+                    moyen.image.set_alpha(150)
+                    haut.image.set_alpha(150)
+                    bas.image.set_alpha(255)
+                if moyen.checkForInput(OPTIONS_MOUSE_POS):
+                    aideCSV.remplacerVal("optimisation", 1)
+                    bas.image.set_alpha(150)
+                    haut.image.set_alpha(150)
+                    moyen.image.set_alpha(255)
+                if haut.checkForInput(OPTIONS_MOUSE_POS):
+                    aideCSV.remplacerVal("optimisation", 0)
+                    bas.image.set_alpha(150)
+                    moyen.image.set_alpha(150)
+                    haut.image.set_alpha(255)
+                    
+                    
         pygame.display.update()
     return volume, volumeM
 
@@ -438,7 +504,12 @@ def main_menu():
                         text_input="QUITTER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
     EDITOR_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                         text_input="Editeur", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+    clock = pygame.time.Clock()
     while True:
+
+        clock.tick(60)
+        BG.set_alpha(255)
+        SCREEN.fill("white")
         SCREEN.blit(BG, (0, 0))
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()

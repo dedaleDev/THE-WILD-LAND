@@ -2,7 +2,7 @@ import math
 import pygame
 class Projectile(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vitesse, degat, posDepartX, posDepartY, cible):
+     def __init__(self, game, nom, vitesse, degat, posDepartX, posDepartY, cible, origine=None):
           super().__init__()
           #affichage et information
           
@@ -30,7 +30,8 @@ class Projectile(pygame.sprite.Sprite):
           self.lancement=self.game.tempsJeu()
           self.dureeMax = 1500
           self.dx, self.dy = self.cibleX - self.rect.x, self.cibleY - self.rect.y
-
+          self.origine=origine
+          
      def genererAngle(self):
         dx, dy =  self.cibleX-self.rect.x , self.rect.y-self.cibleY 
         angledegre= 180/math.pi*angle([1,0],[dx,dy])
@@ -49,7 +50,8 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.y += self.dy * self.velocity
         if self.rect.colliderect(self.cible.rect):
             self.cible.takeDamage(self.degat, self.game.moveX, self.game.moveY)
-            
+            if type(self.cible) == type(self.game.joueur):
+              self.cible.dictioDegatMob[self.origine.name]+=self.origine.damageDistance
             self.kill()
             #detruire le projo
         elif self.game.tempsJeu()-self.lancement>self.dureeMax:

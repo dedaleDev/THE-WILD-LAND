@@ -249,10 +249,12 @@ def generation_matriceMontagneMer(map, game):
             if tuile.estMer():
                 listeCaseMer.append(tuile)
                 mapMer[y][x]=0
+            else :
+                mapMer[y][x]=1
             if tuile.type==6:
                 mapDesert[y][x]=0
             else :
-                mapMer[y][x]=1
+                
                 mapDesert[y][x]=1
                 
             if tuile.estPlaine():

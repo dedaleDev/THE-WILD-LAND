@@ -45,7 +45,7 @@ class Tuile():
         
         self.traceMob = False
         self.estSelect = False
-        self.isExplored = self.type==7
+        self.isExplored = True#self.type==7
         self.annimationFog = 256
         ####     POSITION ET IMAGE    ####
         self.imageFog = game.imageFog2.copy()

@@ -1,15 +1,19 @@
 import math
+import operator
 import pygame
 from pygame.locals import *
 from inventaire import Inventaire
 from generation import *
 from loot import Loot
 import main_menu
+from mob import Mob
 from selection import colisionItem, majSelection, majSelectionJoueur, majSelectionMob, selectionDispoItem
 from game import Game
 #from game import background_pil
 from button import Button
 from findPos import *
+
+import pickle
 fenetrePygame = ""
 infoObject = 0
 
@@ -35,11 +39,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     delayIncendie=500
     timeComtpeur=0
     imDebug = pygame.image.load("data/tuiles/debug.png").convert_alpha()
-    imDebug2 = pygame.transform.scale(imDebug, (20,20))
+    imDebug2 = pygame.transform.scale(imDebug, (60,60))
     imDebug = pygame.transform.scale(imDebug, (2,2))
     BLACK = (0, 0, 0)
     pygame.mixer.init()
-    continuer = True  # répeter à l'infini la fenetre pygame jusqu'a que continuer = false
+    continuer = 1
     fenetrePygame = pygame.init()  # Initialisation de la bibliothèque Pygame
 
 
@@ -47,7 +51,17 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     pygame.key.set_repeat(1, 30)
 
     infoObject = pygame.display.Info()  # récupère la taille de l'écran
-    fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
+    opti = int(aideCSV.valCorrespondante("optimisation"))
+    if not opti:
+        fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
+        print((infoObject.current_w, infoObject.current_h))
+    elif opti == 1 :
+        flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+        fenetrePygame = pygame.display.set_mode((1920,1080),flags)
+    elif opti == 2:
+        flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+        fenetrePygame = pygame.display.set_mode((1280,720),flags)
+
     fenetrePygame.fill("black")
     im = pygame.image.load("data/menu/chargement.png")
     chargement = pygame.transform.scale(im, (infoObject.current_w, infoObject.current_h))
@@ -65,7 +79,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     pauseicon = pygame.image.load("data/menu/pause.png").convert_alpha()
     pauseicon = pygame.transform.scale(pauseicon,(45,45))
 
-    
+
+
     infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png").convert_alpha()
     infoMortAnnimal = pygame.image.load("data/cata/infoBulle/infoMort.png").convert_alpha()
 
@@ -75,7 +90,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     health = pygame.transform.scale(health, (50, 50))
     feuille = pygame.image.load("data/menu/feuille.png").convert_alpha()
     feuille = pygame.transform.scale(feuille, (50, 50))
-
+    pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
     for i in range(1,10):
         im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png").convert_alpha()
         annimTremblementListe.append(pygame.transform.scale(im, (im.get_width()*1.5, im.get_height()*1.5)))
@@ -96,7 +111,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
     centrerJoueur(game)
     game.spawnAnnimal(5)
-    
+
+
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"chameau", 100, 1, tuile=game.map[3][3], score=0, desertique=True, annimal=True, attaque=0))
@@ -104,9 +120,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"oursin", 100, 1, tuile=game.map[4][4], score=150))
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
-
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    game.groupMob.add(Mob(game,"mage", 100, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"kraken", 100, 2, tuile=game.map[4][4], score=150, aquatique=True))
+    
+    
     #game.groupMob.add(Mob(game,"oursin", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupMob.add(Mob(game, "oursin", 150, 3, pique=True, tuile=game.map[1][2], score = 100))
     listefps=[]
@@ -116,7 +134,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
     taillePolice = round(3/100*diagonalEcran)
     police = get_font(taillePolice)
-    while continuer == True:
+    while continuer:
         debut = pygame.time.get_ticks()
         game.joueur.blit=False
         
@@ -146,7 +164,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         
         gestionMob(game, fps)
-        #print(pygame.time.get_ticks()-debut)
         
         keys=pygame.key.get_pressed()
         if keys[K_ESCAPE] and pygame.time.get_ticks() - game.lastPause > 250:
@@ -156,7 +173,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == QUIT:
-                continuer = False
+                continuer = 0
 
             
             
@@ -179,7 +196,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
        
         
         
-        if continuer == True: 
+        if continuer: 
             
             deplacement_cam(mouse, game, True)
             
@@ -219,7 +236,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     game.joueur.genererCoffre()
                     tirageCoffre=0
                 else :
-                    tirageCoffre+=7
+                    tirageCoffre+=5
                 
                     
                 if not random.randint(0,((game.joueur.MaxEcolo-game.joueur.indiceEcolo)%10)):
@@ -459,6 +476,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 listefps.sort()
                 print("fps min 1% et max 1% :", listefps[1//100*len(listefps)], listefps[99//100*len(listefps)-1] )
                 print("mesure sur "+str(len(listefps))+" fps")
+            f = open("save2.txt", "w+")
+            pickle.dump(game.joueur, f)
+            
             main_menu.main_menu()
             pygame.display.quit()
             pygame.quit()  # ferme pygame et le jeu
@@ -599,7 +619,8 @@ def deplacementCamBas(mouse, game, bloquage):
                 projo.rect.y+=y
             for defense in game.groupDefense:
                 defense.rect.y+=y
-            
+            for pos in game.listeDebug:
+                pos[1]+=y
 def deplacementCamHaut(mouse, game, bloquage):
     global moveY, moveX
     x = mouse[1]
@@ -617,6 +638,8 @@ def deplacementCamHaut(mouse, game, bloquage):
                 projo.rect.y+=y
             for defense in game.groupDefense:
                 defense.rect.y+=y
+            for pos in game.listeDebug:
+                pos[1]+=y
         
 def deplacementCamGauche(mouse, game, bloquage):
     global moveY, moveX
@@ -635,6 +658,8 @@ def deplacementCamGauche(mouse, game, bloquage):
                 projo.rect.x+=y
             for defense in game.groupDefense:
                 defense.rect.x+=y
+            for pos in game.listeDebug:
+                pos[0]+=y
         
 def deplacementCamDroite(mouse, game, bloquage):
     global moveY, moveX
@@ -655,7 +680,9 @@ def deplacementCamDroite(mouse, game, bloquage):
                 projo.rect.x+=y
             for defense in game.groupDefense:
                 defense.rect.x+=y
-
+            for pos in game.listeDebug:
+                pos[0]+=y
+            
 def f(x):  #fonction vitesse deplacement cam
     y  = round(x*0.04-10)
     if y>20:
@@ -796,7 +823,7 @@ def gestionMob(game, fps):
         elif now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
             mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
             mob.last = now
-            if False:
+            if True:
                 traceMob(game, mob.the_path)
             
 
@@ -826,3 +853,21 @@ def blitJoueur(fenetrePygame, game):
         elif game.joueur.bateau:
             fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
             game.joueur.blit=True
+
+
+def stat(game:Game): #specification du type game
+    
+    #multiplication par 6 pour mettre en minute
+    productionWood = 5*game.joueur.nbScierie*6
+    productionStone = 4*game.joueur.nbMine*6
+    productionWater = 3*game.joueur.nbMoulin*6
+    productionFood = 4*game.joueur.nbElevage*6 + 1*game.joueur.nbChamps*6
+    recuperationEcolo = game.joueur.nbFrigo*0.5*6
+    nbAnnimauxMort = game.joueur.nbAnnimauxTue
+    ennemieDegat = max(game.joueur.dictioDegatMob.items(), key=operator.itemgetter(1))[0]
+    
+    
+    
+    
+    return
+    

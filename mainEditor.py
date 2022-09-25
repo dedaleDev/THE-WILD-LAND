@@ -48,8 +48,15 @@ def stringMap(map, taille_matriceY, taille_matriceX) :
     return string
 
 def editor():
+    infoSave=0
+    infoSaveDeja=0
+    im = pygame.image.load("data/menu/reussiMap.png")
+    
+    boutonVert = pygame.transform.scale(im, (im.get_width(), im.get_height()))
     background_colour = (255, 0, 0)
 
+    im = pygame.image.load("data/menu/dejaMap.png")
+    boutonVertDeja = pygame.transform.scale(im, (im.get_width(), im.get_height()))
     pygame.init()
     infoObject = pygame.display.Info()
     screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
@@ -67,8 +74,8 @@ def editor():
     buttonSave = pygame.transform.scale(buttonSave,(buttonSave.get_width()/4,buttonSave.get_height()/4))
     buttonErase = pygame.image.load("data/editor/buttonErase.png").convert_alpha()
     buttonErase = pygame.transform.scale(buttonErase,(buttonErase.get_width()/4,buttonErase.get_height()/4))
-    quitter = pygame.image.load("data/editor/buttonErase.png").convert_alpha()
-    quitter = pygame.transform.scale(buttonErase,(buttonErase.get_width()/1.5,buttonErase.get_height()/1.5))
+    quitter = pygame.image.load("data/editor/quitter.png").convert_alpha()
+    quitter = pygame.transform.scale(quitter,(quitter.get_width()/5,quitter.get_height()/5))
     buttonLoad = pygame.image.load("data/editor/buttonLoad.png").convert_alpha()
     buttonLoad = pygame.transform.scale(buttonLoad,(buttonLoad.get_width()/4,buttonLoad.get_height()/4))
     pygame.display.flip()
@@ -78,7 +85,7 @@ def editor():
     running = True
     theMap=[]
     
-    export = Button((tailleEcran[0],tailleEcran[1]*9/10),(200,42), 9)
+    export = Button((tailleEcran[0]*5/100,tailleEcran[1]*9/10),(200,42), 9)
     importMap = Button((tailleEcran[0]*20/100,tailleEcran[1]*9/10),(200,42), "o")
     erase = Button((tailleEcran[0]*35/100,tailleEcran[1]*9/10),(200,42), "e")
     quit = Button((tailleEcran[0]*90/100,tailleEcran[1]*9.3/10),(200,42), "")
@@ -125,7 +132,12 @@ def editor():
         screen.blit(buttonErase,(tailleEcran[0]*35/100,tailleEcran[1]*9/10))
         screen.blit(info, (tailleEcran[0]*55/100,tailleEcran[1]*1/10))
         screen.blit(quitter, (tailleEcran[0]*90/100,tailleEcran[1]*9.3/10))
-        
+        if infoSave>0:
+            screen.blit(boutonVert, (tailleEcran[0]*35/100,tailleEcran[1]*8/10))
+            infoSave-=1
+        if infoSaveDeja>0:
+            screen.blit(boutonVertDeja, (tailleEcran[0]*35/100,tailleEcran[1]*8/10))
+            infoSaveDeja-=1
         pygame.display.flip()
         clock.tick(60)
 
@@ -133,19 +145,20 @@ def editor():
         
         
         for event in pygame.event.get():
-            if event.type==pygame.MOUSEBUTTONDOWN:
+            if event.type==pygame.MOUSEBUTTONDOWN :
                 mouse = pygame.mouse.get_pos()
                 fichierSuppr = 0
-                if export.checkForInput(mouse) :#exporter map 
+                if export.checkForInput(mouse) :#exporter map
+                    
                     nbMap = 0
                     path = os.path.dirname(__file__)
-                    path = path[:-10] 
-                    path += "data/map/"
+                    path += "/data/map/"
                     for filename in os.listdir(path):
                         f = os.path.join(path, filename)
                         nbMap +=1
                     nomMap = "map"+str(nbMap+1)+".txt"
                     map = open(path+nomMap, "w+")
+                    
                     map.write(stringMap(theMap, taille_matriceY, taille_matriceX))
                     map.close()
                     
@@ -154,8 +167,12 @@ def editor():
                         f2 =  os.path.join(path, filename)
                         if filecmp.cmp(f,f2, False) and f!= f2:
                             fichierSuppr = f
-                    if fichierSuppr:
-                        os.remove(fichierSuppr)    
+                    if fichierSuppr :
+                        os.remove(fichierSuppr)
+                        infoSaveDeja = 150
+                    else :
+                        infoSave=150
+                    
 
 
                 if erase.checkForInput(mouse) : #erase map 
