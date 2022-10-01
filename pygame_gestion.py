@@ -68,8 +68,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     opti = int(aideCSV.valCorrespondante("optimisation"))
     
     if not opti:
-        
-        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]))
+        flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]), flags)
         
     elif opti == 1 :
         flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
@@ -249,10 +249,22 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             if fps==0 or fps==30:
                 if game.groupMob.__len__()-game.nbAnnimaux<9:
                     game.spawMob()
-            if fps==0:
-                for tuileLoot in game.groupTuileBoost:
-                    game.groupLoot.add(Loot(2, 0, 0, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
             
+                
+            if tick_ressource==0 or tick_ressource==300:
+                for tuileLoot in game.groupTuileBoost:
+                    if tuileLoot.type==2:
+                        game.groupLoot.add(Loot(0, 2, 0, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(0, 2, 0, 0)
+                    if tuileLoot.type==3:
+                        game.groupLoot.add(Loot(0, 0, 2, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(0, 0, 0, 2)
+                    if tuileLoot.type==4:
+                        game.groupLoot.add(Loot(2, 0, 0, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(2, 0, 0, 0)
+                    if tuileLoot.type==1:
+                        game.groupLoot.add(Loot(0, 0, 0, 2, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(0, 0, 2, 0)
             
             modification=True
             #affichage selection
@@ -267,7 +279,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 else :
                     tirageCoffre+=5
                 
-                    
+                
                 if not random.randint(0,((game.joueur.MaxEcolo-game.joueur.indiceEcolo)%10)):
                     tuileCata = game.majCata()
                 if game.incendie and tuileCata:
@@ -907,7 +919,7 @@ def gestionMob(game, fps):
         elif now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
             mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
             mob.last = now
-            if True:
+            if False:
                 traceMob(game, mob.the_path)
             
 

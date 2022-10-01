@@ -42,10 +42,10 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 3500
-          self.stone = 1500
-          self.food = 500
-          self.water = 1000
+          self.wood = 350
+          self.stone = 150
+          self.food = 50
+          self.water = 100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -396,162 +396,11 @@ class Player(pygame.sprite.Sprite):
     
     
      def construireBatiment(self, tuile, item):
-        changerImg = True
+        
         if not self.majCout(item):
             return False
         
-        self.game.groupBuild.add(Build(self.game, item.nom))
-        if item.nom == "scierie":
-            self.game.map[tuile.posY][tuile.posX].scierie = True
-            self.nbScierie+=1
-            self.indiceEcolo+=1
-            self.game.listeCaseBatiment.append(tuile)
-            tuile.annimation=[]
-            pygame.mixer.Sound.play(self.game.son.scierie)
-            if tuile.indiceSurbrillance>=0:
-                self.game.groupTuileBoost.add(tuile)
-            
-              
-        elif item.nom == "moulin":
-            self.game.map[tuile.posY][tuile.posX].moulin = True
-            self.nbMoulin+=1
-            self.indiceEcolo+=1
-            self.game.listeCaseBatiment.append(tuile)
-            tuile.annimation = self.game.images.moulinAnnim
-            tuile.clockAnnimMax = 6
-            if tuile.indiceSurbrillance>=0:
-                self.game.groupTuileBoost.add(tuile)
-            pygame.mixer.Sound.play(self.game.son.moulin)
-        elif item.nom == "puit":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].puit = True
-            self.nbPuit+=1
-            self.game.listeCaseBatiment.append(tuile)
-        elif item.nom == "champs":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].champs = True
-            self.nbChamps+=1
-            self.game.listeCaseBatiment.append(tuile)
-
-        elif item.nom == "elevage":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].elevage = True
-            self.nbElevage+=1
-            self.indiceEcolo+=3
-            self.game.listeCaseBatiment.append(tuile)
-            tuile.annimation = self.game.images.elevage
-            tuile.clockAnnimMax = 10
-            pygame.mixer.Sound.play(self.game.son.vache)
-        elif item.nom == "mine":
-            tuile.annimation=self.game.images.mineAnnim
-            tuile.clockAnnimMax = 6
-            self.game.map[tuile.posY][tuile.posX].mine = True
-            self.nbMine+=1
-            self.game.listeCaseBatiment.append(tuile)
-            self.indiceEcolo+=2
-            changerImg=False
-            pygame.mixer.Sound.play(self.game.son.mine)
-            if tuile.indiceSurbrillance>=0:
-                self.game.groupTuileBoost.add(tuile)
-        elif item.nom == "port":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].port = True
-            self.nbPort+=1
-            self.indiceEcolo+=2
-            self.game.listeCaseBatiment.append(tuile)
-        elif item.nom == "tour":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].tour = True
-            tour = Tour(self.game, tuile, 1000, "tour", 10, 300)
-            self.game.groupDefense.add(tour)
-            tuile.tour = tour
-        elif item.nom == "pieux":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].pieux = True
-
-        elif item.nom == "sableMouvant":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].sableMouvant = True
-            self.indiceEcolo+=10
-            #pygame.mixer.Sound.play(self.game.son.sableMouvant)
-
-        elif item.nom == "mortier":
-            tuile.annimation=self.game.images.mortierAnnim
-            tuile.clockAnnimMax = 5
-            self.game.map[tuile.posY][tuile.posX].mortier = True
-            mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
-            self.game.groupDefense.add(mortier)
-            tuile.mortier = mortier
-            self.indiceEcolo+=10
-            
-        elif item.nom=="trou":
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].trou = True
-            pygame.mixer.Sound.play(self.game.son.trouCreuse, maxtime=900)
-            
-        elif item.nom=="frigo": 
-            tuile.annimation=[]
-            self.game.map[tuile.posY][tuile.posX].frigo = True
-            self.nbFrigo+=1
-            pygame.mixer.Sound.play(self.game.son.frigo, fade_ms=1000)
-            tuile.annimation = self.game.images.frigoAnnim
-            tuile.clockAnnimMax = 7
-            self.indiceEcolo-=10
-        elif item.nom=="ventilo":
-            self.game.map[tuile.posY][tuile.posX].ventilo = True
-            tuile.annimation = self.game.images.ventiloAnnim
-            tuile.clockAnnimMax = 1
-        elif item.nom=="ville":
-            
-            self.game.map[tuile.posY][tuile.posX].ville = True
-            self.ville=True   
-        
-        elif item.nom=="statueEau" or item.nom=="statueBois" or item.nom=="statueFood" or item.nom=="statuePierre":
-            if item.nom=="statueFood":
-                self.statueFood=True
-            if item.nom=="statueBois":
-                self.statueBois=True
-            if item.nom=="statueEau":
-                self.statueEau=True
-            if item.nom=="statuePierre":
-                self.statuePierre=True
-            self.game.map[tuile.posY][tuile.posX].statue=True
-            for y in range(-1,2):
-                for x in range(-1,2):
-                    
-                    if self.game.map[tuile.posY+y][tuile.posX+x].type==self.game.map[tuile.posY][tuile.posX].type and (y!=0 or x!=0):
-                        self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance=random.randint(0,200)
-                        if self.game.map[tuile.posY+y][tuile.posX+x].scierie or self.game.map[tuile.posY+y][tuile.posX+x].mine or self.game.map[tuile.posY+y][tuile.posX+x].moulin:
-                            self.game.groupTuileBoost.add(self.game.map[tuile.posY+y][tuile.posX+x])
-            changerImg=False
-        elif item.nom=="forge":
-            tuile.annimation=self.game.images.forgeAnnim
-            tuile.clockAnnimMax = 6
-            self.game.map[tuile.posY][tuile.posX].forge = True
-            changerImg=False
-        elif item.nom=="armure1":
-            self.nomArmure="armure1"
-            self.imageArmure = self.game.images.armure[0]
-            self.armure=5
-            changerImg=False
-        elif item.nom=="armure2":
-            self.nomArmure="armure2"
-            self.imageArmure = self.game.images.armure[1]
-            self.armure=15
-        elif item.nom=="armure3":
-            self.nomArmure="armure3"
-            self.imageArmure = self.game.images.armure[2]
-            self.armure=25
-        elif item.nom=="armure4":
-            self.nomArmure="armure4"
-            self.imageArmure = self.game.images.armure[3]
-            self.armure=35
-        if changerImg:
-            self.changerImageBatiment(tuile, item.nom)
-        
-        
-            
-
+        self.game.groupBuild.add(Build(self.game, item.nom, tuile))
         return True
     
      def detruireBatimentRessource(self, tuile):
@@ -632,8 +481,10 @@ class Player(pygame.sprite.Sprite):
          #self.setWater(1*self.nbPuit)
          self.setWater(3*self.nbMoulin)
          self.setFood(4*self.nbElevage + 1*self.nbChamps)
-         self.indiceEcolo-=self.nbFrigo*0.5
          
+         self.indiceEcolo-=self.nbFrigo*0.5
+         if self.indiceEcolo<0:
+             self.indiceEcolo=0
      def update_health_bar(self):
         #def la couleur
         

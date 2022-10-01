@@ -163,7 +163,7 @@ class Game(pygame.sprite.Sprite):
         
         if self.tempsJeu() > 120000*6: #12min 
             self.probaDragon = 2
-            self.probaGolemForet = 4
+            self.probaGolemForet = 7
             self.probaOursin = 3
             self.probaKraken = 3
             self.probaMage = 3
@@ -171,14 +171,14 @@ class Game(pygame.sprite.Sprite):
             
         elif self.tempsJeu() > 120000*5: #10min 
             self.probaDragon = 1
-            self.probaGolemForet = 4
+            self.probaGolemForet = 6
             self.probaOursin = 2
             self.probaKraken = 2
             self.probaMage = 2
             self.probaYeti = 0
         elif self.tempsJeu() > 120000*4 and not self.huitMin: #8min 
             self.probaDragon = 0
-            self.probaGolemForet = 4
+            self.probaGolemForet = 5
             self.probaOursin = 2
             self.probaKraken = 1
             self.probaMage = 2
@@ -191,7 +191,7 @@ class Game(pygame.sprite.Sprite):
             #pygame.mixer.Sound.play(self.son.musique3)
         elif self.tempsJeu() > 120000*2 : #4min
             self.probaDragon = 0
-            self.probaGolemForet = 3
+            self.probaGolemForet = 4
             self.probaOursin = 1
             self.probaKraken = 1
             self.probaMage = 1
@@ -201,7 +201,7 @@ class Game(pygame.sprite.Sprite):
             self.probaGolemForet = 3
             self.probaOursin = 0
             self.probaKraken = 1
-            self.probaMage = 0
+            self.probaMage = 2
             self.probaYeti = 0
             self.troisMin=True
             
@@ -209,7 +209,7 @@ class Game(pygame.sprite.Sprite):
             
         elif self.tempsJeu() > 120000: #2min
             self.probaDragon = 0
-            self.probaGolemForet = 1
+            self.probaGolemForet = 3
             self.probaOursin = 0
             self.probaKraken = 0
             self.probaMage = 0
@@ -279,7 +279,7 @@ class Game(pygame.sprite.Sprite):
                             self.groupMob.add(Mob(self, "dragon", 400, 2, tuile, 700,aerien=True, attaque=20))   
                             pygame.mixer.Sound.play(self.son.dragonSpawn)
                     if tuile.estForet():
-                        rand = random.randint(1,4000)
+                        rand = random.randint(1,40000)
                         if rand <= self.probaGolemForet:
                             self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile, 100))
                             pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)

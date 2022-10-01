@@ -46,7 +46,7 @@ class Tuile(pygame.sprite.Sprite):
         
         self.traceMob = False
         self.estSelect = False
-        self.isExplored = True#self.type==7
+        self.isExplored =self.type==7
         self.annimationFog = 256
         ####     POSITION ET IMAGE    ####
         self.imageFog = game.imageFog2.copy()
