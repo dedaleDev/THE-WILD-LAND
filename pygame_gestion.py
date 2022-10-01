@@ -68,8 +68,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     opti = int(aideCSV.valCorrespondante("optimisation"))
     
     if not opti:
-        flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
-        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]), flags)
+        #flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]))
         
     elif opti == 1 :
         flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
@@ -333,8 +333,12 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         tuileVille = game.map[y][x]
                         
             
-            
-            
+            """for build in game.groupBuild:
+                build.update
+                fenetrePygame.blit(build.image, (build.rect.x, build.rect.y))
+                if build.imageClick:
+                    fenetrePygame.blit(build.imageClick, build.actuelClick)
+            """
             for coffre in game.groupCoffre:
                 if coffre.tuile.posX == game.joueur.posX and coffre.tuile.posY == game.joueur.posY:
                     if coffre.clock==coffre.clockMax:

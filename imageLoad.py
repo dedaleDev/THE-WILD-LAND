@@ -76,6 +76,8 @@ class ImageLoad():
         self.lootBois = self.loadAnnimRessource("bois", 1,22)
         self.lootFood = self.loadAnnimRessource("viande", 1,20)
         
+        
+        #self.clickBuild = self.loadAnnimClickBuild(self)
         for i in range(15):
             self.annim3eau0.append(self.annim3eau0[-1])
             self.annim7Barriere3.append(self.annim7Barriere3[-1])
@@ -101,7 +103,15 @@ class ImageLoad():
         for i in range(5):
             self.annim3eau2.append(self.annim3eau0[-1])
         
-        
+    
+    def loadAnnimClickBuild(self):
+        liste=[]
+        for i in range(2, 28):
+            im = pygame.image.load("data/animationTuiles/click/click ("+str(i)+").png").convert_alpha()
+            liste.append(im)
+            
+        return liste
+    
     def loadAnnimTuileEau(self):
         liste=[]
         for i in range(1, 193):

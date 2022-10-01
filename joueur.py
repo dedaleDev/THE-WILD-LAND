@@ -400,7 +400,7 @@ class Player(pygame.sprite.Sprite):
         if not self.majCout(item):
             return False
         
-        self.game.groupBuild.add(Build(self.game, item.nom, tuile))
+        self.game.groupBuild.add(Build(self.game, item.nom, tuile, 5))
         return True
     
      def detruireBatimentRessource(self, tuile):
