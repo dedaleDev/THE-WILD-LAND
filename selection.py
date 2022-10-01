@@ -13,13 +13,13 @@ def majSelection(game, pos, joueur=False):
                 if touching :
                     if game.map[i][j].estSelect:
                         game.map[i][j].setSelect(False)
-                        pass
+                        
                     else:
                         game.map[i][j].setSelect(True)
                         tuileSelect = game.map[i][j]
                 else :
                     game.map[i][j].setSelect(False)
-                    pass
+                    
     else:
         for i in range(-1, 2):
             for j in range(-1, 2):
@@ -91,26 +91,37 @@ def terreAutour(joueur, tuile):
 def selectionDispoItem(game, tuile, joueur):
     optionDIspo = []
     if tuile.isExplored :
-        if tuile.type==1 and not tuile.elevage and not tuile.champs and not tuile.tour and not tuile.pieux and not tuile.ville:
+        if tuile.type==1 and not tuile.elevage and not tuile.champs and not tuile.tour and not tuile.pieux and not tuile.ville and not tuile.statue:
             optionDIspo.append(Item(game, "elevage", 175, 25,0,0))
             optionDIspo.append(Item(game, "champs", 50, 0,0,0))
             optionDIspo.append(Item(game, "tour", 0, 0, 0, 300 ))
             optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
-        elif tuile.type==2 and not tuile.forge and not tuile.mine and not tuile.mortier and not tuile.ville and not tuile.forge:
+            if not joueur.statueFood:
+                optionDIspo.append(Item(game, "statueFood", 150, 0,0,0))
             
+        elif tuile.type==2 and not tuile.forge and not tuile.mine and not tuile.mortier and not tuile.ville and not tuile.forge and not tuile.statue:
             optionDIspo.append(Item(game, "mine", 0,0,50,50))
             optionDIspo.append(Item(game, "mortier", 0,0,0,200))
-        elif tuile.type==3 and not tuile.moulin and not tuile.port and not tuile.ville:
+            if not joueur.statuePierre:
+                optionDIspo.append(Item(game, "statuePierre", 0,0,0,150))
+           
+        elif tuile.type==3 and not tuile.moulin and not tuile.port and not tuile.ville  and not tuile.statue :
             optionDIspo.append(Item(game, "moulin", 0,0,100,0))
+            if not joueur.statueEau:
+                optionDIspo.append(Item(game, "statueEau", 0,0,150,0))
+            
             if not game.avoirTuileJoueur(joueur).port and terreAutour(joueur, tuile):
                 
                 optionDIspo.append(Item(game, "port", 0,0,250,0))
                 
                 
-        elif tuile.type==4 and not tuile.scierie and not tuile.ville:
+        elif tuile.type==4 and not tuile.scierie and not tuile.ville and not tuile.statue:
+            if not joueur.statueBois:
+                optionDIspo.append(Item(game, "statueBois", 0,0,150,0))
             optionDIspo.append(Item(game, "scierie", 0,0,100,0))
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
+            
         elif tuile.type==5 and not tuile.frigo and not tuile.ventilo and not tuile.ville:
             optionDIspo.append(Item(game, "frigo", 300, 50, 0, 0))
             optionDIspo.append(Item(game, "ventilo", 0, 0, 500, 400))

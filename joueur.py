@@ -1,6 +1,7 @@
 #from PIL import Image
 from ctypes import pointer
 import pygame
+from build import Build
 from coffre import Coffre
 import random
 from selection import majSelectionJoueur
@@ -41,10 +42,10 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 350
-          self.stone = 150
-          self.food = 50
-          self.water = 100
+          self.wood = 3500
+          self.stone = 1500
+          self.food = 500
+          self.water = 1000
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -58,7 +59,10 @@ class Player(pygame.sprite.Sprite):
           self.nbChamps=0
           self.nbFrigo=0
           self.blit = False
-          
+          self.statuePierre = False
+          self.statueBois = False
+          self.statueEau = False
+          self.statueFood = False
           self.imageArmure = None
           self.nomArmure = None
           
@@ -151,9 +155,9 @@ class Player(pygame.sprite.Sprite):
 
      def takeDamage(self, entier, moveX=0, moveY=0):
         resistance = 100-self.armure
-        print("de base",entier)
+        #print("de base",entier)
         entier=int(resistance/100*entier)
-        print("prit", entier)
+        #print("prit", entier)
         if self.health >=0 :
             self.health-=entier
             self.update_health_bar()
@@ -392,9 +396,11 @@ class Player(pygame.sprite.Sprite):
     
     
      def construireBatiment(self, tuile, item):
+        changerImg = True
         if not self.majCout(item):
             return False
         
+        self.game.groupBuild.add(Build(self.game, item.nom))
         if item.nom == "scierie":
             self.game.map[tuile.posY][tuile.posX].scierie = True
             self.nbScierie+=1
@@ -402,7 +408,9 @@ class Player(pygame.sprite.Sprite):
             self.game.listeCaseBatiment.append(tuile)
             tuile.annimation=[]
             pygame.mixer.Sound.play(self.game.son.scierie)
-        
+            if tuile.indiceSurbrillance>=0:
+                self.game.groupTuileBoost.add(tuile)
+            
               
         elif item.nom == "moulin":
             self.game.map[tuile.posY][tuile.posX].moulin = True
@@ -411,6 +419,8 @@ class Player(pygame.sprite.Sprite):
             self.game.listeCaseBatiment.append(tuile)
             tuile.annimation = self.game.images.moulinAnnim
             tuile.clockAnnimMax = 6
+            if tuile.indiceSurbrillance>=0:
+                self.game.groupTuileBoost.add(tuile)
             pygame.mixer.Sound.play(self.game.son.moulin)
         elif item.nom == "puit":
             tuile.annimation=[]
@@ -439,7 +449,10 @@ class Player(pygame.sprite.Sprite):
             self.nbMine+=1
             self.game.listeCaseBatiment.append(tuile)
             self.indiceEcolo+=2
+            changerImg=False
             pygame.mixer.Sound.play(self.game.son.mine)
+            if tuile.indiceSurbrillance>=0:
+                self.game.groupTuileBoost.add(tuile)
         elif item.nom == "port":
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].port = True
@@ -489,18 +502,38 @@ class Player(pygame.sprite.Sprite):
             tuile.annimation = self.game.images.ventiloAnnim
             tuile.clockAnnimMax = 1
         elif item.nom=="ville":
-            tuile.annimation=[]
+            
             self.game.map[tuile.posY][tuile.posX].ville = True
             self.ville=True   
-            
+        
+        elif item.nom=="statueEau" or item.nom=="statueBois" or item.nom=="statueFood" or item.nom=="statuePierre":
+            if item.nom=="statueFood":
+                self.statueFood=True
+            if item.nom=="statueBois":
+                self.statueBois=True
+            if item.nom=="statueEau":
+                self.statueEau=True
+            if item.nom=="statuePierre":
+                self.statuePierre=True
+            self.game.map[tuile.posY][tuile.posX].statue=True
+            for y in range(-1,2):
+                for x in range(-1,2):
+                    
+                    if self.game.map[tuile.posY+y][tuile.posX+x].type==self.game.map[tuile.posY][tuile.posX].type and (y!=0 or x!=0):
+                        self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance=random.randint(0,200)
+                        if self.game.map[tuile.posY+y][tuile.posX+x].scierie or self.game.map[tuile.posY+y][tuile.posX+x].mine or self.game.map[tuile.posY+y][tuile.posX+x].moulin:
+                            self.game.groupTuileBoost.add(self.game.map[tuile.posY+y][tuile.posX+x])
+            changerImg=False
         elif item.nom=="forge":
             tuile.annimation=self.game.images.forgeAnnim
             tuile.clockAnnimMax = 6
             self.game.map[tuile.posY][tuile.posX].forge = True
+            changerImg=False
         elif item.nom=="armure1":
             self.nomArmure="armure1"
             self.imageArmure = self.game.images.armure[0]
             self.armure=5
+            changerImg=False
         elif item.nom=="armure2":
             self.nomArmure="armure2"
             self.imageArmure = self.game.images.armure[1]
@@ -513,7 +546,7 @@ class Player(pygame.sprite.Sprite):
             self.nomArmure="armure4"
             self.imageArmure = self.game.images.armure[3]
             self.armure=35
-        if item.nom!="forge" or item.nom!="forge1" or item.nom!="forge2" or item.nom!="forge3" or item.nom!="forge4" or item.nom!="mine":
+        if changerImg:
             self.changerImageBatiment(tuile, item.nom)
         
         

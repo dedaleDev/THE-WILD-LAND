@@ -15,7 +15,7 @@ from findPos import *
 
 import pickle
 fenetrePygame = ""
-infoObject = 0
+
 
 global moveY, moveX, suiviePerso
 
@@ -33,6 +33,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     suiviePerso=140 #baisser la valeur pour un suivi plus rapide, 130 = suivi parfait
     nombreAnnimationIncendie=3
     nombreAnnimationTremblement=3
+
 
     # initialise la taille de l'écran (largeur, hauteur) en pixel
     modification = False
@@ -54,30 +55,38 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 30)
-
-    infoObject = pygame.display.Info()  # récupère la taille de l'écran
-    tailleEcran = infoObject.current_w, infoObject.current_h 
+    reelEcran = pygame.display.Info()
+    
+    infoObject =  (int(aideCSV.valCorrespondante("largeurEcran")), int(aideCSV.valCorrespondante("hauteurEcran"))) # récupère la taille de l'écran
+    tailleEcran = infoObject[0], infoObject[1]
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
     statImg = pygame.image.load("data/menu/stat.png").convert_alpha()
-    statImg = pygame.transform.scale(statImg, (statImg.get_width()*diagonalEcran*0.0002, statImg.get_height()*diagonalEcran*0.0002))
+    statImg = pygame.transform.scale(statImg, (statImg.get_width()*diagonalEcran*0.00035, statImg.get_height()*diagonalEcran*0.00035))
+
     
     
     opti = int(aideCSV.valCorrespondante("optimisation"))
+    
     if not opti:
-        fenetrePygame = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
-        print((infoObject.current_w, infoObject.current_h))
+        
+        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]))
+        
     elif opti == 1 :
         flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
-        fenetrePygame = pygame.display.set_mode((1920,1080),flags)
+        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]),flags)
     elif opti == 2:
         flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
-        fenetrePygame = pygame.display.set_mode((1280,720),flags)
+        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]),flags)
 
     fenetrePygame.fill("black")
     im = pygame.image.load("data/menu/chargement.png")
-    chargement = pygame.transform.scale(im, (infoObject.current_w, infoObject.current_h))
-    fenetrePygame.blit(chargement, (0,0))
-    pygame.display.flip()
+    chargement = pygame.transform.scale(im, (infoObject[0], infoObject[1]))
+    chargement.set_alpha(0)
+    while chargement.get_alpha()<150:
+        chargement.set_alpha(chargement.get_alpha()+5)
+        fenetrePygame.blit(chargement, (0,0))
+        pygame.display.flip()
+        clock.tick(60)
     game = Game(infoObject, fenetrePygame, mapChoisie, pointSpawn)
     
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
@@ -147,6 +156,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
     taillePolice = round(3/100*diagonalEcran)
     police = get_font(taillePolice)
+    smallTaillePolice = round(1.5/100*diagonalEcran)
+    smallPolice = get_font(smallTaillePolice)
+    verySmallTaillePolice = round(1.1/100*diagonalEcran)
+    verySmallPolice = get_font(verySmallTaillePolice)
     while continuer:
         debut = pygame.time.get_ticks()
         game.joueur.blit=False
@@ -236,6 +249,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             if fps==0 or fps==30:
                 if game.groupMob.__len__()-game.nbAnnimaux<9:
                     game.spawMob()
+            if fps==0:
+                for tuileLoot in game.groupTuileBoost:
+                    game.groupLoot.add(Loot(2, 0, 0, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
             
             
             modification=True
@@ -274,15 +290,21 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             listeMontagne=[]
             for y in range(game.taille_matriceY):
                 for x in range(game.taille_matriceX):
+                    
                     if game.map[y][x].isExplored:
-                        if (moveX+game.map[y][x].Xoriginal < infoObject.current_w and moveY+game.map[y][x].Yoriginal<infoObject.current_h) or True: #si la tuile est dans l'ecran
-                            if game.map[y][x].type==2 or game.map[y][x].type==7:
-                                listeMontagne.append(game.map[y][x])
-                            else:
-                                #fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
-                                fenetrePygame.blit(game.map[y][x].image, game.map[y][x].rect)
-                        if game.map[y][x].annimation:
-                            game.map[y][x].changeAnnim()
+                        
+                        if game.map[y][x].type==2 or game.map[y][x].type==7:
+                            listeMontagne.append(game.map[y][x])
+                        else:
+                            #fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                            fenetrePygame.blit(game.map[y][x].image, game.map[y][x].rect)
+                            if game.map[y][x].indiceSurbrillance>=0:
+                                fenetrePygame.blit(game.map[y][x].surbrillance[game.map[y][x].indiceSurbrillance], game.map[y][x].rect)
+                            if game.map[y][x].statue:
+                                fenetrePygame.blit(game.images.statue(game.map[y][x].type), game.map[y][x].rect)
+
+
+                        game.map[y][x].changeAnnim()
                     if game.map[y][x].traceMob:
                         fenetrePygame.blit(Imselection, (game.map[y][x].getRectX(), game.map[y][x].getRectY()))
                     if game.map[y][x].annimationFog>0 and game.map[y][x].isExplored:
@@ -343,8 +365,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             for mob in game.groupMob:
                 if game.map[mob.posY][mob.posX].isExplored :
                     #fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
-                    listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1]))
-                    pass
+                    listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1], None, None))
+                    
                 
             
 
@@ -365,31 +387,38 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 if tuile2.type==2 :
                     center = tuile2.centerOriginal
                     if tuile2.mortier:
-                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre))
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre, None, None))
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
                     else:
                         
-                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre))
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue))
                 else :
                     center = tuile2.centerOriginal
                     
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
                     
-                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre))
+                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue))
             
             if not game.joueur.bateau:
                 fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
                 center = game.joueur.rect.center
-                listeOrdre.append((game.joueur.skin, game.joueur.rect.x, game.joueur.rect.y, center[1]))
+                
+                listeOrdre.append((game.joueur.skin, game.joueur.rect.x, game.joueur.rect.y, center[1], None, None))
 
             elif game.joueur.bateau:
                 #fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
                 center = game.joueur.rect.center
                 
-                listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30))
+                listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None))
+                
             listeOrdre.sort(key=lambda x: x[3])
-            for image, posX, posY, center in listeOrdre:
+            
+            for image, posX, posY, center, surbrillance, statue in listeOrdre:
                 fenetrePygame.blit(image, (posX, posY))
+                if surbrillance!=-1 and surbrillance!=None:
+                    fenetrePygame.blit(game.images.surbrillance[surbrillance], (posX, posY))
+                if statue:
+                    fenetrePygame.blit(game.images.statue(2), (posX+30, posY+30))
             for loot in game.groupLoot:
                 loot.update(fenetrePygame, moveX,moveY)
             
@@ -440,12 +469,12 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             annimIncendie=0
             
             for i in range(len(game.joueur.ressourcesIMG)):
-                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject.current_w-190-(190*i), 25))
-                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject.current_w-120-(190*i), 3/100*infoObject.current_h))
+                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]-190-(190*i), 25))
+                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]-120-(190*i), 3/100*infoObject[1]))
                 if game.joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
                     if timeComtpeur <=60 :
-                        fenetrePygame.blit(game.joueur.RessourcesInfoModified[i],(infoObject.current_w-95-(190*i),90))
+                        fenetrePygame.blit(game.joueur.RessourcesInfoModified[i],(infoObject[0]-95-(190*i),90))
                     else :
                         timeComtpeur = 0
                         game.joueur.resetRessourcesModified()
@@ -460,7 +489,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             fenetrePygame.blit(feuille, (10,368))
             fenetrePygame.blit(scoreText, scoreRect)
             if tickBatiment<60:
-                fenetrePygame.blit(game.imageErreurRessource, (infoObject.current_w-game.imageErreurRessource.get_width()-(infoObject.current_w-game.imageErreurRessource.get_width())/2,infoObject.current_h - 200))
+                fenetrePygame.blit(game.imageErreurRessource, (infoObject[0]-game.imageErreurRessource.get_width()-(infoObject[0]-game.imageErreurRessource.get_width())/2,infoObject[1] - 200))
                 tickBatiment+=1
             if game.infoMortAnnimal>0:
                 fenetrePygame.blit(infoMortAnnimal, (tailleEcran[0]- 400, tailleEcran[1] - 700))
@@ -473,16 +502,48 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 mort(game)
             if game.joueur.ville:
                 victoire(game)
-            test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))
+            test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))#hjhgfdfghjklkjhgfdsq
             fenetrePygame.blit(test, (0,100))
+
+
             
+
+            if game.stat : 
+                game.stat =False
+                fenetrePygame.blit(statImg, (infoObject[0]*0.705,infoObject[1]*0.1))
+                #recup 
+                productionWood, productionStone, productionWater, productionFood, recuperationEcolo, nbAnnimauxMort, ennemieDegat = stat(game)
+                #render : 
+
+                productionWood = smallPolice.render(str(productionWood), True, (0, 0, 0))
+                productionWater = smallPolice.render(str(productionWater), True, (0, 0, 0))
+                productionStone = smallPolice.render(str(productionStone), True, (0, 0, 0))
+                productionFood = smallPolice.render(str(productionFood), True, (0, 0, 0))
+
+                titleEco= smallPolice.render("Environnement ", True, (0, 0, 0))
+                nbAnnimauxMort= verySmallPolice.render("Animaux décédés :  "+str(nbAnnimauxMort), True, (0, 0, 0))
+                recuperationEcolo= verySmallPolice.render("Gain écologique :  "+str(recuperationEcolo), True, (0, 0, 0))
+
+                titleCombat= smallPolice.render("Combats ", True, (0, 0, 0))
+                ennemieDegat= verySmallPolice.render("Pire ennemi : "+str(ennemieDegat), True, (0, 0, 0))
+
+
+                #blit : 
+                fenetrePygame.blit(productionWood,(infoObject[0]*0.91, infoObject[1]*0.29))
+                fenetrePygame.blit(productionWater,(infoObject[0]*0.91, infoObject[1]*0.34))
+                fenetrePygame.blit(productionFood,(infoObject[0]*0.78, infoObject[1]*0.29))
+                fenetrePygame.blit(productionStone,(infoObject[0]*0.78, infoObject[1]*0.34))
+
+                fenetrePygame.blit(titleEco,(infoObject[0]*0.72, infoObject[1]*0.4))
+                fenetrePygame.blit(nbAnnimauxMort,(infoObject[0]*0.74, infoObject[1]*0.44))
+                fenetrePygame.blit(recuperationEcolo,(infoObject[0]*0.74, infoObject[1]*0.48))
+
+                fenetrePygame.blit(titleCombat,(infoObject[0]*0.72, infoObject[1]*0.51))
+                fenetrePygame.blit(ennemieDegat,(infoObject[0]*0.74, infoObject[1]*0.55))
+
+
             
-            ###STAT
-            
-            productionWood, productionWood, productionWater, productionFood, recuperationEcolo, nbAnnimauxMort, ennemieDegat = stat(game)
-            #a transformer en str et les blit
-            
-            fenetrePygame.blit(statImg, (infoObject.current_w*0.4,infoObject.current_h*0.1))
+  
             
             pygame.display.flip()
             
@@ -525,13 +586,15 @@ def KEY_move(game,joueur,fenetre):
         bas=False
     elif (keys[K_q]or keys[K_LEFT]) and (keys[K_z] or keys[K_UP]): #diag haut gauche
         haut=False
+    if keys[K_i]:
+        game.stat = True
     
     
     bug=False
     if keys[K_d] or keys[K_RIGHT]:
         if bug:=joueur.deplacementAutorise("droite") :
             
-            deplacementCamDroite((infoObject.current_w - suiviePerso,0), game, True)
+            deplacementCamDroite((infoObject[0] - suiviePerso,0), game, True)
             joueur.goRight()
             tuile = majSelectionJoueur(game)
             if tuile!=None:
@@ -574,7 +637,7 @@ def KEY_move(game,joueur,fenetre):
 
     if keys[K_s]or keys[K_DOWN]:
             if bug:=joueur.deplacementAutorise("bas"):
-                deplacementCamBas((0, infoObject.current_h-suiviePerso), game, True)
+                deplacementCamBas((0, infoObject[1]-suiviePerso), game, True)
                 joueur.goDown(bas)
                 tuile = majSelectionJoueur(game)
                 if tuile!=None:
@@ -608,27 +671,27 @@ def deplacement_cam(mouse, game, bloquage=False): #gestion du déplacement de la
     deplacementCamHaut(mouse, game, bloquage)
     
 def centrerJoueur(game):
-    while game.joueur.rect.x < infoObject.current_w//2-10:
+    while game.joueur.rect.x < infoObject[0]//2-10:
         deplacementCamGauche((199,0), game, False)
 
-    while game.joueur.rect.x > infoObject.current_w//2+10:
-        deplacementCamDroite((infoObject.current_w-199,0), game, False)
+    while game.joueur.rect.x > infoObject[0]//2+10:
+        deplacementCamDroite((infoObject[0]-199,0), game, False)
 
 
-    while game.joueur.rect.y > infoObject.current_h//2-10:
-        deplacementCamBas((0,infoObject.current_h-199), game, False)
+    while game.joueur.rect.y > infoObject[1]//2-10:
+        deplacementCamBas((0,infoObject[1]-199), game, False)
 
-    while game.joueur.rect.y < infoObject.current_h//2+10:
+    while game.joueur.rect.y < infoObject[1]//2+10:
         deplacementCamHaut((0,199), game, False)
 
 
 
 def deplacementCamBas(mouse, game, bloquage):
     global moveY, moveX
-    x=infoObject.current_h-mouse[1]
+    x=infoObject[1]-mouse[1]
     y=f(x)
     if x < 200 :  # Si souris en bas
-        if not bloquage or (game.map[-1][0].Yoriginal+moveY>infoObject.current_h-250):
+        if not bloquage or (game.map[-1][0].Yoriginal+moveY>infoObject[1]-250):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
                     game.map[i][j].decalerY(y)
@@ -684,12 +747,12 @@ def deplacementCamGauche(mouse, game, bloquage):
         
 def deplacementCamDroite(mouse, game, bloquage):
     global moveY, moveX
-    x = infoObject.current_w-mouse[0]
+    x = infoObject[0]-mouse[0]
     y=f(x)
 
 
     if x < 200:  # Si souris à droite
-        if not bloquage or (game.map[-1][-1].Xoriginal+moveX>infoObject.current_w-400):
+        if not bloquage or (game.map[-1][-1].Xoriginal+moveX>infoObject[0]-400):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
                     game.map[i][j].decalerX(y)
@@ -712,7 +775,7 @@ def f(x):  #fonction vitesse deplacement cam
 
 def pause(fenetre):
     global infoObject
-    tailleEcran = infoObject.current_w, infoObject.current_h 
+    tailleEcran = infoObject[0], infoObject[1]
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
     pause=True
     scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1]
@@ -748,7 +811,7 @@ def pause(fenetre):
                     librairie=False
         fenetre.fill("white")
         if librairie:
-            fenetrePygame.blit(librairieIMG,(infoObject.current_w-librairieIMG.get_width()-(infoObject.current_w-librairieIMG.get_width())/2,200))
+            fenetrePygame.blit(librairieIMG,(infoObject[0]-librairieIMG.get_width()-(infoObject[0]-librairieIMG.get_width())/2,200))
             fermer.changeColor(mouse)
             fermer.update(fenetre)
         else:
@@ -772,10 +835,10 @@ def victoire(game):
     fenetrePygame.blit(game.images.victoire, (0,0))
     
 def get_font(size):
-    return pygame.font.Font("data/menu/font.ttf", size)
+    return pygame.font.Font("data/menu/Avenir.ttc", size)
 
 def surEcran(entite, moveX, moveY, infoObject):
-    return entite.rect.x>=0 and entite.rect.x<=infoObject.current_w and entite.rect.y>=0 and entite.rect.y<=infoObject.current_h
+    return entite.rect.x>=0 and entite.rect.x<=infoObject[0] and entite.rect.y>=0 and entite.rect.y<=infoObject[1]
 
 
 def gestionMob(game, fps):
@@ -879,16 +942,16 @@ def blitJoueur(fenetrePygame, game):
 def stat(game:Game): #specification du type game
     
     #multiplication par 6 pour mettre en minute
-    productionWood = 5*game.joueur.nbScierie*6
-    productionWood = 4*game.joueur.nbMine*6
-    productionWater = 3*game.joueur.nbMoulin*6
-    productionFood = 4*game.joueur.nbElevage*6 + 1*game.joueur.nbChamps*6
-    recuperationEcolo = game.joueur.nbFrigo*0.5*6
+    productionWood = str(5*game.joueur.nbScierie*6)
+    productionStone = str(4*game.joueur.nbMine*6)
+    productionWater = str(3*game.joueur.nbMoulin*6)
+    productionFood = str(4*game.joueur.nbElevage*6 + 1*game.joueur.nbChamps*6)
+    recuperationEcolo = str(game.joueur.nbFrigo*0.5*6)
     nbAnnimauxMort = game.joueur.nbAnnimauxTue
     ennemieDegat = max(game.joueur.dictioDegatMob.items(), key=operator.itemgetter(1))[0]
+    #game.tempsJeu() --> en mili sec /1000
     
+
     
-    
-    
-    return productionWood, productionWood, productionWater, productionFood, recuperationEcolo, nbAnnimauxMort, ennemieDegat
-    
+    return productionWood, productionStone, productionWater, productionFood, recuperationEcolo, nbAnnimauxMort, ennemieDegat
+

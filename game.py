@@ -59,13 +59,15 @@ elif modeDifficile :
 premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre, mapChoisie, pointSpawn):
-        posRectChargement = infoObject.current_w*1/4, infoObject.current_h*3/4
+        super().__init__()
+        posRectChargement = infoObject[0]*1/4, infoObject[1]*3/4
         self.infoObject=infoObject
-        diagonalEcran = math.sqrt(infoObject.current_w**2 + infoObject.current_h**2)
+        diagonalEcran = math.sqrt(infoObject[0]**2 + infoObject[1]**2)
         taillePolice = round(3/100*diagonalEcran)
         font = pygame.font.Font("data/menu/font.ttf", taillePolice//2)
         
         self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
+        
         self.images = ImageLoad()
         self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
         self.son = Sound()
@@ -101,16 +103,17 @@ class Game(pygame.sprite.Sprite):
         self.groupDefense = pygame.sprite.Group()
         self.groupCoffre = pygame.sprite.Group()
         self.groupLoot = pygame.sprite.Group()
+        self.groupTuileBoost = pygame.sprite.Group() #liste des tuiles boosté avec un batiment present 
         
         self.genererMatrice(mapChoisie)
         self.updateBar(fenetre, 100, posRectChargement, "preparez vous...", font)
         self.joueur = Player(self,"joueur0", 5, pointSpawn)
         self.groupJoueur=pygame.sprite.Group()
         self.groupJoueur.add(self.joueur)
-        
+        self.groupBuild=pygame.sprite.Group()
         self.probaGolemForet = 2
         self.probaOursin = 0
-        self.probaKraken = 10
+        self.probaKraken = 0
         self.probaMage = 0
         self.probaDragon = 0
         self.probaYeti = 0
@@ -123,7 +126,7 @@ class Game(pygame.sprite.Sprite):
         self.listeDebug = []
         self.tempsMort = 0 #compte les millisecondes de temps passe dans le menu etc
         self.lastPause = 0
-        
+        self.stat = False
         self.moveX, self.moveY = 0,0
         
     def openImageRessource(self):
@@ -138,8 +141,8 @@ class Game(pygame.sprite.Sprite):
         valeurChargement = valeurChargement/100
 
         texte = font.render(texte, True, "White")
-        pygame.draw.rect(fenetre, (70,70,70), (posRectChargement, (100*self.infoObject.current_w*0.005 , 3)))
-        pygame.draw.rect(fenetre, (255,255,255), (posRectChargement, (100*self.infoObject.current_w*0.005*valeurChargement , 3)))
+        pygame.draw.rect(fenetre, (70,70,70), (posRectChargement, (100*self.infoObject[0]*0.005 , 3)))
+        pygame.draw.rect(fenetre, (255,255,255), (posRectChargement, (100*self.infoObject[0]*0.005*valeurChargement , 3)))
         
         pygame.draw.rect(fenetre, (0,0,0), ((posRectChargement[0], posRectChargement[1]+10), (1000 , 1000))) #actualisation du texte
         fenetre.blit(texte, (posRectChargement[0], posRectChargement[1]+10))

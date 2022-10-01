@@ -7,37 +7,17 @@ import aideCSV
 import os
 import mainEditor
 from map import MapEditor
-pygame.init()
 
-#TEXTE ET BOUTONS RESPONSIVE
+global diagonalEcran, scaleButton, tailleEcran, taillePolice, scaleButtonMap, BG, SCREEN, scaleButtonBarre, scaleButtonR
 
-tailleEcran = pygame.display.Info().current_w, pygame.display.Info().current_h
-#tailleEcran = tailleEcran[0]//2, tailleEcran[1]//2
-diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
-taillePolice = round(3/100*diagonalEcran)
-scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1] #TAILLE DES BOUTONS
-scaleButtonBarre = 0.6/2 * tailleEcran[0], 0.6/30*tailleEcran[1]
-scaleButtonR = 0.6/3.5 * tailleEcran[0], 0.6/2*tailleEcran[1]
-scaleButtonMap = 1/3 * tailleEcran[0], 1/2*tailleEcran[1] #TAILLE DES BOUTONS
-scaleButtonSon = 1/3 * tailleEcran[0], 1/2*tailleEcran[1]
-
-SCREEN = pygame.display.set_mode(tailleEcran)
-pygame.display.set_caption("Menu")
-pygame.display.set_caption("THE WILD LAND")
-pygame_icon = pygame.image.load('data/logo/icon_WL.png').convert_alpha()
-pygame.display.set_icon(pygame_icon)
-BG=pygame.image.load("data/menu/background.png").convert_alpha()
-BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
-
-
-
-
+transi = 7
 def get_font(size):
     return pygame.font.Font("data/menu/font.ttf", size)
 
 
 
 def optionPartie():
+    global diagonalEcran, scaleButton, tailleEcran, taillePolice, scaleButtonMap, BG, SCREEN, scaleButtonBarre, scaleButtonR
     mapPropose = []
     path = os.path.dirname(__file__)
     fondMap =pygame.image.load("data/menu/fondMap.png").convert_alpha()
@@ -123,7 +103,7 @@ def optionPartie():
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     
     Map = Button(image=mapPropose[indiceMap].image, pos=(tailleEcran[0]*7.5/10, tailleEcran[1]*posYMapChoix), 
-                    text_input=mapPropose[indiceMap].nom, font=get_font(taillePolice//2), base_color="white", hovering_color="#999999", listeType=mapPropose[indiceMap].listeType)
+                    text_input=mapPropose[indiceMap].nom, font=get_font(taillePolice//2), base_color="black", hovering_color="#999999", listeType=mapPropose[indiceMap].listeType)
     
     Map.image=None #A cause d'un leger bug d'initialisation d'un bouton, pas important
 
@@ -139,10 +119,10 @@ def optionPartie():
                   
     ExtremeMap = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonMap.png").convert_alpha(), (scaleButtonMap[0]//4+scaleButtonMap[0]//10, scaleButtonMap[1]//4+scaleButtonMap[1]//10)), pos=(tailleEcran[0]*1.25/10+tailleEcran[0]*2.45/10, tailleEcran[1]*posYMap-tailleEcran[1]*0.06), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-    miniMap.image.set_alpha(50)
+    miniMap.image.set_alpha(150)
     moyenneMap.image.set_alpha(255)
-    grandeMap.image.set_alpha(50)
-    ExtremeMap.image.set_alpha(50)
+    grandeMap.image.set_alpha(150)
+    ExtremeMap.image.set_alpha(150)
 
 
     diff = "normal"
@@ -156,15 +136,17 @@ def optionPartie():
     extreme = Button(image=pygame.transform.scale(pygame.image.load("data/menu/extreme.png").convert_alpha(), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7+tailleEcran[0]*30//100, tailleEcran[1]*posYDiff), 
                 text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
     facile.image.set_alpha(255)
-    normal.image.set_alpha(50)
-    difficile.image.set_alpha(50)
-    extreme.image.set_alpha(50)
+    normal.image.set_alpha(150)
+    difficile.image.set_alpha(150)
+    extreme.image.set_alpha(150)
     mapChoisie = mapPropose[indiceMap].listeType
     pointSpawn = mapPropose[indiceMap].listePointSpawn
     clock = pygame.time.Clock()
     while continu:
         clock.tick(60)
-        BG.set_alpha(80)
+        if BG.get_alpha()>80:
+            
+            BG.set_alpha(BG.get_alpha()-transi)
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
@@ -208,7 +190,7 @@ def optionPartie():
         Map.update(SCREEN)
         if Map.listeType:
             SCREEN.blit(fissure, (60.2/100*pygame.display.Info().current_w, 22.6 /100*pygame.display.Info().current_h))
-        SCREEN.blit(Map.text, (60.2/100*pygame.display.Info().current_w, 22.6 /100*pygame.display.Info().current_h))
+        SCREEN.blit(Map.text, (58/100*pygame.display.Info().current_w, 27 /100*pygame.display.Info().current_h))
         droiteMap.update(SCREEN)
         gaucheMap.update(SCREEN)
 
@@ -229,54 +211,54 @@ def optionPartie():
                 
                     miniMap.image.set_alpha(255)
                     tailleMap = 10
-                    moyenneMap.image.set_alpha(50)
-                    grandeMap.image.set_alpha(50)
-                    ExtremeMap.image.set_alpha(50)
+                    moyenneMap.image.set_alpha(150)
+                    grandeMap.image.set_alpha(150)
+                    ExtremeMap.image.set_alpha(150)
                     
                 if moyenneMap.checkForInput(OPTIONS_MOUSE_POS):
                     tailleMap= 25
-                    miniMap.image.set_alpha(50)
+                    miniMap.image.set_alpha(150)
                     moyenneMap.image.set_alpha(255)
-                    grandeMap.image.set_alpha(50)
-                    ExtremeMap.image.set_alpha(50)
+                    grandeMap.image.set_alpha(150)
+                    ExtremeMap.image.set_alpha(150)
                 if grandeMap.checkForInput(OPTIONS_MOUSE_POS):
                     tailleMap = 30
-                    miniMap.image.set_alpha(50)
-                    moyenneMap.image.set_alpha(50)
+                    miniMap.image.set_alpha(150)
+                    moyenneMap.image.set_alpha(150)
                     grandeMap.image.set_alpha(255)
-                    ExtremeMap.image.set_alpha(50)
+                    ExtremeMap.image.set_alpha(150)
                 if ExtremeMap.checkForInput(OPTIONS_MOUSE_POS):
                     tailleMap=40
-                    miniMap.image.set_alpha(50)
-                    moyenneMap.image.set_alpha(50)
-                    grandeMap.image.set_alpha(50)
+                    miniMap.image.set_alpha(150)
+                    moyenneMap.image.set_alpha(150)
+                    grandeMap.image.set_alpha(150)
                     ExtremeMap.image.set_alpha(255)
                 ##DIFFICULTE
                     
                 if facile.checkForInput(OPTIONS_MOUSE_POS):
                     diff = "facile"
                     facile.image.set_alpha(255)
-                    normal.image.set_alpha(50)
-                    difficile.image.set_alpha(50)
-                    extreme.image.set_alpha(50)
+                    normal.image.set_alpha(150)
+                    difficile.image.set_alpha(150)
+                    extreme.image.set_alpha(150)
                     
                 if normal.checkForInput(OPTIONS_MOUSE_POS):
                     diff = "normal"
-                    facile.image.set_alpha(50)
+                    facile.image.set_alpha(150)
                     normal.image.set_alpha(255)
-                    difficile.image.set_alpha(50)
-                    extreme.image.set_alpha(50)
+                    difficile.image.set_alpha(150)
+                    extreme.image.set_alpha(150)
                 if difficile.checkForInput(OPTIONS_MOUSE_POS):
                     diff = "difficile"
-                    facile.image.set_alpha(50)
-                    normal.image.set_alpha(50)
+                    facile.image.set_alpha(150)
+                    normal.image.set_alpha(150)
                     difficile.image.set_alpha(255)
-                    extreme.image.set_alpha(50)
+                    extreme.image.set_alpha(150)
                 if extreme.checkForInput(OPTIONS_MOUSE_POS):
                     diff = "extreme"
-                    facile.image.set_alpha(50)
-                    normal.image.set_alpha(50)
-                    difficile.image.set_alpha(50)
+                    facile.image.set_alpha(150)
+                    normal.image.set_alpha(150)
+                    difficile.image.set_alpha(150)
                     extreme.image.set_alpha(255)
                 if droiteMap.checkForInput(OPTIONS_MOUSE_POS):
                     indiceMap+=1
@@ -364,6 +346,7 @@ def optionPartie():
 
 
 def options():
+    global diagonalEcran, scaleButton, tailleEcran, taillePolice, scaleButtonMap, BG, SCREEN, scaleButtonBarre, scaleButtonR
     barre = pygame.transform.scale(pygame.image.load("data/menu/barre.png"), scaleButtonBarre)
     
     
@@ -407,9 +390,11 @@ def options():
         haut.image.set_alpha(150)
         bas.image.set_alpha(255)
     clock = pygame.time.Clock()
+    optiVerif=False
     while continu:
         clock.tick(60)
-        BG.set_alpha(80)
+        if BG.get_alpha()>80:
+            BG.set_alpha(BG.get_alpha()-transi)
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         SCREEN.fill("white")
@@ -474,22 +459,51 @@ def options():
                     moyen.image.set_alpha(150)
                     haut.image.set_alpha(150)
                     bas.image.set_alpha(255)
+                    optiVerif=True
                 if moyen.checkForInput(OPTIONS_MOUSE_POS):
                     aideCSV.remplacerVal("optimisation", 1)
                     bas.image.set_alpha(150)
                     haut.image.set_alpha(150)
                     moyen.image.set_alpha(255)
+                    optiVerif=True
                 if haut.checkForInput(OPTIONS_MOUSE_POS):
                     aideCSV.remplacerVal("optimisation", 0)
                     bas.image.set_alpha(150)
                     moyen.image.set_alpha(150)
                     haut.image.set_alpha(255)
-                    
+                    optiVerif=True
                     
         pygame.display.update()
-    return volume, volumeM
+    if optiVerif:
+        majEcranOpti()
+    return volume, volumeM, optiVerif
 
 def main_menu():
+    global diagonalEcran, scaleButton, tailleEcran, taillePolice, scaleButtonMap, BG, SCREEN, scaleButtonBarre, scaleButtonR
+    pygame.init()
+
+    majEcranOpti()
+    
+    #tailleEcran = tailleEcran[0]//2, tailleEcran[1]//2
+    tailleEcran = avoirEcran()
+    diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
+    taillePolice = round(3/100*diagonalEcran)
+    scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1] #TAILLE DES BOUTONS
+    scaleButtonBarre = 0.6/2 * tailleEcran[0], 0.6/30*tailleEcran[1]
+    scaleButtonR = 0.6/3.5 * tailleEcran[0], 0.6/2*tailleEcran[1]
+    scaleButtonMap = 1/3 * tailleEcran[0], 1/2*tailleEcran[1] #TAILLE DES BOUTONS
+    scaleButtonSon = 1/3 * tailleEcran[0], 1/2*tailleEcran[1]
+    flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+    SCREEN = pygame.display.set_mode(tailleEcran, flags)
+    pygame.display.set_caption("Menu")
+    pygame.display.set_caption("THE WILD LAND")
+    pygame_icon = pygame.image.load('data/logo/icon_WL.png').convert_alpha()
+    pygame.display.set_icon(pygame_icon)
+    BG=pygame.image.load("data/menu/background.png").convert_alpha()
+    BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
+
+    
+    
     pygame.mixer.music.load("data/son/musiques/menu.mp3")
     pygame.mixer.music.set_volume(float(aideCSV.valCorrespondante("volumeMusique")))
     pygame.mixer.music.play(loops=-1)
@@ -505,10 +519,13 @@ def main_menu():
     EDITOR_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                         text_input="Editeur", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
     clock = pygame.time.Clock()
+    transition=0
     while True:
 
         clock.tick(60)
-        BG.set_alpha(255)
+        if BG.get_alpha()<255:
+            
+            BG.set_alpha(BG.get_alpha()+transi)
         SCREEN.fill("white")
         SCREEN.blit(BG, (0, 0))
         
@@ -524,10 +541,11 @@ def main_menu():
                 pygame.quit()
                 continu=False
                 sys.exit()
+                
             if event.type == pygame.MOUSEBUTTONDOWN :
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
-                    
                     back, difficulte, tailleMap, mapChoisie, pointSpawn  = optionPartie()
                     aideCSV.remplacerVal("difficulte", difficulte, True)
                     aideCSV.remplacerVal("taille_matriceX", tailleMap, True)
@@ -537,10 +555,35 @@ def main_menu():
                         pygame_gestion.pygameInit(mapChoisie, pointSpawn)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
-                    volume, volumeM = options()
+                    volume, volumeM, optiVerif = options()
                     aideCSV.remplacerVal("volumeBruitage", volume, True)
                     aideCSV.remplacerVal("volumeMusique", volumeM, True)
-                    
+                    if optiVerif:
+                        tailleEcran = avoirEcran()
+                        diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
+                        taillePolice = round(3/100*diagonalEcran)
+                        scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1] #TAILLE DES BOUTONS
+                        scaleButtonBarre = 0.6/2 * tailleEcran[0], 0.6/30*tailleEcran[1]
+                        scaleButtonR = 0.6/3.5 * tailleEcran[0], 0.6/2*tailleEcran[1]
+                        scaleButtonMap = 1/3 * tailleEcran[0], 1/2*tailleEcran[1] #TAILLE DES BOUTONS
+                        scaleButtonSon = 1/3 * tailleEcran[0], 1/2*tailleEcran[1]
+                        flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+                        SCREEN = pygame.display.set_mode(tailleEcran, flags)
+                        pygame.display.set_caption("Menu")
+                        pygame.display.set_caption("THE WILD LAND")
+                        pygame_icon = pygame.image.load('data/logo/icon_WL.png').convert_alpha()
+                        pygame.display.set_icon(pygame_icon)
+                        BG=pygame.image.load("data/menu/background.png").convert_alpha()
+                        BG = pygame.transform.scale(BG, (tailleEcran[0], tailleEcran[1]))
+                        PLAY_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/5), 
+                        text_input="JOUER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+                        OPTIONS_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/3), 
+                                            text_input="OPTIONS", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+                        QUIT_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*6/7), 
+                                            text_input="QUITTER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+                        EDITOR_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
+                                            text_input="Editeur", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+                        
                 if EDITOR_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
                     mainEditor.editor()
@@ -553,3 +596,19 @@ def main_menu():
         if continu:
             pygame.display.update()
     return 
+
+def majEcranOpti():
+    if not int(aideCSV.valCorrespondante("optimisation")):
+        pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        aideCSV.remplacerVal("largeurEcran", pygame.display.Info().current_w)
+        aideCSV.remplacerVal("hauteurEcran", pygame.display.Info().current_h)
+    elif int(aideCSV.valCorrespondante("optimisation"))==1:
+        aideCSV.remplacerVal("largeurEcran", 1920)
+        aideCSV.remplacerVal("hauteurEcran", 1080)
+    else :
+        aideCSV.remplacerVal("largeurEcran", 1280)
+        aideCSV.remplacerVal("hauteurEcran", 720)
+
+    
+def avoirEcran():
+    return int(aideCSV.valCorrespondante("largeurEcran")), int(aideCSV.valCorrespondante("hauteurEcran"))

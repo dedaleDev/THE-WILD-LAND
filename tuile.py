@@ -1,8 +1,9 @@
 import random
 import pygame
 
-class Tuile():
+class Tuile(pygame.sprite.Sprite):
     def __init__(self, type, posX, posY, game):
+        super().__init__()
         self.game = game
         
         
@@ -41,7 +42,7 @@ class Tuile():
         self.probaSup_neige = 0
         self.autoriserNeige = False 
         self.autoriserDesert = True
-        
+        self.statue=False
         
         self.traceMob = False
         self.estSelect = False
@@ -63,6 +64,12 @@ class Tuile():
         self.Yoriginal = self.rect.y
         self.centerOriginal = self.rect.center
         self.mask=pygame.mask.from_surface(self.image)
+        self.surbrillance = game.images.surbrillance
+        self.indiceSurbrillance = -1
+        self.clockAnnimS=0
+        self.clockAnnimMaxS=3
+    
+        
     
     def getExplored(self):
         return self.isExplored
@@ -172,12 +179,20 @@ class Tuile():
 
 
     def changeAnnim(self):
-        
-         self.clockAnnim+=1
-         if self.clockAnnim>=self.clockAnnimMax:
-            
-            self.indiceAnnim+=1
-            if self.indiceAnnim >= len(self.annimation):
-                self.indiceAnnim=0
-            self.clockAnnim=0
-            self.image = self.annimation[self.indiceAnnim] 
+         if self.annimation:
+            self.clockAnnim+=1
+            if self.clockAnnim>=self.clockAnnimMax:
+                
+                self.indiceAnnim+=1
+                if self.indiceAnnim >= len(self.annimation):
+                    self.indiceAnnim=0
+                self.clockAnnim=0
+                self.image = self.annimation[self.indiceAnnim] 
+         
+         if self.indiceSurbrillance>=0:
+            self.clockAnnimS+=1
+            if self.clockAnnimS>=self.clockAnnimMaxS:
+                self.indiceSurbrillance+=1
+                if self.indiceSurbrillance>=len(self.surbrillance):
+                    self.indiceSurbrillance=0
+                self.clockAnnimS=0

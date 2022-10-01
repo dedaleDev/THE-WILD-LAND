@@ -42,7 +42,10 @@ class ImageLoad():
         self.chameauAnnim = self.loadAnnimChameau()
         self.lapinAnnim = self.loadAnnimLapin()
         
-        
+        self.statueBois=pygame.image.load("data/batiments/statueBois.png").convert_alpha()
+        self.statuePierre=pygame.image.load("data/batiments/statuePierre.png").convert_alpha()
+        self.statueEau=pygame.image.load("data/batiments/statueEau.png").convert_alpha()
+        self.statueFood=pygame.image.load("data/batiments/statueFood.png").convert_alpha()
         self.annim1Terre3 = self.loadAnnimTuile("1Terre3_", 1, 11)
         self.annim1Terre4 = self.loadAnnimTuile("1Terre4_", 1, 17)
         self.elevage = self.loadAnnimTuile("elevage_", 2, 19)
@@ -67,7 +70,7 @@ class ImageLoad():
         self.annim4foret2 = self.loadAnnimTuile("4foret2_", 1,12)
         
         self.annim6desert4 = self.loadAnnimTuile("6desert4_", 1,16)
-        
+        self.surbrillance = self.loadAnnimSurbrillance()
         self.lootEau = self.loadAnnimRessource("eau", 1,21)
         self.lootPierre = self.loadAnnimRessource("pierre", 1,20)
         self.lootBois = self.loadAnnimRessource("bois", 1,22)
@@ -107,7 +110,13 @@ class ImageLoad():
             
         return liste
         
-        
+    def loadAnnimSurbrillance(self):
+        liste = []
+        for i in range(1,202):
+              im = pygame.image.load("data/animationTuiles/surbrillance2/surbrillance ("+str(i)+").png").convert_alpha()
+              liste.append(im)
+        return liste
+    
     def loadAnnimTuile(self, nomTuile, idebut, ifin):
         liste=[]
         for i in range(idebut, ifin+1):
@@ -115,7 +124,15 @@ class ImageLoad():
             liste.append(im)
             
         return liste
-    
+    def statue(self, type):
+        if type==4:
+            return self.statueBois
+        if type==2:
+            return self.statuePierre
+        if type==1:
+            return self.statueFood
+        if type==3:
+            return self.statueEau
     def loadImArmure(self):
         liste=[]
         for i in range(1,5):
@@ -469,6 +486,21 @@ class ImageLoad():
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("armure4", imgTemp))
         
+        imgTemp = pygame.image.load("data/batiments/icon/icon_statueEau.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("statueEau", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_statuePierre.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("statuePierre", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_statueFood.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("statueFood", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_statueBois.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("statueBois", imgTemp))
         return listeImgItem
 
     def returnImg(self, type):
@@ -659,7 +691,7 @@ class ImageLoad():
         for elem in self.listeImgItem:
             if elem[0]==nom:
                 return elem[1]
-
+        print(nom)
         assert(False)
         #Pas d'image d'item trouvé
 

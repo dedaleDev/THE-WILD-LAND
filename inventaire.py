@@ -24,9 +24,10 @@ class Inventaire(pygame.sprite.Sprite):
             else :
                 self.listeItem[i].image.set_alpha(100)
                 fenetre.blit(self.listeItem[i].image, (self.listeItem[i].rect.x,self.listeItem[i].rect.y))
+                
     def loadInventaire(self):
         im = pygame.image.load("data/menu/menu_tuile.png").convert_alpha()
-        im = pygame.transform.scale(im, (643/2,178/2))
+        im = pygame.transform.scale(im, (758/2,178/2))
         return im
 
     def loadInfoBulle(self, source = "data/menu/infoBulleBatiment"):
