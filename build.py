@@ -10,8 +10,7 @@ class Build(pygame.sprite.Sprite):
           self.game = game
           self.nomBatiment=nomBatiment
           self.tuile = tuile
-          self.image=pygame.image.load("data/tuiles/box.png")
-          self.image=pygame.transform.scale(self.image, (self.image.get_width()*1.5, self.image.get_height()*1.5))
+          self.image=None
           self.imageClickPassif=None
           self.actuelClick=None #Endroit ou on doit cliquer
           
