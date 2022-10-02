@@ -123,7 +123,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     tuile=False
     tickBatiment=1000
 
-    inventaire=Inventaire(0,0, [])
+    inventaire=Inventaire(0,0, [], game)
 
     for i in range(-1, 2):
         for j in range(-1, 2):
@@ -212,12 +212,20 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         cliqueItem=True
                         if not batimentConstruit:
                             tickBatiment=0
+                
                 if not cliqueItem:
                     tuile = majSelection(game, pygame.mouse.get_pos(), game.joueur)
                 else :
                     if tuile:
                         tuile.estSelect=False
                     tuile=False
+                    
+                    
+                for build in game.groupBuild:
+                    if build.checkClick():
+                        if tuile:
+                            tuile.estSelect=False
+                        tuile=False
         
        
         
@@ -333,12 +341,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         tuileVille = game.map[y][x]
                         
             
-            """for build in game.groupBuild:
-                build.update
-                fenetrePygame.blit(build.image, (build.rect.x, build.rect.y))
-                if build.imageClick:
-                    fenetrePygame.blit(build.imageClick, build.actuelClick)
-            """
+            
+                    
             for coffre in game.groupCoffre:
                 if coffre.tuile.posX == game.joueur.posX and coffre.tuile.posY == game.joueur.posY:
                     if coffre.clock==coffre.clockMax:
@@ -437,11 +441,19 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     fenetrePygame.blit(game.images.statue(2), (posX+30, posY+30))
             for loot in game.groupLoot:
                 loot.update(fenetrePygame, moveX,moveY)
-            
+                
+                
+            for build in game.groupBuild:
+                build.update()
+                fenetrePygame.blit(build.image, (build.rect.x-20, build.rect.y-70))
+                if build.imageClickPassif and build.actuelClick:
+                    #pygame.draw.rect(fenetrePygame, (255,255,255), build.actuelClick, 1)
+                    
+                    fenetrePygame.blit(build.imageClickPassif, build.actuelClick)
             
             if tuile :
                 liste = selectionDispoItem(game, tuile, game.joueur)
-                inventaire = Inventaire(tuile.getRectX()-50, tuile.getRectY()-25, liste)
+                inventaire = Inventaire(tuile.getRectX()-50, tuile.getRectY()-25, liste, game)
                 inventaire.blitInventaire(fenetrePygame, game.joueur)
                 for item in inventaire.listeItem:
                         if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##

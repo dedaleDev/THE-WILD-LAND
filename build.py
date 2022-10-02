@@ -10,47 +10,88 @@ class Build(pygame.sprite.Sprite):
           self.game = game
           self.nomBatiment=nomBatiment
           self.tuile = tuile
-          self.image=None
-          
-          self.imageClick=None
+          self.image=pygame.image.load("data/tuiles/box.png")
+          self.image=pygame.transform.scale(self.image, (self.image.get_width()*1.5, self.image.get_height()*1.5))
+          self.imageClickPassif=None
           self.actuelClick=None #Endroit ou on doit cliquer
           
-          #self.annimClick=game.images.clickBuild
-          self.indiceAnnimClick = 0
+          self.moveBox = game.images.moveBox
+          self.indiceBox = -1
           
+          self.annimClick=game.images.clickBuild
+          self.indiceAnnimClick = 0
+          self.rect=tuile.rect
+          
+          self.boomBox = game.images.boomBox
+          self.indiceBoomBox = -1
           
           self.nbClick = 0
           self.nbClickMax=nbClickMax
           
+          self.posXclick = 0
+          self.posYclick=0
+          
           
           self.clockMax=3
           self.clock=0
-          self.construireLeBatiment(tuile)
+          self.clockBox = 0
+          self.clockBoxMax = 1
     
     def spawnButton(self):
-        posX=random.randint(self.tuile.rect.x, self.tuile.rect.x+200)
-        posY=random.randint(self.tuile.rect.y, self.tuile.rect.y+100)
-        self.actuelClick=pygame.Rect(posX, posY, 50,50)
+        self.posXclick=random.randint(0, 200)
+        self.posYclick=random.randint(0, 100)
+        self.actuelClick=pygame.Rect(self.posXclick, self.posYclick, 40,40)
+        
         self.indiceAnnimClick=0
     
     
     def checkClick(self):
         mouse= pygame.mouse.get_pos()
-        if pygame.Rect.collidepoint(self.actuelClick,mouse[0], mouse[1]):
-            self.nbClick+=1
+        if self.actuelClick:
+            
+            if pygame.Rect.collidepoint(self.actuelClick,mouse[0], mouse[1]):
+                self.nbClick+=1
+                self.actuelClick=None
+                self.indiceBox=0
+                return True
+        return False
+    
     
     def update(self):
-        if self.nbClick==self.nbClickMax:
-            self.construireLeBatiment(self.tuile)
+        if self.actuelClick==None and self.nbClick<self.nbClickMax:
+            self.spawnButton()
+        if self.actuelClick:
+            self.actuelClick.x=self.tuile.rect.x+self.posXclick
+            self.actuelClick.y = self.tuile.rect.y+self.posYclick
+        
+        
+        if self.nbClick>=self.nbClickMax:
+            self.indiceBoomBox+=1
+            if self.indiceBoomBox>=len(self.boomBox):
+                
+                self.kill() # pauvre build :(
+                return
+            if self.indiceBoomBox==12:
+                self.construireLeBatiment(self.tuile)
+            self.image=self.boomBox[self.indiceBoomBox]
             
-            
-        if self.indiceAnnimClick>=len(self.annimClick):
-            self.indiceAnnimClick=-1
         elif self.clock>=self.clockMax:
             self.indiceAnnimClick+=1
-            self.self.clock=0
-        self.imageClick=self.annimClick[self.indiceAnnimClick]
-    
+            self.clock=0
+            
+        if self.clockBox>=self.clockBoxMax:
+            if self.indiceBox>=0:    
+                self.indiceBox+=1
+            self.clockBox=0
+        if self.indiceAnnimClick>=len(self.annimClick):
+            self.indiceAnnimClick=0
+        if self.indiceBox>=len(self.moveBox):
+            self.indiceBox=-1
+        self.imageClickPassif=self.annimClick[self.indiceAnnimClick]
+        if self.indiceBoomBox==-1:
+            self.image = self.moveBox[self.indiceBox]
+        self.clock+=1
+        self.clockBox+=1
     def construireLeBatiment(self, tuile):
         changerImg = True
         if self.nomBatiment == "scierie":
@@ -200,4 +241,6 @@ class Build(pygame.sprite.Sprite):
             self.game.joueur.armure=35
         if changerImg:
             self.game.joueur.changerImageBatiment(tuile, self.nomBatiment)
+        
+        
         

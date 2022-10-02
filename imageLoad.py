@@ -77,7 +77,12 @@ class ImageLoad():
         self.lootFood = self.loadAnnimRessource("viande", 1,20)
         
         
-        #self.clickBuild = self.loadAnnimClickBuild(self)
+        self.clickBuild = self.loadAnnimClickBuild()
+        self.moveBox = self.loadAnnimBoxMove()
+        self.boomBox = self.loadAnnimBoxBoom()
+        self.inventaire = self.loadInventaire()
+        
+        
         for i in range(15):
             self.annim3eau0.append(self.annim3eau0[-1])
             self.annim7Barriere3.append(self.annim7Barriere3[-1])
@@ -103,15 +108,33 @@ class ImageLoad():
         for i in range(5):
             self.annim3eau2.append(self.annim3eau0[-1])
         
-    
+    def loadInventaire(self):
+        im = pygame.image.load("data/menu/menu_tuile.png").convert_alpha()
+        im = pygame.transform.scale(im, (758/2,178/2))
+        return im
     def loadAnnimClickBuild(self):
         liste=[]
         for i in range(2, 28):
             im = pygame.image.load("data/animationTuiles/click/click ("+str(i)+").png").convert_alpha()
+            im=pygame.transform.scale(im, (40,40))
             liste.append(im)
             
         return liste
     
+    def loadAnnimBoxMove(self):
+        liste=[]
+        for i in range(1, 17):
+            im = pygame.image.load("data/animationTuiles/boxMove/Box ("+str(i)+").png").convert_alpha()
+            liste.append(im)
+            
+        return liste
+    def loadAnnimBoxBoom(self):
+        liste=[]
+        for i in range(2, 34):
+            im = pygame.image.load("data/animationTuiles/boxMove/boomBox ("+str(i)+").png").convert_alpha()
+            liste.append(im)
+            
+        return liste
     def loadAnnimTuileEau(self):
         liste=[]
         for i in range(1, 193):
