@@ -130,7 +130,7 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))
             optionDIspo.append(Item(game, "trou", 15,0, 10, 0))
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
-        elif tuile.type==7:
+        elif tuile.type==7 and not game.boss:
             if not tuile.forge:
                 optionDIspo.append(Item(game, "forge", 0,0,0,0))
             else:

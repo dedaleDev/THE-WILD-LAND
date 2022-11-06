@@ -68,6 +68,8 @@ class Game(pygame.sprite.Sprite):
         
         self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
         
+        self.text=None
+        
         self.images = ImageLoad()
         self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
         self.son = Sound()
@@ -75,10 +77,13 @@ class Game(pygame.sprite.Sprite):
         
         self.imCollision = self.images.getImCollision()
         self.map = 0
+        self.mapWorld = 0
+        self.mapBoss=0
         self.mapMontagneMer = 0
         self.imageFog2 = self.openFog2()
         self.imageErreurRessource = self.openImageRessource()
         self.mapImg = 0
+        
         self.mapImgO = 0
         self.mapImgO_superpose = 0
         self.mapMer = 0
@@ -97,6 +102,9 @@ class Game(pygame.sprite.Sprite):
             self.taille_matriceY = len(mapChoisie)
             self.taille_matriceX = len(mapChoisie[0])
             
+            
+            
+        self.police=pygame.font.Font("data/menu/Avenir.ttc", 20)
         self.infoMortAnnimal = 0
         self.groupMob = pygame.sprite.Group()
         self.groupProjectile = pygame.sprite.Group()
@@ -128,7 +136,8 @@ class Game(pygame.sprite.Sprite):
         self.lastPause = 0
         self.stat = False
         self.moveX, self.moveY = 0,0
-        
+        self.boss=False
+        self.theBoss = 0
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png").convert_alpha()
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
@@ -221,8 +230,11 @@ class Game(pygame.sprite.Sprite):
     def genererMatrice(self, mapChoisie):
         if not mapChoisie:
             self.map = generation.generation_matrice(self)
+            self.mapWorld=self.map
         else :
             self.map = generation.typeToTuile(mapChoisie, self)
+            self.mapWorld=self.map
+        self.mapBoss = generation.mapBoss(self)
         self.mapMontagneMer, self.mapMer, self.mapDesert, self.mapVide, self.listeCaseMer, self.listeCaseForet, self.listeCasePlaine, self.listeCaseMontagne  = generation.generation_matriceMontagneMer(self.map, self)
 
     def spawnAnnimal(self, spawnChameau=10, spawnOiseau=1, spawnLapin = 3, spawnOiseau2 = 2):
@@ -243,10 +255,14 @@ class Game(pygame.sprite.Sprite):
                         self.groupMob.add(Mob(self,"lapin", 100, 2, tuile=self.map[y][x], score=0, annimal=True, attaque=0))
                         self.nbAnnimaux+=1
                 if self.map[y][x].type==4:
-                    rand = random.randint(0,50)
+                    rand = random.randint(0,25)
                     if rand<spawnOiseau2 :
-                        self.groupMob.add(Mob(self,"oiseau2", 100, 1, tuile=self.map[y][x], score=0, annimal=True, attaque=0))
-                        self.nbAnnimaux+=1
+                        if random.randint(0,1):
+                            self.groupMob.add(Mob(self,"oiseau2", 100, 1, tuile=self.map[y][x], score=0, annimal=True, attaque=0))
+                            self.nbAnnimaux+=1
+                        else:
+                            self.groupMob.add(Mob(self,"renard", 100, 1, tuile=self.map[y][x], score=0, annimal=True, attaque=0))
+                            self.nbAnnimaux+=1
         
     def checkCollision(self, joueur, listeMob):
         listeColide=[]
@@ -302,6 +318,13 @@ class Game(pygame.sprite.Sprite):
                         if rand <= self.probaYeti:
                             self.groupMob.add(Mob(self, "yeti", 500, 2, tuile, 500, attaque=30))
                             pygame.mixer.Sound.play(self.son.yetiSpawn)
+    def afficherText(self, text):
+        text = self.police.render(str(text), True, (255, 255, 0))
+        self.fenetre.blit(text, (400,400))
+        self.text=text
+    def displayTxt(self):
+        self.fenetre.blit(self.text, (400,400))
+        
     """
     def genererImg(self):
         global background_pil, premierPAss

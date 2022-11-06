@@ -2,6 +2,7 @@ import math
 import operator
 import pygame
 from pygame.locals import *
+from boss import Boss
 from inventaire import Inventaire
 from generation import *
 from loot import Loot
@@ -12,8 +13,6 @@ from game import Game
 #from game import background_pil
 from button import Button
 from findPos import *
-
-import pickle
 fenetrePygame = ""
 
 
@@ -160,6 +159,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     smallPolice = get_font(smallTaillePolice)
     verySmallTaillePolice = round(1.1/100*diagonalEcran)
     verySmallPolice = get_font(verySmallTaillePolice)
+
+
     while continuer:
         debut = pygame.time.get_ticks()
         game.joueur.blit=False
@@ -188,14 +189,39 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         
         
-        
-        gestionMob(game, fps)
-        
+        if not game.boss:
+            gestionMob(game, fps)
+        if game.theBoss:
+            game.theBoss.moveBoss()
+            game.theBoss.lunchProjectile()
         keys=pygame.key.get_pressed()
         if keys[K_ESCAPE] and pygame.time.get_ticks() - game.lastPause > 250:
             tempsPasse = pause(fenetrePygame)
             game.lastPause = pygame.time.get_ticks()
             game.tempsMort+=tempsPasse
+        if keys[K_SPACE]:
+            centrerJoueur(game)
+        if keys[K_LALT]:
+            game.boss=True
+            game.map=game.mapBoss
+            for i in range(7):
+                for j in range(7):
+                    game.map[i][j].rect.x = game.mapWorld[i][j].rect.x
+                    game.map[i][j].rect.y = game.mapWorld[i][j].rect.y
+            
+            
+            game.map[0][0].annimation=game.images.arene
+            game.map[0][0].clockAnnimMax=3
+            game.map[0][0].clockAnnim=0
+            game.map[0][0].arene=True
+            tuilePos = game.map[1][1]
+            game.joueur.setPos(tuilePos)
+            game.joueur.rect.x, game.joueur.rect.y=tuilePos.rect.x,tuilePos.rect.y
+            centrerJoueur(game)
+            game.taille_matriceX=len(game.map)
+            game.taille_matriceY=len(game.map[0])
+            game.theBoss = Boss(game, 1000)
+            
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -204,6 +230,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             
             if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
+                
                 
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
@@ -215,38 +242,39 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 
                 if not cliqueItem:
                     tuile = majSelection(game, pygame.mouse.get_pos(), game.joueur)
+
+                    
+
                 else :
                     if tuile:
                         tuile.estSelect=False
                     tuile=False
                     
+                if tuile and tuile.build:
+                    tuile.estSelect=False
+                    tuile=False
                     
                 for build in game.groupBuild:
                     if build.checkClick():
                         if tuile:
                             tuile.estSelect=False
                         tuile=False
-        
+
        
         
         
         if continuer: 
             
             deplacement_cam(mouse, game, True)
-            
-           
+ 
             #### Deplacement des mobs
-            
-            
-            
-            
-            
-            
+
             for tour in game.groupDefense:
                 tour.attack()
+            
             for projo in game.groupProjectile:
                 projo.moveProjectile()
-
+                
             if move_ticker>0:
                 move_ticker-=1
             
@@ -288,7 +316,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     tirageCoffre+=5
                 
                 
-                if not random.randint(0,((game.joueur.MaxEcolo-game.joueur.indiceEcolo)%10)):
+                if not random.randint(0,((round(game.joueur.MaxEcolo-game.joueur.indiceEcolo))%10)):
                     tuileCata = game.majCata()
                 if game.incendie and tuileCata:
                     annimIncendieListe.append(tuileCata)
@@ -310,35 +338,46 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             listeMontagne=[]
             for y in range(game.taille_matriceY):
                 for x in range(game.taille_matriceX):
-                    
-                    if game.map[y][x].isExplored:
-                        
-                        if game.map[y][x].type==2 or game.map[y][x].type==7:
-                            listeMontagne.append(game.map[y][x])
+                    tuileBlit = game.map[y][x]
+                    if tuileBlit.isExplored:
+                        if (tuileBlit.type==4 or tuileBlit.type==10) and not game.boss: #affichage des annim sans socle
+                            
+                            listeMontagne.append(tuileBlit)
+                        if (tuileBlit.type==2 or tuileBlit.type==7) and not game.boss:
+                            listeMontagne.append(tuileBlit)
                         else:
-                            #fenetrePygame.blit(game.map[y][x].image, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
-                            fenetrePygame.blit(game.map[y][x].image, game.map[y][x].rect)
-                            if game.map[y][x].indiceSurbrillance>=0:
-                                fenetrePygame.blit(game.map[y][x].surbrillance[game.map[y][x].indiceSurbrillance], game.map[y][x].rect)
-                            if game.map[y][x].statue:
-                                fenetrePygame.blit(game.images.statue(game.map[y][x].type), game.map[y][x].rect)
+                            #affichage des tuile
+                            #fenetrePygame.blit(tuileBlit.image, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
+                            if tuileBlit.arene:
+                                fenetrePygame.blit(tuileBlit.image, (tuileBlit.rect.x, tuileBlit.rect.y-360-145))
+                            else:
+                                if not game.boss:
+                                    
+                                    fenetrePygame.blit(tuileBlit.image, tuileBlit.rect)
+                            
+                            
+                            if tuileBlit.indiceSurbrillance>=0:
+                                fenetrePygame.blit(tuileBlit.surbrillance[tuileBlit.indiceSurbrillance], tuileBlit.rect)
+                            if tuileBlit.statue and tuileBlit.type!=4:
+                                fenetrePygame.blit(game.images.statue(tuileBlit.type), tuileBlit.rect)
 
-
-                        game.map[y][x].changeAnnim()
-                    if game.map[y][x].traceMob:
-                        fenetrePygame.blit(Imselection, (game.map[y][x].getRectX(), game.map[y][x].getRectY()))
-                    if game.map[y][x].annimationFog>0 and game.map[y][x].isExplored:
+                        if tuileBlit.type!=4 and tuileBlit.type!=10:
+                            tuileBlit.changeAnnim()
+                    if tuileBlit.traceMob:
+                        fenetrePygame.blit(Imselection, (tuileBlit.getRectX(), tuileBlit.getRectY()))
                         
-                        fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
-                        game.map[y][x].annimationFog-=8
-                        game.map[y][x].imageFog.set_alpha(game.map[y][x].annimationFog)
+                    if tuileBlit.annimationFog>0 and tuileBlit.isExplored:
                         
-                    elif not game.map[y][x].isExplored:
-                        fenetrePygame.blit(game.map[y][x].imageFog, (moveX+game.map[y][x].Xoriginal, moveY+game.map[y][x].Yoriginal))
+                        fenetrePygame.blit(tuileBlit.imageFog, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
+                        tuileBlit.annimationFog-=8
+                        tuileBlit.imageFog.set_alpha(tuileBlit.annimationFog)
                         
-                    if game.map[y][x].ville:
+                    elif not tuileBlit.isExplored:
+                        fenetrePygame.blit(tuileBlit.imageFog, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
+                        
+                    if tuileBlit.ville:
                         alerteVille = True
-                        tuileVille = game.map[y][x]
+                        tuileVille = tuileBlit
                         
             
             
@@ -373,6 +412,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
 
             if tuile :
+                print(tuile.type)
                 if not (abs(tuile.posX-game.joueur.posX)<2 and abs(tuile.posY-game.joueur.posY)<2):
                     tuile.estSelect=False
                     tuile=False
@@ -383,18 +423,15 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             listeOrdre = []
             #debut = time.time()
             for mob in game.groupMob:
-                if game.map[mob.posY][mob.posX].isExplored :
-                    #fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
-                    listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1], None, None))
-                    
-                
-            
-
-
-            for mob in game.groupMob:
-                if game.map[mob.posY][mob.posX].isExplored:
+                if not game.boss:
+                    if game.map[mob.posY][mob.posX].isExplored :
+                        #fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
+                        listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1], None, None, None))
                     if not mob.annimal:
                         mob.update_health_bar()
+            
+                
+    
 
             ####PASSAGE DES MONTAGNES
             if tuile :
@@ -404,48 +441,55 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     pass
             decalageYcentre = -100
             for tuile2 in listeMontagne:
-                if tuile2.type==2 :
+                if tuile2.type==2:
                     center = tuile2.centerOriginal
                     if tuile2.mortier:
-                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre, None, None))
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre, None, None, tuile2.type))
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
+                    
                     else:
-                        
-                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue))
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue, tuile2.type))
+                elif tuile2.type==4 or tuile2.type==10:
+                    center = tuile2.centerOriginal
+                    
+                    listeOrdre.append((tuile2.annimation[0], moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-75, center[1]+moveY-100-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue, tuile2.type))
                 else :
                     center = tuile2.centerOriginal
                     
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
                     
-                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue))
+                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue, tuile2.type))
             
             if not game.joueur.bateau:
                 fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
                 center = game.joueur.rect.center
                 
-                listeOrdre.append((game.joueur.skin, game.joueur.rect.x, game.joueur.rect.y, center[1], None, None))
+                listeOrdre.append((game.joueur.skin, game.joueur.rect.x, game.joueur.rect.y, center[1], None, None, None))
 
             elif game.joueur.bateau:
                 #fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
                 center = game.joueur.rect.center
                 
-                listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None))
-                
+                listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None, None))
+            if game.theBoss:
+                listeOrdre.append((game.theBoss.image, game.theBoss.rect.x-15, game.theBoss.rect.y+30, center[1]+30, None, None, None))
             listeOrdre.sort(key=lambda x: x[3])
             
-            for image, posX, posY, center, surbrillance, statue in listeOrdre:
+            for image, posX, posY, center, surbrillance, statue, type in listeOrdre:
                 fenetrePygame.blit(image, (posX, posY))
                 if surbrillance!=-1 and surbrillance!=None:
                     fenetrePygame.blit(game.images.surbrillance[surbrillance], (posX, posY))
                 if statue:
-                    fenetrePygame.blit(game.images.statue(2), (posX+30, posY+30))
+
+                    fenetrePygame.blit(game.images.statue(type), (posX+30, posY+30))
             for loot in game.groupLoot:
                 loot.update(fenetrePygame, moveX,moveY)
-                
-                
+            
+            
             for build in game.groupBuild:
                 build.update()
-                fenetrePygame.blit(build.image, (build.rect.x-20, build.rect.y-70))
+                #fenetrePygame.blit(build.image, (build.rect.x-50, build.rect.y-70))
+                fenetrePygame.blit(build.image, (build.rect.x-50, build.rect.y-70-80))
                 if build.imageClickPassif and build.actuelClick:
                     #pygame.draw.rect(fenetrePygame, (255,255,255), build.actuelClick, 1)
                     
@@ -458,13 +502,14 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 for item in inventaire.listeItem:
                         if colisionItem(item, pygame.mouse.get_pos()):##INFO BULLE##
                             inventaire.blitInfoBulle(fenetrePygame, item)
+
             for projectile in game.groupProjectile:              
                 fenetrePygame.blit(projectile.img, (projectile.rect.x, projectile.rect.y))
 
 
             for collision in listeColide:
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
-                
+            
             if alerteVille:
                 fenetrePygame.blit(game.images.ville, (tuileVille.rect.x+30, tuileVille.rect.y-260))
             
@@ -511,7 +556,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             if game.joueur.imageArmure:
                 fenetrePygame.blit(game.joueur.imageArmure, (22,80))
             for mob in game.groupMob:
-                fenetrePygame.blit(imDebug, mob.getFeet())
+                if not game.boss:
+                    fenetrePygame.blit(imDebug, mob.getFeet())
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (20,15))
             fenetrePygame.blit(feuille, (10,368))
@@ -530,11 +576,18 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 mort(game)
             if game.joueur.ville:
                 victoire(game)
-            test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))#hjhgfdfghjklkjhgfdsq
+            test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))
             fenetrePygame.blit(test, (0,100))
-
-
             
+            
+            if False: #### PASSER A TRUE POUR HITBOX
+                for projectile in game.groupProjectile:
+                    pygame.draw.rect(fenetrePygame, (255,255,255), projectile.rect, width=3)
+                
+                for mob in game.groupMob:
+                    pygame.draw.rect(fenetrePygame, (255,255,255), mob.rect, width=3)
+                for mob in game.groupJoueur:
+                    pygame.draw.rect(fenetrePygame, (255,255,255), mob.rect, width=3)
 
             if game.stat : 
                 game.stat =False
@@ -570,7 +623,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(ennemieDegat,(infoObject[0]*0.74, infoObject[1]*0.55))
 
 
-            
+            if game.text:
+                game.displayTxt()
   
             
             pygame.display.flip()
@@ -578,6 +632,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         else:
             print("Fermeture du jeu")
             moyenneFps=0
+
             if listefps:
                 for elem in listefps :
                     
@@ -608,16 +663,26 @@ def KEY_move(game,joueur,fenetre):
     #gestion diagonale
     if (keys[K_d] or keys[K_RIGHT]) and (keys[K_z] or keys[K_UP]): #diag haut droite
         haut=False
+
     elif (keys[K_d] or keys[K_RIGHT]) and (keys[K_s]or keys[K_DOWN]): #diag bas droite
         bas=False
+
     elif (keys[K_q]or keys[K_LEFT]) and (keys[K_s]or keys[K_DOWN]): #diag bas gauche
         bas=False
+
     elif (keys[K_q]or keys[K_LEFT]) and (keys[K_z] or keys[K_UP]): #diag haut gauche
         haut=False
+        
+    else:
+        
+        game.joueur.lunchProjectile()
     if keys[K_i]:
         game.stat = True
     
-    
+    if (keys[K_q]or keys[K_LEFT]) or (keys[K_d] or keys[K_RIGHT]) or keys[K_z] or keys[K_UP] or keys[K_s]or keys[K_DOWN]:
+        game.joueur.attendre=0
+    else:
+        game.joueur.attendre+=1
     bug=False
     if keys[K_d] or keys[K_RIGHT]:
         if bug:=joueur.deplacementAutorise("droite") :
@@ -724,8 +789,11 @@ def deplacementCamBas(mouse, game, bloquage):
                 for j in range(len(game.map[0])):
                     game.map[i][j].decalerY(y)
             game.joueur.rect.y+=y
+            if game.theBoss:
+                game.theBoss.rect.y+=y
             moveY+=y
             for mob in game.groupMob:
+                
                 mob.rect.y+=y
             for projo in game.groupProjectile:
                 projo.rect.y+=y
@@ -738,11 +806,13 @@ def deplacementCamHaut(mouse, game, bloquage):
     x = mouse[1]
     y = -f(x)
     if x < 200 : #Si souris en haut
-        if not bloquage or (game.map[0][-1].rect.y+moveY<100):
+        if not bloquage or (game.map[0][-1].rect.y<100):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
                     game.map[i][j].decalerY(y)
             game.joueur.rect.y+=y
+            if game.theBoss:
+                game.theBoss.rect.y+=y
             moveY+=y
             for mob in game.groupMob:
                 mob.rect.y+=y
@@ -758,11 +828,13 @@ def deplacementCamGauche(mouse, game, bloquage):
     x= mouse[0]
     y = -f(x)
     if x < 200:  # Si souris à gauche
-        if not bloquage or (game.map[0][0].rect.x+moveX<100):
+        if not bloquage or (game.map[0][0].rect.x<100):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
                     game.map[i][j].decalerX(y)
             game.joueur.rect.x+=y
+            if game.theBoss:
+                game.theBoss.rect.x+=y
             for mob in game.groupMob:
                 mob.rect.x+=y
             moveX+=y
@@ -780,11 +852,13 @@ def deplacementCamDroite(mouse, game, bloquage):
 
 
     if x < 200:  # Si souris à droite
-        if not bloquage or (game.map[-1][-1].Xoriginal+moveX>infoObject[0]-400):
+        if not bloquage or (game.map[-1][-1].rect.x>infoObject[0]-400):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
                     game.map[i][j].decalerX(y)
             game.joueur.rect.x+=y
+            if game.theBoss:
+                game.theBoss.rect.x+=y
             moveX+=y
             for mob in game.groupMob:
                 mob.rect.x+=y

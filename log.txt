@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage\main.py", line 10, in main
+    main_menu.main_menu()
+  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage\main_menu.py", line 555, in main_menu
+    pygame_gestion.pygameInit(mapChoisie, pointSpawn)
+  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage\pygame_gestion.py", line 184, in pygameInit
+    modification = KEY_move(game, game.joueur, fenetrePygame)
+  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage\pygame_gestion.py", line 700, in KEY_move
+    if bug:=joueur.deplacementAutorise("bas"):
+  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage\joueur.py", line 278, in deplacementAutorise
+    tuile = majSelectionJoueur(self.game, 0, self.velocity)
+  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage\selection.py", line 48, in majSelectionJoueur
+    pos_in_mask = souris[0] - game.map[game.joueur.posY+i][game.joueur.posX+j].rect.x, souris[1] - game.map[game.joueur.posY+i][game.joueur.posX+j].rect.y
+IndexError: list index out of range

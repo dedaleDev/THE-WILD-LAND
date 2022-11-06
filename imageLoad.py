@@ -12,6 +12,8 @@ class ImageLoad():
         self.imgAcide = self.loadImgAcide()
         self.imgPotion = self.loadImgPotion()
         self.imgBouleDeNeige =self.loadImgBouleDeNeige()
+        self.imgJoueur =self.loadImgJoueur()
+        self.imgBossElec =self.loadImgbossElec()
         self.ville = self.loadImgVille()
         self.mort = pygame.image.load("data/menu/defaite.png").convert_alpha()
         self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
@@ -23,6 +25,8 @@ class ImageLoad():
         self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
         
         
+        self.fondForet = pygame.image.load("data/tuiles/fondForet.png").convert_alpha()
+        self.fondJungle = pygame.image.load("data/tuiles/fondJungle.png").convert_alpha()
         self.armure = self.loadImArmure()
         self.coffre = self.loadAnnimCoffre()
 
@@ -39,6 +43,8 @@ class ImageLoad():
         self.oiseauAnnim = self.loadAnnimOiseau(random.randint(0,1))
         
         self.oiseau2Annim = self.loadAnnimOiseau2()
+        self.renardAnnim = self.loadAnnimRenard()
+        
         self.chameauAnnim = self.loadAnnimChameau()
         self.lapinAnnim = self.loadAnnimLapin()
         
@@ -69,6 +75,11 @@ class ImageLoad():
         self.annim4foret1 = self.loadAnnimTuile("4foret1_", 1,28)
         self.annim4foret2 = self.loadAnnimTuile("4foret2_", 1,12)
         
+        self.annim8violet0 = self.loadAnnimTuileViolet(0)
+        self.annim8violet1 = self.loadAnnimTuileViolet(2)
+        self.annim8violet3 = self.loadAnnimTuileViolet(3)
+        
+        
         self.annim6desert4 = self.loadAnnimTuile("6desert4_", 1,16)
         self.surbrillance = self.loadAnnimSurbrillance()
         self.lootEau = self.loadAnnimRessource("eau", 1,21)
@@ -76,12 +87,14 @@ class ImageLoad():
         self.lootBois = self.loadAnnimRessource("bois", 1,22)
         self.lootFood = self.loadAnnimRessource("viande", 1,20)
         
+        self.boss = pygame.image.load("data/personnages/boss/boss1.png")
         
         self.clickBuild = self.loadAnnimClickBuild()
         self.moveBox = self.loadAnnimBoxMove()
         self.boomBox = self.loadAnnimBoxBoom()
         self.inventaire = self.loadInventaire()
         
+        self.arene=self.loadAnnimArene()
         
         for i in range(15):
             self.annim3eau0.append(self.annim3eau0[-1])
@@ -103,10 +116,10 @@ class ImageLoad():
         self.annim3eau1 = self.loadAnnimTuile("3eau1_", 1,17)
         for i in range(5):
             self.annim3eau1.append(self.annim3eau0[-1])
-        self.annim3eau2 = self.loadAnnimTuile("3eau2_", 1,15)
+        
         self.annim3eau3 = self.loadAnnimTuileEau()
-        for i in range(5):
-            self.annim3eau2.append(self.annim3eau0[-1])
+        self.annim3eau2 = self.loadAnnimTuileEau(True)
+        
         
     def loadInventaire(self):
         im = pygame.image.load("data/menu/menu_tuile.png").convert_alpha()
@@ -118,31 +131,54 @@ class ImageLoad():
             im = pygame.image.load("data/animationTuiles/click/click ("+str(i)+").png").convert_alpha()
             im=pygame.transform.scale(im, (40,40))
             liste.append(im)
-            
         return liste
     
     def loadAnnimBoxMove(self):
         liste=[]
         for i in range(1, 17):
             im = pygame.image.load("data/animationTuiles/boxMove/Box ("+str(i)+").png").convert_alpha()
+            im = pygame.transform.scale(im, (340,400))
             liste.append(im)
-            
         return liste
     def loadAnnimBoxBoom(self):
         liste=[]
         for i in range(2, 34):
             im = pygame.image.load("data/animationTuiles/boxMove/boomBox ("+str(i)+").png").convert_alpha()
+            im = pygame.transform.scale(im, (340,400))
             liste.append(im)
-            
         return liste
-    def loadAnnimTuileEau(self):
+    def loadAnnimTuileEau(self, bool=False):
         liste=[]
-        for i in range(1, 193):
-            im = pygame.image.load("data/animationTuiles/eau/3eau3 ("+str(i)+").png").convert_alpha()
-            liste.append(im)
+        if not bool:
+            for i in range(1, 193):
+                im = pygame.image.load("data/animationTuiles/eau/3eau3 ("+str(i)+").png").convert_alpha()
+                liste.append(im)
+        else:
+            for i in range(1, 199):
+                im = pygame.image.load("data/animationTuiles/eau/dauphin/3eau2_"+str(i)+".png").convert_alpha()
+                liste.append(im)
             
         return liste
-        
+    
+    def loadAnnimTuileViolet(self, j):
+        liste=[]
+        if j == 0:
+            iMax = 52
+        if j==2:
+            iMax=53
+        if j ==3:
+            iMax=53
+        for i in range(1, iMax):
+            im = pygame.image.load("data/animationTuiles/violet/8violet"+str(j)+"/8violet"+str(j)+"_"+str(i)+".png").convert_alpha()
+            liste.append(im)
+        return liste
+    
+    def loadAnnimArene(self):
+        liste=[]
+        for i in range(1, 96):
+            im = pygame.image.load("data/animationTuiles/areneBoss/areneBoss ("+str(i)+").png").convert_alpha()
+            liste.append(im)
+        return liste
     def loadAnnimSurbrillance(self):
         liste = []
         for i in range(1,202):
@@ -204,10 +240,11 @@ class ImageLoad():
     
     def loadAnnimMoulin(self):
         liste = []
-        for i in range(1, 23):    
+        for i in range(1, 198):    
             if i != 6:
-                im = pygame.image.load("data/batiments/moulin/Moulin_"+str(i)+".png").convert_alpha()
+                im = pygame.image.load("data/batiments/moulin/moulin_"+str(i)+".png").convert_alpha()
                 liste.append(im)
+                
             #im = pygame.transform.scale(im, (164, 351))  
         return liste
     
@@ -314,6 +351,19 @@ class ImageLoad():
             listeAnnim.append(im)
         return listeAnnim
     
+    def loadAnnimRenard(self):
+        listeAnnim = []
+        """for i in range(1,10):
+            im = pygame.image.load("data/personnages/renard/renard"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (62*0.8, 55*0.8))
+            im = pygame.transform.flip(im, 1,0)
+            listeAnnim.append(im)"""
+        for i in range(10,19):
+            im = pygame.image.load("data/personnages/renard/renard"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (62, 55))
+            im = pygame.transform.flip(im, 1,0)
+            listeAnnim.append(im)
+        return listeAnnim
     def loadAnnimChameau(self):
         listeAnnim = []
         for i in range(1,18):
@@ -394,17 +444,27 @@ class ImageLoad():
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3,imgTemp4))
     #Foret
         imgTemp0 = pygame.image.load("data/tuiles/4Foret0.png").convert_alpha()
-        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
+        
         
         imgTemp1 = pygame.image.load("data/tuiles/4Foret1.png").convert_alpha()
-        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
+        
         
         imgTemp2 = pygame.image.load("data/tuiles/4Foret2.png").convert_alpha()
-        imgTemp2=pygame.transform.scale(imgTemp2, (246, 144))
         
         imgTemp3 = pygame.image.load("data/tuiles/4Foret3.png").convert_alpha()
-        imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
-        listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
+        
+        imgTemp4 = pygame.image.load("data/tuiles/4Foret4.png").convert_alpha()
+        
+        
+        imgTemp5 = pygame.image.load("data/tuiles/4Foret5.png").convert_alpha()
+        
+        
+        imgTemp6 = pygame.image.load("data/tuiles/4Foret6.png").convert_alpha()
+        
+        imgTemp7 = pygame.image.load("data/tuiles/4Foret7.png").convert_alpha()
+        
+        imgTemp8 = pygame.image.load("data/tuiles/4Foret8.png").convert_alpha()
+        listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3, imgTemp4, imgTemp5, imgTemp6, imgTemp7, imgTemp8))
     #neige
         imgTemp0 = pygame.image.load("data/tuiles/5Neige0.png").convert_alpha()
         imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
@@ -444,7 +504,40 @@ class ImageLoad():
         imgTemp3 = pygame.image.load("data/tuiles/7Barriere3.png").convert_alpha()
         imgTemp3=pygame.transform.scale(imgTemp3, (246, 144))
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3))
+    #Electrique
+        imgTemp0 = pygame.image.load("data/tuiles/debug.png").convert_alpha()
+        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
+        imgTemp1 = pygame.image.load("data/tuiles/debug.png").convert_alpha()
+        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
+        listeImg.append((imgTemp0, imgTemp1))
+    #Violet
+        imgTemp0 = pygame.image.load("data/tuiles/8violet1.png").convert_alpha()
+        imgTemp0=pygame.transform.scale(imgTemp0, (246, 144))
         
+        imgTemp1 = pygame.image.load("data/tuiles/8violet4.png").convert_alpha()
+        imgTemp1=pygame.transform.scale(imgTemp1, (246, 144))
+        listeImg.append((imgTemp0, imgTemp1))
+        
+    #jungle
+        imgTemp0 = pygame.image.load("data/tuiles/9jungle0.png").convert_alpha()
+        
+        imgTemp1 = pygame.image.load("data/tuiles/9jungle1.png").convert_alpha()
+        
+        imgTemp2 = pygame.image.load("data/tuiles/9jungle2.png").convert_alpha()
+    
+        imgTemp3 = pygame.image.load("data/tuiles/9jungle3.png").convert_alpha()
+        
+        imgTemp3 = pygame.image.load("data/tuiles/9jungle3.png").convert_alpha()
+        
+        imgTemp4 = pygame.image.load("data/tuiles/9jungle4.png").convert_alpha()
+        
+        imgTemp5 = pygame.image.load("data/tuiles/9jungle5.png").convert_alpha()
+        imgTemp6 = pygame.image.load("data/tuiles/9jungle6.png").convert_alpha()
+        imgTemp7 = pygame.image.load("data/tuiles/9jungle7.png").convert_alpha()
+
+        
+        
+        listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3, imgTemp4, imgTemp5, imgTemp6, imgTemp7))
         return listeImg
 
     def loadImgItem(self):
@@ -546,19 +639,23 @@ class ImageLoad():
             
             rand = random.randint(0,4)
             if type==3:
-                rand = 3
+                if random.randint(0,5):
+                    rand = 3
+                else:
+                    rand=2
             if rand == 4 and type==6: #arbre desert
                 clockMax=7
                 annim=self.annim6desert4
             if rand==0 and type==3: #grande vagues
                 clockMax=7
                 annim=self.annim3eau0
-            elif rand==1 and type==3:
+            if rand==1 and type==3:
                 clockMax=7
                 annim=self.annim3eau1
-            elif rand==2 and type==3:
-                clockMax=7
+            if rand==2 and type==3:
+                clockMax=2
                 annim=self.annim3eau2
+                
             elif rand==3 and type==3: #mer classique
                 clockMax=2
                 annim=self.annim3eau3
@@ -570,14 +667,13 @@ class ImageLoad():
                     clockMax=7
                 else :
                     annim=[pygame.image.load("data/animationTuiles/3Eau0_9.png")]
-            if type==3 and (rand==1 or rand==2):
-                annim=[pygame.image.load("data/animationTuiles/3Eau0_9.png")]
+            
             if annim :
                 clockAnnim=random.randint(0,len(annim)-1)
             else :
                 clockAnnim=0
             return self.listeImg[type][rand], clockMax, annim, clockAnnim
-        if  type==4 or type==2 or type==7:
+        if  type==2 or type==7:
             rand = random.randint(0, 3)
             if type==7 and rand==1: 
                 annim=self.annim7Barriere1
@@ -603,24 +699,23 @@ class ImageLoad():
             if type==2 and rand==0: #roche eau
                 annim=self.annim2Roche4
                 clockMax=10
-            if type==4 and rand==1:
-                if random.randint(0,1):
-                    annim=self.annim4foret1
-                else :
-                    annim=[]
-                clockMax=10
-            if type==4 and rand==0:
-                annim=self.annim4foret0
-                clockMax=10
-            if type==4 and rand ==2:
-                annim=self.annim4foret2
-                clockMax=10
+            
             if annim :
                 clockAnnim=random.randint(0,len(annim)-1)
             else :
                 clockAnnim=0
-                
+            
             return self.listeImg[type][rand], clockMax, annim, clockAnnim
+        if type==4:
+            rand = random.randint(0,8)
+            if random.randint(0,1):
+                return self.fondForet, 2, [self.listeImg[type][rand]], 1 
+            return self.fondForet, 2, [pygame.transform.flip(self.listeImg[type][rand], 1,0)], 1 
+        if type==10:
+            rand = random.randint(0,7)
+            if random.randint(0,1):
+                return self.fondJungle, 2, [self.listeImg[type][rand]], 1 
+            return self.fondJungle, 2, [pygame.transform.flip(self.listeImg[type][rand], 1,0)], 1 
         if type==5:
             rand = random.randint(0,6)
             
@@ -639,7 +734,7 @@ class ImageLoad():
         
         if type==1:
             rand = random.randint(0,12)
-            rand = 0
+            
             if rand in [0,1, 10]:
                 rand = 0
             elif rand in [3,8, 11]:
@@ -663,6 +758,34 @@ class ImageLoad():
             else :
                 clockAnnim=0
             return self.listeImg[type][rand], clockMax, annim, clockAnnim
+        if type==8:
+            clockMax=None
+            annim=[]
+            clockAnnim = 0
+            return self.listeImg[type][0], clockMax, annim, clockAnnim
+        if type==9:
+            clockMax=None
+            annim=[]
+            clockAnnim = 0
+            rand = random.randint(0,5)
+            if rand ==0 or rand==1:
+                return self.listeImg[type][rand], clockMax, annim, clockAnnim
+            if rand == 2 :
+                annim=self.annim8violet0
+                clockMax=10
+                clockAnnim=random.randint(0,len(annim)-1)
+            if rand ==3 :
+                annim=self.annim8violet1
+                clockMax=10
+                clockAnnim=random.randint(0,len(annim)-1)
+            if rand ==4 :
+                annim=self.annim8violet3
+                clockMax=10
+                clockAnnim=random.randint(0,len(annim)-1)
+            return self.listeImg[type][0], clockMax, annim, clockAnnim
+        
+        
+            
         print("probleme")
         return self.listeImg[type], clockMax, annim, random.randint(0,len(annim)-1)
 
@@ -688,6 +811,14 @@ class ImageLoad():
         tempIgmg = pygame.image.load("data/projectiles/bouleDeNeige.png").convert_alpha()
         tempIgmg = pygame.transform.scale(tempIgmg, scale)
         return tempIgmg
+    def loadImgJoueur(self):
+        tempIgmg = pygame.image.load("data/projectiles/joueur.png").convert_alpha()
+        
+        return tempIgmg
+    def loadImgbossElec(self):
+        tempIgmg = pygame.image.load("data/projectiles/bossElec.png").convert_alpha()
+        return tempIgmg
+    
     
     def loadImgProjectile(self, nom, angle=False):
         if nom== "mortier":
@@ -710,7 +841,18 @@ class ImageLoad():
             if angle:
                 tempIgmg = pygame.transform.rotate(tempIgmg, angle)
             return tempIgmg
+        if nom == "joueur":
+            tempIgmg = self.imgJoueur
+            if angle:
+                tempIgmg = pygame.transform.rotate(tempIgmg, angle)
+            return tempIgmg
+        if nom == "bossElec":
+            tempIgmg = self.imgBossElec
+            if angle:
+                tempIgmg = pygame.transform.rotate(tempIgmg, angle)
+            return tempIgmg
         assert False, ("LoadImgProjectile n'as pas trouvé d'image correspondante a ", nom)
+    
     
     def ImInfoBulleMob(self, nom, chemin="data/personnages/infoBulle/info_"):
         img = pygame.image.load(chemin+nom+".png").convert_alpha()

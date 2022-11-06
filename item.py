@@ -1,4 +1,4 @@
-from multiprocessing.util import info
+
 import pygame
 
 class Item(pygame.sprite.Sprite):

@@ -1,16 +1,20 @@
-from ctypes.wintypes import RECT
+
 import random
 import pygame
+
 
 from tour import Tour
 
 class Build(pygame.sprite.Sprite):
     def __init__(self, game, nomBatiment, tuile, nbClickMax):
+          nbClickMax=nbClickMax
           super().__init__()
+          tuile.build=True
           self.game = game
           self.nomBatiment=nomBatiment
           self.tuile = tuile
           self.image=None
+          #self.image=pygame.transform.scale(self.image, (self.image.get_width()*1.5, self.image.get_height()*1.5))
           self.imageClickPassif=None
           self.actuelClick=None #Endroit ou on doit cliquer
           
@@ -36,9 +40,20 @@ class Build(pygame.sprite.Sprite):
           self.clockBox = 0
           self.clockBoxMax = 1
     
+          
+    
     def spawnButton(self):
-        self.posXclick=random.randint(0, 200)
-        self.posYclick=random.randint(0, 100)
+        """pygame.draw.rect(self.game.fenetre, (255,255,255), (self.tuile.rect.x, self.tuile.rect.y, 256,144), 1)
+        while True:"""
+        y=random.randint(0, 146)
+        x=random.randint(0, 244)
+        while not (y<0.6*x+71 and y<-0.6*x+221 and y>0.6*x-80 and y >-0.6*x+70):
+            y=random.randint(0, 146)
+            x=random.randint(0, 244)
+            """pygame.draw.circle(self.game.fenetre, (255,255,255), (self.tuile.rect.x+x,self.tuile.rect.y+y), 1)
+            pygame.display.flip()"""
+        self.posYclick=y
+        self.posXclick=x
         self.actuelClick=pygame.Rect(self.posXclick, self.posYclick, 40,40)
         
         self.indiceAnnimClick=0
@@ -71,6 +86,7 @@ class Build(pygame.sprite.Sprite):
                 self.kill() # pauvre build :(
                 return
             if self.indiceBoomBox==12:
+                
                 self.construireLeBatiment(self.tuile)
             self.image=self.boomBox[self.indiceBoomBox]
             
@@ -91,6 +107,7 @@ class Build(pygame.sprite.Sprite):
             self.image = self.moveBox[self.indiceBox]
         self.clock+=1
         self.clockBox+=1
+        
     def construireLeBatiment(self, tuile):
         changerImg = True
         if self.nomBatiment == "scierie":
@@ -110,7 +127,7 @@ class Build(pygame.sprite.Sprite):
             self.game.joueur.indiceEcolo+=1
             self.game.listeCaseBatiment.append(tuile)
             tuile.annimation = self.game.images.moulinAnnim
-            tuile.clockAnnimMax = 6
+            tuile.clockAnnimMax = 2
             if tuile.indiceSurbrillance>=0:
                 self.game.groupTuileBoost.add(tuile)
             pygame.mixer.Sound.play(self.game.son.moulin)
@@ -240,6 +257,6 @@ class Build(pygame.sprite.Sprite):
             self.game.joueur.armure=35
         if changerImg:
             self.game.joueur.changerImageBatiment(tuile, self.nomBatiment)
-        
+        self.tuile.build=False
         
         

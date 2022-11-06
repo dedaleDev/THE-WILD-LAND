@@ -11,7 +11,7 @@ proba_mer = random.randint(3,15)
 proba_desert = random.randint(5,15)
 if proba_mer<=6:
     proba_desert+=5
-proba_foret = random.randint(7,12)
+proba_foret = random.randint(3,8)
 proba_neige= 0
 
 """
@@ -129,7 +129,7 @@ def majDesertInterdire(matriceMap, i, j, game):
                     
 
 
-def generation_matrice(game):
+def generation_matrice(game, deco=True):
     #1 = terre
     #2 = roche
     #3 = mer
@@ -182,7 +182,8 @@ def generation_matrice(game):
     
     #La map est fini, on retire les mini biomes
     controleMiniBiome(matriceMap, game)
-    
+    if deco:
+        addBiomeDeco(matriceMap, game)
     
     
     #printMat(matriceMap)
@@ -204,7 +205,7 @@ def controleMiniBiome(map, game):
                 indice+=1
 
             
-            if tuileDiff: #la tuile est un mini biome
+            if tuileDiff: #la tuile estF un mini biome
                 #print("la Tuile :",map[y][x].posX, map[y][x].posY)
                 type=maximumType(listeTuileAutour)
                 if type!=7 and map[y][x].type!=2 and map[y][x].type!=5 : #on veut pas remplacer par des volcans, et on veut pas replacer les tuiles de montagnes ni de neige
@@ -215,6 +216,9 @@ def maximumType(liste): #recherche d'un type maximum present dans une liste
     for tuile in liste:
         listeType[tuile.type]+=1
     return listeType.index(max(listeType))
+
+
+
 def generation_matriceMontagneMer(map, game):
     mapBool=[]
     mapMer=[]
@@ -233,7 +237,7 @@ def generation_matriceMontagneMer(map, game):
     
 
         
-    
+
     listeCaseMer,listeCaseForet, listeCasePlaine,listeCaseMontagne=[], [], [],[]
     for i in range(game.taille_matriceY):
         mapBool.append([0]*game.taille_matriceX)
@@ -284,4 +288,40 @@ def printMat(matriceMap, game):
     print("fin\n\n\n\n\n")
     
     
-    
+def mapBoss(game):
+    map = []
+
+    for i in range(7):
+        map.append([0]*7)
+    for i in range(7):
+        map[0][i] = Tuile(7, i, 0, game)
+        map[7-1][i] = Tuile(7, i, 7-1, game)
+
+    for i in range (7):
+        map[i][0] = Tuile(7, 0, i, game)
+        map[i][7-1] = Tuile(7 ,7-1, i, game)
+    for y in range(1,6):
+        for x in range(1,6):
+            map[y][x] = Tuile(8, x, y, game)
+                
+    return map
+
+def addBiomeDeco(map, game):
+    for y in range(2,game.taille_matriceY-2):
+        for x in range(2, game.taille_matriceX-2):
+            
+            
+            if random.randint(0,1): #violet
+                if not random.randint(0, 160): #chance de spaw un violet
+                    map[y][x].setType(9)
+                    for j in range(-1,2):
+                        for i in range(-1,2):
+                            if random.randint(0,4): #chance de spawn autour du violet
+                                map[y+i][x+j].setType(9)
+            else:
+                if not random.randint(0, 160): #jungle
+                    map[y][x].setType(10)
+                    for j in range(-1,2):
+                        for i in range(-1,2):
+                            if random.randint(0,4):
+                                map[y+i][x+j].setType(10)

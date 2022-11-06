@@ -1,5 +1,2 @@
-
-
-liste="archi.txt"
-liste = liste[-4:]
-print(liste)
+dictio= {"moulin":1, "scierie":2}
+print(dictio["scierie"])

@@ -1,11 +1,13 @@
 #from PIL import Image
 from ctypes import pointer
+from math import sqrt
 import pygame
 from build import Build
 from coffre import Coffre
 import random
+from projectile import Projectile
 from selection import majSelectionJoueur
-from tour import Tour
+
 class Player(pygame.sprite.Sprite):
 
      def __init__(self, game, nom, vitesse, pointSpawn):
@@ -42,10 +44,10 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 350
-          self.stone = 150
-          self.food = 50
-          self.water = 100
+          self.wood = 3500
+          self.stone = 1500
+          self.food = 500
+          self.water = 1000
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -70,15 +72,20 @@ class Player(pygame.sprite.Sprite):
           
           self.cooldownDamage = 500
           self.lastDamage = 0
-          
+          self.cooldownShot = 1000
           self.indiceEcolo=0
           self.MaxEcolo=100
           
           self.nbAnnimauxTue = 0
           self.dictioDegatMob = {"golem_des_forets":0, "mage":0, "dragon":0, "yeti":0, "kraken":0, "oursin":0}
           #deplacement
-        
-
+          
+          self.lastProjectile = 0
+          self.speedProjectile = 10
+          self.damageDistance = 10
+          self.range = 600
+          self.attendre = 0
+          
      def changeAnnimDroite(self):
 
          self.clockAnnim+=1
@@ -266,7 +273,7 @@ class Player(pygame.sprite.Sprite):
         elif nomSkin=="bateau":
             scale= (512*0.2, 512*0.2)
         else:
-            scale = (472*0.13, 978*0.13)
+            scale = (48, 97)
         skin = pygame.image.load("data/personnages/joueur/"+nomSkin+".png").convert_alpha()
         skin = pygame.transform.scale(skin, scale)
         return skin
@@ -300,9 +307,11 @@ class Player(pygame.sprite.Sprite):
                 if direction=="haut":
                     tuile = majSelectionJoueur(self.game, 0, -self.velocity-30)
                     
-            
-            return not self.tuileInterdit(tuile)
-        
+            if tuile:
+                return not self.tuileInterdit(tuile)
+            else:
+                print("erreur dans fonction joueur.deplacement autorisé")
+                return True
          else:
              print("erreur dans fonction joueur.deplacement autorisé")
              return True
@@ -391,16 +400,40 @@ class Player(pygame.sprite.Sprite):
             return True
         
         return False
-        
-    
+              
+     def lunchProjectile(self):
+         if self.attendre>60:
+            mob_proche = []
+            
+            for mob in self.game.groupMob:
+                if not mob.annimal:
+                    xMob = mob.rect.x
+                    yMob = mob.rect.y-10
+                    distance = sqrt((self.rect.x - mob.skin.get_width()/2 - xMob)**2 + (self.rect.y -mob.skin.get_height()/2 - yMob)**2)
+                    if distance < self.range :
+                        mob_proche.append((mob, distance))
+            if self.game.theBoss:
+                mob = self.game.theBoss
+                mob_proche.append((mob, 1))
+            mob_proche.sort(key=lambda tup: tup[1]) #pour trier la liste selon la distance
+            
+            now = self.game.tempsJeu()
+            
+            if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldownShot:
+                mobPlusProche = mob_proche[0][0]
+                self.game.groupProjectile.add(Projectile(self.game, "joueur", self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
+                self.lastProjectile = now
+            self.attendre=0
     
     
      def construireBatiment(self, tuile, item):
-        
+        dictio = {"elevage":2, "champs":1, "moulin":2, "scierie":2, "port":3, "mine":3, "pieux":1, "trou":1,
+                  "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,"statueFood":3, "statuePierre":3}
         if not self.majCout(item):
             return False
         
-        self.game.groupBuild.add(Build(self.game, item.nom, tuile, 5))
+        self.game.groupBuild.add(Build(self.game, item.nom, tuile, dictio[item.nom]))
+        
         return True
     
      def detruireBatimentRessource(self, tuile):
@@ -470,8 +503,10 @@ class Player(pygame.sprite.Sprite):
           else:
               if nom!="moulin" and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure":
                 imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
-          if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure" and nom!="forge":
+          if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure" and nom!="forge" and nom!="scierie":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
+          if nom=="scierie":
+              tuile.annimation=[pygame.image.load("data/batiments/"+nom+".png").convert_alpha()]
           tuile.aEteModifie=True
 
      def ajouterRessources(self):

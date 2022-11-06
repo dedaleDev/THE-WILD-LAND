@@ -44,9 +44,10 @@ class Tuile(pygame.sprite.Sprite):
         self.autoriserDesert = True
         self.statue=False
         
+        self.build=False
         self.traceMob = False
         self.estSelect = False
-        self.isExplored =self.type==7
+        self.isExplored =True#self.type==7
         self.annimationFog = 256
         ####     POSITION ET IMAGE    ####
         self.imageFog = game.imageFog2.copy()
@@ -68,6 +69,7 @@ class Tuile(pygame.sprite.Sprite):
         self.indiceSurbrillance = -1
         self.clockAnnimS=0
         self.clockAnnimMaxS=3
+        self.arene=False
     
         
     
@@ -93,8 +95,7 @@ class Tuile(pygame.sprite.Sprite):
 
     def estPlaine(self):
         return self.type==1
-    def estForet(self):
-        return self.type==4
+
     def avoirY(self):
         return self.posY*142//2-self.posX*142//2+142//2*self.game.taille_matriceY
 

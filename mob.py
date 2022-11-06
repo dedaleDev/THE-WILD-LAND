@@ -73,6 +73,8 @@ class Mob(pygame.sprite.Sprite):
               self.listeAnnimLapin =self.game.images.lapinAnnim
           if self.name == "oiseau2":
               self.listeAnnimOiseau2 =self.game.images.oiseau2Annim
+          if self.name == "renard":
+              self.listeAnnimRenard =self.game.images.renardAnnim
           self.clockAnnim=0
           self.indiceAnnim=0
           self.droite = True
@@ -125,6 +127,10 @@ class Mob(pygame.sprite.Sprite):
             y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
             return x,y
         if self.name=="oiseau2":
+            x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
+            y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
+            return x,y
+        if self.name=="renard":
             x=self.game.map[self.posY][self.posX].rect.x+90+random.randint(-5, 5)
             y=self.game.map[self.posY][self.posX].rect.y+30+random.randint(-5, 5)
             return x,y
@@ -284,9 +290,15 @@ class Mob(pygame.sprite.Sprite):
             skin = pygame.image.load("data/personnages/lapin/lapin (1).png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
+        
         elif nomSkin=="oiseau2":
             scale = (979*0.2,735*0.2)
             skin = pygame.image.load("data/personnages/oiseau/oiseau2 (1).png").convert_alpha()
+            skin = pygame.transform.scale(skin, scale)
+            return skin
+        elif nomSkin=="renard":
+            scale = (979*0.2,735*0.2)
+            skin = pygame.image.load("data/personnages/renard/renard1.png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
         elif nomSkin=="chameau":
@@ -314,6 +326,8 @@ class Mob(pygame.sprite.Sprite):
              type=[1, 4]
          if self.name=="oiseau2":
              type=[4]
+         if self.name=="renard":
+             type=[4]
          casePossible = []
          for i in range(-1,2):
                 for j in range(-1,2):
@@ -322,7 +336,7 @@ class Mob(pygame.sprite.Sprite):
                             casePossible.append(self.game.map[self.posY+i][self.posX+j])
             
          if casePossible:
-            if random.randint(0,4) or self.name=="lapin" or self.name=="oiseau2":
+            if random.randint(0,4) or self.name=="lapin" or self.name=="oiseau2" or self.name=="renard":
                 tuile = random.choice(casePossible)
                 return tuile.posX,tuile.posY
             else:
@@ -348,7 +362,7 @@ class Mob(pygame.sprite.Sprite):
          
         if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]
-            self.game.groupProjectile.add(Projectile(self.game, self.name, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
+            self.game.groupProjectile.add(Projectile(self.game, "bossElec", self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
             self.lastProjectile = now
             self.cooldown=1000
 
@@ -360,7 +374,8 @@ class Mob(pygame.sprite.Sprite):
         if self.health<=0:
             if self.name=="mage":
                 self.game.joueur.health+=15
-                
+                if self.game.joueur.health>100:
+                    self.game.joueur.health=100
             self.game.groupLoot.add(Loot(self.recompenseWood, self.recompenseStone, self.recompenseWater, self.recompenseFood, self.rect.x+20-moveX, self.rect.y-30-moveY, self.game))
             self.game.joueur.setRessource(self.recompenseWood, self.recompenseStone, self.recompenseFood, self.recompenseWater)
             self.game.joueur.score=+self.score
@@ -507,6 +522,8 @@ class Mob(pygame.sprite.Sprite):
              cooldown=600
          elif self.name=="oiseau2":
              cooldown=600
+         elif self.name=="renard":
+             cooldown=1000
          else:
              assert(False), "Oublie du cooldown pour le mob"+self.nom   
          return cooldown
@@ -560,7 +577,17 @@ class Mob(pygame.sprite.Sprite):
             else :
                 self.skin=pygame.transform.flip(self.listeAnnimOiseau2[self.indiceAnnim], True, False)
             self.clockAnnim=0
-            
+     def changeAnnimRenard(self, flip=False):
+        self.clockAnnim+=1
+        if self.clockAnnim==7:
+            self.indiceAnnim+=1
+            if self.indiceAnnim>=len(self.listeAnnimRenard):
+                self.indiceAnnim=0
+            if not flip:
+                self.skin=self.listeAnnimRenard[self.indiceAnnim]
+            else :
+                self.skin=pygame.transform.flip(self.listeAnnimRenard[self.indiceAnnim], True, False)
+            self.clockAnnim=0
      def changeAnnimChameau(self, flip=False):
         self.clockAnnim+=1
         if self.clockAnnim==10:
@@ -660,6 +687,8 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimLapin(True)
         if self.name=="oiseau2":
             self.changeAnnimOiseau2(True)
+        if self.name=="renard":
+            self.changeAnnimRenard(True)
         self.droite = True
         
      def goRight(self, angle=4):
@@ -688,6 +717,8 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimLapin()
         if self.name=="oiseau2":
             self.changeAnnimOiseau2()
+        if self.name=="renard":
+            self.changeAnnimRenard()
         self.droite=False
         
      def goUp(self, angle=4):
@@ -714,6 +745,8 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimLapin(self.droite)
          if self.name=="oiseau2":
             self.changeAnnimOiseau2(self.droite)
+         if self.name=="renard":
+            self.changeAnnimRenard(self.droite)
      def goDown(self, angle=4):
          if self.name=="oursin":    
                 self.rotate(self.neg, angle)
@@ -738,6 +771,8 @@ class Mob(pygame.sprite.Sprite):
             self.changeAnnimLapin(self.droite)
          if self.name=="oiseau2":
             self.changeAnnimOiseau2(self.droite)
+         if self.name=="renard":
+            self.changeAnnimRenard(self.droite)
      def update_health_bar(self):
         #def la couleur
         

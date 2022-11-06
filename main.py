@@ -1,6 +1,13 @@
 import main_menu
-import aideCSV
+import traceback
+dev=False
 def main():
-    main_menu.main_menu()
-    #pygame_gestion.pygameInit()
+    if dev:     
+        main_menu.main_menu()
+    else:
+        with open("log.txt", "w") as log:
+            try:
+                main_menu.main_menu()
+            except Exception:
+                traceback.print_exc(file=log)
 main()
