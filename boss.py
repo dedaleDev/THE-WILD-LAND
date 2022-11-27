@@ -43,6 +43,7 @@ class Boss(pygame.sprite.Sprite):
                 tuileX=random.randint(1, (len(self.game.mapBoss[0]))-2)
                 tuile=self.game.map[tuileY][tuileX]
                 pygame.draw.rect(self.game.fenetre, (255,0,255), pygame.Rect(tuile.rect.x, tuile.rect.y, 100,100))
+                
                 self.directionRush=(tuile.rect.x, tuile.rect.y)
                 self.game.afficherText(str(self.directionRush))
                 self.dx, self.dy = self.directionRush[0] - self.rect.x, self.directionRush[1] - self.rect.y

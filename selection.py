@@ -96,7 +96,6 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "champs", 50, 0,0,0))
             optionDIspo.append(Item(game, "tour", 0, 0, 0, 300 ))
             optionDIspo.append(Item(game, "pieux", 0,0, 50, 50))
-            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
             if not joueur.statueFood:
                 optionDIspo.append(Item(game, "statueFood", 150, 0,0,0))
             
@@ -120,12 +119,10 @@ def selectionDispoItem(game, tuile, joueur):
             if not joueur.statueBois:
                 optionDIspo.append(Item(game, "statueBois", 0,0,150,0))
             optionDIspo.append(Item(game, "scierie", 0,0,100,0))
-            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
             
         elif tuile.type==5 and not tuile.frigo and not tuile.ventilo and not tuile.ville:
             optionDIspo.append(Item(game, "frigo", 300, 50, 0, 0))
             optionDIspo.append(Item(game, "ventilo", 0, 0, 500, 400))
-            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
         elif tuile.type==6 and not tuile.sableMouvant and not tuile.trou and not tuile.ville:
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))
             optionDIspo.append(Item(game, "trou", 15,0, 10, 0))

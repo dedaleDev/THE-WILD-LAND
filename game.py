@@ -53,7 +53,7 @@ elif modeDifficile :
     vitesseGolem = 3
     vitesseDragon = 4
 
-    
+
 
 
 premierPAss=True
@@ -95,6 +95,8 @@ class Game(pygame.sprite.Sprite):
         self.fenetre = fenetre
         self.listeCaseBatiment=[]
         self.nbAnnimaux=0
+        self.backgroundMonde = pygame.image.load("data/animationTuiles/background_monde/image.png")
+        self.backgroundArene = self.images.loadImgBackArene()
         if not mapChoisie:
             self.taille_matriceY = int(aideCSV.valCorrespondante("taille_matriceY"))
             self.taille_matriceX = int(aideCSV.valCorrespondante("taille_matriceX"))
@@ -295,7 +297,7 @@ class Game(pygame.sprite.Sprite):
                             self.groupMob.add(Mob(self, "dragon", 400, 2, tuile, 700,aerien=True, attaque=20))   
                             pygame.mixer.Sound.play(self.son.dragonSpawn)
                     if tuile.estForet():
-                        rand = random.randint(1,40000)
+                        rand = random.randint(1,4000)
                         if rand <= self.probaGolemForet:
                             self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile, 100))
                             pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)

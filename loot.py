@@ -29,11 +29,12 @@ class Loot(pygame.sprite.Sprite): #Classe servant a annimer un loot (de mob, cof
         
         self.clockAnnim = 0
         self.clockAnnimMax = 3
-        self.font =pygame.font.SysFont("Corbel", 25)  # definit la police utilisé
-        self.fontBois = self.font.render("+"+str(self.bois), True, "black")
-        self.fontPierre = self.font.render("+"+str(self.pierre), True, "black")
-        self.fontEau = self.font.render("+"+str(self.eau), True, "black")
-        self.fontFood = self.font.render("+"+str(self.food), True, "black")
+        self.font =pygame.font.SysFont("Corbel", 30)  # definit la police utilisé
+        self.color="white"
+        self.fontBois = self.font.render("+"+str(self.bois), True, self.color)
+        self.fontPierre = self.font.render("+"+str(self.pierre), True, self.color)
+        self.fontEau = self.font.render("+"+str(self.eau), True, self.color)
+        self.fontFood = self.font.render("+"+str(self.food), True, self.color)
         self.coffre=coffre
         self.coffreX=coffreX
         self.coffreY=coffreY
@@ -88,26 +89,26 @@ class Loot(pygame.sprite.Sprite): #Classe servant a annimer un loot (de mob, cof
         continu = False
         if self.tempsBois and self.bois!=0:
             screen.blit(self.game.images.lootBois[self.indice], (self.rect.x+moveX-50, self.rect.y+moveY-150))
-            screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
+            #screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
             screen.blit(self.fontBois, (self.rect.x+moveX+35, self.rect.y+moveY))
             continu = True
 
         
         if self.tempsPierre and self.pierre:
             screen.blit(self.game.images.lootPierre[self.indice], (self.rect.x+moveX-50, self.rect.y+moveY-150))
-            screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
+            #screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
             screen.blit(self.fontPierre, (self.rect.x+moveX+35, self.rect.y+moveY))
             continu = True
             
         if self.tempsEau and self.eau!=0:
             screen.blit(self.game.images.lootEau[self.indice], (self.rect.x+moveX-50, self.rect.y+moveY-150))
-            screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
+            #screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
             screen.blit(self.fontEau, (self.rect.x+moveX+35, self.rect.y+moveY))
             continu = True
 
         if self.tempsFood and self.food!=0:
             screen.blit(self.game.images.lootFood[self.indice], (self.rect.x+moveX-50, self.rect.y+moveY-150))
-            screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
+            #screen.blit(self.image, (self.rect.x+moveX, self.rect.y+moveY))
             screen.blit(self.fontFood, (self.rect.x+moveX+35, self.rect.y+moveY))
             continu = True
 

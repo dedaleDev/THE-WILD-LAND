@@ -1,5 +1,6 @@
 
 import random
+import time
 import pygame
 
 
@@ -39,22 +40,38 @@ class Build(pygame.sprite.Sprite):
           self.clock=0
           self.clockBox = 0
           self.clockBoxMax = 1
+          
+          if self.nomBatiment=="statueFood":
+                self.game.joueur.statueFood=True
+          if self.nomBatiment=="statueBois":
+                    self.game.joueur.statueBois=True
+          if self.nomBatiment=="statueEau":
+                    self.game.joueur.statueEau=True
+          if self.nomBatiment=="statuePierre":
+                    self.game.joueur.statuePierre=True
     
           
     
     def spawnButton(self):
-        """pygame.draw.rect(self.game.fenetre, (255,255,255), (self.tuile.rect.x, self.tuile.rect.y, 256,144), 1)
-        while True:"""
-        y=random.randint(0, 146)
-        x=random.randint(0, 244)
-        while not (y<0.6*x+71 and y<-0.6*x+221 and y>0.6*x-80 and y >-0.6*x+70):
-            y=random.randint(0, 146)
-            x=random.randint(0, 244)
-            """pygame.draw.circle(self.game.fenetre, (255,255,255), (self.tuile.rect.x+x,self.tuile.rect.y+y), 1)
-            pygame.display.flip()"""
+        #pygame.draw.rect(self.game.fenetre, (255,255,255), (self.tuile.rect.x, self.tuile.rect.y, 256,144), 1)
+        i=0
+        
+        #while i<400:
+        y=random.randint(-100, 146)
+        x=random.randint(10, 234)
+        hauteurCaisse=300
+        basCaisse = -55
+        while not (y<0.6*x+81+basCaisse and y<-0.6*x+231+basCaisse and y>0.6*x-70-hauteurCaisse and y >-0.6*x+80-hauteurCaisse):
+            y=random.randint(-100, 146)
+            x=random.randint(10, 234)
+            #pygame.draw.circle(self.game.fenetre, (255,255,255), (self.tuile.rect.x+x,self.tuile.rect.y+y), 1)
+            #pygame.draw.rect(self.game.fenetre, (255,255,255), (self.tuile.rect.x+x-20,self.tuile.rect.y+y-20, 40,40), width=1)
+            #pygame.display.flip()
+            #i+=1
+        #time.sleep(3)
         self.posYclick=y
         self.posXclick=x
-        self.actuelClick=pygame.Rect(self.posXclick, self.posYclick, 40,40)
+        self.actuelClick=pygame.Rect(self.posXclick-20, self.posYclick-20, 40,40)
         
         self.indiceAnnimClick=0
     
@@ -72,7 +89,7 @@ class Build(pygame.sprite.Sprite):
     
     
     def update(self):
-        if self.actuelClick==None and self.nbClick<self.nbClickMax:
+        if self.actuelClick==None and self.nbClick<self.nbClickMax :
             self.spawnButton()
         if self.actuelClick:
             self.actuelClick.x=self.tuile.rect.x+self.posXclick
@@ -216,14 +233,7 @@ class Build(pygame.sprite.Sprite):
             self.game.joueur.ville=True   
         
         elif self.nomBatiment=="statueEau" or self.nomBatiment=="statueBois" or self.nomBatiment=="statueFood" or self.nomBatiment=="statuePierre":
-            if self.nomBatiment=="statueFood":
-                self.game.joueur.statueFood=True
-            if self.nomBatiment=="statueBois":
-                self.game.joueur.statueBois=True
-            if self.nomBatiment=="statueEau":
-                self.game.joueur.statueEau=True
-            if self.nomBatiment=="statuePierre":
-                self.game.joueur.statuePierre=True
+            
             self.game.map[tuile.posY][tuile.posX].statue=True
             for y in range(-1,2):
                 for x in range(-1,2):

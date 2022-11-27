@@ -1,8 +1,8 @@
 import main_menu
 import traceback
-dev=False
+dev=True
 def main():
-    if dev:     
+    if dev:
         main_menu.main_menu()
     else:
         with open("log.txt", "w") as log:

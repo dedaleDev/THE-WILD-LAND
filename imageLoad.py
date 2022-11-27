@@ -30,6 +30,8 @@ class ImageLoad():
         self.armure = self.loadImArmure()
         self.coffre = self.loadAnnimCoffre()
 
+        self.backgroundArene = self.loadImgBackArene()
+
         self.moulinAnnim = self.loadAnnimMoulin()
         self.mortierAnnim = self.loadAnnimMortier()
         self.ventiloAnnim = self.loadAnnimVentilo()
@@ -120,9 +122,15 @@ class ImageLoad():
         self.annim3eau3 = self.loadAnnimTuileEau()
         self.annim3eau2 = self.loadAnnimTuileEau(True)
         
-        
+    def loadImgBackArene(self):
+        liste=[]
+        for i in range(1,134):
+            im = pygame.image.load("data/animationTuiles/background_arene/background ("+str(i)+").jpg").convert_alpha()
+            liste.append(im)
+        return liste
+    
     def loadInventaire(self):
-        im = pygame.image.load("data/menu/menu_tuile.png").convert_alpha()
+        im = pygame.image.load("data/menu/menu_tuile.png").convert()
         im = pygame.transform.scale(im, (758/2,178/2))
         return im
     def loadAnnimClickBuild(self):
@@ -261,7 +269,7 @@ class ImageLoad():
     
     def loadImgVille(self):
         im = pygame.image.load("data/batiments/ville.png").convert_alpha()
-        im = pygame.transform.scale(im, (164, 351))    
+        #im = pygame.transform.scale(im, (164, 351))    
         return im
     #97* 19
 
@@ -538,6 +546,7 @@ class ImageLoad():
         
         
         listeImg.append((imgTemp0, imgTemp1, imgTemp2, imgTemp3, imgTemp4, imgTemp5, imgTemp6, imgTemp7))
+
         return listeImg
 
     def loadImgItem(self):
@@ -785,8 +794,10 @@ class ImageLoad():
             return self.listeImg[type][0], clockMax, annim, clockAnnim
         
         
-            
+        
         print("probleme")
+        if type>=100:
+            return self.listeImgUtilisateur[type], clockMax, annim, random.randint(0,len(annim)-1)
         return self.listeImg[type], clockMax, annim, random.randint(0,len(annim)-1)
 
 

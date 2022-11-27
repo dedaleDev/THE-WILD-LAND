@@ -46,7 +46,7 @@ class Player(pygame.sprite.Sprite):
           #ressources du joueur
           self.wood = 3500
           self.stone = 1500
-          self.food = 500
+          self.food = 5000
           self.water = 1000
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
@@ -85,7 +85,10 @@ class Player(pygame.sprite.Sprite):
           self.damageDistance = 10
           self.range = 600
           self.attendre = 0
-          
+    
+     def getTuile(self):
+         return self.game.map[self.posY][self.posX]
+    
      def changeAnnimDroite(self):
 
          self.clockAnnim+=1
@@ -356,7 +359,7 @@ class Player(pygame.sprite.Sprite):
         listeRessourcesSources = ["data/ressources/r_food.png", "data/ressources/r_stone.png", "data/ressources/r_water.png", "data/ressources/r_wood.png"]
         for i in  range (len(listeRessourcesSources)) : 
             listeRessourcesSources[i]= pygame.image.load(listeRessourcesSources[i]).convert_alpha()
-            listeRessourcesSources[i]= pygame.transform.scale(listeRessourcesSources[i],( 170,70))
+            listeRessourcesSources[i]= pygame.transform.scale(listeRessourcesSources[i],(170,70))
         self.compteurRessources()
         return listeRessourcesSources
 
@@ -427,17 +430,14 @@ class Player(pygame.sprite.Sprite):
     
     
      def construireBatiment(self, tuile, item):
-        dictio = {"elevage":2, "champs":1, "moulin":2, "scierie":2, "port":3, "mine":3, "pieux":1, "trou":1,
-                  "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,"statueFood":3, "statuePierre":3}
+        dictio = {"elevage":2, "champs":1, "moulin":2, "scierie":2, "port":3, "mine":3, "pieux":1, "trou":1,"forge":5,
+                  "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,"statueFood":3, "statuePierre":3, "ville":1}
         if not self.majCout(item):
             return False
-        
         self.game.groupBuild.add(Build(self.game, item.nom, tuile, dictio[item.nom]))
-        
         return True
     
      def detruireBatimentRessource(self, tuile):
-         
          if tuile.champs:
             tuile.champs=False
             self.nbChamps-=1

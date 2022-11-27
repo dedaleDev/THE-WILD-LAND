@@ -184,7 +184,7 @@ def generation_matrice(game, deco=True):
     controleMiniBiome(matriceMap, game)
     if deco:
         addBiomeDeco(matriceMap, game)
-    
+        
     
     #printMat(matriceMap)
     return (matriceMap)
@@ -287,10 +287,9 @@ def printMat(matriceMap, game):
             print(matriceMap[i][j].isExplored, matriceMap[i][j].type ,end=' ')
     print("fin\n\n\n\n\n")
     
-    
+
 def mapBoss(game):
     map = []
-
     for i in range(7):
         map.append([0]*7)
     for i in range(7):
@@ -302,8 +301,7 @@ def mapBoss(game):
         map[i][7-1] = Tuile(7 ,7-1, i, game)
     for y in range(1,6):
         for x in range(1,6):
-            map[y][x] = Tuile(8, x, y, game)
-                
+            map[y][x] = Tuile(8, x, y, game) 
     return map
 
 def addBiomeDeco(map, game):
