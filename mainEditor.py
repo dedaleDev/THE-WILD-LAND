@@ -14,13 +14,17 @@ def getColor(i):
     if i == 3:
         color = (45,130,223)
     if i == 4:
-        color = (7, 152, 59)
+        color = (1, 103, 85)
     if i==5:
         color = (194,218,225)
     if i == 6:
         color = (246,182, 27)
     if i == 7:
         color = (177, 48, 19)
+    if i == 8:
+        color = (102, 30, 80)
+    if i == 9:
+        color = (36, 101, 1)
     return color
 
 
@@ -243,6 +247,19 @@ def editor():
                             if theMap[y][x].pressed :
                                 theMap[y][x].valeur=7
                                 valEnCours = 7
+
+                if event.key == pygame.K_8:
+                    for y in range(taille_matriceY):
+                        for x in range(taille_matriceX):
+                            if theMap[y][x].pressed :
+                                theMap[y][x].valeur=8
+                                valEnCours = 8
+                if event.key == pygame.K_9:
+                    for y in range(taille_matriceY):
+                        for x in range(taille_matriceX):
+                            if theMap[y][x].pressed :
+                                theMap[y][x].valeur=9
+                                valEnCours = 9
                 if event.key == pygame.K_s :
                     for y in range(taille_matriceY):
                         for x in range(taille_matriceX):
