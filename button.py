@@ -34,7 +34,7 @@ class Button():
   
 	def getColor(self, i):
 		if i == 1:
-			color= (135, 163, 107)
+			color= (20, 163, 107)
 		if i == 2:
 			color = (117, 119, 119)
 		if i == 3:
@@ -47,10 +47,6 @@ class Button():
 			color = (215,163, 107)
 		if i == 7:
 			color = (94, 20, 30)
-		if i == 8:
-			color = (102, 30, 80)
-		if i == 9:
-			color = (36, 101, 1)
 		return color
 
 

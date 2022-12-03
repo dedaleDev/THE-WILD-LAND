@@ -179,19 +179,23 @@ class Tuile(pygame.sprite.Sprite):
         self.rect.y+=valeur
 
 
-    def changeAnnim(self):
-         if self.annimation:
-            self.clockAnnim+=1
-            if self.clockAnnim>=self.clockAnnimMax:
+    def changeAnnim(self, annim=True):
+        if annim:
+            if self.annimation:
+                self.clockAnnim+=1
+                if self.clockAnnim>=self.clockAnnimMax:
+                    
+                    self.indiceAnnim+=1
+                    if self.indiceAnnim >= len(self.annimation):
+                        self.indiceAnnim=0
+                    self.clockAnnim=0
+                    self.image = self.annimation[self.indiceAnnim]
                 
-                self.indiceAnnim+=1
-                if self.indiceAnnim >= len(self.annimation):
-                    self.indiceAnnim=0
-                self.clockAnnim=0
-                self.image = self.annimation[self.indiceAnnim] 
          
-         if self.indiceSurbrillance>=0:
+        if self.indiceSurbrillance>=0:
+             
             self.clockAnnimS+=1
+            
             if self.clockAnnimS>=self.clockAnnimMaxS:
                 self.indiceSurbrillance+=1
                 if self.indiceSurbrillance>=len(self.surbrillance):

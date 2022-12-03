@@ -132,7 +132,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
 
     #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
-    
+    #game.groupMob.add(Mob(game,"dragon", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"chameau", 100, 1, tuile=game.map[3][3], score=0, desertique=True, annimal=True, attaque=0))
@@ -377,6 +377,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                                 fenetrePygame.blit(game.images.statue(tuileBlit.type), tuileBlit.rect)
                         if tuileBlit.type!=4 and tuileBlit.type!=10:
                             tuileBlit.changeAnnim()
+                        else:
+                            tuileBlit.changeAnnim(annim=False)
                     if tuileBlit.traceMob:
                         fenetrePygame.blit(Imselection, (tuileBlit.getRectX(), tuileBlit.getRectY()))
                 
@@ -437,7 +439,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 if not game.boss:
                     if game.map[mob.posY][mob.posX].isExplored :
                         #fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
-                        listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1], None, None, None))
+                        if mob.name=="dragon":
+                            listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1]+500,None, None, None))
+                        else:
+                            listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1],None, None, None))
                     if not mob.annimal:
                         mob.update_health_bar()
             
@@ -572,7 +577,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(game.joueur.imageArmure, (22,80))
             for mob in game.groupMob:
                 if not game.boss:
-                    fenetrePygame.blit(imDebug, mob.getFeet())
+                    pass
+                    #fenetrePygame.blit(imDebug, mob.getFeet())
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (20,15))
             fenetrePygame.blit(feuille, (10,368))

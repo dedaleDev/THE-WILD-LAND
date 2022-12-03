@@ -239,7 +239,9 @@ class Build(pygame.sprite.Sprite):
                 for x in range(-1,2):
                     
                     if self.game.map[tuile.posY+y][tuile.posX+x].type==self.game.map[tuile.posY][tuile.posX].type and (y!=0 or x!=0):
+
                         self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance=random.randint(0,200)
+                        print("ini indice surbri=", self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance)
                         if self.game.map[tuile.posY+y][tuile.posX+x].scierie or self.game.map[tuile.posY+y][tuile.posX+x].mine or self.game.map[tuile.posY+y][tuile.posX+x].moulin:
                             self.game.groupTuileBoost.add(self.game.map[tuile.posY+y][tuile.posX+x])
             changerImg=False

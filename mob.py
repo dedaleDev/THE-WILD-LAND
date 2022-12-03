@@ -164,9 +164,7 @@ class Mob(pygame.sprite.Sprite):
              self.recompenseFood=random.randint(10,20)
     
      def allerVersTuile(self, posX, posY): #renvoie True si il a atteint la tuile, False sinon
-        
         if posY == self.posY and posX-self.posX>0:
-
                 self.goUp(angle=2)
                 self.goRight(angle=2)
                 
@@ -250,7 +248,6 @@ class Mob(pygame.sprite.Sprite):
          
          elif self.name=="golem_des_forets" or "mage":
              tuile=random.choice(self.game.listeCaseForet)
-             
          return tuile.posX, tuile.posY
      def loadSkin(self, nomSkin):
         if nomSkin== "golem_des_forets":
@@ -281,28 +278,27 @@ class Mob(pygame.sprite.Sprite):
             skin = pygame.transform.scale(skin, scale)
             return skin
         elif nomSkin=="oiseau":
-            scale = (979*0.2,735*0.2)
+            scale = (240*0.3, 314*0.3)
             skin = pygame.image.load("data/personnages/oiseau/oiseau (1).png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
         elif nomSkin=="lapin":
-            scale = (979*0.2,735*0.2)
             skin = pygame.image.load("data/personnages/lapin/lapin (1).png").convert_alpha()
-            skin = pygame.transform.scale(skin, scale)
+            skin = pygame.transform.scale(skin, (skin.get_width()*0.5, skin.get_height()*0.5))
             return skin
         
         elif nomSkin=="oiseau2":
-            scale = (979*0.2,735*0.2)
+            scale = (240*0.3, 314*0.3)
             skin = pygame.image.load("data/personnages/oiseau/oiseau2 (1).png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
         elif nomSkin=="renard":
-            scale = (979*0.2,735*0.2)
+            scale = (62, 55)
             skin = pygame.image.load("data/personnages/renard/renard1.png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
         elif nomSkin=="chameau":
-            scale = (979*0.2,735*0.2)
+            scale = (127, 110)
             skin = pygame.image.load("data/personnages/chameau/chameau (1).png").convert_alpha()
             skin = pygame.transform.scale(skin, scale)
             return skin
