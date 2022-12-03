@@ -134,7 +134,7 @@ class ImageLoad():
     def loadImgBackMonde(self):
         liste=[]
         for i in range(1,84):
-            im = pygame.image.load("data/animationTuiles/background_monde/background_"+str(i)+".jpg").convert_alpha()
+            im = pygame.image.load("data/animationTuiles/background_monde/background_"+str(i)+".jpeg").convert_alpha()
             liste.append(im)
         return liste
     
