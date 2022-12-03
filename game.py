@@ -95,7 +95,7 @@ class Game(pygame.sprite.Sprite):
         self.fenetre = fenetre
         self.listeCaseBatiment=[]
         self.nbAnnimaux=0
-        self.backgroundMonde = pygame.image.load("data/animationTuiles/background_monde/image.png")
+        self.backgroundMonde = self.images.loadImgBackMonde()
         self.backgroundArene = self.images.loadImgBackArene()
         if not mapChoisie:
             self.taille_matriceY = int(aideCSV.valCorrespondante("taille_matriceY"))

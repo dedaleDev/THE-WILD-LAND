@@ -50,6 +50,8 @@ class ImageLoad():
         self.chameauAnnim = self.loadAnnimChameau()
         self.lapinAnnim = self.loadAnnimLapin()
         
+        
+        self.backVolcan=pygame.image.load("data/tuiles/backVolcan.png").convert_alpha()
         self.statueBois=pygame.image.load("data/batiments/statueBois.png").convert_alpha()
         self.statuePierre=pygame.image.load("data/batiments/statuePierre.png").convert_alpha()
         self.statueEau=pygame.image.load("data/batiments/statueEau.png").convert_alpha()
@@ -126,6 +128,13 @@ class ImageLoad():
         liste=[]
         for i in range(1,134):
             im = pygame.image.load("data/animationTuiles/background_arene/background ("+str(i)+").jpg").convert_alpha()
+            liste.append(im)
+        return liste
+    
+    def loadImgBackMonde(self):
+        liste=[]
+        for i in range(1,84):
+            im = pygame.image.load("data/animationTuiles/background_monde/background ("+str(i)+").jpg").convert_alpha()
             liste.append(im)
         return liste
     

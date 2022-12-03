@@ -97,7 +97,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     pauseicon = pygame.image.load("data/menu/pause.png").convert_alpha()
     pauseicon = pygame.transform.scale(pauseicon,(45,45))
     indiceBackArene=0
-
+    indiceBackMonde=0
 
     infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png").convert_alpha()
     infoMortAnnimal = pygame.image.load("data/cata/infoBulle/infoMort.png").convert_alpha()
@@ -331,9 +331,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             else:
                 tick_ressource-=1
             
-            if modification:
-                pass
-                #game.genererImg()
+
             alerteVille=False #une ville est presente sur la map
             game.moveX, game.moveY = moveX, moveY
             listeMontagne=[]
@@ -344,7 +342,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 if indiceBackArene>=len(game.backgroundArene):
                     indiceBackArene=0
             else:
-                fenetrePygame.blit(game.backgroundMonde, (0,0))
+                fenetrePygame.blit(game.backgroundMonde[indiceBackMonde], (0,0))
+                if fps%2==0:
+                    indiceBackMonde+=1
+                if indiceBackMonde>=len(game.backgroundMonde):
+                    indiceBackMonde=0
             for y in range(game.taille_matriceY):
                 for x in range(game.taille_matriceX):
                     tuileBlit = game.map[y][x]
@@ -354,6 +356,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             listeMontagne.append(tuileBlit)
                         if (tuileBlit.type==2 or tuileBlit.type==7) and not game.boss:
                             listeMontagne.append(tuileBlit)
+                            
+                            
+                            if x==0 or y==game.taille_matriceY-1:
+                                fenetrePygame.blit(game.images.backVolcan, (tuileBlit.rect.x, tuileBlit.rect.y+70))
                         else:
                             #affichage des tuile
                             #fenetrePygame.blit(tuileBlit.image, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
@@ -369,18 +375,16 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                                 fenetrePygame.blit(tuileBlit.surbrillance[tuileBlit.indiceSurbrillance], tuileBlit.rect)
                             if tuileBlit.statue and tuileBlit.type!=4:
                                 fenetrePygame.blit(game.images.statue(tuileBlit.type), tuileBlit.rect)
-
                         if tuileBlit.type!=4 and tuileBlit.type!=10:
                             tuileBlit.changeAnnim()
                     if tuileBlit.traceMob:
                         fenetrePygame.blit(Imselection, (tuileBlit.getRectX(), tuileBlit.getRectY()))
-                        
+                
                     if tuileBlit.annimationFog>0 and tuileBlit.isExplored:
                         
                         fenetrePygame.blit(tuileBlit.imageFog, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
                         tuileBlit.annimationFog-=8
                         tuileBlit.imageFog.set_alpha(tuileBlit.annimationFog)
-                        
                     elif not tuileBlit.isExplored:
                         fenetrePygame.blit(tuileBlit.imageFog, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
                         
@@ -453,7 +457,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     if tuile2.mortier:
                         listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre, None, None, tuile2.type))
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
-                    
                     else:
                         listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue, tuile2.type))
                 elif tuile2.type==4 or tuile2.type==10:
@@ -503,6 +506,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     fenetrePygame.blit(build.imageClickPassif, build.actuelClick)
             
             if tuile :
+                
                 liste = selectionDispoItem(game, tuile, game.joueur)
                 inventaire = Inventaire(tuile.getRectX()-50, tuile.getRectY()-25, liste, game)
                 inventaire.blitInventaire(fenetrePygame, game.joueur)
@@ -547,10 +551,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             nombreAnnimationIncendie=3
                             
                             annimIncendie=0
-                            
-                            
+
+
             #(infoObject[0]/1.7*(190*i), 25)
-            
+
             for i in range(len(game.joueur.ressourcesIMG)):
                 fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]-190-(190*i), 25))
                 fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]-120-(190*i), 3/100*infoObject[1]))
