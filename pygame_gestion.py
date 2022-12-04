@@ -199,7 +199,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         if keys[K_SPACE]:
             centrerJoueur(game)
 
-        if game.joueur.getTuile().ville:
+        if game.joueur.getTuile().ville or keys[K_1]:
             game.boss=True
             game.map=game.mapBoss
             for i in range(7):
@@ -261,12 +261,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
        
         
         
-        if continuer: 
             
+        if continuer: 
             deplacement_cam(mouse, game, True)
- 
             #### Deplacement des mobs
-
             for tour in game.groupDefense:
                 tour.attack()
             
@@ -488,6 +486,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None, None))
             if game.theBoss:
                 listeOrdre.append((game.theBoss.image, game.theBoss.rect.x-15, game.theBoss.rect.y+30, center[1]+30, None, None, None))
+                #game.theBoss.rect.x-15, game.theBoss.rect.y+30
             listeOrdre.sort(key=lambda x: x[3])
             
             for image, posX, posY, center, surbrillance, statue, type in listeOrdre:
@@ -646,7 +645,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             if game.text:
                 game.displayTxt()
-  
+            #if game.theBoss:
+                #if game.theBoss.directionRush:
+                    #pygame.draw.rect(fenetrePygame, (255,0,255), pygame.Rect(game.theBoss.directionRush.rect.x, game.theBoss.directionRush.rect.y, 100,100))
             
             pygame.display.flip()
             

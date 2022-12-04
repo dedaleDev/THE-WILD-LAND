@@ -17,12 +17,10 @@ class Boss(pygame.sprite.Sprite):
         self.lastProjectile=0
         self.name="Boss"
         self.recharge = None
-        
         self.velocity=10
         #self.attaqueTourniquet=None
         self.rush=False
         self.directionRush=None
-        
         self.dx, self.dy = 0,0
         
     def moveBoss(self):
@@ -34,21 +32,20 @@ class Boss(pygame.sprite.Sprite):
                 # bouger en direction du vecteur
                 self.rect.x += round(self.dx * self.velocity)
                 self.rect.y += round(self.dy * self.velocity)
-            if (abs(self.directionRush[0]-self.rect.x)+abs(self.directionRush[1]-self.rect.y)<10):
+            if (abs(self.directionRush.rect.x-self.rect.x)+abs(self.directionRush.rect.y-self.rect.y)<70):
                 self.rush=False
         else:
-            if not random.randint(0,100):
+            if not random.randint(0,300):
                 
                 tuileY=random.randint(1, (len(self.game.mapBoss))-2) #trouver une tuile random sur la map
                 tuileX=random.randint(1, (len(self.game.mapBoss[0]))-2)
                 tuile=self.game.map[tuileY][tuileX]
-                pygame.draw.rect(self.game.fenetre, (255,0,255), pygame.Rect(tuile.rect.x, tuile.rect.y, 100,100))
                 
-                self.directionRush=(tuile.rect.x, tuile.rect.y)
-                self.game.afficherText(str(self.directionRush))
-                self.dx, self.dy = self.directionRush[0] - self.rect.x, self.directionRush[1] - self.rect.y
+                self.directionRush=tuile
+                #self.game.afficherText(str((self.rect.x,self.rect.y)))
+                self.dx, self.dy = self.directionRush.rect.x - self.rect.x, self.directionRush.rect.y - self.rect.y
                 self.rush=True
-                
+                self.velocity=random.randint(5,15)
     def lunchProjectile(self):
         rand = random.randint(0,1)
         rand=0

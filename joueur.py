@@ -431,9 +431,11 @@ class Player(pygame.sprite.Sprite):
     
      def construireBatiment(self, tuile, item):
         dictio = {"elevage":2, "champs":1, "moulin":2, "scierie":2, "port":3, "mine":3, "pieux":1, "trou":1,"forge":5,
-                  "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,"statueFood":3, "statuePierre":3, "ville":1}
+                  "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,
+                  "statueFood":3, "statuePierre":3, "ville":1,"armure1":0,"armure2":0,"armure3":0,"armure4":0}
         if not self.majCout(item):
             return False
+        
         self.game.groupBuild.add(Build(self.game, item.nom, tuile, dictio[item.nom]))
         return True
     
