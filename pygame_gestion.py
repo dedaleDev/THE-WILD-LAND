@@ -560,8 +560,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             #(infoObject[0]/1.7*(190*i), 25)
 
             for i in range(len(game.joueur.ressourcesIMG)):
-                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]-190-(190*i), 25))
-                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]-120-(190*i), 3/100*infoObject[1]))
+                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 2/100*infoObject[1]))
+                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 3.6/100*infoObject[1]))
                 if game.joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
                     if timeComtpeur <=60 :
