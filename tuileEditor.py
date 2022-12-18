@@ -16,26 +16,23 @@ def supprimerEspace(chaine:str):
 
 class Biome:
     #classe qui permet de créer un biome et de lui ajouter des variations
-    def __init__(self, name:str, variations=[], probabilitée=5,first=0):
+    def __init__(self, name:str, variations=[], proba=5,first=0):
         #ATTENTION LE PARAMETRE first NE JAMAIS ETRE INITIALISE QU'UNE SEULE FOIS 
         self.name = supprimerEspace(name)
         self.variations = [1]
         self.selected = False
         self.selectedV=1
         self.imVariations =[False]
-        self.probabilitée =probabilitée
+        self.proba =proba
         if first == 1:
             self.selected =True
 
     def addVariation(self, variation):
         self.variations.append(variation)
         self.imVariations.append(False)
-
     def setImageVariation(self,variation:int, statut:bool):
         self.imVariations[variation] = statut
 
-    def probability(self, value):
-        self.probabilitée = value
     def getName(self):
         return self.name
     def getVariations(self):
@@ -44,8 +41,14 @@ class Biome:
     def getSelected(self):
         return self.selected
 
+    def getProba(self):
+        return self.proba
+    def setProba(self, proba):
+        self.proba= proba
+
+
 #créer fenetre tkinter :
-infoObject = [1920,1080]
+infoObject = [1920//2,1080//2]
 tailleE =[]
 fenetre=""
 filename=""
@@ -56,17 +59,19 @@ biomes = [Biome("biome 1",first=1)]
 NameNewBiome =""
 varB =""
 varV =""
+varProba =""
 selectV =""
 selectB=""
 tuile =""
-
-
+ancient=-1
+type=100
 
 
 
 
 def importTuile():
-    global biomes
+    global biomes,varProba
+    updateProba()#par securitée
     print("importation...")
     file =str(filedialog.askopenfilename(initialdir = "/",title = " Sélectionner le fichier ",filetypes = (("Image files","*.png"),("all files","*.*"))))
     path= os.path.dirname(__file__)
@@ -79,10 +84,11 @@ def importTuile():
             selectedV2 = str(biomes[i].getVariations()[1])
             selectedB2 = str(biomes[i].getName())
             biomes[i].setImageVariation(biomes[i].getVariations()[1]-1, True)
+            proba = str(biomes[i].getProba())
     if trouve == False : 
         print("erreur : aucun biome selectionné")
         return False
-    file2= path+"/"+supprimerEspace(selectedB2+"_"+selectedV2+".png")
+    file2= path+"/"+supprimerEspace(selectedB2+"_"+selectedV2+"_"+proba+".png")
     os.rename(path+"/"+file.split("/")[-1],file2)
     loadTuile(file2)
 
@@ -103,15 +109,19 @@ def getPathofTuile(selectedB:str, selectedV:str):
 
 
 def showSelectedBiome(biomes):
+    global varProba,ancient
     selectedB= str((listboxB.get(ACTIVE)))
-
+    new = False
     for i in range (len(biomes)):
         if biomes[i].getName() == selectedB:
+            print(biomes[i].getName(),"proba : ", biomes[i].getProba())
             biomes[i].selected = True
             selectB.config(text =selectedB)
             path = getPathofTuile(str(selectedB), str(biomes[i].getVariations()[1]))
             selectV.config(text =1)
+            print("nom",biomes[i].getName(),"proba",biomes[i].getProba())
             biomes[i].selectedV = 1
+            varProba.set(biomes[i].getProba())
         else :
             biomes[i].selected = False
     
@@ -138,18 +148,19 @@ def showSelectedVariation(biomes):
     return False
 
 def newBiome():#creation d'une nouvelles biomes 
-    global biomes, NameNewBiome, varB
+    global biomes, NameNewBiome, varB, type
     res = str(NameNewBiome.get())
-    if res =="" or res in biomes:
-        print("erreur : nom de biome vide ou déjà crée")
-        return
-    else : 
-        print("creation d'une nouvelle biome  :", res)
-        biomes.append(Biome(res))
-        biomesWritable=[]
-        for biome in biomes:
-            biomesWritable.append(biome.getName())
-        varB.set(biomesWritable)
+    for biome in biomes :
+        if res ==biome.getName() or res =="":
+            print("erreur : nom de biome vide ou déjà crée")
+            return
+    print("creation d'une nouvelle biome  :", res)
+    biomes.append(Biome(res+str(type)))
+    type+=1
+    biomesWritable=[]
+    for biome in biomes:
+        biomesWritable.append(biome.getName())
+    varB.set(biomesWritable)
 
 def newVariation():#creation d'une nouvelle variation
     global biomes
@@ -163,21 +174,42 @@ def newVariation():#creation d'une nouvelle variation
     print("ERREUR inconnu lors de la création d'une nouvelle variation")
     return False
     
-
+def updateProba():
+    global biomes,varProba
+    for biome in biomes:
+        if biome.getSelected() == True:
+            print(int(varProba.get()))
+            biome.setProba(int(varProba.get()))
+            return True
+    print("ERREUR inconnu lors de la mise à jour de la probabilité")
+    return False
 
 def leftclick(event):#permet la selection des biomes et des variations via un simple click souris
+    updateProba()
     showSelectedBiome(biomes)
     showSelectedVariation(biomes)
+    
+
+    
+    
 
 def key_press(event):#prermet d'utiliser les fleches du clavier pour naviguer dans les listbox
+    global NameNewBiome
     if event.keysym=="Up" or event.keysym=="Down":
         showSelectedBiome(biomes)
         showSelectedVariation(biomes)
+    if event.keysym=="Return":
+        print("reroll")
+        newBiome()
+
+def reloadSession():
+    return
+
 
 def TuileEditor(infoObject):
     #menu tuile editor starting 
     #créer fenetre tkinter :
-    global tuile,fenetre,tailleE, listboxB, listboxV,NameNewBiome,biomes,varB, varV,selectB,selectV
+    global tuile,fenetre,tailleE, listboxB, listboxV,NameNewBiome,biomes,varB, varV,selectB,selectV, varProba
     fenetre = Tk()
     fenetre.title("Tuile Editeur")
     tailleE =infoObject
@@ -268,6 +300,12 @@ def TuileEditor(infoObject):
     fenetre.bind("<Button-1>", leftclick)
     fenetre.bind("<Up>", key_press)
     fenetre.bind("<Down>", key_press)
+    fenetre.bind("<Return>", key_press)
+
+    #PROBA :
+    varProba =Variable(value=5)
+    Scale(fenetre, orient='horizontal', from_=0, to=100,resolution=1, tickinterval=10, length=350, variable=varProba).place(x=tailleE[0]*0.735,y=tailleE[1]*0.66)
+
     fenetre.mainloop()
 
 

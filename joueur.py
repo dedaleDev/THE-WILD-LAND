@@ -1,6 +1,7 @@
 #from PIL import Image
 from ctypes import pointer
 from math import sqrt
+import math
 import pygame
 from build import Build
 from coffre import Coffre
@@ -359,7 +360,7 @@ class Player(pygame.sprite.Sprite):
         listeRessourcesSources = ["data/ressources/r_food.png", "data/ressources/r_stone.png", "data/ressources/r_water.png", "data/ressources/r_wood.png"]
         for i in  range (len(listeRessourcesSources)) : 
             listeRessourcesSources[i]= pygame.image.load(listeRessourcesSources[i]).convert_alpha()
-            listeRessourcesSources[i]= pygame.transform.scale(listeRessourcesSources[i],(170,70))
+            listeRessourcesSources[i]= pygame.transform.scale(listeRessourcesSources[i],(self.game.infoObject[0]*0.08,self.game.infoObject[1]*0.06))
         self.compteurRessources()
         return listeRessourcesSources
 
@@ -368,7 +369,7 @@ class Player(pygame.sprite.Sprite):
         #2 stone
         #3 water
         #4 wood
-        smallfont =pygame.font.SysFont("Corbel", 45)  # definit la police utilisé
+        smallfont =pygame.font.SysFont("Corbel", round(math.sqrt(self.game.infoObject[0]**2 + self.game.infoObject[1]**2)*0.02))  # definit la police utilisé
         listeRessources=[self.food, self.stone, self.water, self.wood]
         listeRessourcesTEXT=["", "","",""]
         listeRessourcesInfoModified =  [False,False,False,False]

@@ -1,9 +1,12 @@
+import os
+import pathlib
 import pygame
 import random
 #from PIL import Image
 
 class ImageLoad():
-    def __init__(self):
+    def __init__(self, infoObject):
+        self.infoObject = infoObject
         infoObject = pygame.display.Info()
         self.listeImg = self.loadImg()
         #self.listeImgO = self.loadImgO()
@@ -30,7 +33,10 @@ class ImageLoad():
         self.armure = self.loadImArmure()
         self.coffre = self.loadAnnimCoffre()
 
-        self.backgroundArene = self.loadImgBackArene()
+        #self.backgroundArene = self.loadImgBackArene(info)
+
+        self.annim=self.loadAnnimBoss()
+
 
         self.moulinAnnim = self.loadAnnimMoulin()
         self.mortierAnnim = self.loadAnnimMortier()
@@ -43,7 +49,7 @@ class ImageLoad():
         self.mageAnnim = self.loadAnnimMage()
         self.dragonAnnim = self.loadAnnimDragon()
         self.oiseauAnnim = self.loadAnnimOiseau(random.randint(0,1))
-        
+        self.listeImgUtilisateur = self.loadImgUtilisateur()
         self.oiseau2Annim = self.loadAnnimOiseau2()
         self.renardAnnim = self.loadAnnimRenard()
         
@@ -100,6 +106,8 @@ class ImageLoad():
         
         self.arene=self.loadAnnimArene()
         
+        self.bossAnnim=self.loadAnnimBoss()
+        
         for i in range(15):
             self.annim3eau0.append(self.annim3eau0[-1])
             self.annim7Barriere3.append(self.annim7Barriere3[-1])
@@ -124,17 +132,34 @@ class ImageLoad():
         self.annim3eau3 = self.loadAnnimTuileEau()
         self.annim3eau2 = self.loadAnnimTuileEau(True)
         
-    def loadImgBackArene(self):
+    def loadImgBackArene(self, info):
         liste=[]
         for i in range(1,134):
             im = pygame.image.load("data/animationTuiles/background_arene/background ("+str(i)+").jpg").convert_alpha()
+            im = pygame.transform.scale(im, (info))
             liste.append(im)
         return liste
     
-    def loadImgBackMonde(self):
+    
+    def loadAnnimBoss(self):
         liste=[]
-        for i in range(1,84):
+        for i in range(1,52):
+            im = pygame.image.load("data/personnages/boss/boss ("+str(i)+").png").convert_alpha()
+            liste.append(im)
+        return liste
+            
+    def loadAnnimBossBoule(self):
+        liste=[]
+        for i in range(1,36):
+            im = pygame.image.load("data/personnages/boss/bulle_"+str(i)+".png").convert_alpha()
+            liste.append(im)
+        return liste
+    
+    def loadImgBackMonde(self, info):
+        liste=[]
+        for i in range(1,81):
             im = pygame.image.load("data/animationTuiles/background_monde/background_"+str(i)+".jpeg").convert_alpha()
+            im = pygame.transform.scale(im, (info))
             liste.append(im)
         return liste
     
@@ -176,7 +201,7 @@ class ImageLoad():
                 liste.append(im)
             
         return liste
-    
+
     def loadAnnimTuileViolet(self, j):
         liste=[]
         if j == 0:
@@ -804,9 +829,11 @@ class ImageLoad():
         
         
         
-        print("probleme")
+        print("tuiles users")
         if type>=100:
-            return self.listeImgUtilisateur[type], clockMax, annim, random.randint(0,len(annim)-1)
+            
+            return self.listeImgUtilisateur[type-100][random.randint(0,len(self.listeImgUtilisateur[type-100])-1)], clockMax, annim, 0
+        print("erreur")
         return self.listeImg[type], clockMax, annim, random.randint(0,len(annim)-1)
 
 
@@ -895,3 +922,27 @@ class ImageLoad():
         img = pygame.image.load(chemin+nom+".png").convert_alpha()
         img = pygame.transform.scale(img, (411,257))
         return img
+    
+    def loadImgUtilisateur(self):
+        #fonction qui permet de charger les tuiles aditionnelle du joueur
+        #return la liste des tuiles chargé.
+        path = os.path.dirname(__file__)
+        path += "/data/tuiles/tuilesUsers"
+        nbTuile =0
+        listeTuile = []
+        for i in range(100):
+            listeTuile.append([])
+        for filename in os.listdir(path):
+            if filename.endswith(".png"):
+                f = os.path.join(path, filename)
+                img=pygame.image.load(f).convert_alpha()
+                img=pygame.transform.scale(img,(246,144))
+                nbTuile +=1
+                name= str(pathlib.Path(f).stem)
+                print(name, type(name))
+                biome = int(name.split("_")[0][-1])
+                
+                listeTuile[biome].append(img)
+            
+        print(nbTuile,"tuile définit par le joueur ont été chargé")
+        return listeTuile

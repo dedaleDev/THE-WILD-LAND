@@ -70,7 +70,9 @@ class Game(pygame.sprite.Sprite):
         
         self.text=None
         
-        self.images = ImageLoad()
+        self.images = ImageLoad(self.infoObject)
+        self.backgroundMonde = self.images.loadImgBackMonde(self.infoObject)
+        self.backgroundArene = self.images.loadImgBackArene(self.infoObject)
         self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
         self.son = Sound()
         self.updateBar(fenetre, 75, posRectChargement, "chargement de la carte...", font)
@@ -95,8 +97,7 @@ class Game(pygame.sprite.Sprite):
         self.fenetre = fenetre
         self.listeCaseBatiment=[]
         self.nbAnnimaux=0
-        self.backgroundMonde = self.images.loadImgBackMonde()
-        self.backgroundArene = self.images.loadImgBackArene()
+        
         if not mapChoisie:
             self.taille_matriceY = int(aideCSV.valCorrespondante("taille_matriceY"))
             self.taille_matriceX = int(aideCSV.valCorrespondante("taille_matriceX"))

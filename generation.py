@@ -1,3 +1,5 @@
+import os
+import pathlib
 import random
 import time
 import aideCSV
@@ -184,6 +186,7 @@ def generation_matrice(game, deco=True):
     controleMiniBiome(matriceMap, game)
     if deco:
         addBiomeDeco(matriceMap, game)
+        addBiomeUser(matriceMap, game)
         
     
     #printMat(matriceMap)
@@ -323,3 +326,24 @@ def addBiomeDeco(map, game):
                         for i in range(-1,2):
                             if random.randint(0,4):
                                 map[y+i][x+j].setType(10)
+                                
+def addBiomeUser(map, game): #fonction qui ajoute les types dans la map
+    path = os.path.dirname(__file__)
+    path += "/data/tuiles/tuilesUsers"
+    listeBiome = []
+    pourcentageBiome =[]
+    for filename in os.listdir(path):
+        if filename.endswith(".png"):
+            f = os.path.join(path, filename)
+            name= str(pathlib.Path(f).stem).split("_")
+            biome = int(name[0][-1])
+            biome+=100
+            if biome not in listeBiome and biome >=100: 
+                listeBiome.append(biome)
+                pourcentageBiome.append(name[2])
+                
+    for y in range(2,game.taille_matriceY-2):
+        for x in range(2, game.taille_matriceX-2):
+            for i in range (len(listeBiome)):
+                if  random.randint(0,100)<=int(pourcentageBiome[i]):
+                    map[y][x].setType(listeBiome[i])

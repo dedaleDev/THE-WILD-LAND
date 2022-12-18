@@ -16,13 +16,14 @@ from findPos import *
 fenetrePygame = ""
 
 
-global moveY, moveX, suiviePerso
+global moveY, moveX, suiviePerso 
 
 
 def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation pygame
     
     global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie,nombreAnnimationIncendie, annimTremblementListe
     global fenetrePygame, moveX, moveY, last, suiviePerso
+    listeBoss=[]
     moveY=0
     moveX=0
     last = 0
@@ -191,6 +192,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         if game.theBoss:
             game.theBoss.moveBoss()
             game.theBoss.lunchProjectile()
+        
         keys=pygame.key.get_pressed()
         if keys[K_ESCAPE] and pygame.time.get_ticks() - game.lastPause > 250:
             tempsPasse = pause(fenetrePygame)
@@ -450,7 +452,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             ####PASSAGE DES MONTAGNES
             if tuile :
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
-                if tuile.tour:      
+                if not ((tuile.posX, tuile.posY) in listeBoss):
+                    listeBoss.append((tuile.posX, tuile.posY))
+                if tuile.tour:
                     #pygame.draw.circle(fenetrePygame, (155,155,155), (tuile.tour.rect.x+30, tuile.tour.rect.y), tuile.tour.range, width=3, )
                     pass
             decalageYcentre = -100
@@ -482,10 +486,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             elif game.joueur.bateau:
                 #fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
                 center = game.joueur.rect.center
-                
+
                 listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None, None))
             if game.theBoss:
                 listeOrdre.append((game.theBoss.image, game.theBoss.rect.x-15, game.theBoss.rect.y+30, center[1]+30, None, None, None))
+                listeOrdre.append((game.theBoss.imageBoule, game.theBoss.rect.x+40, game.theBoss.rect.y+110, center[1]+32, None, None, None))
                 #game.theBoss.rect.x-15, game.theBoss.rect.y+30
             listeOrdre.sort(key=lambda x: x[3])
             
@@ -561,7 +566,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             for i in range(len(game.joueur.ressourcesIMG)):
                 fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 2/100*infoObject[1]))
-                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 3.6/100*infoObject[1]))
+                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 2.3/100*infoObject[1]))
                 if game.joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
                     if timeComtpeur <=60 :
@@ -569,9 +574,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     else :
                         timeComtpeur = 0
                         game.joueur.resetRessourcesModified()
-
             game.joueur.update_health_bar()
-
+            if game.theBoss:
+                
+                game.theBoss.update()
+                
             if game.joueur.imageArmure:
                 fenetrePygame.blit(game.joueur.imageArmure, (22,80))
             for mob in game.groupMob:
