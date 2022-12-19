@@ -5,6 +5,7 @@ import random
 from loot import Loot
 from projectile import Projectile
 from selection import majSelectionMob
+import tuto
 class Mob(pygame.sprite.Sprite):
 
      def __init__(self, game, nom, vie, vitesse, tuile, score, pique=False, aquatique=False, aerien=False, attaque=10, annimal=False, desertique=False):
@@ -370,6 +371,7 @@ class Mob(pygame.sprite.Sprite):
         if self.health<=0:
             if self.name=="mage":
                 self.game.joueur.health+=15
+                tuto.upadateStatutTuto(self.game,"soin")
                 if self.game.joueur.health>100:
                     self.game.joueur.health=100
             self.game.groupLoot.add(Loot(self.recompenseWood, self.recompenseStone, self.recompenseWater, self.recompenseFood, self.rect.x+20-moveX, self.rect.y-30-moveY, self.game))

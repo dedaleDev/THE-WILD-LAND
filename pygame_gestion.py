@@ -12,7 +12,7 @@ from selection import colisionItem, majSelection, majSelectionJoueur, majSelecti
 from game import Game
 #from game import background_pil
 from button import Button
-from tuto import * 
+import tuto
 from findPos import *
 fenetrePygame = ""
 
@@ -88,7 +88,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         pygame.display.flip()
         clock.tick(60)
     game = Game(infoObject, fenetrePygame, mapChoisie, pointSpawn)
-    game.listeTuto=createTuto(game)#creation des tutoriels
+    game.listeTuto=tuto.createTuto(game)#creation des tutoriels
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
@@ -231,8 +231,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             
             if event.type == pygame.MOUSEBUTTONDOWN :  # si clic souris
-                for tuto in game.listeTuto:
-                    tuto.CheckClic(pygame.mouse.get_pos())
+                for tutoT in game.listeTuto:
+                    tutoT.CheckClic(pygame.mouse.get_pos())
                     
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
@@ -655,7 +655,26 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             if game.text:
                 game.displayTxt()
-            afficherTuto(fenetrePygame,game)
+            #tuto
+            if game.tempsJeu()>1000*30:
+                tuto.upadateStatutTuto(game,"move")
+            if game.tempsJeu()>1000*60*3:
+                tuto.upadateStatutTuto(game,"mouse")
+            if game.tempsJeu()>1000*60:
+                tuto.upadateStatutTuto(game,"build")
+            if game.tempsJeu()>1000*60*5:
+                tuto.upadateStatutTuto(game,"esc")
+            if game.tempsJeu()>1000*60*4:
+                tuto.upadateStatutTuto(game,"health")
+            if game.tempsJeu()>1000*60*10:
+                tuto.upadateStatutTuto(game,"score")
+            if game.tempsJeu()>1000*60*6:
+                tuto.upadateStatutTuto(game,"statut")
+            if game.tempsJeu()>1000*60*8:
+                tuto.upadateStatutTuto(game,"stat")
+            if game.tempsJeu()>1000*60*2:
+                tuto.upadateStatutTuto(game,"espace")
+            tuto.afficherTuto(fenetrePygame,game)
             #if game.theBoss:
                 #if game.theBoss.directionRush:
                     #pygame.draw.rect(fenetrePygame, (255,0,255), pygame.Rect(game.theBoss.directionRush.rect.x, game.theBoss.directionRush.rect.y, 100,100))

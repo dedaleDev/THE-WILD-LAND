@@ -2,7 +2,7 @@
 import random
 import time
 import pygame
-
+import tuto
 
 from tour import Tour
 
@@ -49,8 +49,9 @@ class Build(pygame.sprite.Sprite):
                     self.game.joueur.statueEau=True
           if self.nomBatiment=="statuePierre":
                     self.game.joueur.statuePierre=True
-    
-          
+
+          if self.nomBatiment=="sableMouvant":
+                    tuto.upadateStatutTuto(game,"sable")
     
     def spawnButton(self):
         #pygame.draw.rect(self.game.fenetre, (255,255,255), (self.tuile.rect.x, self.tuile.rect.y, 256,144), 1)
