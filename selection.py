@@ -1,6 +1,6 @@
 
 import pygame
-from operator import truediv
+import tuto
 from item import Item
 def majSelection(game, pos, joueur=False):
     tuileSelect = False
@@ -16,6 +16,7 @@ def majSelection(game, pos, joueur=False):
                         
                     else:
                         game.map[i][j].setSelect(True)
+                        
                         tuileSelect = game.map[i][j]
                 else :
                     game.map[i][j].setSelect(False)
@@ -31,6 +32,7 @@ def majSelection(game, pos, joueur=False):
                         pass
                     else:
                         game.map[joueur.posY+i][joueur.posX+j].setSelect(True)
+                        tuto.upadateStatutTuto(game,"select")
                         tuileSelect = game.map[joueur.posY+i][joueur.posX+j]
                 else :
                     game.map[joueur.posY+i][joueur.posX+j].setSelect(False)

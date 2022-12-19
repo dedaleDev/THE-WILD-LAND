@@ -12,6 +12,7 @@ from selection import colisionItem, majSelection, majSelectionJoueur, majSelecti
 from game import Game
 #from game import background_pil
 from button import Button
+from tuto import * 
 from findPos import *
 fenetrePygame = ""
 
@@ -87,7 +88,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         pygame.display.flip()
         clock.tick(60)
     game = Game(infoObject, fenetrePygame, mapChoisie, pointSpawn)
-    
+    game.listeTuto=createTuto(game)#creation des tutoriels
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
@@ -174,7 +175,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         else:
             fps+=1
         
-        game.augmenterMob()
+        
         game.son.jouerMusique2()
         
         modification=False
@@ -230,8 +231,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             
             if event.type == pygame.MOUSEBUTTONDOWN :  # si clic souris
-                
-                
+                for tuto in game.listeTuto:
+                    tuto.CheckClic(pygame.mouse.get_pos())
+                    
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
                         batimentConstruit = game.joueur.construireBatiment(tuile, item)
@@ -280,9 +282,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             ####CATASTROPHE
             
-            if fps==0 or fps==30:
+            if fps==0 :
                 if game.groupMob.__len__()-game.nbAnnimaux<9:
                     game.spawMob()
+                    game.majMob()
             
                 
             
@@ -343,7 +346,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     indiceBackArene=0
             else:
                 fenetrePygame.blit(game.backgroundMonde[indiceBackMonde], (0,0))
-                if fps%2==0:
+                if fps%4==0:
                     indiceBackMonde+=1
                 if indiceBackMonde>=len(game.backgroundMonde):
                     indiceBackMonde=0
@@ -652,6 +655,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             if game.text:
                 game.displayTxt()
+            afficherTuto(fenetrePygame,game)
             #if game.theBoss:
                 #if game.theBoss.directionRush:
                     #pygame.draw.rect(fenetrePygame, (255,0,255), pygame.Rect(game.theBoss.directionRush.rect.x, game.theBoss.directionRush.rect.y, 100,100))
@@ -931,6 +935,7 @@ def pause(fenetre):
             return pygame.time.get_ticks()-debutPause
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN :
+                
                 if reprendre.checkForInput(mouse):
                     pause=False
                     return pygame.time.get_ticks()-debutPause

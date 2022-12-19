@@ -18,7 +18,7 @@ class Tuto():
 
     def tutoImgLoad(self): #charge l'image du tuto
         img=pygame.image.load("data/tuto/"+"tuto_"+self.name+".png").convert_alpha()
-        img=pygame.transform.scale(img,(int(self.game.diagonalEcran*img.get_width()*0.00038),int(self.game.diagonalEcran*img.get_height()*0.00038)))
+        img=pygame.transform.scale(img,(int(self.game.diagonalEcran*img.get_width()*0.0004),int(self.game.diagonalEcran*img.get_height()*0.0004)))
         return img
 
     def setStatut(self,statut:bool): #met à jour le statut du tuto (affiché ou non)
@@ -52,9 +52,9 @@ def getImgTuto(game):
 
 def upadateStatutTuto(game,nom:str, bool=True):
     for tuto in (game.listeTuto):
-                            if tuto.name == str(nom):
-                                tuto.setStatut(bool)
-                                return
+        if tuto.name == str(nom):
+            tuto.setStatut(bool)
+            return
 
 def afficherTuto(fenetre, game):
     for tuto in game.listeTuto:

@@ -1,4 +1,4 @@
-from email import feedparser
+
 import math
 from multiprocessing.util import info
 import random
@@ -62,8 +62,8 @@ class Game(pygame.sprite.Sprite):
         super().__init__()
         posRectChargement = infoObject[0]*1/4, infoObject[1]*3/4
         self.infoObject=infoObject
-        diagonalEcran = math.sqrt(infoObject[0]**2 + infoObject[1]**2)
-        taillePolice = round(3/100*diagonalEcran)
+        self.diagonalEcran = math.sqrt(infoObject[0]**2 + infoObject[1]**2)
+        taillePolice = round(3/100*self.diagonalEcran)
         font = pygame.font.Font("data/menu/font.ttf", taillePolice//2)
         
         self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
@@ -105,7 +105,7 @@ class Game(pygame.sprite.Sprite):
             self.taille_matriceY = len(mapChoisie)
             self.taille_matriceX = len(mapChoisie[0])
             
-            
+        
             
         self.police=pygame.font.Font("data/menu/Avenir.ttc", 20)
         self.infoMortAnnimal = 0
@@ -122,7 +122,7 @@ class Game(pygame.sprite.Sprite):
         self.groupJoueur=pygame.sprite.Group()
         self.groupJoueur.add(self.joueur)
         self.groupBuild=pygame.sprite.Group()
-        self.probaGolemForet = 2
+        self.probaGolemForet = 0
         self.probaOursin = 0
         self.probaKraken = 0
         self.probaMage = 0
@@ -141,6 +141,15 @@ class Game(pygame.sprite.Sprite):
         self.moveX, self.moveY = 0,0
         self.boss=False
         self.theBoss = 0
+        
+        
+
+    def fonctionGolem(self):
+        temps = self.tempsJeuMinute()
+        if modeFacile:
+            return temps/3
+
+            
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png").convert_alpha()
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
@@ -148,6 +157,9 @@ class Game(pygame.sprite.Sprite):
     
     def tempsJeu(self):
         return pygame.time.get_ticks()- self.tempsMort
+    
+    def tempsJeuMinute(self):
+        return (pygame.time.get_ticks()- self.tempsMort)/1000/60 #60
     
     def updateBar(self, fenetre, valeurChargement, posRectChargement, texte, font):
         valeurChargement = valeurChargement/100
@@ -171,61 +183,8 @@ class Game(pygame.sprite.Sprite):
                 return tuile
     
     
-    def augmenterMob(self):
-        
-        if self.tempsJeu() > 120000*6: #12min 
-            self.probaDragon = 2
-            self.probaGolemForet = 7
-            self.probaOursin = 3
-            self.probaKraken = 3
-            self.probaMage = 3
-            self.probaYeti = 2
-            
-        elif self.tempsJeu() > 120000*5: #10min 
-            self.probaDragon = 1
-            self.probaGolemForet = 6
-            self.probaOursin = 2
-            self.probaKraken = 2
-            self.probaMage = 2
-            self.probaYeti = 0
-        elif self.tempsJeu() > 120000*4 and not self.huitMin: #8min 
-            self.probaDragon = 0
-            self.probaGolemForet = 5
-            self.probaOursin = 2
-            self.probaKraken = 1
-            self.probaMage = 2
-            self.probaYeti = 0
-            self.huitMin=True
-            #pygame.mixer.Sound.play(self.son.musique4)
-        
-        elif self.tempsJeu() > 120000*2.75 and not self.cinqMin : #5min30secondes 
-            self.cinqMin=True
-            #pygame.mixer.Sound.play(self.son.musique3)
-        elif self.tempsJeu() > 120000*2 : #4min
-            self.probaDragon = 0
-            self.probaGolemForet = 4
-            self.probaOursin = 1
-            self.probaKraken = 1
-            self.probaMage = 1
-            self.probaYeti = 0
-        elif self.tempsJeu() > 120000*1.5 and not self.troisMin: #3min 
-            self.probaDragon = 0
-            self.probaGolemForet = 3
-            self.probaOursin = 0
-            self.probaKraken = 1
-            self.probaMage = 2
-            self.probaYeti = 0
-            self.troisMin=True
-            
-            #pygame.mixer.Sound.play(self.son.musique2)
-            
-        elif self.tempsJeu() > 120000: #2min
-            self.probaDragon = 0
-            self.probaGolemForet = 3
-            self.probaOursin = 0
-            self.probaKraken = 0
-            self.probaMage = 0
-            self.probaYeti = 0
+    def majMob(self):
+        self.probaGolemForet=self.fonctionGolem()
 
     def verifierCo(self, x, y):
         return  x<self.taille_matriceX and x >=0 and y < self.taille_matriceY and y>=0
@@ -271,7 +230,6 @@ class Game(pygame.sprite.Sprite):
         listeColide=[]
         now = self.tempsJeu()
         for mob in listeMob :
-            
             if mob.attack>0:
                 
                 colide = pygame.sprite.collide_mask(joueur, mob)
@@ -288,39 +246,44 @@ class Game(pygame.sprite.Sprite):
         return self.map[joueur.posY][joueur.posX]
 
     def spawMob(self):
+        print(self.probaGolemForet)
         for y in range(-5, 5):
             for x in range(-5,5):
                 if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y) and (y!=0 or x!=0):
                     tuile = self.map[self.joueur.posY+y][self.joueur.posX+x]
                     if tuile.type==2:
-                        rand = random.randint(1,4000)
+                        rand = random.randint(1,1000)
                         if rand <= self.probaDragon:
                             self.groupMob.add(Mob(self, "dragon", 400, 2, tuile, 700,aerien=True, attaque=20))   
                             pygame.mixer.Sound.play(self.son.dragonSpawn)
                     if tuile.estForet():
-                        rand = random.randint(1,4000)
+                        rand = random.randint(1,1000)
                         if rand <= self.probaGolemForet:
+                            
                             self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile, 100))
                             pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)
-                        rand = random.randint(1,4000)
+                            
+                        rand = random.randint(1,1000)
                         if rand<= self.probaMage:
                             self.groupMob.add(Mob(self, "mage", 75, 1, tuile, 125))
                             pygame.mixer.Sound.play(self.son.mageSpawn)
                     if tuile.estPlaine():
-                        rand = random.randint(1,4000)
+                        rand = random.randint(1,1000)
                         if rand <= self.probaOursin:
                             self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, 150, pique=True, attaque=7))
                             pygame.mixer.Sound.play(self.son.oursinSpawn)
                     if tuile.estMer():
-                        rand = random.randint(1,4000)
+                        rand = random.randint(1,1000)
                         if rand <= self.probaKraken:
                             self.groupMob.add(Mob(self, "kraken", 75, 1,tuile, 100, aquatique=True))
                             pygame.mixer.Sound.play(self.son.krakenSpawn)
                     if tuile.type==5:
-                        rand = random.randint(1,4000)
+                        rand = random.randint(1,1000)
                         if rand <= self.probaYeti:
                             self.groupMob.add(Mob(self, "yeti", 500, 2, tuile, 500, attaque=30))
                             pygame.mixer.Sound.play(self.son.yetiSpawn)
+                            
+                            
     def afficherText(self, text):
         text = self.police.render(str(text), True, (255, 255, 0))
         self.fenetre.blit(text, (400,400))

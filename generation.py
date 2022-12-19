@@ -186,7 +186,7 @@ def generation_matrice(game, deco=True):
     controleMiniBiome(matriceMap, game)
     if deco:
         addBiomeDeco(matriceMap, game)
-        addBiomeUser(matriceMap, game)
+        #addBiomeUser(matriceMap, game)
         
     
     #printMat(matriceMap)
