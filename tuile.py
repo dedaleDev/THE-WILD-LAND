@@ -71,7 +71,10 @@ class Tuile(pygame.sprite.Sprite):
         self.clockAnnimMaxS=3
         self.arene=False
     
-        
+        self.surAnnimListe=False
+        self.indicesurAnnim=0 #annimation sur une annimation
+        self.surAnnimClock=0
+        self.surclockAnnimMax=400
     
     def getExplored(self):
         return self.isExplored
@@ -190,7 +193,14 @@ class Tuile(pygame.sprite.Sprite):
                         self.indiceAnnim=0
                     self.clockAnnim=0
                     self.image = self.annimation[self.indiceAnnim]
-                
+        
+        if self.surAnnimListe:
+            self.surAnnimClock+=1
+            if self.surAnnimClock>=self.surclockAnnimMax:
+                self.surAnnimClock=0
+                self.indicesurAnnim+=1
+                if self.indicesurAnnim>=len(self.surAnnimListe):
+                    self.indicesurAnnim=0
          
         if self.indiceSurbrillance>=0:
              

@@ -364,7 +364,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             if x==0 or y==game.taille_matriceY-1:
                                 fenetrePygame.blit(game.images.backVolcan, (tuileBlit.rect.x, tuileBlit.rect.y+70))
                         else:
-                            #affichage des tuile
+                            #affichage des tuiles
                             #fenetrePygame.blit(tuileBlit.image, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
                             if tuileBlit.arene:
                                 fenetrePygame.blit(tuileBlit.image, (tuileBlit.rect.x, tuileBlit.rect.y-360-145))
@@ -373,7 +373,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                                     
                                     fenetrePygame.blit(tuileBlit.image, tuileBlit.rect)
                             
-                            
+                            if tuileBlit.surAnnimListe:
+                                fenetrePygame.blit(tuileBlit.surAnnimListe[tuileBlit.indicesurAnnim], tuileBlit.rect)
                             if tuileBlit.indiceSurbrillance>=0:
                                 fenetrePygame.blit(tuileBlit.surbrillance[tuileBlit.indiceSurbrillance], tuileBlit.rect)
                             if tuileBlit.statue and tuileBlit.type!=4:

@@ -8,6 +8,7 @@ from coffre import Coffre
 import random
 from projectile import Projectile
 from selection import majSelectionJoueur
+from tuile import Tuile
 
 class Player(pygame.sprite.Sprite):
 
@@ -493,23 +494,29 @@ class Player(pygame.sprite.Sprite):
                         listeEcart.append((i,j))
              for i,j in listeEcart:
                  if i==0 or j==0:
-
                     return self.chargerImPort(tuile, supX=j, supY=i)
              i,j = listeEcart[0]
-
              return self.chargerImPort(tuile, supX=j, supY=i)
          return imgTemp2
 
-     def changerImageBatiment(self, tuile, nom):
+     def changerImageBatiment(self, tuile:Tuile, nom):
           if nom=="port":
               imgTemp = self.chargerImPort(tuile)
+              imgTemp = pygame.transform.scale(imgTemp,(246, 144))
+              tuile.surAnnimListe=[imgTemp]
+              
+              return
+              
           else:
               if nom!="moulin" and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure":
                 imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
           if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure" and nom!="forge" and nom!="scierie":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
           if nom=="scierie":
-              tuile.annimation=[pygame.image.load("data/batiments/"+nom+".png").convert_alpha()]
+              if tuile.type==10:
+                  tuile.annimation=[pygame.image.load("data/batiments/"+nom+"2.png").convert_alpha()]
+              else:
+                tuile.annimation=[pygame.image.load("data/batiments/"+nom+".png").convert_alpha()]
           tuile.aEteModifie=True
 
      def ajouterRessources(self):

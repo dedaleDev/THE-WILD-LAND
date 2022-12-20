@@ -181,7 +181,7 @@ class Build(pygame.sprite.Sprite):
             if tuile.indiceSurbrillance>=0:
                 self.game.groupTuileBoost.add(tuile)
         elif self.nomBatiment == "port":
-            tuile.annimation=[]
+            
             self.game.map[tuile.posY][tuile.posX].port = True
             self.game.joueur.nbPort+=1
             self.game.joueur.indiceEcolo+=2
