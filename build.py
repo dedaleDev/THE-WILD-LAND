@@ -268,6 +268,7 @@ class Build(pygame.sprite.Sprite):
             self.game.joueur.nomArmure="armure4"
             self.game.joueur.imageArmure = self.game.images.armure[3]
             self.game.joueur.armure=35
+            self.game.joueur.health*=1.2
         if changerImg:
             self.game.joueur.changerImageBatiment(tuile, self.nomBatiment)
         self.tuile.build=False

@@ -106,7 +106,7 @@ class Game(pygame.sprite.Sprite):
             self.taille_matriceX = len(mapChoisie[0])
             
         
-            
+        
         self.police=pygame.font.Font("data/menu/Avenir.ttc", 20)
         self.infoMortAnnimal = 0
         self.groupMob = pygame.sprite.Group()
@@ -149,7 +149,34 @@ class Game(pygame.sprite.Sprite):
         if modeFacile:
             return temps/3
 
-            
+    def fonctionOursin(self):
+        temps = self.tempsJeuMinute()
+        if modeFacile:
+            return temps/9
+    
+    def fonctionKraken(self): 
+        temps = self.tempsJeuMinute()
+        if modeFacile:
+            return temps/9
+    
+    def fonctionMage(self):
+        temps = self.tempsJeuMinute()
+        if temps<3:
+            return 0
+        return (temps-3)/5
+    
+    def fonctionDragon(self):
+        temps = self.tempsJeuMinute()
+        if temps<8:
+            return 0
+        return (temps-8)/2
+
+    def fonctionYeti(self):
+        temps = self.tempsJeuMinute()
+        if temps<10:
+            return 0
+        return (temps-10)/4
+    
     def openImageRessource(self):
         im = pygame.image.load("data/menu/alerteRessource.png").convert_alpha()
         im = pygame.transform.scale(im, (592*0.75, 155*0.75))
@@ -185,6 +212,11 @@ class Game(pygame.sprite.Sprite):
     
     def majMob(self):
         self.probaGolemForet=self.fonctionGolem()
+        self.probaDragon=self.fonctionDragon()
+        self.probaKraken=self.fonctionKraken()
+        self.probaOursin=self.fonctionOursin()
+        self.probaYeti=self.fonctionYeti()
+        self.probaMage=self.fonctionMage()
 
     def verifierCo(self, x, y):
         return  x<self.taille_matriceX and x >=0 and y < self.taille_matriceY and y>=0

@@ -11,12 +11,35 @@ tempsMinSpawnOursin=0
 def fonctionOursin(temps): 
     if temps<tempsMinSpawnOursin:
         return 0
-    return temps/8
+    return temps/9
     return 1.7**((temps-tempsMinSpawnOursin)/7)
+
+def fonctionKraken(temps): 
+    if temps<tempsMinSpawnOursin:
+        return 0
+    return temps/9
+
+def fonctionMage(temps):
+    if temps<3:
+        return 0
+    return (temps-3)/5
+
+def fonctionDragon(temps):
+    if temps<8:
+        return 0
+    return (temps-8)/2
+
+def fonctionYeti(temps):
+    if temps<10:
+        return 0
+    return (temps-10)/4
+    
 
 def fonctionGolem(temps): 
     if temps<tempsMinSpawnGolem:
         return 0
+    if temps>15:
+        return -temps/4+10
     return temps/4
     return 1.7**((temps-tempsMinSpawnGolem)/6)
 
@@ -58,15 +81,21 @@ def faireMultipleSimulation(nombreDeMinuteSimu, f, nombreDeSimu):
         listeSomme[i]=listeSomme[i]/nombreTirage
     return [listeEnCours[0], listeSomme]
         
-        
 
+tempsPartie=30
 """listesPlt=faireUneSimulation(10, fonctionGolem)
 listesPlt2=faireUneSimulation(10, fonctionOursin)"""
-test=faireMultipleSimulation(20, fonctionGolem, 100)
-test2=faireMultipleSimulation(20, fonctionOursin, 100)
-plt.step(test[0], test[1],"h-", label="golem")
-plt.step(test[0], test2[1],"o-", label="oursin")
-
+test=faireMultipleSimulation(tempsPartie, fonctionGolem, 100)
+test2=faireMultipleSimulation(tempsPartie, fonctionOursin, 100)
+test3=faireMultipleSimulation(tempsPartie, fonctionMage, 100)
+test4=faireMultipleSimulation(tempsPartie, fonctionDragon, 100)
+test4=faireMultipleSimulation(tempsPartie, fonctionDragon, 100)
+test5=faireMultipleSimulation(tempsPartie, fonctionYeti, 100)
+plt.step(test[0], test[1], label="golem",alpha=0.25)
+plt.step(test[0], test2[1], label="oursin",alpha=0.25)
+plt.step(test[0], test3[1], label="mage",alpha=0.25)
+plt.step(test[0], test4[1], label="dragon",alpha=0.5)
+plt.step(test[0], test5[1], label="yeti",alpha=1)
 plt.legend()
 """plt.plot(listesPlt[0], listesPlt[1], label="golem")
 plt.plot(listesPlt[0], listesPlt2[1], label="oursin")

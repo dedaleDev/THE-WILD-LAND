@@ -106,7 +106,7 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "mortier", 0,0,0,200))
             if not joueur.statuePierre:
                 optionDIspo.append(Item(game, "statuePierre", 0,0,0,150))
-           
+            
         elif tuile.type==3 and not tuile.moulin and not tuile.port and not tuile.ville  and not tuile.statue :
             optionDIspo.append(Item(game, "moulin", 0,0,100,0))
             if not joueur.statueEau:
@@ -131,16 +131,16 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
         elif tuile.type==7 and not game.boss:
             if not tuile.forge:
-                optionDIspo.append(Item(game, "forge", 0,0,0,0))
+                optionDIspo.append(Item(game, "forge", 50,0,0,75))
             else:
                 if joueur.nomArmure==None:
-                    optionDIspo.append(Item(game, "armure1", 0, 0,0,0))
+                    optionDIspo.append(Item(game, "armure1", 0, 100,0,0))
                 elif joueur.nomArmure=="armure1":
-                    optionDIspo.append(Item(game, "armure2", 0, 0,0,0))
+                    optionDIspo.append(Item(game, "armure2", 0, 150,0,50))
                 elif joueur.nomArmure=="armure2":
-                    optionDIspo.append(Item(game, "armure3", 0, 0,0,0))
+                    optionDIspo.append(Item(game, "armure3", 0, 250,0,150))
                 elif joueur.nomArmure=="armure3":
-                    optionDIspo.append(Item(game, "armure4", 0, 0,0,0))
+                    optionDIspo.append(Item(game, "armure4", 0, 350,0,250))
     return optionDIspo
 
 
