@@ -9,7 +9,7 @@ class Coffre(pygame.sprite.Sprite):
           self.image = game.images.coffre
           self.rect = self.image[0].get_rect()
           self.rect.x = self.tuile.Xoriginal+80
-          self.rect.y = self.tuile.Yoriginal+40
+          self.rect.y = self.tuile.Yoriginal+30
           self.wood = wood
           self.food = food
           self.stone = stone 
