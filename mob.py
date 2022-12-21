@@ -359,7 +359,7 @@ class Mob(pygame.sprite.Sprite):
          
         if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]
-            self.game.groupProjectile.add(Projectile(self.game, "bossElec", self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
+            self.game.groupProjectile.add(Projectile(self.game, self.name, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
             self.lastProjectile = now
             self.cooldown=1000
 

@@ -206,7 +206,7 @@ class Build(pygame.sprite.Sprite):
             tuile.annimation=self.game.images.mortierAnnim
             tuile.clockAnnimMax = 5
             self.game.map[tuile.posY][tuile.posX].mortier = True
-            mortier = Tour(self.game, tuile, 1000, "mortier", 20, 300)
+            mortier = Tour(self.game, tuile, 1000, "mortier", 40, 300)
             self.game.groupDefense.add(mortier)
             tuile.game.joueur.mortier = mortier
             self.game.joueur.indiceEcolo+=10
@@ -255,6 +255,14 @@ class Build(pygame.sprite.Sprite):
             self.game.joueur.nomArmure="armure1"
             self.game.joueur.imageArmure = self.game.images.armure[0]
             self.game.joueur.armure=5
+            changerImg=False
+        elif self.nomBatiment=="marteau1":
+            self.game.joueur.nomProj = "marteau1"
+            self.game.joueur.damageDistance=6
+            changerImg=False
+        elif self.nomBatiment=="marteau2":
+            self.game.joueur.nomProj = "marteau2"
+            self.game.joueur.damageDistance=10
             changerImg=False
         elif self.nomBatiment=="armure2":
             self.game.joueur.nomArmure="armure2"

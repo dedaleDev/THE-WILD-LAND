@@ -17,6 +17,8 @@ class ImageLoad():
         self.imgBouleDeNeige =self.loadImgBouleDeNeige()
         self.imgJoueur =self.loadImgJoueur()
         self.imgBossElec =self.loadImgbossElec()
+        self.marteau1=pygame.image.load("data/projectiles/marteau1.png").convert_alpha()
+        self.marteau2=pygame.image.load("data/projectiles/marteau2.png").convert_alpha()
         self.ville = self.loadImgVille()
         self.mort = pygame.image.load("data/menu/defaite.png").convert_alpha()
         self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
@@ -588,6 +590,15 @@ class ImageLoad():
         imgTemp = pygame.image.load("data/batiments/icon/icon_forge.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("forge", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_marteau1.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("marteau1", imgTemp))
+        
+        imgTemp = pygame.image.load("data/batiments/icon/icon_marteau2.png").convert_alpha()
+        imgTemp = pygame.transform.scale(imgTemp, (60,60))
+        listeImgItem.append(("marteau2", imgTemp))
+        
         imgTemp = pygame.image.load("data/batiments/icon/icon_mine.png").convert_alpha()
         imgTemp = pygame.transform.scale(imgTemp, (60,60))
         listeImgItem.append(("mine", imgTemp))
@@ -895,6 +906,16 @@ class ImageLoad():
             return tempIgmg
         if nom == "bossElec":
             tempIgmg = self.imgBossElec
+            if angle:
+                tempIgmg = pygame.transform.rotate(tempIgmg, angle)
+            return tempIgmg
+        if nom == "marteau1":
+            tempIgmg = self.marteau1
+            if angle:
+                tempIgmg = pygame.transform.rotate(tempIgmg, angle)
+            return tempIgmg
+        if nom == "marteau2":
+            tempIgmg = self.marteau2
             if angle:
                 tempIgmg = pygame.transform.rotate(tempIgmg, angle)
             return tempIgmg

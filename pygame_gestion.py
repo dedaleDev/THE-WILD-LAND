@@ -163,6 +163,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
 
     while continuer:
+        listeBlitHealthBarDessus=[]
         debut = pygame.time.get_ticks()
         game.joueur.blit=False
         
@@ -221,7 +222,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             centrerJoueur(game)
             game.taille_matriceX=len(game.map)
             game.taille_matriceY=len(game.map[0])
-            game.theBoss = Boss(game, 1000)
+            game.theBoss = Boss(game, 200)
             
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -448,7 +449,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         else:
                             listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1],None, None, None))
                     if not mob.annimal:
+                        if mob.name=="dragon":
+                            listeBlitHealthBarDessus.append(mob)
                         mob.update_health_bar()
+                        
             
                 
     
@@ -517,7 +521,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     #pygame.draw.rect(fenetrePygame, (255,255,255), build.actuelClick, 1)
                     
                     fenetrePygame.blit(build.imageClickPassif, build.actuelClick)
-            
+            for mob in listeBlitHealthBarDessus:
+                mob.update_health_bar()
+                
             if tuile :
                 
                 liste = selectionDispoItem(game, tuile, game.joueur)

@@ -21,7 +21,7 @@ class Boss(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = game.mapBoss[2][3].rect.x, game.mapBoss[2][3].rect.y
         self.cooldown=0
-        self.range = 1#10000
+        self.range = 10000
         self.lastProjectile=0
         self.name="Boss"
         self.recharge = None

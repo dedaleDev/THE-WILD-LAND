@@ -27,20 +27,26 @@ def fonctionMage(temps):
 def fonctionDragon(temps):
     if temps<8:
         return 0
-    return (temps-8)/2
+    re = (temps-8)/2
+    if re>4:
+        return 4
+    return re
 
 def fonctionYeti(temps):
     if temps<10:
         return 0
-    return (temps-10)/4
+    return (temps-10)/5
     
 
 def fonctionGolem(temps): 
     if temps<tempsMinSpawnGolem:
         return 0
     if temps>15:
-        return -temps/4+10
-    return temps/4
+        re= -temps/2.5+10
+        if re <1:
+            return 1
+        return re
+    return temps/6
     return 1.7**((temps-tempsMinSpawnGolem)/6)
 
 
@@ -91,11 +97,11 @@ test3=faireMultipleSimulation(tempsPartie, fonctionMage, 100)
 test4=faireMultipleSimulation(tempsPartie, fonctionDragon, 100)
 test4=faireMultipleSimulation(tempsPartie, fonctionDragon, 100)
 test5=faireMultipleSimulation(tempsPartie, fonctionYeti, 100)
-plt.step(test[0], test[1], label="golem",alpha=0.25)
+plt.step(test[0], test[1], label="golem",alpha=1)
 plt.step(test[0], test2[1], label="oursin",alpha=0.25)
 plt.step(test[0], test3[1], label="mage",alpha=0.25)
 plt.step(test[0], test4[1], label="dragon",alpha=0.5)
-plt.step(test[0], test5[1], label="yeti",alpha=1)
+plt.step(test[0], test5[1], label="yeti",alpha=0.25)
 plt.legend()
 """plt.plot(listesPlt[0], listesPlt[1], label="golem")
 plt.plot(listesPlt[0], listesPlt2[1], label="oursin")

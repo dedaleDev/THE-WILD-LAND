@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
           self.nomArmure = None
           
           self.listeTour=[]
-          
+          self.nomProj="joueur"
           self.cooldownDamage = 500
           self.lastDamage = 0
           self.cooldownShot = 1000
@@ -84,7 +84,7 @@ class Player(pygame.sprite.Sprite):
           
           self.lastProjectile = 0
           self.speedProjectile = 10
-          self.damageDistance = 10
+          self.damageDistance = 3
           self.range = 600
           self.attendre = 0
     
@@ -426,7 +426,7 @@ class Player(pygame.sprite.Sprite):
             
             if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldownShot:
                 mobPlusProche = mob_proche[0][0]
-                self.game.groupProjectile.add(Projectile(self.game, "joueur", self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
+                self.game.groupProjectile.add(Projectile(self.game, self.nomProj, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
                 self.lastProjectile = now
             self.attendre=0
     
@@ -434,7 +434,7 @@ class Player(pygame.sprite.Sprite):
      def construireBatiment(self, tuile, item):
         dictio = {"elevage":2, "champs":1, "moulin":2, "scierie":2, "port":3, "mine":3, "pieux":1, "trou":1,"forge":5,
                   "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,
-                  "statueFood":3, "statuePierre":3, "ville":1,"armure1":0,"armure2":0,"armure3":0,"armure4":0}
+                  "statueFood":3, "statuePierre":3, "ville":1,"armure1":0,"armure2":0,"armure3":0,"armure4":0, "marteau1":0, "marteau2":0}
         if not self.majCout(item):
             return False
         
@@ -508,9 +508,9 @@ class Player(pygame.sprite.Sprite):
               return
               
           else:
-              if nom!="moulin" and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure":
+              if nom!="moulin" and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure" and nom[0:-1]!="marteau":
                 imgTemp = pygame.image.load("data/batiments/"+nom+".png").convert_alpha()
-          if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure" and nom!="forge" and nom!="scierie":
+          if nom != "ville" and nom!="moulin"and nom!="elevage" and nom!="mortier" and nom[0:-1]!="armure" and nom[0:-1]!="marteau" and nom!="forge" and nom!="scierie":
             tuile.image = pygame.transform.scale(imgTemp,(246, 144))
           if nom=="scierie":
               if tuile.type==10:
