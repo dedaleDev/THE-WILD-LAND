@@ -1,21 +1,15 @@
 # Security Policy
 
-## Supported Versions
+Collecte et utilisation des données :
+Nous ne collectons aucune donnée sur les joueurs de THE WILD LAND, à l'exception des informations nécessaires pour fournir un support client en cas de problème. Ces informations ne sont utilisées qu'à des fins de support et ne sont pas conservées une fois le problème résolu.
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+Confidentialité : 
+nous gérons la confidentialité des données des joueurs de manière à protéger leur vie privée. Nous mettons en place des mesures de contrôle des accès et des protocoles de gestion des données pour assurer la confidentialité de ces informations.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+Gestion des comptes : 
+les joueurs de THE WILD LAND n'ont pas besoin de créer de compte pour jouer au jeu. Si un joueur a besoin de notre assistance pour résoudre un problème, nous ne conservons pas ces informations une fois le problème résolu.
 
-## Reporting a Vulnerability
+Utilisation acceptable : 
+Nous encourageons les joueurs à respecter les règles de conduite acceptables et à ne pas utiliser THE WILD LAND de manière illégale ou inacceptable. Si nous constatons une utilisation inacceptable du jeu, nous nous réservons le droit de prendre les mesures appropriées.
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Il est important de noter que cette politique de confidentialité peut être modifiée de temps en temps pour refléter les changements apportés à notre jeu ou aux lois et réglementations en vigueur. Nous vous recommandons de vérifier régulièrement cette politique pour rester informé de tout changement.
