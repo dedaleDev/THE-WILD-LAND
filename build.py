@@ -258,11 +258,11 @@ class Build(pygame.sprite.Sprite):
             changerImg=False
         elif self.nomBatiment=="marteau1":
             self.game.joueur.nomProj = "marteau1"
-            self.game.joueur.damageDistance=6
+            self.game.joueur.damageDistance=8
             changerImg=False
         elif self.nomBatiment=="marteau2":
             self.game.joueur.nomProj = "marteau2"
-            self.game.joueur.damageDistance=10
+            self.game.joueur.damageDistance=16
             changerImg=False
         elif self.nomBatiment=="armure2":
             self.game.joueur.nomArmure="armure2"

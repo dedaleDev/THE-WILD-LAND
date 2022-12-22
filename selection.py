@@ -114,7 +114,7 @@ def selectionDispoItem(game, tuile, joueur):
             
             if not game.avoirTuileJoueur(joueur).port and terreAutour(joueur, tuile):
                 
-                optionDIspo.append(Item(game, "port", 0,0,250,0))
+                optionDIspo.append(Item(game, "port", 0,0,100,0))
                 
                 
         elif (tuile.type==4 or tuile.type==10) and not tuile.scierie and not tuile.ville and not tuile.statue:
@@ -123,7 +123,7 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "scierie", 0,0,100,0))
         
         elif tuile.type==5 and not tuile.frigo and not tuile.ventilo and not tuile.ville:
-            optionDIspo.append(Item(game, "frigo", 300, 50, 0, 0))
+            optionDIspo.append(Item(game, "frigo", 200, 50, 0, 0))
             optionDIspo.append(Item(game, "ventilo", 0, 0, 500, 400))
         elif tuile.type==6 and not tuile.sableMouvant and not tuile.trou and not tuile.ville:
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))

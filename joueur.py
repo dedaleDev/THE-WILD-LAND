@@ -84,10 +84,35 @@ class Player(pygame.sprite.Sprite):
           
           self.lastProjectile = 0
           self.speedProjectile = 10
-          self.damageDistance = 3
+          self.damageDistance = 4
           self.range = 600
           self.attendre = 0
+          
+          self.tempsBateau=0
+          self.maxTempBateau=90
+          
+          self.imgBateau=pygame.image.load("data/personnages/joueur/iconBateau.png").convert_alpha()
+          
     
+    
+     def updateBateau(self):
+         if self.getTuile().port:
+             self.tempsBateau+=1
+             if self.tempsBateau>=self.maxTempBateau:
+                 self.bateau = not self.bateau
+                 self.tempsBateau=-100
+         else:
+             self.tempsBateau=-10
+             
+         if self.tempsBateau>=0:
+             bar_position = [self.rect.x, self.rect.y-10, self.tempsBateau, 5]
+             back_bar_position = [self.rect.x, self.rect.y-10, 100, 5]
+
+             pygame.draw.rect(self.game.fenetre, (128,128,128), back_bar_position)
+             pygame.draw.rect(self.game.fenetre, (0,0,204), bar_position)
+             self.game.fenetre.blit(self.imgBateau, (self.rect.x-60, self.rect.y-30))
+             
+                 
      def getTuile(self):
          return self.game.map[self.posY][self.posX]
     

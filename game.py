@@ -168,13 +168,13 @@ class Game(pygame.sprite.Sprite):
         temps = self.tempsJeuMinute()
         if temps<3:
             return 0
-        return (temps-3)/5
+        return (temps-3)/6
 
     def fonctionDragon(self):
         temps = self.tempsJeuMinute()
         if temps<8:
             return 0
-        re = (temps-8)/2
+        re = (temps-8)/3
         if re>4:
             return 4
         return re
@@ -302,7 +302,7 @@ class Game(pygame.sprite.Sprite):
                             self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile, 100))
                             pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)
                             
-                        rand = random.randint(1000)
+                        rand = random.randint(1,1000)
                         if rand<= self.probaMage:
                             self.groupMob.add(Mob(self, "mage", 75, 1, tuile, 125))
                             pygame.mixer.Sound.play(self.son.mageSpawn)

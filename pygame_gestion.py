@@ -662,6 +662,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             if game.text:
                 game.displayTxt()
+            
             #tuto
             if game.tempsJeu()>1000*5:
                 tuto.upadateStatutTuto(game,"move")
@@ -682,6 +683,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             if game.tempsJeu()>1000*60*1.3:
                 tuto.upadateStatutTuto(game,"espace")
             tuto.afficherTuto(fenetrePygame,game)
+            game.joueur.updateBateau()
             #if game.theBoss:
                 #if game.theBoss.directionRush:
                     #pygame.draw.rect(fenetrePygame, (255,0,255), pygame.Rect(game.theBoss.directionRush.rect.x, game.theBoss.directionRush.rect.y, 100,100))

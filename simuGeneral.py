@@ -22,7 +22,7 @@ def fonctionKraken(temps):
 def fonctionMage(temps):
     if temps<3:
         return 0
-    return (temps-3)/5
+    return (temps-3)/6
 
 def fonctionDragon(temps):
     if temps<8:
@@ -38,15 +38,15 @@ def fonctionYeti(temps):
     return (temps-10)/5
     
 
-def fonctionGolem(temps): 
-    if temps<tempsMinSpawnGolem:
+def fonctionGolem(temps):
+    if temps<3:
         return 0
     if temps>15:
         re= -temps/2.5+10
         if re <1:
             return 1
         return re
-    return temps/6
+    return temps/8+1
     return 1.7**((temps-tempsMinSpawnGolem)/6)
 
 
@@ -55,7 +55,7 @@ def tirerMob(fonctionP):
     for i in range(random.randint(0,10)): #le nombre de tuile present autour du joueur
         reussi=random.randint(0,500)
         
-        if reussi<round(fonctionP(tempsGeneral)):
+        if reussi<fonctionP(tempsGeneral):
             nombreMob+=1
             
 def faireUneSimulation(nombreDeMinuteSimu, f):
@@ -91,12 +91,13 @@ def faireMultipleSimulation(nombreDeMinuteSimu, f, nombreDeSimu):
 tempsPartie=30
 """listesPlt=faireUneSimulation(10, fonctionGolem)
 listesPlt2=faireUneSimulation(10, fonctionOursin)"""
-test=faireMultipleSimulation(tempsPartie, fonctionGolem, 100)
-test2=faireMultipleSimulation(tempsPartie, fonctionOursin, 100)
-test3=faireMultipleSimulation(tempsPartie, fonctionMage, 100)
-test4=faireMultipleSimulation(tempsPartie, fonctionDragon, 100)
-test4=faireMultipleSimulation(tempsPartie, fonctionDragon, 100)
-test5=faireMultipleSimulation(tempsPartie, fonctionYeti, 100)
+nombrePartie=1
+test=faireMultipleSimulation(tempsPartie, fonctionGolem, nombrePartie)
+test2=faireMultipleSimulation(tempsPartie, fonctionOursin, nombrePartie)
+test3=faireMultipleSimulation(tempsPartie, fonctionMage, nombrePartie)
+test4=faireMultipleSimulation(tempsPartie, fonctionDragon, nombrePartie)
+test4=faireMultipleSimulation(tempsPartie, fonctionDragon, nombrePartie)
+test5=faireMultipleSimulation(tempsPartie, fonctionYeti, nombrePartie)
 plt.step(test[0], test[1], label="golem",alpha=1)
 plt.step(test[0], test2[1], label="oursin",alpha=0.25)
 plt.step(test[0], test3[1], label="mage",alpha=0.25)
