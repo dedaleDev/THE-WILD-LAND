@@ -46,10 +46,10 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 3500
-          self.stone = 1500
-          self.food = 5000
-          self.water = 1000
+          self.wood = 300
+          self.stone = 50
+          self.food = 25
+          self.water = 100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -560,7 +560,7 @@ class Player(pygame.sprite.Sprite):
         
 
         if self.health >=80 : 
-            bar_color = (111, 210, 46)
+            bar_color = (3, 166, 160)
         elif self.health >=50 : 
             bar_color = (255, 165, 0)
         elif self.health >=25 : 

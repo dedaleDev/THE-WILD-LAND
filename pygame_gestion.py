@@ -110,6 +110,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     health = pygame.transform.scale(health, (50, 50))
     feuille = pygame.image.load("data/menu/feuille.png").convert_alpha()
     feuille = pygame.transform.scale(feuille, (50, 50))
+    
+    scoreBar = pygame.image.load("data/menu/score.png").convert_alpha()
+    scoreBar = pygame.transform.scale(scoreBar, (scoreBar.get_width()*0.25,scoreBar.get_height()*0.25))
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
     for i in range(1,10):
         im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png").convert_alpha()
@@ -167,8 +170,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         debut = pygame.time.get_ticks()
         game.joueur.blit=False
         
-        scoreText = police.render(str(game.joueur.score), True, "Black")
-        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*9.7/10))
+        scoreText = smallPolice.render(str(game.joueur.score), True, "Black")
+        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*9.6/10))
         
         if fps>=60:
             fps =0
@@ -378,7 +381,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                                 fenetrePygame.blit(tuileBlit.surAnnimListe[tuileBlit.indicesurAnnim], tuileBlit.rect)
                             if tuileBlit.indiceSurbrillance>=0:
                                 fenetrePygame.blit(tuileBlit.surbrillance[tuileBlit.indiceSurbrillance], tuileBlit.rect)
-                            if tuileBlit.statue and tuileBlit.type!=4:
+                            if tuileBlit.statue and tuileBlit.type!=4 and tuileBlit.type!=10 :
                                 fenetrePygame.blit(game.images.statue(tuileBlit.type), tuileBlit.rect)
                         if tuileBlit.type!=4 and tuileBlit.type!=10:
                             tuileBlit.changeAnnim()
@@ -502,13 +505,13 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 #game.theBoss.rect.x-15, game.theBoss.rect.y+30
             listeOrdre.sort(key=lambda x: x[3])
             
-            for image, posX, posY, center, surbrillance, statue, type in listeOrdre:
+            for image, posX, posY, center, surbrillance, statue, typet in listeOrdre:
                 fenetrePygame.blit(image, (posX, posY))
                 if surbrillance!=-1 and surbrillance!=None:
                     fenetrePygame.blit(game.images.surbrillance[surbrillance], (posX, posY))
                 if statue:
 
-                    fenetrePygame.blit(game.images.statue(type), (posX+30, posY+30))
+                    fenetrePygame.blit(game.images.statue(typet), (posX+30, posY+30))
             for loot in game.groupLoot:
                 loot.update(fenetrePygame, moveX,moveY)
             
@@ -575,7 +578,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             #(infoObject[0]/1.7*(190*i), 25)
 
             for i in range(len(game.joueur.ressourcesIMG)):
-                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 2/100*infoObject[1]))
+                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 0.9/100*infoObject[1]))
                 fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 2.3/100*infoObject[1]))
                 if game.joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
@@ -598,6 +601,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (20,15))
             fenetrePygame.blit(feuille, (10,368))
+            fenetrePygame.blit(scoreBar, (game.infoObject[0]*0.9,game.infoObject[1]*0.93))
             fenetrePygame.blit(scoreText, scoreRect)
             if tickBatiment<60:
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject[0]-game.imageErreurRessource.get_width()-(infoObject[0]-game.imageErreurRessource.get_width())/2,infoObject[1] - 200))
@@ -606,15 +610,13 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(infoMortAnnimal, (tailleEcran[0]- 400, tailleEcran[1] - 700))
                 game.infoMortAnnimal-=1
             
-            for pos in game.listeDebug:
-                fenetrePygame.blit(imDebug2, pos)
+            #for pos in game.listeDebug:
+                #fenetrePygame.blit(imDebug2, pos)
 
             if game.joueur.estMort:
                 mort(game)
             #if game.joueur.ville:
                 #victoire(game)
-            test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))
-            fenetrePygame.blit(test, (0,100))
             
             
             if False: #### PASSER A TRUE POUR HITBOX
@@ -627,6 +629,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     pygame.draw.rect(fenetrePygame, (255,255,255), mob.rect, width=3)
 
             if game.stat : 
+                tuto.disableTuto(game)
                 game.stat =False
                 fenetrePygame.blit(statImg, (infoObject[0]*0.705,infoObject[1]*0.1))
                 #recup 
@@ -642,8 +645,12 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 nbAnnimauxMort= verySmallPolice.render("Animaux décédés :  "+str(nbAnnimauxMort), True, (0, 0, 0))
                 recuperationEcolo= verySmallPolice.render("Gain écologique :  "+str(recuperationEcolo), True, (0, 0, 0))
 
+
+
                 titleCombat= smallPolice.render("Combats ", True, (0, 0, 0))
                 ennemieDegat= verySmallPolice.render("Pire ennemi : "+str(ennemieDegat), True, (0, 0, 0))
+
+                fps2 = smallPolice.render("fps:"+str(int(clock.get_fps())), True, (0,0, 0))
 
 
                 #blit : 
@@ -659,6 +666,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(titleCombat,(infoObject[0]*0.72, infoObject[1]*0.51))
                 fenetrePygame.blit(ennemieDegat,(infoObject[0]*0.74, infoObject[1]*0.55))
 
+                fenetrePygame.blit(fps2,(infoObject[0]*0.72, infoObject[1]*0.6))
 
             if game.text:
                 game.displayTxt()

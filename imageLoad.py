@@ -28,6 +28,7 @@ class ImageLoad():
         self.etoile = pygame.transform.scale(self.etoile, (self.etoile.get_height()*0.05,self.etoile.get_width()*0.05))
         self.coffre = pygame.image.load("data/ressources/coffre.png").convert_alpha()
         self.coffre = pygame.transform.scale(self.coffre, (self.coffre.get_height()*0.15,self.coffre.get_width()*0.15))
+
         
         
         self.fondForet = pygame.image.load("data/tuiles/fondForet.png").convert_alpha()
@@ -238,7 +239,7 @@ class ImageLoad():
             
         return liste
     def statue(self, type):
-        if type==4:
+        if type==4 or type==10:
             return self.statueBois
         if type==2:
             return self.statuePierre
