@@ -166,7 +166,7 @@ class ImageLoad():
         return liste
     
     def loadInventaire(self):
-        im = pygame.image.load("data/menu/menu_tuile.png").convert()
+        im = pygame.image.load("data/menu/menu_tuile.png").convert_alpha()
         im = pygame.transform.scale(im, (758/2,178/2))
         return im
     def loadAnnimClickBuild(self):
