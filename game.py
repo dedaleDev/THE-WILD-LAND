@@ -146,13 +146,16 @@ class Game(pygame.sprite.Sprite):
 
     def fonctionGolem(self):
         temps = self.tempsJeuMinute()
+        return 10 
         if modeFacile:
+            if temps<2:
+                return 10
             if temps>15:
                 re= -temps/2.5+10
                 if re <1:
                     return 1
                 return re
-            return temps/6
+            return temps/6+1
 
     def fonctionOursin(self):
         temps = self.tempsJeuMinute()
@@ -285,51 +288,77 @@ class Game(pygame.sprite.Sprite):
     def avoirTuileJoueur(self, joueur):
         return self.map[joueur.posY][joueur.posX]
 
+    def addTuileAutour(self,d ,rayon:int):
+        for i in range(10):
+            d[i]=[]
+        if d=={}:
+            for y in range(-rayon, rayon+1):
+                for x in range(-rayon,rayon+1):
+                    if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y) and (y!=0 or x!=0):
+                        tuile=self.map[self.joueur.posY+y][self.joueur.posX+x]
+                        if tuile.type in d:
+                            d[tuile.type].append(tuile)
+                        else:
+                            d[tuile.type] = [tuile]
+        return d
+
     def spawMob(self):
-        for y in range(-5, 5):
-            for x in range(-5,5):
-                if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y) and (y!=0 or x!=0):
-                    tuile = self.map[self.joueur.posY+y][self.joueur.posX+x]
-                    if tuile.type==2:
-                        rand = random.randint(1,2100)
-                        if rand <= self.probaDragon:
-                            self.groupMob.add(Mob(self, "dragon", 400, 2, tuile, 700,aerien=True, attaque=20))   
-                            pygame.mixer.Sound.play(self.son.dragonSpawn)
-                    if tuile.estForet():
-                        rand = random.randint(1,900)
-                        if rand <= self.probaGolemForet:
-                            
-                            self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, tuile, 100))
-                            pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)
-                            
-                        rand = random.randint(1,1000)
-                        if rand<= self.probaMage:
-                            self.groupMob.add(Mob(self, "mage", 75, 1, tuile, 125))
-                            pygame.mixer.Sound.play(self.son.mageSpawn)
-                    if tuile.estPlaine():
-                        rand = random.randint(1,2000)
-                        if rand <= self.probaOursin:
-                            self.groupMob.add(Mob(self, "oursin", 100, 3, tuile, 150, pique=True, attaque=7))
-                            pygame.mixer.Sound.play(self.son.oursinSpawn)
-                    if tuile.estMer():
-                        rand = random.randint(1,1600)
-                        if rand <= self.probaKraken:
-                            self.groupMob.add(Mob(self, "kraken", 75, 1,tuile, 100, aquatique=True))
-                            pygame.mixer.Sound.play(self.son.krakenSpawn)
-                    if tuile.type==5:
-                        rand = random.randint(1,1100)
-                        if rand <= self.probaYeti:
-                            self.groupMob.add(Mob(self, "yeti", 500, 2, tuile, 500, attaque=30))
-                            pygame.mixer.Sound.play(self.son.yetiSpawn)
-                            
-                            
+        """fonction qui gere le spawn des mobs"""
+        randGolem = random.randint(1,150)
+        randOursin = random.randint(1,150)
+        randDragon = random.randint(1,150)
+        randKraken = random.randint(1,150)
+        randMage = random.randint(1,150)
+        randYeti = random.randint(1,150)
+        tuileAutourJoueur={}
+
+        for i in range(10):
+            tuileAutourJoueur[i]=[]
+        
+        if randGolem<self.fonctionGolem():
+            tuileAutourJoueur=self.addTuileAutour(tuileAutourJoueur, 5)
+            if tuileAutourJoueur[4]!=[]:
+                self.groupMob.add(Mob(self, "golem_des_forets", 75, 2, random.choice(tuileAutourJoueur[4]), 100))
+                pygame.mixer.Sound.play(self.son.golem_des_foretsSpawn)
+        
+        if randOursin<self.fonctionOursin():
+            tuileAutourJoueur=self.addTuileAutour(tuileAutourJoueur, 5)
+            if tuileAutourJoueur[1]!=[]:
+                self.groupMob.add(Mob(self, "oursin", 100, 3, random.choice(tuileAutourJoueur[1]), 150, pique=True, attaque=7))
+                pygame.mixer.Sound.play(self.son.oursinSpawn)
+        if randMage<self.fonctionMage():
+            tuileAutourJoueur=self.addTuileAutour(tuileAutourJoueur, 5)
+            if tuileAutourJoueur[4]!=[]:
+                self.groupMob.add(Mob(self, "mage", 75, 1, random.choice(tuileAutourJoueur[4]), 125))
+                pygame.mixer.Sound.play(self.son.mageSpawn)
+        if randKraken<self.fonctionKraken():
+            tuileAutourJoueur=self.addTuileAutour(tuileAutourJoueur, 5)
+            if tuileAutourJoueur[3]!=[]:
+                self.groupMob.add(Mob(self, "kraken", 75, 1,random.choice(tuileAutourJoueur[3]), 100, aquatique=True))
+                pygame.mixer.Sound.play(self.son.krakenSpawn)
+        if randDragon<self.fonctionDragon():
+            tuileAutourJoueur=self.addTuileAutour(tuileAutourJoueur, 5)
+            if tuileAutourJoueur[2]!=[]:
+                self.groupMob.add(Mob(self, "dragon", 400, 2, random.choice(tuileAutourJoueur[2]), 700,aerien=True, attaque=20))  
+                pygame.mixer.Sound.play(self.son.dragonSpawn) 
+        
+        if randYeti<self.fonctionYeti():
+            tuileAutourJoueur=self.addTuileAutour(tuileAutourJoueur, 5)
+            if tuileAutourJoueur[5]!=[]:
+                self.groupMob.add(Mob(self, "yeti", 500, 2, random.choice(tuileAutourJoueur[5]), 500, attaque=30))
+                pygame.mixer.Sound.play(self.son.yetiSpawn)
+
+
+
     def afficherText(self, text):
         text = self.police.render(str(text), True, (255, 255, 0))
         self.fenetre.blit(text, (400,400))
         self.text=text
     def displayTxt(self):
         self.fenetre.blit(self.text, (400,400))
-        
+    
+
+
     """
     def genererImg(self):
         global background_pil, premierPAss
