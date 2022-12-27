@@ -46,9 +46,9 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 300
-          self.stone = 50
-          self.food = 25
+          self.wood = 350
+          self.stone = 100
+          self.food = 50
           self.water = 100
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
@@ -492,9 +492,9 @@ class Player(pygame.sprite.Sprite):
 
          return tuile
 
-     def chargerImPort(self, tuile, supX=0, supY=0): #sup = variable pour simuler un decalage joueur
-         ecartX = tuile.posX-self.posX-supX
-         ecartY = tuile.posY-self.posY-supY
+     def chargerImPort(self, tuile, posJoueurX, posJoueurY,supX=0, supY=0): #sup = variable pour simuler un decalage joueur
+         ecartX = tuile.posX-posJoueurX-supX
+         ecartY = tuile.posY-posJoueurY-supY
          if ecartX==0 and ecartY == 1:
              imgTemp2 = pygame.image.load("data/batiments/port/port2.png").convert_alpha()
          if ecartX==-1 and ecartY == 0:
@@ -519,14 +519,14 @@ class Player(pygame.sprite.Sprite):
                         listeEcart.append((i,j))
              for i,j in listeEcart:
                  if i==0 or j==0:
-                    return self.chargerImPort(tuile, supX=j, supY=i)
+                    return self.chargerImPort(tuile, posJoueurX, posJoueurY, supX=j, supY=i)
              i,j = listeEcart[0]
-             return self.chargerImPort(tuile, supX=j, supY=i)
+             return self.chargerImPort(tuile, posJoueurX, posJoueurY, supX=j, supY=i)
          return imgTemp2
 
-     def changerImageBatiment(self, tuile:Tuile, nom):
+     def changerImageBatiment(self, tuile:Tuile, nom, posJoueurX=-1, posJoueurY=-1):
           if nom=="port":
-              imgTemp = self.chargerImPort(tuile)
+              imgTemp = self.chargerImPort(tuile, posJoueurX, posJoueurY)
               imgTemp = pygame.transform.scale(imgTemp,(246, 144))
               tuile.surAnnimListe=[imgTemp]
               

@@ -29,13 +29,18 @@ class Tuto():
 
     def CheckClic(self,pos):#permet de savoir si le tuto est cliqué pour le masquer ensuite
         # Fonction qui charge et affiche une image à l'écran
-        print(pos)
+
         if self.imgRect.collidepoint(pos[0],pos[1]):
             self.game.listeTuto.remove(self)
 
 
 
-
+def disableTuto(game):
+    #ATTENTION : cette fonction peux avoir de serieuse consequence sur le jeu 
+    # Merci de ne pas l'utiliser si vous ne savez pas ce que vous faites
+    for tuto in game.listeTuto:
+        if tuto.getStatut() == True:
+            game.listeTuto.remove(tuto)
 def createTuto(game): #fonction qui créer et charge les tutos
     path = os.path.dirname(__file__)
     path += "/data/tuto"
@@ -55,12 +60,6 @@ def upadateStatutTuto(game,nom:str, bool=True):
         if tuto.name == str(nom):
             tuto.setStatut(bool)
             return
-def disableTuto(game):
-    #ATTENTION : cette fonction peux avoir de serieuse consequence sur le jeu 
-    # Merci de ne pas l'utiliser si vous ne savez pas ce que vous faites
-    for tuto in game.listeTuto:
-        if tuto.getStatut() == True:
-            game.listeTuto.remove(tuto)
 
 def afficherTuto(fenetre, game):
     for tuto in game.listeTuto:

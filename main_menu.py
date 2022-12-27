@@ -125,7 +125,7 @@ def optionPartie():
     ExtremeMap.image.set_alpha(150)
 
 
-    diff = "normal"
+    diff = "facile"
 
     facile = Button(image=pygame.transform.scale(pygame.image.load("data/menu/facile.png").convert_alpha(), (scaleButtonMap[0]//4, scaleButtonMap[1]//4)), pos=(tailleEcran[0]*1/7, tailleEcran[1]*posYDiff), 
                     text_input="", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")

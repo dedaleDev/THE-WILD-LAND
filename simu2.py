@@ -7,22 +7,33 @@ import matplotlib.pyplot as plt
 global seconde, nombreMob, tempsGeneral, tempsMinSpawn
 
 tempsMinSpawn=3
-def fonctionGolem(temps, tempsMinSpawn): 
-    if temps<tempsMinSpawn:
+def fonctionGolem(temps): 
+    if temps<2:
         return 0
-    
-    return 1.7**((temps-tempsMinSpawn)/5)
+    if temps>15:
+        re= -temps/2.5+10
+        if re <1:
+            return 1
+        return re
+    return temps/6+1
 
+def convertir_temps(temps_en_secondes):
+  minutes = temps_en_secondes // 60
+  secondes = temps_en_secondes % 60
+  return minutes, secondes
 
 def tirerMob(fonctionP):
-    global tempsGeneral, nombreMob, tempsMinSpawn
-    for i in range(random.randint(0,10)): #le nombre de tuile present autour du joueur
-        reussi=random.randint(0,200)
-        if reussi<fonctionP(tempsGeneral, tempsMinSpawn):
-            nombreMob+=1
-            
+    global tempsGeneral, nombreMob, tempsMinSpawn,seconde
+    reussi=random.randint(0,150)
+    s=tempsGeneral*60+seconde
+    t=s/60
+
+    if reussi<fonctionP(t):
+        nombreMob+=1
+        print("un mob spawn a t=",convertir_temps(s)[0],":", convertir_temps(s)[1])
+
 def faireUneSimulation(nombreDeMinuteSimu, f):
-    global seconde, nombreMob, tempsGeneral
+    global seconde, nombreMob, tempsGeneral,seconde
     seconde, nombreMob, tempsGeneral=0,0,0
     listesPlt=[[],[]]
     while tempsGeneral<nombreDeMinuteSimu:
@@ -38,10 +49,10 @@ def faireUneSimulation(nombreDeMinuteSimu, f):
     return listesPlt
     
 
-listesPlt=faireUneSimulation(10, fonctionGolem)
+listesPlt=faireUneSimulation(20, fonctionGolem)
 
 
 
-plt.plot(listesPlt[0], listesPlt[1])
+plt.step(listesPlt[0], listesPlt[1])
 
 plt.show() # affiche la figure à l'écran

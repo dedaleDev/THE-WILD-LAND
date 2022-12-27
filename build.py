@@ -52,6 +52,9 @@ class Build(pygame.sprite.Sprite):
 
           if self.nomBatiment=="sableMouvant":
                     tuto.upadateStatutTuto(game,"sable")
+
+          self.joueurPosX=self.game.joueur.posX
+          self.joueurPosY=self.game.joueur.posY
     
     def spawnButton(self):
         #pygame.draw.rect(self.game.fenetre, (255,255,255), (self.tuile.rect.x, self.tuile.rect.y, 256,144), 1)
@@ -278,7 +281,7 @@ class Build(pygame.sprite.Sprite):
             self.game.joueur.armure=35
             self.game.joueur.health*=1.2
         if changerImg:
-            self.game.joueur.changerImageBatiment(tuile, self.nomBatiment)
+            self.game.joueur.changerImageBatiment(tuile, self.nomBatiment,self.joueurPosX, self.joueurPosY)
         self.tuile.build=False
         
         

@@ -8,7 +8,7 @@ from selection import majSelectionMob
 import tuto
 class Mob(pygame.sprite.Sprite):
 
-     def __init__(self, game, nom, vie, vitesse, tuile, score, pique=False, aquatique=False, aerien=False, attaque=10, annimal=False, desertique=False):
+     def __init__(self, game, nom, vie, vitesse, tuile, score, pique=False, aquatique=False, aerien=False, attaque=10, annimal=False, desertique=False,tempsSpawn=0):
           super().__init__()
           #affichage et information
           self.name = nom
@@ -79,6 +79,7 @@ class Mob(pygame.sprite.Sprite):
           self.clockAnnim=0
           self.indiceAnnim=0
           self.droite = True
+          self.tempsAvantApparition=tempsSpawn
           
      def rotate(self, neg = False, angle = 4):
          if not neg :
@@ -354,14 +355,14 @@ class Mob(pygame.sprite.Sprite):
             mob_proche.append((self.game.joueur, distance))
                    
         mob_proche.sort(key=lambda tup: tup[1]) #pour trier la liste selon la distance
-         
+        
         now = self.game.tempsJeu()
-         
+        
         if len(mob_proche)>0 and now-self.lastProjectile>=self.cooldown:
             mobPlusProche = mob_proche[0][0]
             self.game.groupProjectile.add(Projectile(self.game, self.name, self.speedProjectile, self.damageDistance, self.rect.x+30, self.rect.y+30, mobPlusProche, self))
             self.lastProjectile = now
-            self.cooldown=1000
+            self.cooldown=2000
 
 
      def takeDamage(self, entier, moveX, moveY):
