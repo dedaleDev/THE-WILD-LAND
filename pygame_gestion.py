@@ -30,6 +30,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     last = 0
     annimIncendieListe=[]
     annimTremblementListe=[]
+    nombreAnnimationIncendie=3
     annimIncendie=0
     suiviePerso=136
     nombreAnnimationTremblement=3
@@ -162,7 +163,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     smallPolice = get_font(smallTaillePolice)
     verySmallTaillePolice = round(1.1/100*diagonalEcran)
     verySmallPolice = get_font(verySmallTaillePolice)
-
+    indiceFleche=0
 
     while continuer:
         listeBlitHealthBarDessus=[]
@@ -170,7 +171,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         game.joueur.blit=False
         
         scoreText = smallPolice.render(str(game.joueur.score), True, "Black")
-        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*9.6/10))
+        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.3/10, tailleEcran[1]*9.55/10))
         
         if fps>=60:
             fps =0
@@ -577,7 +578,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             for i in range(len(game.joueur.ressourcesIMG)):
                 fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 0.9/100*infoObject[1]))
-                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 2.3/100*infoObject[1]))
+                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 1.5/100*infoObject[1]))
                 if game.joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
                     if timeComtpeur <=60 :
@@ -599,7 +600,23 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (20,15))
             fenetrePygame.blit(feuille, (10,368))
-            fenetrePygame.blit(scoreBar, (game.infoObject[0]*0.9,game.infoObject[1]*0.93))
+            if fps%2==0:
+                indiceFleche+=1
+            if indiceFleche>111:
+                indiceFleche=0
+            fenetrePygame.blit(feuille, (10,368))
+            posXfleche=5
+            posYfleche=359
+            if game.joueur.indiceEcolo>=80:
+                fenetrePygame.blit(game.images.fleche[0][indiceFleche], (posXfleche,posYfleche))
+            elif game.joueur.indiceEcolo>=40:
+                fenetrePygame.blit(game.images.fleche[1][indiceFleche], (posXfleche,posYfleche))
+            else:
+                
+                fenetrePygame.blit(game.images.fleche[2][indiceFleche], (posXfleche,posYfleche))
+            
+                
+            fenetrePygame.blit(scoreBar, (game.infoObject[0]*0.88,game.infoObject[1]*0.92))
             fenetrePygame.blit(scoreText, scoreRect)
             if tickBatiment<60:
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject[0]-game.imageErreurRessource.get_width()-(infoObject[0]-game.imageErreurRessource.get_width())/2,infoObject[1] - 200))

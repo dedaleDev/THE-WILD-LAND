@@ -167,7 +167,7 @@ class Game(pygame.sprite.Sprite):
             self.attaqueDragon =20
             self.attaqueYeti=25
             self.attaqueGolem=12
-        
+            self.modeNormal=True
         if diff=="difficile":
             self.pvKraken = 100
             self.pvDragon = 450
@@ -189,7 +189,7 @@ class Game(pygame.sprite.Sprite):
             self.attaqueDragon =20
             self.attaqueYeti=25
             self.attaqueGolem=12
-            
+            self.modeDifficile=True
         if diff=="extreme":
             self.pvKraken = 100
             self.pvDragon = 500
@@ -211,38 +211,54 @@ class Game(pygame.sprite.Sprite):
             self.attaqueDragon = 25
             self.attaqueYeti=35
             self.attaqueGolem=15
-    
+            self.modeExtreme=True
     def bonusTempsSansMob(self, nom):
+        if self.modeExtreme:
+            return abs(self.tempsSansMob[nom]*2)
         return self.tempsSansMob[nom]
 
     def fonctionGolem(self):
         temps = self.tempsJeuMinute()
-        if self.modeFacile:
-            if temps<2:
-                return 0
+        if self.modeExtreme:
             if temps>15:
                 re= -temps/2.5+10
                 if re <1:
                     return 1
                 return re
-            return temps/6+1+self.bonusTempsSansMob("golem")
+            return temps/4+1+self.bonusTempsSansMob("golem")
+        #if self.modeFacile:
+        if temps<2:
+            return 0
+        if temps>15:
+            re= -temps/2.5+10
+            if re <1:
+                return 1
+            return re
+        return temps/6+1+self.bonusTempsSansMob("golem")
+    
 
     def fonctionOursin(self):
         temps = self.tempsJeuMinute()
-        if self.modeFacile:
-            if temps<4:
-                return 0
-            return temps/9+self.bonusTempsSansMob("oursin")
+        if self.modeExtreme:
+            return temps/8+self.bonusTempsSansMob("oursin")
+        #if self.modeFacile:
+        if temps<4:
+            return 0
+        return temps/9+self.bonusTempsSansMob("oursin")
 
 
     def fonctionKraken(self): 
         temps = self.tempsJeuMinute()
-        if self.modeFacile:
-            return temps/9+self.bonusTempsSansMob("kraken")
+    
+        #if self.modeFacile:
+        return temps/9+self.bonusTempsSansMob("kraken")
 
 
     def fonctionMage(self):
         temps = self.tempsJeuMinute()
+        if self.modeExtreme:
+            
+            return (temps)/5+self.bonusTempsSansMob("mage")
         if temps<3:
             return 0
         return (temps-3)/6+self.bonusTempsSansMob("mage")
@@ -250,6 +266,13 @@ class Game(pygame.sprite.Sprite):
 
     def fonctionDragon(self):
         temps = self.tempsJeuMinute()
+        if self.modeExtreme:
+            if temps<4:
+                return 0
+            re = (temps-5)/3+self.bonusTempsSansMob("dragon")
+            if re>6:
+                return 6
+            return re
         if temps<8:
             return 0
         re = (temps-8)/3+self.bonusTempsSansMob("dragon")
@@ -259,6 +282,10 @@ class Game(pygame.sprite.Sprite):
 
     def fonctionYeti(self):
         temps = self.tempsJeuMinute()
+        if self.modeExtreme:
+            if temps<6:
+                return 0
+            return (temps-6)/3+self.bonusTempsSansMob("yeti")
         if temps<10:
             return 0
         return (temps-10)/4+self.bonusTempsSansMob("yeti")
@@ -287,7 +314,7 @@ class Game(pygame.sprite.Sprite):
         pygame.display.flip()
     
     def majCata(self):
-        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 15000 : #INCENDIE
+        if self.joueur.indiceEcolo>0.50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 15:#000 : #INCENDIE
             if not random.randint(0,2) or True: #quand on tombe sur un 0, donc incendie toute les 3 min environ
                 indice=random.randint(0, len(self.listeCaseBatiment)-1)
                 tuile = self.listeCaseBatiment[indice]
@@ -368,14 +395,19 @@ class Game(pygame.sprite.Sprite):
 
     def addTuileAutour(self,d ,rayon:int):
         if d=={}:
+            for x in range(15):
+                if not (x in d):
+                    d[x] = []
             for y in range(-rayon, rayon+1):
                 for x in range(-rayon,rayon+1):
                     if self.verifierCo(self.joueur.posX+x, self.joueur.posY+y) and (y!=0 or x!=0):
                         tuile=self.map[self.joueur.posY+y][self.joueur.posX+x]
-                        if tuile.type in d:
-                            d[tuile.type].append(tuile)
-                        else:
-                            d[tuile.type] = [tuile]
+
+                        d[tuile.type].append(tuile)
+            
+                    
+        
+            
         return d
                        
 
@@ -390,6 +422,7 @@ class Game(pygame.sprite.Sprite):
         randMage = random.randint(1,150)
         randYeti = random.randint(1,150)
         tuileAutourJoueur={}
+        
         
         self.tempsSansMob["golem"]+=1/60
         self.tempsSansMob["mage"]+=1/60

@@ -58,6 +58,7 @@ class ImageLoad():
         self.chameauAnnim = self.loadAnnimChameau()
         self.lapinAnnim = self.loadAnnimLapin()
         
+        self.fleche=self.loadAnnimFleche()
         
         self.backVolcan=pygame.image.load("data/tuiles/backVolcan.png").convert_alpha()
         self.statueBois=pygame.image.load("data/batiments/statueBois.png").convert_alpha()
@@ -148,6 +149,22 @@ class ImageLoad():
         for i in range(1,52):
             im = pygame.image.load("data/personnages/boss/boss ("+str(i)+").png").convert_alpha()
             liste.append(im)
+        return liste
+    
+    def loadAnnimFleche(self):
+        liste=[[],[],[]]
+        for i in range(0,113):
+            im = pygame.image.load("data/fleche/jaune/Comp 1_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (55, 68))
+            liste[0].append(im)
+        for i in range(0,113):
+            im = pygame.image.load("data/fleche/rouge/Comp 1_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (55, 68))
+            liste[1].append(im)
+        for i in range(0,113):
+            im = pygame.image.load("data/fleche/vert/Comp 1_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (55, 68))
+            liste[2].append(im)
         return liste
             
     def loadAnnimBossBoule(self):
