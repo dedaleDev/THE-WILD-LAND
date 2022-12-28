@@ -296,15 +296,16 @@ def mapBoss(game):
     for i in range(7):
         map.append([0]*7)
     for i in range(7):
-        map[0][i] = Tuile(7, i, 0, game)
-        map[7-1][i] = Tuile(7, i, 7-1, game)
+        map[0][i] = Tuile(7, i, 0, game, True)
+        
+        map[7-1][i] = Tuile(7, i, 7-1, game, True)
 
     for i in range (7):
-        map[i][0] = Tuile(7, 0, i, game)
-        map[i][7-1] = Tuile(7 ,7-1, i, game)
+        map[i][0] = Tuile(7, 0, i, game, True)
+        map[i][7-1] = Tuile(7 ,7-1, i, game, True)
     for y in range(1,6):
         for x in range(1,6):
-            map[y][x] = Tuile(8, x, y, game) 
+            map[y][x] = Tuile(8, x, y, game, True) 
     return map
 
 def addBiomeDeco(map, game):

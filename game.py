@@ -125,11 +125,11 @@ class Game(pygame.sprite.Sprite):
     def initDiffitulte(self):
         diff=aideCSV.valCorrespondante("difficulte")
         if diff=="facile":
-            self.pvKraken = 75
-            self.pvDragon = 400
-            self.pvOursin = 100
-            self.pvMage = 75
-            self.pvGolem = 50
+            self.pvKraken = 60
+            self.pvDragon = 300
+            self.pvOursin = 75
+            self.pvMage = 70
+            self.pvGolem = 40
             self.pvYeti = 500
             
             self.vitesseKraken = 1
@@ -282,6 +282,8 @@ class Game(pygame.sprite.Sprite):
 
     def fonctionYeti(self):
         temps = self.tempsJeuMinute()
+        if self.modeFacile:
+            return 0
         if self.modeExtreme:
             if temps<6:
                 return 0

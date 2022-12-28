@@ -2,7 +2,7 @@ import random
 import pygame
 
 class Tuile(pygame.sprite.Sprite):
-    def __init__(self, type, posX, posY, game):
+    def __init__(self, type, posX, posY, game, explored=False):
         super().__init__()
         self.game = game
         
@@ -47,7 +47,10 @@ class Tuile(pygame.sprite.Sprite):
         self.build=False
         self.traceMob = False
         self.estSelect = False
-        self.isExplored =self.type==7
+        if not explored:
+            self.isExplored =self.type==7
+        else:
+            self.isExplored=True
         self.annimationFog = 256
         ####     POSITION ET IMAGE    ####
         self.imageFog = game.imageFog2.copy()

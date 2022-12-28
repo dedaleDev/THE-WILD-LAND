@@ -608,11 +608,12 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             posXfleche=5
             posYfleche=359
             if game.joueur.indiceEcolo>=80:
+                
                 fenetrePygame.blit(game.images.fleche[0][indiceFleche], (posXfleche,posYfleche))
             elif game.joueur.indiceEcolo>=40:
                 fenetrePygame.blit(game.images.fleche[1][indiceFleche], (posXfleche,posYfleche))
             else:
-                
+                #game.images.changerimgCouleur(game.images.fleche[2][indiceFleche], [0,125,0])
                 fenetrePygame.blit(game.images.fleche[2][indiceFleche], (posXfleche,posYfleche))
             
                 

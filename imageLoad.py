@@ -151,11 +151,23 @@ class ImageLoad():
             liste.append(im)
         return liste
     
+    
+    def changerimgCouleur(self, image, colorModif):
+        for x in range(image.get_width()):
+            for y in range(image.get_height()):
+                # Récupérez la couleur du pixel
+                color = image.get_at((x, y))
+                # Si la couleur est verte, remplacez-la par du rouge
+                if color[0]>0 or color[1]>0:  # Si le canal vert est à 255
+                    image.set_at((x, y), (255, 0, 255))  # Couleur rouge
+                # Sinon, utilisez la couleur originale
+    
     def loadAnnimFleche(self):
         liste=[[],[],[]]
         for i in range(0,113):
             im = pygame.image.load("data/fleche/jaune/Comp 1_"+str(i)+".png").convert_alpha()
             im = pygame.transform.scale(im, (55, 68))
+    
             liste[0].append(im)
         for i in range(0,113):
             im = pygame.image.load("data/fleche/rouge/Comp 1_"+str(i)+".png").convert_alpha()
