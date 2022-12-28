@@ -12,26 +12,25 @@ from selection import colisionItem, majSelection, majSelectionJoueur, majSelecti
 from game import Game
 #from game import background_pil
 from button import Button
-import tuto
 from findPos import *
 fenetrePygame = ""
 
 
-global moveY, moveX, suiviePerso 
+global moveY, moveX, suiviePerso
 
 
 def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation pygame
     
     global infoObject, modification, joueur,timeComtpeur, annimIncendie, delayIncendie,nombreAnnimationIncendie, annimTremblementListe
     global fenetrePygame, moveX, moveY, last, suiviePerso
-    listeBoss=[]
     moveY=0
     moveX=0
     last = 0
     annimIncendieListe=[]
     annimTremblementListe=[]
     annimIncendie=0
-    suiviePerso=136
+    suiviePerso=140 #baisser la valeur pour un suivi plus rapide, 130 = suivi parfait
+    nombreAnnimationIncendie=3
     nombreAnnimationTremblement=3
 
 
@@ -88,7 +87,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         pygame.display.flip()
         clock.tick(60)
     game = Game(infoObject, fenetrePygame, mapChoisie, pointSpawn)
-    game.listeTuto=tuto.createTuto(game)#creation des tutoriels
+    
     # mise a l'echelle du perso les argument sont la surface qui est modifie et la taille
     # valeur de x qui place perso au milieu de l'ecran sur l'axe horizontale
     Imselection = pygame.image.load("data/tuiles/selection.png").convert_alpha()
@@ -98,8 +97,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     bookicon = pygame.transform.scale(bookicon,(50,50))
     pauseicon = pygame.image.load("data/menu/pause.png").convert_alpha()
     pauseicon = pygame.transform.scale(pauseicon,(45,45))
-    indiceBackArene=0
-    indiceBackMonde=0
+
+
 
     infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png").convert_alpha()
     infoMortAnnimal = pygame.image.load("data/cata/infoBulle/infoMort.png").convert_alpha()
@@ -110,8 +109,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     health = pygame.transform.scale(health, (50, 50))
     feuille = pygame.image.load("data/menu/feuille.png").convert_alpha()
     feuille = pygame.transform.scale(feuille, (50, 50))
-    scoreBar = pygame.image.load("data/menu/score.png").convert_alpha()
-    scoreBar = pygame.transform.scale(scoreBar, (scoreBar.get_width()*0.25,scoreBar.get_height()*0.25))
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP])
     for i in range(1,10):
         im = pygame.image.load("data/cata/tremblement/tremblement"+str(i)+".png").convert_alpha()
@@ -135,8 +132,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     game.spawnAnnimal(5)
 
 
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
-    #game.groupMob.add(Mob(game,"dragon", 100, 2, tuile=game.map[4][4], score=150))
+    game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
     #game.groupMob.add(Mob(game,"chameau", 100, 1, tuile=game.map[3][3], score=0, desertique=True, annimal=True, attaque=0))
@@ -165,12 +162,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
 
     while continuer:
-        listeBlitHealthBarDessus=[]
         debut = pygame.time.get_ticks()
         game.joueur.blit=False
         
-        scoreText = smallPolice.render(str(game.joueur.score), True, "Black")
-        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*9.6/10))
+        scoreText = police.render(str(game.joueur.score), True, "Black")
+        scoreRect = scoreText.get_rect(center=(tailleEcran[0]*9.5/10, tailleEcran[1]*9.7/10))
         
         if fps>=60:
             fps =0
@@ -178,7 +174,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         else:
             fps+=1
         
-        
+        game.augmenterMob()
         game.son.jouerMusique2()
         
         modification=False
@@ -189,14 +185,14 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         listeColide = game.checkCollision(game.joueur, game.groupMob)
         
-
-
+        
+        
+        
+        
         if not game.boss:
             gestionMob(game, fps)
         if game.theBoss:
-            game.theBoss.moveBoss()
             game.theBoss.lunchProjectile()
-        
         keys=pygame.key.get_pressed()
         if keys[K_ESCAPE] and pygame.time.get_ticks() - game.lastPause > 250:
             tempsPasse = pause(fenetrePygame)
@@ -204,8 +200,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             game.tempsMort+=tempsPasse
         if keys[K_SPACE]:
             centrerJoueur(game)
-
-        if game.joueur.getTuile().ville or keys[K_1]:
+        if keys[K_LALT]:
             game.boss=True
             game.map=game.mapBoss
             for i in range(7):
@@ -224,7 +219,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             centrerJoueur(game)
             game.taille_matriceX=len(game.map)
             game.taille_matriceY=len(game.map[0])
-            game.theBoss = Boss(game, 200)
+            game.theBoss = Boss(game, 1000)
             
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -233,10 +228,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
             
             
-            if event.type == pygame.MOUSEBUTTONDOWN :  # si clic souris
-                for tutoT in game.listeTuto:
-                    tutoT.CheckClic(pygame.mouse.get_pos())
-                    
+            if event.type == pygame.MOUSEBUTTONDOWN:  # si clic souris
+                
+                
                 for item in inventaire.listeItem: 
                     if colisionItem(item, pygame.mouse.get_pos()) and tuile: #on a une tuile de selectionné
                         batimentConstruit = game.joueur.construireBatiment(tuile, item)
@@ -268,16 +262,18 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
        
         
         
-            
         if continuer: 
+            
             deplacement_cam(mouse, game, True)
+ 
             #### Deplacement des mobs
+
             for tour in game.groupDefense:
                 tour.attack()
             
             for projo in game.groupProjectile:
                 projo.moveProjectile()
-                
+
             if move_ticker>0:
                 move_ticker-=1
             
@@ -285,36 +281,32 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             ####CATASTROPHE
             
-            if fps==0 :
+            if fps==0 or fps==30:
                 if game.groupMob.__len__()-game.nbAnnimaux<9:
                     game.spawMob()
-                    game.majMob()
             
                 
+            if tick_ressource==0 or tick_ressource==300:
+                for tuileLoot in game.groupTuileBoost:
+                    if tuileLoot.type==2:
+                        game.groupLoot.add(Loot(0, 2, 0, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(0, 2, 0, 0)
+                    if tuileLoot.type==3:
+                        game.groupLoot.add(Loot(0, 0, 2, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(0, 0, 0, 2)
+                    if tuileLoot.type==4:
+                        game.groupLoot.add(Loot(2, 0, 0, 0, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(2, 0, 0, 0)
+                    if tuileLoot.type==1:
+                        game.groupLoot.add(Loot(0, 0, 0, 2, tuileLoot.Xoriginal+70, tuileLoot.Yoriginal+50, game))
+                        game.joueur.setRessource(0, 0, 2, 0)
             
             modification=True
             #affichage selection
             if tick_ressource==0:
                 tick_ressource=600
                 game.joueur.ajouterRessources()
-                for batiment in game.listeCaseBatiment:
-                    
-                    if batiment in game.listeCaseBatiment:
-                        bonus=3
-                    
-                    if batiment.type==2 and batiment.mine:
-                        game.groupLoot.add(Loot(0, 4+bonus, 0, 0, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
-                        
-                    if batiment.type==4 and batiment.scierie:
-                        
-                        game.groupLoot.add(Loot(5+bonus, 0, 0, 0, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
-                    if batiment.type==3 and batiment.moulin:
-                        game.groupLoot.add(Loot(0, 0, 3, 0, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
-                    if batiment.type==1:
-                        if batiment.elevage:
-                            game.groupLoot.add(Loot(0, 0, 0, 4+bonus, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
-                        if batiment.champs:
-                            game.groupLoot.add(Loot(0, 0, 0, 1+bonus, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
+                
                 chanceCoffre = random.randint(0,100)
                 if chanceCoffre < tirageCoffre :
                     game.joueur.genererCoffre()
@@ -337,37 +329,21 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             else:
                 tick_ressource-=1
             
-
+            if modification:
+                pass
+                #game.genererImg()
             alerteVille=False #une ville est presente sur la map
             game.moveX, game.moveY = moveX, moveY
             listeMontagne=[]
-            if game.boss:
-                fenetrePygame.blit(game.backgroundArene[indiceBackArene], (0,0))
-                if fps%2==0:
-                    indiceBackArene+=1
-                if indiceBackArene>=len(game.backgroundArene):
-                    indiceBackArene=0
-            else:
-                fenetrePygame.blit(game.backgroundMonde[indiceBackMonde], (0,0))
-                if fps%4==0:
-                    indiceBackMonde+=1
-                if indiceBackMonde>=len(game.backgroundMonde):
-                    indiceBackMonde=0
             for y in range(game.taille_matriceY):
                 for x in range(game.taille_matriceX):
                     tuileBlit = game.map[y][x]
                     if tuileBlit.isExplored:
-                        if (tuileBlit.type==4 or tuileBlit.type==10) and not game.boss: #affichage des annim sans socle
-                            
-                            listeMontagne.append(tuileBlit)
+                        
                         if (tuileBlit.type==2 or tuileBlit.type==7) and not game.boss:
                             listeMontagne.append(tuileBlit)
-                            
-                            
-                            if x==0 or y==game.taille_matriceY-1:
-                                fenetrePygame.blit(game.images.backVolcan, (tuileBlit.rect.x, tuileBlit.rect.y+70))
                         else:
-                            #affichage des tuiles
+                            #affichage des tuile
                             #fenetrePygame.blit(tuileBlit.image, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
                             if tuileBlit.arene:
                                 fenetrePygame.blit(tuileBlit.image, (tuileBlit.rect.x, tuileBlit.rect.y-360-145))
@@ -376,24 +352,22 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                                     
                                     fenetrePygame.blit(tuileBlit.image, tuileBlit.rect)
                             
-                            if tuileBlit.surAnnimListe:
-                                fenetrePygame.blit(tuileBlit.surAnnimListe[tuileBlit.indicesurAnnim], tuileBlit.rect)
+                            
                             if tuileBlit.indiceSurbrillance>=0:
                                 fenetrePygame.blit(tuileBlit.surbrillance[tuileBlit.indiceSurbrillance], tuileBlit.rect)
-                            if tuileBlit.statue and tuileBlit.type!=4 and tuileBlit.type!=10:
+                            if tuileBlit.statue:
                                 fenetrePygame.blit(game.images.statue(tuileBlit.type), tuileBlit.rect)
-                        if tuileBlit.type!=4 and tuileBlit.type!=10:
-                            tuileBlit.changeAnnim()
-                        else:
-                            tuileBlit.changeAnnim(annim=False)
+
+
+                        tuileBlit.changeAnnim()
                     if tuileBlit.traceMob:
                         fenetrePygame.blit(Imselection, (tuileBlit.getRectX(), tuileBlit.getRectY()))
-                
                     if tuileBlit.annimationFog>0 and tuileBlit.isExplored:
                         
                         fenetrePygame.blit(tuileBlit.imageFog, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
                         tuileBlit.annimationFog-=8
                         tuileBlit.imageFog.set_alpha(tuileBlit.annimationFog)
+                        
                     elif not tuileBlit.isExplored:
                         fenetrePygame.blit(tuileBlit.imageFog, (moveX+tuileBlit.Xoriginal, moveY+tuileBlit.Yoriginal))
                         
@@ -431,8 +405,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
 
 
+            
+
             if tuile :
-                
                 if not (abs(tuile.posX-game.joueur.posX)<2 and abs(tuile.posY-game.joueur.posY)<2):
                     tuile.estSelect=False
                     tuile=False
@@ -446,15 +421,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 if not game.boss:
                     if game.map[mob.posY][mob.posX].isExplored :
                         #fenetrePygame.blit(mob.skin, (mob.rect.x, mob.rect.y))
-                        if mob.name=="dragon":
-                            listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1]+500,None, None, None))
-                        else:
-                            listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1],None, None, None))
+                        listeOrdre.append((mob.skin, mob.rect.x, mob.rect.y, mob.rect.center[1], None, None))
                     if not mob.annimal:
-                        if mob.name=="dragon":
-                            listeBlitHealthBarDessus.append(mob)
                         mob.update_health_bar()
-                        
             
                 
     
@@ -462,54 +431,47 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             ####PASSAGE DES MONTAGNES
             if tuile :
                 fenetrePygame.blit(Imselection, (tuile.getRectX(), tuile.getRectY()))
-                if not ((tuile.posX, tuile.posY) in listeBoss):
-                    listeBoss.append((tuile.posX, tuile.posY))
-                if tuile.tour:
+                if tuile.tour:      
                     #pygame.draw.circle(fenetrePygame, (155,155,155), (tuile.tour.rect.x+30, tuile.tour.rect.y), tuile.tour.range, width=3, )
                     pass
             decalageYcentre = -100
             for tuile2 in listeMontagne:
-                if tuile2.type==2:
+                if tuile2.type==2 :
                     center = tuile2.centerOriginal
                     if tuile2.mortier:
-                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre, None, None, tuile2.type))
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-85, center[1]+moveY-92-decalageYcentre, None, None))
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112))
                     else:
-                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue, tuile2.type))
-                elif tuile2.type==4 or tuile2.type==10:
-                    center = tuile2.centerOriginal
-                    
-                    listeOrdre.append((tuile2.annimation[0], moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-75, center[1]+moveY-100-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue, tuile2.type))
+                        
+                        listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-112, moveY+center[1]-112-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue))
                 else :
                     center = tuile2.centerOriginal
                     
                     #fenetrePygame.blit(tuile2.image, (moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-80))
                     
-                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue, tuile2.type))
+                    listeOrdre.append((tuile2.image, moveX+tuile2.Xoriginal, moveY+tuile2.Yoriginal-92, center[1]+moveY-92-decalageYcentre, tuile2.indiceSurbrillance, tuile2.statue))
             
             if not game.joueur.bateau:
                 fenetrePygame.blit(game.joueur.skin, (game.joueur.rect.x, game.joueur.rect.y))
                 center = game.joueur.rect.center
                 
-                listeOrdre.append((game.joueur.skin, game.joueur.rect.x, game.joueur.rect.y, center[1], None, None, None))
+                listeOrdre.append((game.joueur.skin, game.joueur.rect.x, game.joueur.rect.y, center[1], None, None))
 
             elif game.joueur.bateau:
                 #fenetrePygame.blit(game.joueur.skinBateau, (game.joueur.rect.x-15, game.joueur.rect.y+30))
                 center = game.joueur.rect.center
-
-                listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None, None))
+                
+                listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None))
             if game.theBoss:
-                listeOrdre.append((game.theBoss.image, game.theBoss.rect.x-15, game.theBoss.rect.y+30, center[1]+30, None, None, None))
-                listeOrdre.append((game.theBoss.imageBoule, game.theBoss.rect.x+40, game.theBoss.rect.y+110, center[1]+32, None, None, None))
-                #game.theBoss.rect.x-15, game.theBoss.rect.y+30
+                listeOrdre.append((game.theBoss.image, game.theBoss.rect.x-15, game.theBoss.rect.y+30, center[1]+30, None, None))
             listeOrdre.sort(key=lambda x: x[3])
             
-            for image, posX, posY, center, surbrillance, statue, typet in listeOrdre:
+            for image, posX, posY, center, surbrillance, statue in listeOrdre:
                 fenetrePygame.blit(image, (posX, posY))
                 if surbrillance!=-1 and surbrillance!=None:
                     fenetrePygame.blit(game.images.surbrillance[surbrillance], (posX, posY))
                 if statue:
-                    fenetrePygame.blit(game.images.statue(typet), (posX+30, posY+30))
+                    fenetrePygame.blit(game.images.statue(2), (posX+30, posY+30))
             for loot in game.groupLoot:
                 loot.update(fenetrePygame, moveX,moveY)
             
@@ -522,11 +484,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     #pygame.draw.rect(fenetrePygame, (255,255,255), build.actuelClick, 1)
                     
                     fenetrePygame.blit(build.imageClickPassif, build.actuelClick)
-            for mob in listeBlitHealthBarDessus:
-                mob.update_health_bar()
-                
+            
             if tuile :
-                
                 liste = selectionDispoItem(game, tuile, game.joueur)
                 inventaire = Inventaire(tuile.getRectX()-50, tuile.getRectY()-25, liste, game)
                 inventaire.blitInventaire(fenetrePygame, game.joueur)
@@ -542,7 +501,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(game.imCollision,(random.randint(game.joueur.rect.x-20, game.joueur.rect.x+20), random.randint(game.joueur.rect.y, game.joueur.rect.y+120)))
             
             if alerteVille:
-                fenetrePygame.blit(game.images.ville, (tuileVille.rect.x, tuileVille.rect.y-100))
+                fenetrePygame.blit(game.images.ville, (tuileVille.rect.x+30, tuileVille.rect.y-260))
             
             if (annimIncendie or  game.incendie) and type(annimIncendieListe[-1])==Tuile :
                 if choixIncendie:
@@ -571,13 +530,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             nombreAnnimationIncendie=3
                             
                             annimIncendie=0
-
-
-            #(infoObject[0]/1.7*(190*i), 25)
-
+            
             for i in range(len(game.joueur.ressourcesIMG)):
-                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 0.9/100*infoObject[1]))
-                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 2.3/100*infoObject[1]))
+                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]-190-(190*i), 25))
+                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]-120-(190*i), 3/100*infoObject[1]))
                 if game.joueur.RessourcesInfoModified[i] != False:
                     timeComtpeur +=1
                     if timeComtpeur <=60 :
@@ -586,20 +542,15 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                         timeComtpeur = 0
                         game.joueur.resetRessourcesModified()
             game.joueur.update_health_bar()
-            if game.theBoss:
-                
-                game.theBoss.update()
-                
+            
             if game.joueur.imageArmure:
                 fenetrePygame.blit(game.joueur.imageArmure, (22,80))
             for mob in game.groupMob:
                 if not game.boss:
-                    pass
-                    #fenetrePygame.blit(imDebug, mob.getFeet())
+                    fenetrePygame.blit(imDebug, mob.getFeet())
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (20,15))
             fenetrePygame.blit(feuille, (10,368))
-            fenetrePygame.blit(scoreBar, (game.infoObject[0]*0.9,game.infoObject[1]*0.93))
             fenetrePygame.blit(scoreText, scoreRect)
             if tickBatiment<60:
                 fenetrePygame.blit(game.imageErreurRessource, (infoObject[0]-game.imageErreurRessource.get_width()-(infoObject[0]-game.imageErreurRessource.get_width())/2,infoObject[1] - 200))
@@ -608,27 +559,20 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(infoMortAnnimal, (tailleEcran[0]- 400, tailleEcran[1] - 700))
                 game.infoMortAnnimal-=1
             
-            #for pos in game.listeDebug:
-                #fenetrePygame.blit(imDebug2, pos)
+            for pos in game.listeDebug:
+                fenetrePygame.blit(imDebug2, pos)
 
             if game.joueur.estMort:
                 mort(game)
-            #if game.joueur.ville:
-                #victoire(game)
+            if game.joueur.ville:
+                victoire(game)
+            test = police.render(str(int(clock.get_fps())), True, (255, 255, 0))#hjhgfdfghjklkjhgfdsq
+            fenetrePygame.blit(test, (0,100))
+
+
             
-            
-            
-            if False: #### PASSER A TRUE POUR HITBOX
-                for projectile in game.groupProjectile:
-                    pygame.draw.rect(fenetrePygame, (255,255,255), projectile.rect, width=3)
-                
-                for mob in game.groupMob:
-                    pygame.draw.rect(fenetrePygame, (255,255,255), mob.rect, width=3)
-                for mob in game.groupJoueur:
-                    pygame.draw.rect(fenetrePygame, (255,255,255), mob.rect, width=3)
 
             if game.stat : 
-                tuto.disableTuto(game)
                 game.stat =False
                 fenetrePygame.blit(statImg, (infoObject[0]*0.705,infoObject[1]*0.1))
                 #recup 
@@ -646,7 +590,6 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
                 titleCombat= smallPolice.render("Combats ", True, (0, 0, 0))
                 ennemieDegat= verySmallPolice.render("Pire ennemi : "+str(ennemieDegat), True, (0, 0, 0))
-                fps2 = smallPolice.render("fps:"+str(int(clock.get_fps())), True, (0,0, 0))
 
 
                 #blit : 
@@ -661,37 +604,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
                 fenetrePygame.blit(titleCombat,(infoObject[0]*0.72, infoObject[1]*0.51))
                 fenetrePygame.blit(ennemieDegat,(infoObject[0]*0.74, infoObject[1]*0.55))
-                
-                fenetrePygame.blit(fps2,(infoObject[0]*0.72, infoObject[1]*0.6))
 
 
-            if game.text:
-                game.displayTxt()
             
-            #tuto
-            if game.tempsJeu()>1000*5:
-                tuto.upadateStatutTuto(game,"move")
-            if game.tempsJeu()>1000*30:
-                tuto.upadateStatutTuto(game,"mouse")
-            if game.tempsJeu()>1000*60:
-                tuto.upadateStatutTuto(game,"build")
-            if game.tempsJeu()>1000*60*5:
-                tuto.upadateStatutTuto(game,"esc")
-            if game.tempsJeu()>1000*60*4:
-                tuto.upadateStatutTuto(game,"health")
-            if game.tempsJeu()>1000*60*10:
-                tuto.upadateStatutTuto(game,"score")
-            if game.tempsJeu()>1000*60*6:
-                tuto.upadateStatutTuto(game,"statut")
-            if game.tempsJeu()>1000*60*8:
-                tuto.upadateStatutTuto(game,"stat")
-            if game.tempsJeu()>1000*60*1.3:
-                tuto.upadateStatutTuto(game,"espace")
-            tuto.afficherTuto(fenetrePygame,game)
-            game.joueur.updateBateau()
-            #if game.theBoss:
-                #if game.theBoss.directionRush:
-                    #pygame.draw.rect(fenetrePygame, (255,0,255), pygame.Rect(game.theBoss.directionRush.rect.x, game.theBoss.directionRush.rect.y, 100,100))
+  
             
             pygame.display.flip()
             
@@ -753,7 +669,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_d] or keys[K_RIGHT]:
         if bug:=joueur.deplacementAutorise("droite") :
             
-            deplacementCamDroite((infoObject[0] - suiviePerso,0), game, True, True)
+            deplacementCamDroite((infoObject[0] - suiviePerso,0), game, True)
             joueur.goRight()
             tuile = majSelectionJoueur(game)
             if tuile!=None:
@@ -770,7 +686,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_q]or keys[K_LEFT]:
             if bug:=joueur.deplacementAutorise("gauche"):
                 #joueur.majBateau()
-                deplacementCamGauche((suiviePerso, 0), game, True, True)
+                deplacementCamGauche((suiviePerso, 0), game, True)
                 joueur.goLeft()
                 tuile = majSelectionJoueur(game)
                 if tuile!=None:
@@ -784,7 +700,7 @@ def KEY_move(game,joueur,fenetre):
     if keys[K_z] or keys[K_UP]:
             if bug:=joueur.deplacementAutorise("haut"):
                 #joueur.majBateau()
-                deplacementCamHaut((0,suiviePerso), game, True, True)
+                deplacementCamHaut((0,suiviePerso), game, True)
                 joueur.goUp(haut)
                 tuile = majSelectionJoueur(game)
                 if tuile!=None:
@@ -796,7 +712,7 @@ def KEY_move(game,joueur,fenetre):
 
     if keys[K_s]or keys[K_DOWN]:
             if bug:=joueur.deplacementAutorise("bas"):
-                deplacementCamBas((0, infoObject[1]-suiviePerso), game, True, True)
+                deplacementCamBas((0, infoObject[1]-suiviePerso), game, True)
                 joueur.goDown(bas)
                 tuile = majSelectionJoueur(game)
                 if tuile!=None:
@@ -807,7 +723,7 @@ def KEY_move(game,joueur,fenetre):
                         if game.deleteFog(joueur.posX+i, joueur.posY+j): ##MODIFICATION
                             modification=True
                 
-
+        
     if keys[K_b]:
         if game.map[joueur.posY][joueur.posX].port:
             joueur.bateau=True
@@ -831,25 +747,25 @@ def deplacement_cam(mouse, game, bloquage=False): #gestion du déplacement de la
     
 def centrerJoueur(game):
     while game.joueur.rect.x < infoObject[0]//2-10:
-        deplacementCamGauche((49,0), game, False)
+        deplacementCamGauche((199,0), game, False)
 
     while game.joueur.rect.x > infoObject[0]//2+10:
-        deplacementCamDroite((infoObject[0]-49,0), game, False)
+        deplacementCamDroite((infoObject[0]-199,0), game, False)
 
 
     while game.joueur.rect.y > infoObject[1]//2-10:
-        deplacementCamBas((0,infoObject[1]-49), game, False)
+        deplacementCamBas((0,infoObject[1]-199), game, False)
 
     while game.joueur.rect.y < infoObject[1]//2+10:
-        deplacementCamHaut((0,49), game, False)
+        deplacementCamHaut((0,199), game, False)
 
 
 
-def deplacementCamBas(mouse, game, bloquage, suiviePerso=False):
+def deplacementCamBas(mouse, game, bloquage):
     global moveY, moveX
     x=infoObject[1]-mouse[1]
     y=f(x)
-    if x < 50 or suiviePerso:  # Si souris en bas
+    if x < 200 :  # Si souris en bas
         if not bloquage or (game.map[-1][0].Yoriginal+moveY>infoObject[1]-250):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
@@ -867,11 +783,11 @@ def deplacementCamBas(mouse, game, bloquage, suiviePerso=False):
                 defense.rect.y+=y
             for pos in game.listeDebug:
                 pos[1]+=y
-def deplacementCamHaut(mouse, game, bloquage, suiviePerso=False):
+def deplacementCamHaut(mouse, game, bloquage):
     global moveY, moveX
     x = mouse[1]
     y = -f(x)
-    if x < 50 or suiviePerso: #Si souris en haut
+    if x < 200 : #Si souris en haut
         if not bloquage or (game.map[0][-1].rect.y<100):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
@@ -889,11 +805,11 @@ def deplacementCamHaut(mouse, game, bloquage, suiviePerso=False):
             for pos in game.listeDebug:
                 pos[1]+=y
         
-def deplacementCamGauche(mouse, game, bloquage, suiviePerso=False):
+def deplacementCamGauche(mouse, game, bloquage):
     global moveY, moveX
     x= mouse[0]
     y = -f(x)
-    if x < 50 or suiviePerso:  # Si souris à gauche
+    if x < 200:  # Si souris à gauche
         if not bloquage or (game.map[0][0].rect.x<100):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
@@ -911,13 +827,13 @@ def deplacementCamGauche(mouse, game, bloquage, suiviePerso=False):
             for pos in game.listeDebug:
                 pos[0]+=y
         
-def deplacementCamDroite(mouse, game, bloquage, suiviePerso=False):
+def deplacementCamDroite(mouse, game, bloquage):
     global moveY, moveX
     x = infoObject[0]-mouse[0]
     y=f(x)
 
 
-    if x < 50 or suiviePerso:  # Si souris à droite
+    if x < 200:  # Si souris à droite
         if not bloquage or (game.map[-1][-1].rect.x>infoObject[0]-400):
             for i in range(len(game.map)):
                 for j in range(len(game.map[0])):
@@ -968,7 +884,6 @@ def pause(fenetre):
             return pygame.time.get_ticks()-debutPause
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN :
-                
                 if reprendre.checkForInput(mouse):
                     pause=False
                     return pygame.time.get_ticks()-debutPause
