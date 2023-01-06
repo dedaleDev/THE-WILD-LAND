@@ -248,7 +248,6 @@ class Game(pygame.sprite.Sprite):
 
 
     def fonctionKraken(self): 
-        return 4
         temps = self.tempsJeuMinute()
     
         #if self.modeFacile:
