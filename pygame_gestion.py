@@ -69,8 +69,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     opti = int(aideCSV.valCorrespondante("optimisation"))
     
     if not opti:
-        #flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
-        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]))
+        flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]),flags)
         
     elif opti == 1 :
         flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
