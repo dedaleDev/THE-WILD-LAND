@@ -1,8 +1,8 @@
 
-import pygame
 import tuto
 from item import Item
-def majSelection(game, pos, joueur=False):
+def majSelection(game, pos, joueur=False, infoDehors=False):
+    clicDehors=True
     tuileSelect = False
     souris = pos
     if not joueur:
@@ -11,6 +11,7 @@ def majSelection(game, pos, joueur=False):
                 pos_in_mask = souris[0] - game.map[i][j].rect.x, souris[1] - game.map[i][j].rect.y
                 touching = game.map[i][j].rect.collidepoint(souris) and game.map[i][j].mask.get_at(pos_in_mask)
                 if touching :
+                    clicDehors=False
                     if game.map[i][j].estSelect:
                         game.map[i][j].setSelect(False)
                         
@@ -20,13 +21,13 @@ def majSelection(game, pos, joueur=False):
                         tuileSelect = game.map[i][j]
                 else :
                     game.map[i][j].setSelect(False)
-                    
     else:
         for i in range(-1, 2):
             for j in range(-1, 2):
                 pos_in_mask = souris[0] - game.map[joueur.posY+i][joueur.posX+j].rect.x, souris[1] - game.map[joueur.posY+i][joueur.posX+j].rect.y
                 touching = game.map[joueur.posY+i][joueur.posX+j].rect.collidepoint(souris) and game.map[joueur.posY+i][joueur.posX+j].mask.get_at(pos_in_mask)
                 if touching :
+                    clicDehors=False
                     if game.map[joueur.posY+i][joueur.posX+j].estSelect:
                         game.map[joueur.posY+i][joueur.posX+j].setSelect(False)
                         pass
@@ -37,7 +38,10 @@ def majSelection(game, pos, joueur=False):
                 else :
                     game.map[joueur.posY+i][joueur.posX+j].setSelect(False)
                     pass
-    return tuileSelect
+    if not infoDehors:
+        return tuileSelect
+    else:
+        return tuileSelect, clicDehors
 
 def majSelectionJoueur(game, xSup=0, ySup=0): #xSup decalage en x
     tuileSelect = False

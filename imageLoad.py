@@ -111,6 +111,8 @@ class ImageLoad():
         
         self.bossAnnim=self.loadAnnimBoss()
         
+        
+        self.annimBadSelection = self.loadAnnimBadSelection()
         for i in range(15):
             self.annim3eau0.append(self.annim3eau0[-1])
             self.annim7Barriere3.append(self.annim7Barriere3[-1])
@@ -151,7 +153,13 @@ class ImageLoad():
             liste.append(im)
         return liste
     
-    
+    def loadAnnimBadSelection(self):
+        liste=[]
+        for i in range(1,78):
+            im = pygame.image.load("data/menu/badSelection/badSelect"+str(i)+".png").convert_alpha()
+            im.set_alpha(100)
+            liste.append(im)
+        return liste
     def changerimgCouleur(self, image, colorModif):
         for x in range(image.get_width()):
             for y in range(image.get_height()):

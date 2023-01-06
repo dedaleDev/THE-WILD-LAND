@@ -248,6 +248,7 @@ class Game(pygame.sprite.Sprite):
 
 
     def fonctionKraken(self): 
+        return 4
         temps = self.tempsJeuMinute()
     
         #if self.modeFacile:
@@ -316,8 +317,8 @@ class Game(pygame.sprite.Sprite):
         pygame.display.flip()
     
     def majCata(self):
-        if self.joueur.indiceEcolo>0.50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 15:#000 : #INCENDIE
-            if not random.randint(0,2) or True: #quand on tombe sur un 0, donc incendie toute les 3 min environ
+        if self.joueur.indiceEcolo>50 and len(self.listeCaseBatiment)>0 and self.tempsJeu()-self.incendieDelay > 15000 : #INCENDIE
+            if not random.randint(0,2): #quand on tombe sur un 0, donc incendie toute les 3 min environ
                 indice=random.randint(0, len(self.listeCaseBatiment)-1)
                 tuile = self.listeCaseBatiment[indice]
                 self.listeCaseBatiment.pop(indice)

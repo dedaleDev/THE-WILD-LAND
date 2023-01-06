@@ -164,8 +164,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     verySmallTaillePolice = round(1.1/100*diagonalEcran)
     verySmallPolice = get_font(verySmallTaillePolice)
     indiceFleche=0
-
+    badSelec=-1
+    print(game.modeFacile)
+    print(game.modeDifficile)
     while continuer:
+        
         listeBlitHealthBarDessus=[]
         debut = pygame.time.get_ticks()
         game.joueur.blit=False
@@ -247,10 +250,14 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             tickBatiment=0
                 
                 if not cliqueItem:
-                    tuile = majSelection(game, pygame.mouse.get_pos(), game.joueur)
-
+                    tuile, cliEnDehors = majSelection(game, pygame.mouse.get_pos(), game.joueur, infoDehors=True)
+                    if cliEnDehors:
+                        if badSelec==-1:
+                            badSelec=0
                     
 
+                    
+                
                 else :
                     if tuile:
                         tuile.estSelect=False
@@ -259,6 +266,13 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 if tuile and tuile.build:
                     tuile.estSelect=False
                     tuile=False
+                if tuile:
+                    for build in game.groupBuild:
+                        rectBuild = pygame.Rect(build.rect.x+10, build.rect.y-80-30,220,240)
+                        if rectBuild.collidepoint(pygame.mouse.get_pos()):
+                            tuile.estSelect=False
+                            tuile=False
+                            break
                     
                 for build in game.groupBuild:
                     if build.checkClick():
@@ -271,6 +285,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
             
         if continuer: 
+            
             deplacement_cam(mouse, game, True)
             #### Deplacement des mobs
             for tour in game.groupDefense:
@@ -318,7 +333,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                             game.groupLoot.add(Loot(0, 0, 0, 1+bonus, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
                 chanceCoffre = random.randint(0,100)
                 if chanceCoffre < tirageCoffre :
-                    game.joueur.genererCoffre()
+                    if not game.boss:
+                        game.joueur.genererCoffre()
                     tirageCoffre=0
                 else :
                     tirageCoffre+=5
@@ -682,7 +698,19 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 
                 fenetrePygame.blit(fps2,(infoObject[0]*0.72, infoObject[1]*0.6))
 
-
+            if badSelec>=0:
+                
+                if fps%2:
+                    badSelec+=1
+                for x in range(-1,2):
+                    for y in range(-1,2):
+                        if x!=0 or y!=0:
+                            fenetrePygame.blit(game.images.annimBadSelection[badSelec], game.map[game.joueur.posY+y][game.joueur.posX+x])
+                if badSelec==76:
+                    badSelec=-1
+                
+                
+                
             if game.text:
                 game.displayTxt()
             
@@ -707,6 +735,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 tuto.upadateStatutTuto(game,"espace")
             tuto.afficherTuto(fenetrePygame,game)
             game.joueur.updateBateau()
+            
+            
             #if game.theBoss:
                 #if game.theBoss.directionRush:
                     #pygame.draw.rect(fenetrePygame, (255,0,255), pygame.Rect(game.theBoss.directionRush.rect.x, game.theBoss.directionRush.rect.y, 100,100))
@@ -1090,14 +1120,23 @@ def gestionMob(game, fps):
             mob.the_path=[(destY, destX)]
             #mob.the_path= findPos(game, destX, destY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien, desertique=mob.desertique)
             mob.last = now
+        
+        elif (now-mob.last)>=mob.cooldown and mob.fini :
+            recherchePossible=False
+            if mob.aquatique: #les kraken
+                if game.joueur.getTuile().type==3: 
+                    recherchePossible=True
+            elif mob.aerien:    #les dragons
+                recherchePossible=True
+            elif not game.joueur.getTuile().caseBloquante(): #tous les autres
+                recherchePossible=True
+                
+            if recherchePossible:
+                mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
+                mob.last = now
+                if True:
+                    traceMob(game, mob.the_path)
             
-        elif now-mob.last>=mob.cooldown and mob.fini and not (game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and not mob.aquatique and not mob.aerien) and not (not game.map[game.joueur.posY][game.joueur.posX].caseBloquante() and mob.aquatique):
-            mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
-            mob.last = now
-            if False:
-                traceMob(game, mob.the_path)
-            
-
         if not mob.slow :
             
             mob.fini = mob.allerVersTuile(mob.the_path[0][1], mob.the_path[0][0])
