@@ -145,9 +145,9 @@ def selectionDispoItem(game, tuile, joueur):
                     optionDIspo.append(Item(game, "armure3", 0, 250,0,150))
                 elif joueur.nomArmure=="armure3":
                     optionDIspo.append(Item(game, "armure4", 0, 350,0,250))
-                elif joueur.nomArmure=="marteau1":
+                if joueur.nomProj=="joueur":
                     optionDIspo.append(Item(game, "marteau1", 0, 150,0,100))
-                elif joueur.nomArmure=="marteau2":
+                elif joueur.nomProj=="marteau1":
                     optionDIspo.append(Item(game, "marteau2", 0, 300,0,200))
     return optionDIspo
 

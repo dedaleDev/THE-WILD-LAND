@@ -69,8 +69,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     opti = int(aideCSV.valCorrespondante("optimisation"))
     
     if not opti:
-        flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
-        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]),flags)
+        #flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
+        fenetrePygame = pygame.display.set_mode((infoObject[0], infoObject[1]))
         
     elif opti == 1 :
         flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
@@ -136,7 +136,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     game.spawnAnnimal(5)
 
 
-    #game.groupMob.add(Mob(game,"golem_des_forets", 100, 2, tuile=game.map[4][4], score=150))
+    game.groupMob.add(Mob(game,"golem_des_forets", 2, 2, tuile=game.map[4][4], score=150))
+
     #game.groupMob.add(Mob(game,"dragon", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
     #game.groupMob.add(Mob(game,"oiseau", 100, 2, tuile=game.map[4][4], score=150, aerien=True, annimal=True, attaque=0))
@@ -615,6 +616,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     #fenetrePygame.blit(imDebug, mob.getFeet())
             game.joueur.update_ecolo_bar()
             fenetrePygame.blit(health, (20,15))
+            
+            for annimMort in game.groupMobMort:
+                annimMort.update(fenetrePygame)
             fenetrePygame.blit(feuille, (10,368))
             if fps%2==0:
                 indiceFleche+=1
@@ -680,9 +684,10 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
                 titleCombat= smallPolice.render("Combats ", True, (0, 0, 0))
                 ennemieDegat= verySmallPolice.render("Pire ennemi : "+str(ennemieDegat), True, (0, 0, 0))
-                fps2 = smallPolice.render("fps:"+str(int(clock.get_fps())), True, (0,0, 0))
-
-
+                fps2 = smallPolice.render("FPS  "+str(int(clock.get_fps())), True, (0,0, 0))
+                temps=game.tempsJeuMinute()-int(game.tempsJeuMinute())
+                temps = temps/1*60
+                time = smallPolice.render("Temps  "+str(int(game.tempsJeuMinute()))+":"+str(round(temps,1)), True, (0,0, 0))
                 #blit : 
                 fenetrePygame.blit(productionWood,(infoObject[0]*0.91, infoObject[1]*0.29))
                 fenetrePygame.blit(productionWater,(infoObject[0]*0.91, infoObject[1]*0.34))
@@ -697,9 +702,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 fenetrePygame.blit(ennemieDegat,(infoObject[0]*0.74, infoObject[1]*0.55))
                 
                 fenetrePygame.blit(fps2,(infoObject[0]*0.72, infoObject[1]*0.6))
-
-            if badSelec>=0:
+                fenetrePygame.blit(time,(infoObject[0]*0.72, infoObject[1]*0.65))
                 
+            if badSelec>=0:
                 if fps%2:
                     badSelec+=1
                 for x in range(-1,2):
@@ -713,7 +718,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 
             if game.text:
                 game.displayTxt()
-            
+                
+            if game.boss:
+                game.theBoss.update_health_bar()
             #tuto
             if game.tempsJeu()>1000*5:
                 tuto.upadateStatutTuto(game,"move")
@@ -856,12 +863,12 @@ def KEY_move(game,joueur,fenetre):
                             modification=True
                 
 
-    if keys[K_b]:
+    """if keys[K_b]:
         if game.map[joueur.posY][joueur.posX].port:
             joueur.bateau=True
     if keys[K_v]:
         if game.map[joueur.posY][joueur.posX].port:
-            joueur.bateau = False
+            joueur.bateau = False"""
     if bug==None:
         print("bug")
         tuile = majSelectionJoueur(game)
@@ -915,6 +922,9 @@ def deplacementCamBas(mouse, game, bloquage, suiviePerso=False):
                 defense.rect.y+=y
             for pos in game.listeDebug:
                 pos[1]+=y
+            for annimMort in game.groupMobMort:
+                annimMort.posY+=y
+                
 def deplacementCamHaut(mouse, game, bloquage, suiviePerso=False):
     global moveY, moveX
     x = mouse[1]
@@ -936,6 +946,8 @@ def deplacementCamHaut(mouse, game, bloquage, suiviePerso=False):
                 defense.rect.y+=y
             for pos in game.listeDebug:
                 pos[1]+=y
+            for annimMort in game.groupMobMort:
+                annimMort.posY+=y
         
 def deplacementCamGauche(mouse, game, bloquage, suiviePerso=False):
     global moveY, moveX
@@ -958,6 +970,8 @@ def deplacementCamGauche(mouse, game, bloquage, suiviePerso=False):
                 defense.rect.x+=y
             for pos in game.listeDebug:
                 pos[0]+=y
+            for annimMort in game.groupMobMort:
+                annimMort.posX+=y
         
 def deplacementCamDroite(mouse, game, bloquage, suiviePerso=False):
     global moveY, moveX
@@ -982,12 +996,55 @@ def deplacementCamDroite(mouse, game, bloquage, suiviePerso=False):
                 defense.rect.x+=y
             for pos in game.listeDebug:
                 pos[0]+=y
+            for annimMort in game.groupMobMort:
+                annimMort.posX+=y
             
 def f(x):  #fonction vitesse deplacement cam
     y  = round(x*0.04-10)
     if y>20:
         return 15
     return y
+
+def pause(fenetre):
+    global infoObject
+    tailleEcran = infoObject[0], infoObject[1]
+    diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
+    pause=True
+    scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1]
+    debutPause = pygame.time.get_ticks()
+    clock = pygame.time.Clock()
+    font = pygame.font.Font("data/menu/font.ttf", round(3/100*diagonalEcran))
+    imBouton = pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), scaleButton)
+    menu = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+40/100*tailleEcran[1]), "menu", font, "white", "#999999")
+    librairie = False
+    
+    while(pause):
+        mouse = pygame.mouse.get_pos()
+        keys=pygame.key.get_pressed()
+        if keys[K_ESCAPE] and pygame.time.get_ticks()-debutPause>250:
+            pause=False
+            return pygame.time.get_ticks()-debutPause
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN :
+                if menu.checkForInput(mouse):
+                    main_menu.main_menu()
+        fenetre.fill("white")
+        if librairie:
+            fenetrePygame.blit(librairieIMG,(infoObject[0]-librairieIMG.get_width()-(infoObject[0]-librairieIMG.get_width())/2,200))
+            fermer.changeColor(mouse)
+            fermer.update(fenetre)
+        else:
+            reprendre.changeColor(mouse)
+            reprendre.update(fenetre)
+            documentation.changeColor(pygame.mouse.get_pos())
+            documentation.update(fenetre)
+            menu.changeColor(pygame.mouse.get_pos())
+            menu.update(fenetre)
+        pause.update(fenetre)
+        pygame.display.flip()
+        pygame.event.pump()
+        clock.tick(60)
+
 
 def pause(fenetre):
     global infoObject
@@ -1032,7 +1089,6 @@ def pause(fenetre):
             fermer.changeColor(mouse)
             fermer.update(fenetre)
         else:
-            
             reprendre.changeColor(mouse)
             reprendre.update(fenetre)
             documentation.changeColor(pygame.mouse.get_pos())

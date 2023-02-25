@@ -254,6 +254,7 @@ class Build(pygame.sprite.Sprite):
             tuile.clockAnnimMax = 6
             self.game.map[tuile.posY][tuile.posX].forge = True
             changerImg=False
+            self.game.joueur.indiceEcolo+=10
         elif self.nomBatiment=="armure1":
             self.game.joueur.nomArmure="armure1"
             self.game.joueur.imageArmure = self.game.images.armure[0]

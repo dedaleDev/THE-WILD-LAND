@@ -46,10 +46,10 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 350
-          self.stone = 100
-          self.food = 50
-          self.water = 100
+          self.wood = 3500
+          self.stone = 1000
+          self.food = 5000
+          self.water = 1000
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -82,6 +82,7 @@ class Player(pygame.sprite.Sprite):
           self.dictioDegatMob = {"golem_des_forets":0, "mage":0, "dragon":0, "yeti":0, "kraken":0, "oursin":0}
           #deplacement
           
+          self.marteau="marteau0"
           self.lastProjectile = 0
           self.speedProjectile = 10
           self.damageDistance = 4

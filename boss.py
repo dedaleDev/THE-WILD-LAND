@@ -1,7 +1,6 @@
 from math import sqrt
 import math
 import random
-import time
 import pygame
 from game import Game
 from projectile import Projectile
@@ -9,6 +8,7 @@ class Boss(pygame.sprite.Sprite):
     def __init__(self, game:Game, health):
         super().__init__()
         self.health = health
+        self.max_health = health
         self.game = game
         self.annim=self.game.images.loadAnnimBoss()
         self.annimBoule=self.game.images.loadAnnimBossBoule()
@@ -66,7 +66,27 @@ class Boss(pygame.sprite.Sprite):
                 self.dx, self.dy = self.directionRush.x - self.rect.x, self.directionRush.y - self.rect.y
                 self.rush=True
                 self.velocity=random.randint(5,15)
-                
+          
+    
+    def update_health_bar(self):
+        #def la couleur
+        pourcentagePv = self.health/self.max_health*100
+        bar_color = (111, 210, 46)
+        back_bar_color = (60,63,60)
+        
+        
+        maxHealth = 100*self.game.infoObject[0]*0.0045
+        moitieBar = (maxHealth*self.game.infoObject[0]*0.0045)/2
+        yBar = self.game.infoObject[1]*0.05
+
+        xBar=(self.game.infoObject[0]/2)-(maxHealth*self.game.infoObject[0]*0.0045)/2
+        print(xBar, yBar)
+        bar_position = [xBar, yBar, pourcentagePv*self.game.infoObject[0]*0.0045, self.game.infoObject[1]*0.008]
+        back_bar_position = [xBar, yBar, maxHealth, self.game.infoObject[1]*0.008]
+        #dessiner la barre de vie
+        pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)
+        pygame.draw.rect(self.game.fenetre, bar_color, bar_position)
+
     def lunchProjectile(self):
         posXprojectile = 56
         posYprojectile = 124
