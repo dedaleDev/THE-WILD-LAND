@@ -32,7 +32,7 @@ class Game(pygame.sprite.Sprite):
         self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
         self.son = Sound()
         self.updateBar(fenetre, 75, posRectChargement, "chargement de la carte...", font)
-        
+    
         self.imCollision = self.images.getImCollision()
         self.map = 0
         self.mapWorld = 0
@@ -60,7 +60,7 @@ class Game(pygame.sprite.Sprite):
         else:
             self.taille_matriceY = len(mapChoisie)
             self.taille_matriceX = len(mapChoisie[0])
-            
+        
         
         
         self.police=pygame.font.Font("data/menu/Avenir.ttc", 20)
@@ -69,6 +69,7 @@ class Game(pygame.sprite.Sprite):
         self.groupProjectile = pygame.sprite.Group()
         self.groupDefense = pygame.sprite.Group()
         self.groupCoffre = pygame.sprite.Group()
+        self.groupMobMort = pygame.sprite.Group()
         self.groupLoot = pygame.sprite.Group()
         self.groupTuileBoost = pygame.sprite.Group() #liste des tuiles boosté avec un batiment present 
         
