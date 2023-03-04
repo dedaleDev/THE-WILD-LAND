@@ -8,7 +8,8 @@ from tour import Tour
 
 class Build(pygame.sprite.Sprite):
     def __init__(self, game, nomBatiment, tuile, nbClickMax):
-          nbClickMax=nbClickMax
+        
+          nbClickMax=0#nbClickMax
           super().__init__()
           tuile.build=True
           self.game = game
@@ -162,7 +163,8 @@ class Build(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].champs = True
             self.game.joueur.nbChamps+=1
             self.game.listeCaseBatiment.append(tuile)
-
+            if tuile.indiceSurbrillance>=0:
+                self.game.groupTuileBoost.add(tuile)
         elif self.nomBatiment == "elevage":
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].elevage = True
@@ -172,6 +174,8 @@ class Build(pygame.sprite.Sprite):
             tuile.annimation = self.game.images.elevage
             tuile.clockAnnimMax = 10
             pygame.mixer.Sound.play(self.game.son.vache)
+            if tuile.indiceSurbrillance>=0:
+                self.game.groupTuileBoost.add(tuile)
         elif self.nomBatiment == "mine":
             tuile.annimation=self.game.images.mineAnnim
             tuile.clockAnnimMax = 6
@@ -242,12 +246,13 @@ class Build(pygame.sprite.Sprite):
             for y in range(-1,2):
                 for x in range(-1,2):
                     
-                    if self.game.map[tuile.posY+y][tuile.posX+x].type==self.game.map[tuile.posY][tuile.posX].type and (y!=0 or x!=0):
+                    if (self.game.map[tuile.posY+y][tuile.posX+x].type==self.game.map[tuile.posY][tuile.posX].type) and (y!=0 or x!=0):
 
                         self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance=random.randint(0,200)
                         print("ini indice surbri=", self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance)
-                        if self.game.map[tuile.posY+y][tuile.posX+x].scierie or self.game.map[tuile.posY+y][tuile.posX+x].mine or self.game.map[tuile.posY+y][tuile.posX+x].moulin:
+                        if self.game.map[tuile.posY+y][tuile.posX+x].scierie or self.game.map[tuile.posY+y][tuile.posX+x].mine or self.game.map[tuile.posY+y][tuile.posX+x].moulin or self.game.map[tuile.posY+y][tuile.posX+x].elevage or self.game.map[tuile.posY+y][tuile.posX+x].champs:
                             self.game.groupTuileBoost.add(self.game.map[tuile.posY+y][tuile.posX+x])
+                            print("j'add une tuile")
             changerImg=False
         elif self.nomBatiment=="forge":
             tuile.annimation=self.game.images.forgeAnnim

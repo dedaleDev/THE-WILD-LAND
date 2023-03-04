@@ -271,6 +271,7 @@ class Player(pygame.sprite.Sprite):
                self.velocity += velocity
      def setArmor(self, armor):
                self.armor += armor
+               
      def setFood(self, food):
         if (self.food + food>=0) :
             self.food += food
@@ -546,7 +547,6 @@ class Player(pygame.sprite.Sprite):
           tuile.aEteModifie=True
 
      def ajouterRessources(self):
-
          self.setWood(5*self.nbScierie)
          self.setStone(4*self.nbMine)
          #self.setWater(1*self.nbPuit)

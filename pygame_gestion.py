@@ -314,24 +314,29 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             if tick_ressource==0:
                 tick_ressource=600
                 game.joueur.ajouterRessources()
+                
                 for batiment in game.listeCaseBatiment:
-                    
-                    if batiment in game.listeCaseBatiment:
+                    bonus=0
+                    if batiment in game.groupTuileBoost:
                         bonus=3
                     
                     if batiment.type==2 and batiment.mine:
                         game.groupLoot.add(Loot(0, 4+bonus, 0, 0, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
-                        
+                        game.joueur.setStone(bonus)
                     if batiment.type==4 and batiment.scierie:
-                        
                         game.groupLoot.add(Loot(5+bonus, 0, 0, 0, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
+                        game.joueur.setWood(bonus)
                     if batiment.type==3 and batiment.moulin:
-                        game.groupLoot.add(Loot(0, 0, 3, 0, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
+                        game.groupLoot.add(Loot(0, 0, 3+bonus, 0, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
+                        game.joueur.setWater(bonus)
                     if batiment.type==1:
                         if batiment.elevage:
                             game.groupLoot.add(Loot(0, 0, 0, 4+bonus, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
+                            game.joueur.setFood(bonus)
                         if batiment.champs:
                             game.groupLoot.add(Loot(0, 0, 0, 1+bonus, batiment.Xoriginal+70, batiment.Yoriginal+50, game))
+                            game.joueur.setFood(bonus)
+                            
                 chanceCoffre = random.randint(0,100)
                 if chanceCoffre < tirageCoffre :
                     if not game.boss:
@@ -528,6 +533,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                     fenetrePygame.blit(game.images.surbrillance[surbrillance], (posX, posY))
                 if statue:
                     fenetrePygame.blit(game.images.statue(typet), (posX+30, posY+30))
+            
             for loot in game.groupLoot:
                 loot.update(fenetrePygame, moveX,moveY)
             
@@ -1004,46 +1010,6 @@ def f(x):  #fonction vitesse deplacement cam
     if y>20:
         return 15
     return y
-
-def pause(fenetre):
-    global infoObject
-    tailleEcran = infoObject[0], infoObject[1]
-    diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
-    pause=True
-    scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1]
-    debutPause = pygame.time.get_ticks()
-    clock = pygame.time.Clock()
-    font = pygame.font.Font("data/menu/font.ttf", round(3/100*diagonalEcran))
-    imBouton = pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), scaleButton)
-    menu = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+40/100*tailleEcran[1]), "menu", font, "white", "#999999")
-    librairie = False
-    
-    while(pause):
-        mouse = pygame.mouse.get_pos()
-        keys=pygame.key.get_pressed()
-        if keys[K_ESCAPE] and pygame.time.get_ticks()-debutPause>250:
-            pause=False
-            return pygame.time.get_ticks()-debutPause
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN :
-                if menu.checkForInput(mouse):
-                    main_menu.main_menu()
-        fenetre.fill("white")
-        if librairie:
-            fenetrePygame.blit(librairieIMG,(infoObject[0]-librairieIMG.get_width()-(infoObject[0]-librairieIMG.get_width())/2,200))
-            fermer.changeColor(mouse)
-            fermer.update(fenetre)
-        else:
-            reprendre.changeColor(mouse)
-            reprendre.update(fenetre)
-            documentation.changeColor(pygame.mouse.get_pos())
-            documentation.update(fenetre)
-            menu.changeColor(pygame.mouse.get_pos())
-            menu.update(fenetre)
-        pause.update(fenetre)
-        pygame.display.flip()
-        pygame.event.pump()
-        clock.tick(60)
 
 
 def pause(fenetre):

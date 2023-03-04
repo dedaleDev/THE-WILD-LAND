@@ -79,6 +79,9 @@ class Tuile(pygame.sprite.Sprite):
         self.surAnnimClock=0
         self.surclockAnnimMax=400
     
+    def __str__(self):
+        return str(self.indiceSurbrillance)
+    
     def getExplored(self):
         return self.isExplored
     
