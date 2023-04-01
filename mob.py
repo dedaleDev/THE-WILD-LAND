@@ -6,6 +6,29 @@ from loot import Loot
 from projectile import Projectile
 from selection import majSelectionMob
 import tuto
+
+class DeathMob(pygame.sprite.Sprite):
+    def __init__(self, game, posX, posY,imgMob):
+        super().__init__()
+        self.posX=posX
+        self.posY=posY
+        self.annim=game.images.annimDeath
+        self.indice=0
+        self.clock=0
+        self.skin=imgMob
+        
+    def update(self, fenetre):
+        fenetre.blit(self.annim[self.indice], (self.posX-10, self.posY-50))
+        self.clock+=1
+        if self.indice<30:
+            fenetre.blit(self.skin, (self.posX, self.posY))
+            self.indice+=1
+        elif self.clock>=2:
+            self.clock=0
+            self.indice+=1
+            if self.indice>=len(self.annim):
+                self.kill()
+
 class Mob(pygame.sprite.Sprite):
 
      def __init__(self, game, nom, vie, vitesse, tuile, score, pique=False, aquatique=False, aerien=False, attaque=10, annimal=False, desertique=False,tempsSpawn=0):
@@ -341,6 +364,7 @@ class Mob(pygame.sprite.Sprite):
                 return self.posX,self.posY
          else:
             print(self.name, "bloque en", self.posX, self.posY, "de type", self.game.map[self.posY][self.posX].type, "suppression de", self.name)
+            
             self.kill()
             return self.posX, self.posY
             
@@ -382,6 +406,7 @@ class Mob(pygame.sprite.Sprite):
                 self.game.joueur.indiceEcolo+=3
                 self.game.infoMortAnnimal = 440
                 self.game.joueur.nbAnnimauxTue+=1
+            self.game.groupMobMort.add(DeathMob(self.game, self.rect.x, self.rect.y, self.skin))
             self.kill()
 
      """def moveMob(self, joueur):

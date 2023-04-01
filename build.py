@@ -199,15 +199,15 @@ class Build(pygame.sprite.Sprite):
             tour = Tour(self.game, tuile, 1000, "tour", 10, 300)
             self.game.groupDefense.add(tour)
             tuile.tour = tour
+            self.game.joueur.indiceEcolo+=1
         elif self.nomBatiment == "pieux":
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].pieux = True
-
         elif self.nomBatiment == "sableMouvant":
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].sableMouvant = True
             self.game.joueur.indiceEcolo+=10
-            #pygame.mixer.Sound.play(self.game.son.sableMouvant)
+            
 
         elif self.nomBatiment == "mortier":
             tuile.annimation=self.game.images.mortierAnnim
@@ -222,7 +222,7 @@ class Build(pygame.sprite.Sprite):
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].trou = True
             pygame.mixer.Sound.play(self.game.son.trouCreuse, maxtime=900)
-            
+            self.game.joueur.indiceEcolo+=1
         elif self.nomBatiment=="frigo": 
             tuile.annimation=[]
             self.game.map[tuile.posY][tuile.posX].frigo = True
@@ -235,10 +235,10 @@ class Build(pygame.sprite.Sprite):
             self.game.map[tuile.posY][tuile.posX].ventilo = True
             tuile.annimation = self.game.images.ventiloAnnim
             tuile.clockAnnimMax = 1
+            self.game.joueur.indiceEcolo+=5
         elif self.nomBatiment=="ville":
-            
             self.game.map[tuile.posY][tuile.posX].ville = True
-            self.game.joueur.ville=True   
+            self.game.joueur.ville=True
         
         elif self.nomBatiment=="statueEau" or self.nomBatiment=="statueBois" or self.nomBatiment=="statueFood" or self.nomBatiment=="statuePierre":
             
@@ -249,10 +249,10 @@ class Build(pygame.sprite.Sprite):
                     if (self.game.map[tuile.posY+y][tuile.posX+x].type==self.game.map[tuile.posY][tuile.posX].type) and (y!=0 or x!=0):
 
                         self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance=random.randint(0,200)
-                        print("ini indice surbri=", self.game.map[tuile.posY+y][tuile.posX+x].indiceSurbrillance)
+                        
                         if self.game.map[tuile.posY+y][tuile.posX+x].scierie or self.game.map[tuile.posY+y][tuile.posX+x].mine or self.game.map[tuile.posY+y][tuile.posX+x].moulin or self.game.map[tuile.posY+y][tuile.posX+x].elevage or self.game.map[tuile.posY+y][tuile.posX+x].champs:
                             self.game.groupTuileBoost.add(self.game.map[tuile.posY+y][tuile.posX+x])
-                            print("j'add une tuile")
+                            
             changerImg=False
         elif self.nomBatiment=="forge":
             tuile.annimation=self.game.images.forgeAnnim

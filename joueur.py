@@ -199,6 +199,7 @@ class Player(pygame.sprite.Sprite):
         if self.health >=0 :
             self.health-=entier
             self.update_health_bar()
+            self.game.annimDegat=0
         else :
             self.estMort=True
 
@@ -551,11 +552,11 @@ class Player(pygame.sprite.Sprite):
          self.setStone(4*self.nbMine)
          #self.setWater(1*self.nbPuit)
          self.setWater(3*self.nbMoulin)
-         self.setFood(4*self.nbElevage + 1*self.nbChamps)
-         
+         self.setFood(5*self.nbElevage + 1*self.nbChamps)
          self.indiceEcolo-=self.nbFrigo*0.5
          if self.indiceEcolo<0:
              self.indiceEcolo=0
+             
      def update_health_bar(self):
         #def la couleur
         

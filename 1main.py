@@ -14,7 +14,7 @@ def main():
             except Exception:
                 traceback.print_exc(file=log)
 
-    
+
 def video():
     pygame.init()
     clock = pygame.time.Clock()

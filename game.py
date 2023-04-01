@@ -100,7 +100,7 @@ class Game(pygame.sprite.Sprite):
         self.theBoss = 0
         self.queueMob=[]
         self.tempsSansMob={"golem":-2, "mage":-2, "dragon":-1,"yeti":-1, "oursin":-1, "kraken":-1}
-        
+        self.annimDegat=-1
         
         self.pvKraken =0
         self.pvDragon = 0
@@ -387,6 +387,7 @@ class Game(pygame.sprite.Sprite):
                     joueur.dictioDegatMob[mob.name]+=mob.attack
                     joueur.lastDamage=now
                     listeColide.append(colide)
+                    
                 if mob.name=="mage" or mob.name=="yeti": 
                     mob.lunchProjectile()
         return listeColide

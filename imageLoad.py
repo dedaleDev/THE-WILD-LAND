@@ -2,6 +2,7 @@ import os
 import pathlib
 import pygame
 import random
+
 #from PIL import Image
 
 class ImageLoad():
@@ -108,8 +109,12 @@ class ImageLoad():
         self.inventaire = self.loadInventaire()
         
         self.arene=self.loadAnnimArene()
-        
+        self.annimDegat = self.loadAnnimDegat()
         self.bossAnnim=self.loadAnnimBoss()
+        
+        self.autoLoad = self.autoLoadImg()
+        
+        
         
         
         self.annimBadSelection = self.loadAnnimBadSelection()
@@ -136,6 +141,7 @@ class ImageLoad():
         
         self.annim3eau3 = self.loadAnnimTuileEau()
         self.annim3eau2 = self.loadAnnimTuileEau(True)
+        self.annimDeath = self.loadAnnimMort()
         
     def loadImgBackArene(self, info):
         liste=[]
@@ -146,12 +152,28 @@ class ImageLoad():
         return liste
     
     
+    def loadAnnimMort(self):
+        liste=[]
+        for i in range(1,108):
+            im = pygame.image.load("data/personnages/annimMort/death ("+str(i)+").png").convert_alpha()
+            im=pygame.transform.scale(im, (im.get_width()//2, im.get_height()//2))
+            liste.append(im)
+        return liste
+    
     def loadAnnimBoss(self):
         liste=[]
         for i in range(1,52):
             im = pygame.image.load("data/personnages/boss/boss ("+str(i)+").png").convert_alpha()
             liste.append(im)
         return liste
+    
+    def autoLoadImg(self):
+        root_dir = 'data/autoLoad'
+        for dirpath, dirnames, filenames in os.walk(root_dir):
+            for filename in filenames:
+                if filename.endswith('.png'):
+                    file_path = os.path.join(dirpath, filename)
+                    print(file_path)
     
     def loadAnnimBadSelection(self):
         liste=[]
@@ -319,6 +341,14 @@ class ImageLoad():
                 liste.append(im)
         return liste    
     
+    def loadAnnimDegat(self):
+        liste=[]
+        for i in range(1,27):
+            im = pygame.image.load("data/personnages/annimDegat/annimDegat ("+str(i)+").png").convert_alpha()
+            im = pygame.transform.scale(im, (self.infoObject[0],self.infoObject[1]))
+            liste.append(im)
+        return liste
+    
     def loadAnnimMoulin(self):
         liste = []
         for i in range(1, 198):    
@@ -372,8 +402,8 @@ class ImageLoad():
     
     def loadAnnimOursin(self):
         listeAnnim = []
-        for i in range(0,46):
-            im = pygame.image.load("data/personnages/oursin/oursinSpawn"+str(i)+".png").convert_alpha()
+        for i in range(1,31):
+            im = pygame.image.load("data/personnages/oursin/oursinSpawn ("+str(i)+").png").convert_alpha()
             im = pygame.transform.scale(im, (175*0.56, 142*0.56))
             listeAnnim.append(im)
         return listeAnnim

@@ -1,4 +1,3 @@
-
 import tuto
 from item import Item
 def majSelection(game, pos, joueur=False, infoDehors=False):
@@ -117,7 +116,6 @@ def selectionDispoItem(game, tuile, joueur):
                 optionDIspo.append(Item(game, "statueEau", 150,0,0,0))
             
             if not game.avoirTuileJoueur(joueur).port and terreAutour(joueur, tuile):
-                
                 optionDIspo.append(Item(game, "port", 0,0,100,0))
                 
                 
@@ -131,8 +129,8 @@ def selectionDispoItem(game, tuile, joueur):
             optionDIspo.append(Item(game, "ventilo", 0, 0, 500, 400))
         elif tuile.type==6 and not tuile.sableMouvant and not tuile.trou and not tuile.ville:
             optionDIspo.append(Item(game, "sableMouvant", 150, 100,0,0))
-            optionDIspo.append(Item(game, "trou", 15,0, 10, 0))
-            optionDIspo.append(Item(game, "ville", 1000, 1000,1000,1000))
+            optionDIspo.append(Item(game, "trou", 20,0, 10, 0))
+            optionDIspo.append(Item(game, "ville", 0, 0,0,1000))
         elif tuile.type==7 and not game.boss:
             if not tuile.forge:
                 optionDIspo.append(Item(game, "forge", 0,0,0,50))

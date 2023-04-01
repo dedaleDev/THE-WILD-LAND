@@ -136,7 +136,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     game.spawnAnnimal(5)
 
 
-    game.groupMob.add(Mob(game,"golem_des_forets", 2, 2, tuile=game.map[4][4], score=150))
+    game.groupMob.add(Mob(game,"oursin", 200, 2, tuile=game.map[4][4], score=150))
 
     #game.groupMob.add(Mob(game,"dragon", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
@@ -748,8 +748,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 tuto.upadateStatutTuto(game,"espace")
             tuto.afficherTuto(fenetrePygame,game)
             game.joueur.updateBateau()
-            
-            
+            if game.annimDegat>=0:
+                fenetrePygame.blit(game.images.annimDegat[game.annimDegat],(0, 0))
+                game.annimDegat+=1
+                if game.annimDegat>=len(game.images.annimDegat):
+                    game.annimDegat=-1
             #if game.theBoss:
                 #if game.theBoss.directionRush:
                     #pygame.draw.rect(fenetrePygame, (255,0,255), pygame.Rect(game.theBoss.directionRush.rect.x, game.theBoss.directionRush.rect.y, 100,100))
