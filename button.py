@@ -47,6 +47,10 @@ class Button():
 			color = (215,163, 107)
 		if i == 7:
 			color = (94, 20, 30)
+		if i == 9:
+			color = (69,33,74)
+		if i == 10:
+			color = (3,166,74)
 		return color
 
 
@@ -75,7 +79,7 @@ class Button():
 				self.aleatoire = pygame.transform.scale(self.aleatoire, (posX/3.3, posY+20/100*posY))
 				self.scale = True
 			screen.blit(self.aleatoire,  (scale+posX, scale+posY))
-		if not self.listeType and self.text_input!="aleatoire" and self.text_input!="random":
+		if not self.listeType and self.text_input!="aleatoire":
 			screen.blit(self.text,self.text_rect)
 
 	def checkForInput(self, position):
