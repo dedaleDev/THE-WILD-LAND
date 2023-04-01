@@ -23,7 +23,7 @@ class Tuto():
         else:
             img=pygame.image.load("data/tuto/en/"+"tuto_"+self.name+".png").convert_alpha()
         img=pygame.transform.scale(img,(int(self.game.diagonalEcran*img.get_width()*0.0004),int(self.game.diagonalEcran*img.get_height()*0.0004)))
-        return img 
+        return img
 
     def setStatut(self,statut:bool): #met à jour le statut du tuto (affiché ou non)
         self.statut=statut

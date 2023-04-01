@@ -204,7 +204,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         
         keys=pygame.key.get_pressed()
         if keys[K_ESCAPE] and pygame.time.get_ticks() - game.lastPause > 250:
-            tempsPasse = pause(fenetrePygame)
+            tempsPasse = pause(fenetrePygame, game)
             game.lastPause = pygame.time.get_ticks()
             game.tempsMort+=tempsPasse
         if keys[K_SPACE]:
@@ -1015,7 +1015,7 @@ def f(x):  #fonction vitesse deplacement cam
     return y
 
 
-def pause(fenetre):
+def pause(fenetre, game):
     global infoObject
     tailleEcran = infoObject[0], infoObject[1]
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
@@ -1025,12 +1025,18 @@ def pause(fenetre):
     clock = pygame.time.Clock()
     font = pygame.font.Font("data/menu/font.ttf", round(3/100*diagonalEcran))
     imBouton = pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), scaleButton)
-    menu = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+40/100*tailleEcran[1]), "menu", font, "white", "#999999")
-    reprendre = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3), "reprendre", font, "white", "#999999")
-    documentation = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+20/100*tailleEcran[1]), "documentation", font, "white", "#999999")
-    fermer = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+55/100*tailleEcran[1]), "fermer", font, "white", "#999999")
-    pause = Button(None, (tailleEcran[0]*1/2, tailleEcran[1]*1/3-20/100*tailleEcran[1]), "pause", font, "black", "#999999")
+    if game.langage == "fr":
+        fermer = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+55/100*tailleEcran[1]), "fermer", font, "white", "#999999")
+        reprendre = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3), "reprendre", font, "white", "#999999")
+        documentation = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+20/100*tailleEcran[1]), "documentation", font, "white", "#999999")
+        pause = Button(None, (tailleEcran[0]*1/2, tailleEcran[1]*1/3-20/100*tailleEcran[1]), "pause", font, "black", "#999999")
+    else:
+        fermer = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+55/100*tailleEcran[1]), "close", font, "white", "#999999")
+        reprendre = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3), "resume", font, "white", "#999999")
+        documentation = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+20/100*tailleEcran[1]), "documentation", font, "white", "#999999")
+        pause = Button(None, (tailleEcran[0]*1/2, tailleEcran[1]*1/3-20/100*tailleEcran[1]), "break", font, "black", "#999999")
     librairie = False
+    menu = Button(imBouton, (tailleEcran[0]*1/2, tailleEcran[1]*1/3+40/100*tailleEcran[1]), "menu", font, "white", "#999999")
     
     while(pause):
         mouse = pygame.mouse.get_pos()

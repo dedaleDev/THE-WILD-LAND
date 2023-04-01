@@ -23,9 +23,12 @@ class ImageLoad():
         self.marteau2=pygame.image.load("data/projectiles/marteau2.png").convert_alpha()
         self.ville = self.loadImgVille()
         
-        if self.langage == "fr":
+        if self.langage == "en":
             self.victoire = pygame.image.load("data/menu/en/victoire.png").convert_alpha()
             self.mort = pygame.image.load("data/menu/en/defaite.png").convert_alpha()
+        else:
+            self.victoire = pygame.image.load("data/menu/victoire.png").convert_alpha()
+            self.mort = pygame.image.load("data/menu/defaite.png").convert_alpha()
         self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
         self.victoire = pygame.transform.scale(self.victoire,(infoObject.current_w,infoObject.current_h))
         self.etoile = pygame.image.load("data/ressources/etoile.png").convert_alpha()
@@ -1010,12 +1013,12 @@ class ImageLoad():
 
 
     def ImInfoBullItem(self, nom):
-        if self.game.langage:
+        if self.langage=="fr":
             chemin="data/batiments/infoBulle/info_"
         else:
             chemin="data/batiments/infoBulle/en/info_"
         img = pygame.image.load(chemin+nom+".png").convert_alpha()
-        img = pygame.transform.scale(img, (411,257))
+        
         return img
     
     def loadImgUtilisateur(self):

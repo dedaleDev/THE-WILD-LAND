@@ -29,7 +29,7 @@ class Game(pygame.sprite.Sprite):
             self.langage = "fr"
         else:
             self.langage= "en"
-        self.images = ImageLoad(self.infoObject)
+        self.images = ImageLoad(self.infoObject, self.langage)
         self.backgroundMonde = self.images.loadImgBackMonde(self.infoObject)
         self.backgroundArene = self.images.loadImgBackArene(self.infoObject)
         self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)

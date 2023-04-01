@@ -2,8 +2,15 @@ import main_menu
 import traceback
 import cv2
 import pygame
+import locale
+import aideCSV
 dev=True
 def main():
+    langue = locale.getlocale()
+    if langue[0][0:2]=="fr":
+        aideCSV.remplacerVal("langue","fr")
+    else:
+        aideCSV.remplacerVal("langue","en")
     if dev:
         main_menu.main_menu()
     else:
