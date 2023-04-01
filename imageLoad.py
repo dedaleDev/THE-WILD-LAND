@@ -2,11 +2,12 @@ import os
 import pathlib
 import pygame
 import random
-
+import aideCSV
 #from PIL import Image
 
 class ImageLoad():
-    def __init__(self, infoObject):
+    def __init__(self, infoObject, langue):
+        self.langage = langue
         self.infoObject = infoObject
         infoObject = pygame.display.Info()
         self.listeImg = self.loadImg()
@@ -21,9 +22,11 @@ class ImageLoad():
         self.marteau1=pygame.image.load("data/projectiles/marteau1.png").convert_alpha()
         self.marteau2=pygame.image.load("data/projectiles/marteau2.png").convert_alpha()
         self.ville = self.loadImgVille()
-        self.mort = pygame.image.load("data/menu/defaite.png").convert_alpha()
+        
+        if self.langage == "fr":
+            self.victoire = pygame.image.load("data/menu/en/victoire.png").convert_alpha()
+            self.mort = pygame.image.load("data/menu/en/defaite.png").convert_alpha()
         self.mort = pygame.transform.scale(self.mort,(infoObject.current_w,infoObject.current_h))
-        self.victoire = pygame.image.load("data/menu/victoire.png").convert_alpha()
         self.victoire = pygame.transform.scale(self.victoire,(infoObject.current_w,infoObject.current_h))
         self.etoile = pygame.image.load("data/ressources/etoile.png").convert_alpha()
         self.etoile = pygame.transform.scale(self.etoile, (self.etoile.get_height()*0.05,self.etoile.get_width()*0.05))
@@ -1006,7 +1009,11 @@ class ImageLoad():
         #Pas d'image d'item trouvé
 
 
-    def ImInfoBullItem(self, nom, chemin="data/batiments/infoBulle/info_"):
+    def ImInfoBullItem(self, nom):
+        if self.game.langage:
+            chemin="data/batiments/infoBulle/info_"
+        else:
+            chemin="data/batiments/infoBulle/en/info_"
         img = pygame.image.load(chemin+nom+".png").convert_alpha()
         img = pygame.transform.scale(img, (411,257))
         return img

@@ -25,7 +25,10 @@ class Game(pygame.sprite.Sprite):
         self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
         
         self.text=None
-        
+        if aideCSV.valCorrespondante("langue")=="fr":
+            self.langage = "fr"
+        else:
+            self.langage= "en"
         self.images = ImageLoad(self.infoObject)
         self.backgroundMonde = self.images.loadImgBackMonde(self.infoObject)
         self.backgroundArene = self.images.loadImgBackArene(self.infoObject)
