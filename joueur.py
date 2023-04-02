@@ -458,7 +458,7 @@ class Player(pygame.sprite.Sprite):
                 self.lastProjectile = now
             self.attendre=0
     
-    
+     
      def construireBatiment(self, tuile, item):
         dictio = {"elevage":2, "champs":1, "moulin":2, "scierie":2, "port":3, "mine":3, "pieux":1, "trou":1,"forge":5,
                   "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,

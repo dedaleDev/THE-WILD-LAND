@@ -1,5 +1,4 @@
-from dis import dis
-from math import acos, sqrt
+from math import sqrt
 import pygame
 from projectile import Projectile 
 class Tour(pygame.sprite.Sprite):
@@ -21,9 +20,7 @@ class Tour(pygame.sprite.Sprite):
          self.speedProjectile = 10
          self.cooldown = 0
          
-     def tirerFleche(self, cible):
-         self.game.groupProjectile.add(Projectile(self.game, vitesse=20, posDepartX=self.tuile.posX, posDepartY=self.tuile.posY,cible=cible))
-
+     
 
 
      def attack(self):

@@ -1,11 +1,12 @@
 import math
 import pygame
+
 class Projectile(pygame.sprite.Sprite):
 
      def __init__(self, game, nom, vitesse, degat, posDepartX, posDepartY, cible, origine=None, cibleCoordonnee=None, dureeMax=1500):
           super().__init__()
           #affichage et information
-          
+
           self.game = game
           self.velocity = vitesse
           self.cibleCoordonnee=cibleCoordonnee
@@ -15,6 +16,7 @@ class Projectile(pygame.sprite.Sprite):
             self.cibleY = cible.rect.y
             self.cible=cible
           self.img=game.images.loadImgProjectile(nom)
+          self.imgOriginal = self.img
           self.nom = nom
           self.rect = self.img.get_rect()
           self.rect.x = posDepartX
@@ -24,7 +26,7 @@ class Projectile(pygame.sprite.Sprite):
                 self.angle=False
           else:
             self.angle = self.genererAngle()
-            
+          
             
           self.img = game.images.loadImgProjectile(nom, self.angle)
           self.rect = self.img.get_rect()
@@ -50,7 +52,15 @@ class Projectile(pygame.sprite.Sprite):
         if dy<0: ##  calcul du determinant de la matrice associé aux 2 vecteurs colonne
           angledegre = 360-angledegre
         return angledegre
-
+      
+      
+     def rotate(self, neg = False, angle = 8):
+         if not neg :
+            self.angle+=angle
+         else :
+             self.angle-=angle
+         self.img = pygame.transform.rotozoom(self.imgOriginal, self.angle, 1)
+         self.rect = self.img.get_rect(center=self.rect.center)
 
      def moveProjectile(self):
         
@@ -61,7 +71,8 @@ class Projectile(pygame.sprite.Sprite):
             # bouger en direction du vecteur
             self.rect.x += round(self.dx * self.velocity)
             self.rect.y += round(self.dy * self.velocity)
-
+            if self.nom!="tour":
+              self.rotate()
         if not self.cibleCoordonnee:
           if self.rect.colliderect(self.cible.rect):
               self.cible.takeDamage(self.degat, self.game.moveX, self.game.moveY)

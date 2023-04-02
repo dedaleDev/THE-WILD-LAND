@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage - Copie\main.py", line 10, in main
-    main_menu.main_menu()
-  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage - Copie\main_menu.py", line 555, in main_menu
-    pygame_gestion.pygameInit(mapChoisie, pointSpawn)
-  File "c:\Users\roure\Documents\THE-WILD-LAND-main affichage - Copie\pygame_gestion.py", line 301, in pygameInit
-    if batiment.type==4 and tuile.scierie:
-                            ^^^^^^^^^^^^^
-AttributeError: 'bool' object has no attribute 'scierie'

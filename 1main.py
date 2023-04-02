@@ -14,19 +14,20 @@ def main():
     if dev:
         main_menu.main_menu()
     else:
-        #video()
+        video()
         with open("log.txt", "w") as log:
             try:    
                 main_menu.main_menu()
             except Exception:
                 traceback.print_exc(file=log)
-
-
 def video():
     pygame.init()
     clock = pygame.time.Clock()
     pygame.mixer.init()
-    pygame.mixer.music.load("data/audio.mp3")
+    if aideCSV.valCorrespondante("langue")=="fr":
+        pygame.mixer.music.load("data/audio.mp3")
+    else:
+        pygame.mixer.music.load("data/audio_en.mp3")
     pygame.mixer.music.play()
     cap = cv2.VideoCapture('data/intro2.mp4')
     
@@ -45,5 +46,4 @@ def video():
     
     cap.release()
     cv2.destroyAllWindows()
-    
 main()
