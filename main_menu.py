@@ -1,5 +1,6 @@
 import math
 import pathlib
+import webbrowser
 import pygame, sys
 from button import Button
 import pygame_gestion
@@ -551,6 +552,7 @@ def main_menu():
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
     taillePolice = round(3/100*diagonalEcran)
     scaleButton = 1/3 * tailleEcran[0], 1/9*tailleEcran[1] #TAILLE DES BOUTONS
+    scaleButtonMini = scaleButton[0]/6, scaleButton[1]/4
     scaleButtonBarre = 0.6/2 * tailleEcran[0], 0.6/30*tailleEcran[1]
     scaleButtonR = 0.6/3.5 * tailleEcran[0], 0.6/2*tailleEcran[1]
     scaleButtonMap = 1/3 * tailleEcran[0], 1/2*tailleEcran[1] #TAILLE DES BOUTONS
@@ -581,6 +583,10 @@ def main_menu():
                             text_input="QUITTER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
         EDITOR_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                             text_input="EDITEUR", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+        HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
+                            text_input="Aide", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
+        LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
+                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
     else:
         PLAY_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/5), 
                             text_input="PLAY", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
@@ -590,6 +596,10 @@ def main_menu():
                             text_input="QUIT", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
         EDITOR_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                             text_input="EDIT", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+        HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
+                            text_input="Help", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
+        LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
+                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
     clock = pygame.time.Clock()
     transition=0
     while True:
@@ -604,7 +614,7 @@ def main_menu():
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON, EDITOR_BUTTON]:
+        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON, EDITOR_BUTTON, HELP_BUTTON, LICENCE_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
             
@@ -641,7 +651,10 @@ def main_menu():
                         scaleButtonSon = 1/3 * tailleEcran[0], 1/2*tailleEcran[1]
                         flags = pygame.FULLSCREEN | pygame.DOUBLEBUF | pygame.SCALED | pygame.HWSURFACE
                         SCREEN = pygame.display.set_mode(tailleEcran, flags)
-                        pygame.display.set_caption("Menu")
+                        if aideCSV.valCorrespondante("langue")=="fr" : 
+                            pygame.display.set_caption("Menu")
+                        else :
+                            pygame.display.set_caption("Main Menu")
                         pygame.display.set_caption("THE WILD LAND")
                         pygame_icon = pygame.image.load('data/logo/icon_WL.png').convert_alpha()
                         pygame.display.set_icon(pygame_icon)
@@ -655,6 +668,10 @@ def main_menu():
                                             text_input="QUITTER", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
                         EDITOR_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
                                             text_input="Editeur", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
+                        HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
+                                            text_input="Aide", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
+                        LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
+                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
                         
                 if EDITOR_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
@@ -664,6 +681,13 @@ def main_menu():
                     pygame.quit()
                     sys.exit()
                     continu=False
+                if HELP_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
+                    webbrowser.open('http://bit.ly/3Mzt2FP')
+
+                if LICENCE_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
+                    webbrowser.open('https://melon-people-c90.notion.site/User-licence-4810d50a980c45698bdfdb99d6f40035')
 
         if continu:
             pygame.display.update()
