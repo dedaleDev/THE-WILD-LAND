@@ -1,3 +1,4 @@
+import copy
 from math import sqrt
 import math
 import random
@@ -9,6 +10,15 @@ class Boss(pygame.sprite.Sprite):
         super().__init__()
         self.health = health
         self.max_health = health
+        police = pygame.font.Font("data/menu/font.ttf", 50)
+        color = (255, 0, 0)
+        self.texte_surface = police.render("Relouatord", True, color)
+        self.texte_rect = self.texte_surface.get_rect()
+
+        # Centrer le texte sur l'écran
+        x = (game.infoObject[0] - self.texte_rect.width) // 2 +100
+        y = 200
+        self.texte_rect.center = (x, y)
         self.game = game
         self.annim=self.game.images.loadAnnimBoss()
         self.annimBoule=self.game.images.loadAnnimBossBoule()
@@ -37,9 +47,11 @@ class Boss(pygame.sprite.Sprite):
     def getVitesseProjectile(self):
         self.vitesseProjectile=random.randint(4,7)
         return self.vitesseProjectile
-    
+    def getFeet(self):
+        return self.rect.x+108, self.rect.y+200
     def moveBoss(self):
         if self.rush:
+            
             dist = math.hypot(self.dx, self.dy) #Norme euclidienne
             if dist!=0:
                 self.dx, self.dy = self.dx / dist, self.dy / dist  # normalisation du vecteur
@@ -47,26 +59,36 @@ class Boss(pygame.sprite.Sprite):
                 # bouger en direction du vecteur
                 self.rect.x += round(self.dx * self.velocity)
                 self.rect.y += round(self.dy * self.velocity)
-            if (abs(self.directionRush.x-self.rect.x)+abs(self.directionRush.y-self.rect.y)<70):
+            if (abs(self.directionRush.x-self.rect.x)+abs(self.directionRush.y-self.rect.y)<70) or not self.estDansArene(self.getFeet()[0],self.getFeet()[1], self.game.map[0][0]) :
                 self.rush=False
         else:
-            
-            if not random.randint(0,50):#300
+            if not random.randint(0,100):
                 co=random.choice(self.listeCaseDispo)
                 tuileY=co[1] #trouver une tuile random sur la map
                 tuileX=co[0]
-                tuile=self.game.map[tuileY][tuileX]
-                pygame.draw.rect(self.game.fenetre, (255,255,0), tuile.rect, 3)
-                pygame.display.flip()
-                
-                self.directionRush=tuile.rect
+                tuile=self.game.map[tuileY][tuileX] 
+                self.directionRush=copy.deepcopy(tuile.rect)
                 self.directionRush.x+=50
                 self.directionRush.y-=100
                 #self.game.afficherText(str((self.rect.x,self.rect.y)))
-                self.dx, self.dy = self.directionRush.x - self.rect.x, self.directionRush.y - self.rect.y
+                self.dx, self.dy = self.directionRush.x - self.getFeet()[0], self.directionRush.y - self.getFeet()[1]
                 self.rush=True
-                self.velocity=random.randint(5,15)
+                if self.game.modeDifficile:
+                    self.velocity=random.randint(5,15)
+                if self.game.modeExtreme:
+                    self.velocity=random.randint(8,20)
+                if self.game.modeFacile:
+                    self.velocity=random.randint(2,8)
+                if self.game.modeNormal:
+                    self.velocity=random.randint(4,10)
           
+    def estDansArene(self, x,y,tuile00):
+        A = tuile00.rect.center
+        decalageVertical = A[1]
+        decalageHorizontal = -tuile00.rect.x
+        if y<0.57*(x+decalageHorizontal) +decalageVertical and y>-0.58*(x+decalageHorizontal) +decalageVertical and y<-0.58*(x+decalageHorizontal)+1000 +decalageVertical and y >0.59*(x+decalageHorizontal)-1020 +decalageVertical: 
+            return True
+        return False
     
     def update_health_bar(self):
         #def la couleur
@@ -80,12 +102,12 @@ class Boss(pygame.sprite.Sprite):
         yBar = self.game.infoObject[1]*0.05
 
         xBar=(self.game.infoObject[0]/2)-(maxHealth*self.game.infoObject[0]*0.0045)/2
-        print(xBar, yBar)
         bar_position = [xBar, yBar, pourcentagePv*self.game.infoObject[0]*0.0045, self.game.infoObject[1]*0.008]
         back_bar_position = [xBar, yBar, maxHealth, self.game.infoObject[1]*0.008]
         #dessiner la barre de vie
         pygame.draw.rect(self.game.fenetre, back_bar_color, back_bar_position)
         pygame.draw.rect(self.game.fenetre, bar_color, bar_position)
+   
 
     def lunchProjectile(self):
         posXprojectile = 56
@@ -109,7 +131,14 @@ class Boss(pygame.sprite.Sprite):
                 mobPlusProche = mob_proche[0][0]
                 self.game.groupProjectile.add(Projectile(self.game, "bossElec", self.getVitesseProjectile(), 10, self.rect.x+posXprojectile, self.rect.y+posYprojectile, mobPlusProche, self, dureeMax=3000))
                 self.lastProjectile = now
-                self.cooldown=random.randint(500,1500)
+                if self.game.modeDifficile:
+                    self.cooldown=random.randint(800,1500)
+                if self.game.modeExtreme:
+                    self.cooldown=random.randint(500,1500)
+                if self.game.modeFacile:
+                    self.cooldown=random.randint(1800,2000)
+                if self.game.modeNormal:
+                    self.cooldown=random.randint(1300,2000)
 
         if rand == 5:
 
@@ -142,3 +171,22 @@ class Boss(pygame.sprite.Sprite):
             self.imageBoule=self.annimBoule[self.indiceAnnimBoule]
         else:
             self.tick+=1
+        
+    
+    def drawHealthBar(self, screen):
+        largeur = self.game.infoObject[0]
+        hauteur = self.game.infoObject[1]
+        yBar = hauteur*0.05
+        moitieBar = (self.max_health*largeur*0.0045)/2
+        xBar=(largeur/2)-(self.max_health*largeur*0.0045)/2
+        barFond = (xBar, yBar, self.max_health*largeur*0.0045, hauteur*0.008)
+        barDevant = (xBar, yBar, self.health*largeur*0.0045, hauteur*0.008)
+        if self.health<=0:
+            self.game.win = True
+            self.kill()
+        
+        pygame.draw.rect(screen, (200, 200, 200), barFond)
+        pygame.draw.rect(screen, (255, 0, 0), barDevant)
+        
+        screen.blit(self.texte_surface,(xBar+150,yBar+30))
+        

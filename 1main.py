@@ -16,7 +16,7 @@ def main():
     else:
         video()
         with open("log.txt", "w") as log:
-            try:    
+            try:
                 main_menu.main_menu()
             except Exception:
                 traceback.print_exc(file=log)

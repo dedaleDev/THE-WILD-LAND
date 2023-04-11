@@ -43,25 +43,25 @@ def majSelection(game, pos, joueur=False, infoDehors=False):
         return tuileSelect, clicDehors
 
 def majSelectionJoueur(game, xSup=0, ySup=0): #xSup decalage en x
-    tuileSelect = False
-    souris = [game.joueur.getFeet()[0], game.joueur.getFeet()[1]]
-    souris[0]+=xSup
-    souris[1]+=ySup
-    for i in range(-1,2):
-        for j in range(-1,2):
-            
-            pos_in_mask = souris[0] - game.map[game.joueur.posY+i][game.joueur.posX+j].rect.x, souris[1] - game.map[game.joueur.posY+i][game.joueur.posX+j].rect.y
-            touching = game.map[game.joueur.posY+i][game.joueur.posX+j].rect.collidepoint(souris) and game.map[game.joueur.posY+i][game.joueur.posX+j].mask.get_at(pos_in_mask)
-            if touching :
-                tuileSelect = game.map[game.joueur.posY+i][game.joueur.posX+j]
-                return tuileSelect
+        tuileSelect = False
+        souris = [game.joueur.getFeet()[0], game.joueur.getFeet()[1]]
+        souris[0]+=xSup
+        souris[1]+=ySup
+        for i in range(-1,2):
+            for j in range(-1,2):
+                
+                pos_in_mask = souris[0] - game.map[game.joueur.posY+i][game.joueur.posX+j].rect.x, souris[1] - game.map[game.joueur.posY+i][game.joueur.posX+j].rect.y
+                touching = game.map[game.joueur.posY+i][game.joueur.posX+j].rect.collidepoint(souris) and game.map[game.joueur.posY+i][game.joueur.posX+j].mask.get_at(pos_in_mask)
+                if touching :
+                    tuileSelect = game.map[game.joueur.posY+i][game.joueur.posX+j]
+                    return tuileSelect
 
-    if not tuileSelect:
-        print("attention majSelectionJoueur n'a pas trouvé de tuile en", souris)
-        #Pour ne pas crash, decommenter la ligne suivante, après avoir fait suivre le bug
-        return None
-        assert(False)
-    return tuileSelect
+        if not tuileSelect:
+            print("attention majSelectionJoueur n'a pas trouvé de tuile en", souris)
+            #Pour ne pas crash, decommenter la ligne suivante, après avoir fait suivre le bug
+            return None
+            assert(False)
+        return tuileSelect
 
 def majSelectionMob(game, mob, supX=0, supY=0): #version ultra opti de maj selection joueur
     tuileSelect = False

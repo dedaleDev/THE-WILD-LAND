@@ -136,7 +136,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     game.spawnAnnimal(5)
 
 
-    game.groupMob.add(Mob(game,"oursin", 200, 2, tuile=game.map[4][4], score=150))
+    #game.groupMob.add(Mob(game,"oursin", 200, 2, tuile=game.map[4][4], score=150))
 
     #game.groupMob.add(Mob(game,"dragon", 100, 2, tuile=game.map[4][4], score=150))
     #game.groupCoffre.add(Coffre(game, game.map[10][10], 100,100,100,100))
@@ -229,7 +229,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             centrerJoueur(game)
             game.taille_matriceX=len(game.map)
             game.taille_matriceY=len(game.map[0])
-            game.theBoss = Boss(game, 200)
+            game.theBoss = Boss(game, 100)
             
         mouse = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -521,7 +521,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 center = game.joueur.rect.center
 
                 listeOrdre.append((game.joueur.skinBateau, game.joueur.rect.x-15, game.joueur.rect.y+30, center[1]+30, None, None, None))
-            if game.theBoss:
+            if game.theBoss and game.theBoss.health>0:
                 listeOrdre.append((game.theBoss.image, game.theBoss.rect.x-15, game.theBoss.rect.y+30, center[1]+30, None, None, None))
                 listeOrdre.append((game.theBoss.imageBoule, game.theBoss.rect.x+40, game.theBoss.rect.y+110, center[1]+32, None, None, None))
                 #game.theBoss.rect.x-15, game.theBoss.rect.y+30
@@ -598,51 +598,51 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
 
             #(infoObject[0]/1.7*(190*i), 25)
-
-            for i in range(len(game.joueur.ressourcesIMG)):
-                fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 0.9/100*infoObject[1]))
-                fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 1.5/100*infoObject[1]))
-                if game.joueur.RessourcesInfoModified[i] != False:
-                    timeComtpeur +=1
-                    if timeComtpeur <=60 :
-                        fenetrePygame.blit(game.joueur.RessourcesInfoModified[i],(infoObject[0]-95-(190*i),90))
-                    else :
-                        timeComtpeur = 0
-                        game.joueur.resetRessourcesModified()
-            game.joueur.update_health_bar()
             if game.theBoss:
-                
                 game.theBoss.update()
+                game.theBoss.drawHealthBar(fenetrePygame)
+            else:
+                for i in range(len(game.joueur.ressourcesIMG)):
+                    fenetrePygame.blit(game.joueur.ressourcesIMG[i], (infoObject[0]/1.1-(infoObject[1]/6.3*i), 0.9/100*infoObject[1]))
+                    fenetrePygame.blit(game.joueur.RessourcesTEXT[i], (infoObject[0]/1.06-(infoObject[1]/6.3*i), 1.5/100*infoObject[1]))
+                    if game.joueur.RessourcesInfoModified[i] != False:
+                        timeComtpeur +=1
+                        if timeComtpeur <=60 :
+                            fenetrePygame.blit(game.joueur.RessourcesInfoModified[i],(infoObject[0]-95-(190*i),90))
+                        else :
+                            timeComtpeur = 0
+                            game.joueur.resetRessourcesModified()
+            game.joueur.update_health_bar()
+            
                 
             if game.joueur.imageArmure:
                 fenetrePygame.blit(game.joueur.imageArmure, (22,80))
-            for mob in game.groupMob:
-                if not game.boss:
-                    pass
-                    #fenetrePygame.blit(imDebug, mob.getFeet())
-            game.joueur.update_ecolo_bar()
+            
+            if not game.theBoss:
+                game.joueur.update_ecolo_bar()
+                fenetrePygame.blit(feuille, (10,368))
             fenetrePygame.blit(health, (20,15))
             
             for annimMort in game.groupMobMort:
                 annimMort.update(fenetrePygame)
-            fenetrePygame.blit(feuille, (10,368))
+            
             if fps%2==0:
                 indiceFleche+=1
             if indiceFleche>111:
                 indiceFleche=0
-            fenetrePygame.blit(feuille, (10,368))
             posXfleche=5
             posYfleche=359
-            if game.joueur.indiceEcolo>=80:
+            if not game.theBoss:
+                if game.joueur.indiceEcolo>=80:
+                    
+                    fenetrePygame.blit(game.images.fleche[0][indiceFleche], (posXfleche,posYfleche))
+                elif game.joueur.indiceEcolo>=40:
+                    fenetrePygame.blit(game.images.fleche[1][indiceFleche], (posXfleche,posYfleche))
+                else:
+                    #game.images.changerimgCouleur(game.images.fleche[2][indiceFleche], [0,125,0])
+                    fenetrePygame.blit(game.images.fleche[2][indiceFleche], (posXfleche,posYfleche))
                 
-                fenetrePygame.blit(game.images.fleche[0][indiceFleche], (posXfleche,posYfleche))
-            elif game.joueur.indiceEcolo>=40:
-                fenetrePygame.blit(game.images.fleche[1][indiceFleche], (posXfleche,posYfleche))
-            else:
-                #game.images.changerimgCouleur(game.images.fleche[2][indiceFleche], [0,125,0])
-                fenetrePygame.blit(game.images.fleche[2][indiceFleche], (posXfleche,posYfleche))
-            
-                
+                    
             fenetrePygame.blit(scoreBar, (game.infoObject[0]*0.88,game.infoObject[1]*0.92))
             fenetrePygame.blit(scoreText, scoreRect)
             if tickBatiment<60:
@@ -654,7 +654,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             
             #for pos in game.listeDebug:
                 #fenetrePygame.blit(imDebug2, pos)
-
+            if game.win:
+                victoire(game)
             if game.joueur.estMort:
                 mort(game)
             #if game.joueur.ville:
