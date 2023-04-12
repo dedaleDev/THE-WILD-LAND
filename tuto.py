@@ -40,7 +40,7 @@ class Tuto():
 
 
 def disableTuto(game):
-    #ATTENTION : cette fonction peux avoir de serieuse consequence sur le jeu 
+    #ATTENTION : cette fonction peux avoir de serieuse consequence sur le jeu
     # Merci de ne pas l'utiliser si vous ne savez pas ce que vous faites
     for tuto in game.listeTuto:
         if tuto.getStatut() == True:

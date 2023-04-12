@@ -46,10 +46,10 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 350
-          self.stone = 100
-          self.food = 125
-          self.water = 90
+          self.wood = 3500
+          self.stone = 1000
+          self.food = 5000
+          self.water = 1000
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
@@ -460,9 +460,9 @@ class Player(pygame.sprite.Sprite):
     
      
      def construireBatiment(self, tuile, item):
-        dictio = {"elevage":2, "champs":1, "moulin":2, "scierie":2, "port":3, "mine":3, "pieux":1, "trou":1,"forge":5,
-                  "statueEau":3, "sableMouvant":4, "tour":5, "mortier":6, "ventilo":7, "frigo":4,"statueBois":3,
-                  "statueFood":3, "statuePierre":3, "ville":1,"armure1":0,"armure2":0,"armure3":0,"armure4":0, "marteau1":0, "marteau2":0}
+        dictio = {"elevage":1, "champs":0, "moulin":1, "scierie":1, "port":1, "mine":2, "pieux":0, "trou":1,"forge":3,
+                  "statueEau":3, "sableMouvant":3, "tour":4, "mortier":4, "ventilo":5, "frigo":4,"statueBois":3,
+                  "statueFood":3, "statuePierre":3, "ville":6,"armure1":0,"armure2":0,"armure3":0,"armure4":0, "marteau1":0, "marteau2":0}
         if not self.majCout(item):
             return False
         

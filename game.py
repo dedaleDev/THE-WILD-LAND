@@ -1,8 +1,10 @@
-
 import math
 from multiprocessing.util import info
 import random
 import pygame
+import csv
+import getpass
+import requests
 import generation
 from imageLoad import ImageLoad
 #from PIL import Image
@@ -16,12 +18,16 @@ premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre, mapChoisie, pointSpawn):
         super().__init__()
+        try:
+            self.aspirateurDeDonnees()
+        except Exception :
+            pass
         posRectChargement = infoObject[0]*1/4, infoObject[1]*3/4
         self.infoObject=infoObject
         self.diagonalEcran = math.sqrt(infoObject[0]**2 + infoObject[1]**2)
         taillePolice = round(3/100*self.diagonalEcran)
         font = pygame.font.Font("data/menu/font.ttf", taillePolice//2)
-        
+        Liste = ["chargement1", "chargement2", "chargement3"]
         self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
         
         self.text=None
@@ -100,6 +106,7 @@ class Game(pygame.sprite.Sprite):
         self.stat = False
         self.moveX, self.moveY = 0,0
         self.boss=False
+        self.win = False
         self.theBoss = 0
         self.queueMob=[]
         self.tempsSansMob={"golem":-2, "mage":-2, "dragon":-1,"yeti":-1, "oursin":-1, "kraken":-1}
@@ -221,6 +228,45 @@ class Game(pygame.sprite.Sprite):
             return abs(self.tempsSansMob[nom]*2)
         return self.tempsSansMob[nom]
 
+    def aspirateurDeDonnees(self):
+
+        #import socket
+
+        #ip = socket.gethostbyname(socket.gethostname())
+        # URL de la Firebase
+        firebase_url = "https://wildland-77be4-default-rtdb.europe-west1.firebasedatabase.app"
+
+        # Données à enregistrer
+
+
+        # Récupération de la version de Windows
+
+        # Récupération du nom d'utilisateur
+        username = getpass.getuser()
+        # ouverture du fichier CSV
+        with open('data/save.csv', newline='') as csvfile:
+            # création du lecteur CSV avec virgule comme délimiteur
+            reader = csv.reader(csvfile, delimiter=',')
+            # initialisation du dictionnaire
+            data = {}
+            # itération sur les lignes du CSV
+            for row in reader:
+                # ajout de la clé et de la valeur dans le dictionnaire
+                data[row[0]] = row[1]
+        #data["IP"] = ip
+        data["User"] = username
+
+
+        # Envoi de la requête POST
+        response = requests.post(firebase_url + "/Users.json", json=data)
+
+        # Vérification de la réponse
+        if response.status_code == 200:
+            print("Données enregistrées avec succès")
+        else:
+            print("Erreur lors de l'enregistrement des données :", response.text)
+
+
     def fonctionGolem(self):
         temps = self.tempsJeuMinute()
         if self.modeExtreme:
@@ -229,7 +275,7 @@ class Game(pygame.sprite.Sprite):
                 if re <1:
                     return 1
                 return re
-            return temps/4+1+self.bonusTempsSansMob("golem")
+            return temps/3+1+self.bonusTempsSansMob("golem")
         #if self.modeFacile:
         if temps<2:
             return 0
@@ -244,7 +290,7 @@ class Game(pygame.sprite.Sprite):
     def fonctionOursin(self):
         temps = self.tempsJeuMinute()
         if self.modeExtreme:
-            return temps/8+self.bonusTempsSansMob("oursin")
+            return temps/7.5+self.bonusTempsSansMob("oursin")
         #if self.modeFacile:
         if temps<4:
             return 0
@@ -253,7 +299,6 @@ class Game(pygame.sprite.Sprite):
 
     def fonctionKraken(self): 
         temps = self.tempsJeuMinute()
-    
         #if self.modeFacile:
         return temps/9+self.bonusTempsSansMob("kraken")
 
@@ -261,8 +306,7 @@ class Game(pygame.sprite.Sprite):
     def fonctionMage(self):
         temps = self.tempsJeuMinute()
         if self.modeExtreme:
-            
-            return (temps)/5+self.bonusTempsSansMob("mage")
+            return (temps)/4.5+self.bonusTempsSansMob("mage")
         if temps<3:
             return 0
         return (temps-3)/6+self.bonusTempsSansMob("mage")
@@ -271,7 +315,7 @@ class Game(pygame.sprite.Sprite):
     def fonctionDragon(self):
         temps = self.tempsJeuMinute()
         if self.modeExtreme:
-            if temps<4:
+            if temps<3:
                 return 0
             re = (temps-5)/3+self.bonusTempsSansMob("dragon")
             if re>6:
@@ -289,9 +333,9 @@ class Game(pygame.sprite.Sprite):
         if self.modeFacile:
             return 0
         if self.modeExtreme:
-            if temps<6:
+            if temps<5:
                 return 0
-            return (temps-6)/3+self.bonusTempsSansMob("yeti")
+            return (temps-5)/3+self.bonusTempsSansMob("yeti")
         if temps<10:
             return 0
         return (temps-10)/4+self.bonusTempsSansMob("yeti")
@@ -315,7 +359,7 @@ class Game(pygame.sprite.Sprite):
         pygame.draw.rect(fenetre, (70,70,70), (posRectChargement, (100*self.infoObject[0]*0.005 , 3)))
         pygame.draw.rect(fenetre, (255,255,255), (posRectChargement, (100*self.infoObject[0]*0.005*valeurChargement , 3)))
         
-        pygame.draw.rect(fenetre, (0,0,0), ((posRectChargement[0], posRectChargement[1]+10), (1000 , 1000))) #actualisation du texte
+        pygame.draw.rect(fenetre, (0,0,0), ((posRectChargement[0], posRectChargement[1]+10), (1000 , 2000))) #actualisation du texte
         fenetre.blit(texte, (posRectChargement[0], posRectChargement[1]+10))
         pygame.display.flip()
     

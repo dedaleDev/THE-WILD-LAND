@@ -198,7 +198,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
 
         if not game.boss:
             gestionMob(game, fps)
-        if game.theBoss:
+        if game.theBoss and game.theBoss.health>0:
             game.theBoss.moveBoss()
             game.theBoss.lunchProjectile()
         
@@ -210,7 +210,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         if keys[K_SPACE]:
             centrerJoueur(game)
 
-        if game.joueur.getTuile().ville or keys[K_1]:
+        if game.joueur.getTuile().ville or (keys[K_r] and keys[K_e] and keys[K_l]):
             game.boss=True
             game.map=game.mapBoss
             for i in range(7):
@@ -747,7 +747,8 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 tuto.upadateStatutTuto(game,"stat")
             if game.tempsJeu()>1000*60*1.3:
                 tuto.upadateStatutTuto(game,"espace")
-            tuto.afficherTuto(fenetrePygame,game)
+            if not game.theBoss:
+                tuto.afficherTuto(fenetrePygame,game)
             game.joueur.updateBateau()
             if game.annimDegat>=0:
                 fenetrePygame.blit(game.images.annimDegat[game.annimDegat],(0, 0))
@@ -1166,7 +1167,7 @@ def gestionMob(game, fps):
             if recherchePossible:
                 mob.the_path = findPos(game, game.joueur.posX, game.joueur.posY, mob.posX, mob.posY, aqua=mob.aquatique, aerien=mob.aerien)
                 mob.last = now
-                if True:
+                if False:
                     traceMob(game, mob.the_path)
             
         if not mob.slow :

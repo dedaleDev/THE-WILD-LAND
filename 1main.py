@@ -1,9 +1,12 @@
-import main_menu
 import traceback
+import main_menu
 import cv2
 import pygame
 import locale
 import aideCSV
+import requests
+import getpass
+
 dev=False
 def main():
     langue = locale.getlocale()
@@ -12,6 +15,7 @@ def main():
     else:
         aideCSV.remplacerVal("langue","en")
     if dev:
+
         main_menu.main_menu()
     else:
         video()
@@ -19,7 +23,9 @@ def main():
             try:
                 main_menu.main_menu()
             except Exception:
-                traceback.print_exc(file=log)
+                error = traceback.format_exc()    
+                sendError(error)
+        main_menu.main_menu()
 def video():
     pygame.init()
     clock = pygame.time.Clock()
@@ -46,4 +52,21 @@ def video():
     
     cap.release()
     cv2.destroyAllWindows()
+def sendError(error:str):
+
+    # URL de la Firebase
+    firebase_url = "https://wildland-77be4-default-rtdb.europe-west1.firebasedatabase.app"
+    username = getpass.getuser()
+    data = {}
+    data["error"] = error
+
+
+    # Envoi de la requête POST
+    response = requests.post(firebase_url + "/Error.json", json=data)
+
+    # Vérification de la réponse
+    if response.status_code == 200:
+        print("Données enregistrées avec succès")
+    else:
+        print("Erreur lors de l'enregistrement des données :", response.text)
 main()
