@@ -15,16 +15,14 @@ def main():
     else:
         aideCSV.remplacerVal("langue","en")
     if dev:
-
         main_menu.main_menu()
     else:
         video()
-        with open("log.txt", "w") as log:
-            try:
-                main_menu.main_menu()
-            except Exception:
-                error = traceback.format_exc()    
-                sendError(error)
+        try:
+            main_menu.main_menu()
+        except Exception:
+            error = traceback.format_exc()    
+            sendError(error)
         main_menu.main_menu()
 def video():
     pygame.init()
