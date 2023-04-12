@@ -46,10 +46,10 @@ class Player(pygame.sprite.Sprite):
           self.ville=False
           self.tuile = 0 #tuile actuelle du joueur
           #ressources du joueur
-          self.wood = 3500
-          self.stone = 1000
-          self.food = 5000
-          self.water = 1000
+          self.wood = 350
+          self.stone = 100
+          self.food = 125
+          self.water = 90
           self.RessourcesTEXT =""
           self.RessourcesInfoModified= ""
           self.ressourcesIMG = self.loadRessourcesIMG()
