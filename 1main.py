@@ -4,7 +4,7 @@ import cv2
 import pygame
 import locale
 import aideCSV
-dev=True
+dev=False
 def main():
     langue = locale.getlocale()
     if langue[0][0:2]=="fr":

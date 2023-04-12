@@ -586,7 +586,7 @@ def main_menu():
         HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
                             text_input="Aide", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
         LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
-                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
+                            text_input="Licence", font=get_font(15), base_color="#fffffd", hovering_color="#999999")
     else:
         PLAY_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/5), 
                             text_input="PLAY", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
@@ -599,7 +599,7 @@ def main_menu():
         HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
                             text_input="Help", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
         LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
-                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
+                            text_input="Licence", font=get_font(15), base_color="#fffffd", hovering_color="#999999")
     clock = pygame.time.Clock()
     transition=0
     while True:
@@ -671,7 +671,7 @@ def main_menu():
                         HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
                                             text_input="Aide", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
                         LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
-                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
+                            text_input="Licence", font=get_font(15), base_color="#fffffd", hovering_color="#999999")
                         
                 if EDITOR_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
