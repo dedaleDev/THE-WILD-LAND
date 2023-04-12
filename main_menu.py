@@ -8,6 +8,7 @@ import aideCSV
 import os
 import mainEditor
 from map import MapEditor
+from scaleBar import ScrollBar
 
 global diagonalEcran, scaleButton, tailleEcran, taillePolice, scaleButtonMap, BG, SCREEN, scaleButtonBarre, scaleButtonR
 
@@ -389,20 +390,8 @@ def options():
         langue = "fr"
         OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
                         text_input="retour", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeHigh = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2), 
-                        text_input="haut", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeMedium = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2), 
-                        text_input="moyen", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeLow = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
-                        text_input="faible", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeHighM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
-                        text_input="haut", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeMediumM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
-                        text_input="moyen", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeLowM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
-                        text_input="faible", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        
-        
+        scrollBarMusic=ScrollBar((26, 0, 172), (tailleEcran[0]*0.35, tailleEcran[1]//2.2), 50)
+        scrollBarSound=ScrollBar((26, 0, 172), (tailleEcran[0]*0.53, tailleEcran[1]//2.2), 50)
         
         bas = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonRond.png").convert_alpha(),(scaleButtonR[0]//6, scaleButtonR[1]//6)), pos=(tailleEcran[0]*3.93/10, tailleEcran[1]*0.26), 
                         text_input="bas", font=get_font(taillePolice//4), base_color="white", hovering_color="#999999")
@@ -414,19 +403,9 @@ def options():
         langue = "en"
         OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
                         text_input="back", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeHigh = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2), 
-                        text_input="high", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeMedium = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2), 
-                        text_input="medium", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeLow = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2), 
-                        text_input="low", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeHighM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/1.2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
-                        text_input="high", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeMediumM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
-                        text_input="medium", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        volumeLowM = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/2+tailleEcran[1]*1/10), 
-                        text_input="low", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        
+        scrollBarMusic=ScrollBar((26, 0, 172), (tailleEcran[0]*0.35, tailleEcran[1]//2.2), 50)
+        scrollBarSound=ScrollBar((26, 0, 172), (tailleEcran[0]*0.53, tailleEcran[1]//2.2), 50)
+        print(scrollBarSound)
         
         
         bas = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonRond.png").convert_alpha(),(scaleButtonR[0]//6, scaleButtonR[1]//6)), pos=(tailleEcran[0]*3.93/10, tailleEcran[1]*0.26), 
@@ -461,34 +440,35 @@ def options():
         
         OPTIONS_TEXT = get_font(taillePolice).render(" OPTIONS ", True, "Black")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/2, tailleEcran[1]*1/10))
+
         if langue == "en":
-            volume_TEXT = get_font(taillePolice-5).render(" Sound ", True, "Black")
+            volume_TEXT = get_font(taillePolice-20).render(" Sound ", True, "Black")
+            music_TEXT = get_font(taillePolice-60).render(" Music ", True, "Black")
+            sound_TEXT = get_font(taillePolice-60).render(" Sound ", True, "Black")
+            graphisme_TEXT = get_font(taillePolice-60).render(" Graphics ", True, "Black")
         else:
-            volume_TEXT = get_font(taillePolice-5).render(" Volume ", True, "Black")
-        volume_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/2, tailleEcran[1]*1/3))
+            volume_TEXT = get_font(taillePolice-20).render(" Volume ", True, "Black")
+            music_TEXT = get_font(taillePolice-60).render(" Musique ", True, "Black")
+            sound_TEXT = get_font(taillePolice-60).render(" Bruitage ", True, "Black")
+            graphisme_TEXT = get_font(taillePolice-60).render(" Graphisme ", True, "Black")
+        volume_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.52, tailleEcran[1]*0.36))
+        music_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.47, tailleEcran[1]*0.45))
+        sound_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.65, tailleEcran[1]*0.45))
+        graphisme_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.54, tailleEcran[1]*0.23))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
         SCREEN.blit(volume_TEXT, volume_RECT)
+        SCREEN.blit(music_TEXT, music_RECT)
+        SCREEN.blit(sound_TEXT, sound_RECT)
+        SCREEN.blit(graphisme_TEXT, graphisme_RECT)
 
         
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        volumeHigh.changeColor(OPTIONS_MOUSE_POS)
-        volumeMedium.changeColor(OPTIONS_MOUSE_POS)
-        volumeLow.changeColor(OPTIONS_MOUSE_POS)
         bas.changeColor(OPTIONS_MOUSE_POS)
         moyen.changeColor(OPTIONS_MOUSE_POS)
         haut.changeColor(OPTIONS_MOUSE_POS)
-        volumeHighM.changeColor(OPTIONS_MOUSE_POS)
-        volumeMediumM.changeColor(OPTIONS_MOUSE_POS)
-        volumeLowM.changeColor(OPTIONS_MOUSE_POS)
         
         SCREEN.blit(barre, (tailleEcran[0]*0.345, tailleEcran[1]*0.25))
         
-        volumeHigh.update(SCREEN)
-        volumeLow.update(SCREEN)
-        volumeMedium.update(SCREEN)
-        volumeHighM.update(SCREEN)
-        volumeLowM.update(SCREEN)
-        volumeMediumM.update(SCREEN)
         OPTIONS_BACK.update(SCREEN)
         bas.update(SCREEN)
         moyen.update(SCREEN)
@@ -503,20 +483,15 @@ def options():
                 
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     continu=False
-                if volumeHigh.checkForInput(OPTIONS_MOUSE_POS):
-                    volume = 1
-                if volumeLow.checkForInput(OPTIONS_MOUSE_POS):
-                    volume = 0.05
-                if volumeMedium.checkForInput(OPTIONS_MOUSE_POS):
-                    volume = 0.5
+                volume = scrollBarMusic.getValue()/100
+                volumeM = scrollBarSound.getValue()/100
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Vérifier si le clic de souris est sur le curseur
+                    if scrollBarMusic.cursor_rect.collidepoint(event.pos):#gestion scroll barre
+                        scrollBarMusic.dragging = True
+                    if scrollBarSound.cursor_rect.collidepoint(event.pos):#gestion scroll barre
+                        scrollBarSound.dragging = True
                     
-                    
-                if volumeHighM.checkForInput(OPTIONS_MOUSE_POS):
-                    volumeM = 1
-                if volumeLowM.checkForInput(OPTIONS_MOUSE_POS):
-                    volumeM = 0.05
-                if volumeMediumM.checkForInput(OPTIONS_MOUSE_POS):
-                    volumeM = 0.5
                 if bas.checkForInput(OPTIONS_MOUSE_POS):
                     aideCSV.remplacerVal("optimisation", 2)
                     moyen.image.set_alpha(150)
@@ -535,7 +510,41 @@ def options():
                     moyen.image.set_alpha(150)
                     haut.image.set_alpha(255)
                     optiVerif=True
-                    
+            elif event.type == pygame.MOUSEBUTTONUP:
+                scrollBarMusic.dragging = False
+                scrollBarSound.dragging = False
+            elif event.type == pygame.MOUSEMOTION:
+                    # Déplacer le curseur si on est en train de le tirer
+                    if scrollBarMusic.dragging:
+                        scrollBarMusic.CURSOR_POS = event.pos[0] - scrollBarMusic.CURSOR_RADIUS, scrollBarMusic.CURSOR_POS[1]
+                        # Limiter la position du curseur à la barre de défilement
+                        if scrollBarMusic.CURSOR_POS[0] < scrollBarMusic.bar_pos[0]:
+                            scrollBarMusic.CURSOR_POS = scrollBarMusic.bar_pos[0] - scrollBarMusic.CURSOR_RADIUS, scrollBarMusic.CURSOR_POS[1]
+                        elif scrollBarMusic.CURSOR_POS[0] > scrollBarMusic.bar_pos[0] + scrollBarMusic.BAR_WIDTH - scrollBarMusic.CURSOR_RADIUS*2:
+                            scrollBarMusic.CURSOR_POS = scrollBarMusic.bar_pos[0] + scrollBarMusic.BAR_WIDTH - scrollBarMusic.CURSOR_RADIUS*2, scrollBarMusic.CURSOR_POS[1]
+                        # Calculer la valeur correspondante
+                        scrollBarMusic.value = int((scrollBarMusic.CURSOR_POS[0] - scrollBarMusic.bar_pos[0]) / (scrollBarMusic.BAR_WIDTH - scrollBarMusic.CURSOR_RADIUS*2) * 100)
+                    if scrollBarSound.dragging:
+                        scrollBarSound.CURSOR_POS = event.pos[0] - scrollBarSound.CURSOR_RADIUS, scrollBarSound.CURSOR_POS[1]
+                        # Limiter la position du curseur à la barre de défilement
+                        if scrollBarSound.CURSOR_POS[0] < scrollBarSound.bar_pos[0]:
+                            scrollBarSound.CURSOR_POS = scrollBarSound.bar_pos[0] - scrollBarSound.CURSOR_RADIUS, scrollBarSound.CURSOR_POS[1]
+                        elif scrollBarSound.CURSOR_POS[0] > scrollBarSound.bar_pos[0] + scrollBarSound.BAR_WIDTH - scrollBarSound.CURSOR_RADIUS*2:
+                            scrollBarSound.CURSOR_POS = scrollBarSound.bar_pos[0] + scrollBarSound.BAR_WIDTH - scrollBarSound.CURSOR_RADIUS*2, scrollBarSound.CURSOR_POS[1]
+                        # Calculer la valeur correspondante
+                        scrollBarSound.value = int((scrollBarSound.CURSOR_POS[0] - scrollBarSound.bar_pos[0]) / (scrollBarSound.BAR_WIDTH - scrollBarSound.CURSOR_RADIUS*2) * 100)
+        # Dessiner la barre de défilement
+        pygame.draw.rect(SCREEN, scrollBarMusic.GRAY, scrollBarMusic.bar_rect)
+        pygame.draw.rect(SCREEN, scrollBarMusic.bar_color, (scrollBarMusic.bar_pos[0], scrollBarMusic.bar_pos[1], (scrollBarMusic.BAR_WIDTH-scrollBarMusic.CURSOR_RADIUS*2)*(scrollBarMusic.value/100), scrollBarMusic.BAR_HEIGHT))
+        pygame.draw.rect(SCREEN, scrollBarSound.GRAY, scrollBarSound.bar_rect)
+        pygame.draw.rect(SCREEN, scrollBarSound.bar_color, (scrollBarSound.bar_pos[0], scrollBarSound.bar_pos[1], (scrollBarSound.BAR_WIDTH-scrollBarSound.CURSOR_RADIUS*2)*(scrollBarSound.value/100), scrollBarSound.BAR_HEIGHT))
+
+        # Dessiner le curseur
+        scrollBarMusic.cursor_rect = pygame.draw.circle(SCREEN, scrollBarMusic.WHITE, scrollBarMusic.CURSOR_POS, scrollBarMusic.CURSOR_RADIUS)
+        pygame.draw.circle(SCREEN, scrollBarMusic.WHITE, scrollBarMusic.CURSOR_POS, scrollBarMusic.CURSOR_RADIUS-2)
+        scrollBarSound.cursor_rect = pygame.draw.circle(SCREEN, scrollBarSound.WHITE, scrollBarSound.CURSOR_POS, scrollBarSound.CURSOR_RADIUS)
+        pygame.draw.circle(SCREEN, scrollBarSound.WHITE, scrollBarSound.CURSOR_POS, scrollBarSound.CURSOR_RADIUS-2)
+          
         pygame.display.update()
     if optiVerif:
         majEcranOpti()
@@ -586,7 +595,7 @@ def main_menu():
         HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
                             text_input="Aide", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
         LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
-                            text_input="Licence", font=get_font(15), base_color="#fffffd", hovering_color="#999999")
+                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
     else:
         PLAY_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton)), pos=(tailleEcran[0]*1/5, tailleEcran[1]*1/5), 
                             text_input="PLAY", font=get_font(taillePolice), base_color="#fffffd", hovering_color="#999999")
@@ -599,7 +608,7 @@ def main_menu():
         HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
                             text_input="Help", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
         LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
-                            text_input="Licence", font=get_font(15), base_color="#fffffd", hovering_color="#999999")
+                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
     clock = pygame.time.Clock()
     transition=0
     while True:
@@ -671,7 +680,7 @@ def main_menu():
                         HELP_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.03, tailleEcran[1]*0.98), 
                                             text_input="Aide", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
                         LICENCE_BUTTON = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton mini.png").convert_alpha(), (scaleButtonMini)), pos=(tailleEcran[0]*0.09, tailleEcran[1]*0.98), 
-                            text_input="Licence", font=get_font(15), base_color="#fffffd", hovering_color="#999999")
+                            text_input="Licence", font=get_font(20), base_color="#fffffd", hovering_color="#999999")
                         
                 if EDITOR_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.mixer.Sound.play(PLAY_BUTTON.sonBoutonPress)
@@ -708,3 +717,5 @@ def majEcranOpti():
     
 def avoirEcran():
     return int(aideCSV.valCorrespondante("largeurEcran")), int(aideCSV.valCorrespondante("hauteurEcran"))
+
+
