@@ -390,8 +390,8 @@ def options():
         langue = "fr"
         OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
                         text_input="retour", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        scrollBarMusic=ScrollBar((26, 0, 172), (tailleEcran[0]*0.35, tailleEcran[1]//2.2), 50)
-        scrollBarSound=ScrollBar((26, 0, 172), (tailleEcran[0]*0.53, tailleEcran[1]//2.2), 50)
+        scrollBarMusic=ScrollBar((26, 0, 172), (tailleEcran[0]*0.35, tailleEcran[1]//2.2), 50,(tailleEcran[0]*0.117, tailleEcran[1]*0.01),tailleEcran[0]*0.0058)
+        scrollBarSound=ScrollBar((26, 0, 172), (tailleEcran[0]*0.53, tailleEcran[1]//2.2), 50,(tailleEcran[0]*0.117, tailleEcran[1]*0.01),tailleEcran[0]*0.0058)
         
         bas = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButtonRond.png").convert_alpha(),(scaleButtonR[0]//6, scaleButtonR[1]//6)), pos=(tailleEcran[0]*3.93/10, tailleEcran[1]*0.26), 
                         text_input="bas", font=get_font(taillePolice//4), base_color="white", hovering_color="#999999")
@@ -403,8 +403,8 @@ def options():
         langue = "en"
         OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
                         text_input="back", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
-        scrollBarMusic=ScrollBar((26, 0, 172), (tailleEcran[0]*0.35, tailleEcran[1]//2.2), 50)
-        scrollBarSound=ScrollBar((26, 0, 172), (tailleEcran[0]*0.53, tailleEcran[1]//2.2), 50)
+        scrollBarMusic=ScrollBar((26, 0, 172), (tailleEcran[0]*0.35, tailleEcran[1]//2.2), 50,(tailleEcran[0]*0.117, tailleEcran[1]*0.01),tailleEcran[0]*0.0058)
+        scrollBarSound=ScrollBar((26, 0, 172), (tailleEcran[0]*0.53, tailleEcran[1]//2.2), 50,(tailleEcran[0]*0.117, tailleEcran[1]*0.01),tailleEcran[0]*0.0058)
         print(scrollBarSound)
         
         
@@ -442,18 +442,18 @@ def options():
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*1/2, tailleEcran[1]*1/10))
 
         if langue == "en":
-            volume_TEXT = get_font(taillePolice-20).render(" Sound ", True, "Black")
-            music_TEXT = get_font(taillePolice-60).render(" Music ", True, "Black")
-            sound_TEXT = get_font(taillePolice-60).render(" Sound ", True, "Black")
-            graphisme_TEXT = get_font(taillePolice-60).render(" Graphics ", True, "Black")
+            volume_TEXT = get_font(int(taillePolice*0.6)).render(" Sound ", True, "Black")
+            music_TEXT = get_font(int(taillePolice*0.4)).render(" Music ", True, "Black")
+            sound_TEXT = get_font(int(taillePolice*0.4)).render(" Sound ", True, "Black")
+            graphisme_TEXT = get_font(int(taillePolice*0.4)).render(" Graphics ", True, "Black")
         else:
-            volume_TEXT = get_font(taillePolice-20).render(" Volume ", True, "Black")
-            music_TEXT = get_font(taillePolice-60).render(" Musique ", True, "Black")
-            sound_TEXT = get_font(taillePolice-60).render(" Bruitage ", True, "Black")
-            graphisme_TEXT = get_font(taillePolice-60).render(" Graphisme ", True, "Black")
-        volume_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.52, tailleEcran[1]*0.36))
-        music_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.47, tailleEcran[1]*0.45))
-        sound_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.65, tailleEcran[1]*0.45))
+            volume_TEXT = get_font(int(taillePolice*0.6)).render(" Volume ", True, "Black")
+            music_TEXT = get_font(int(taillePolice*0.4)).render(" Musique ", True, "Black")
+            sound_TEXT = get_font(int(taillePolice*0.4)).render(" Bruitage ", True, "Black")
+            graphisme_TEXT = get_font(int(taillePolice*0.4)).render(" Graphisme ", True, "Black")
+        volume_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.54, tailleEcran[1]*0.36))
+        music_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.46, tailleEcran[1]*0.45))
+        sound_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.64, tailleEcran[1]*0.45))
         graphisme_RECT = OPTIONS_TEXT.get_rect(center=(tailleEcran[0]*0.54, tailleEcran[1]*0.23))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
         SCREEN.blit(volume_TEXT, volume_RECT)
