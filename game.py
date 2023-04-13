@@ -11,7 +11,6 @@ from imageLoad import ImageLoad
 from mob import Mob
 from joueur import Player
 from sound import Sound
-
 import aideCSV
 
 premierPAss=True
@@ -39,7 +38,7 @@ class Game(pygame.sprite.Sprite):
         self.backgroundMonde = self.images.loadImgBackMonde(self.infoObject)
         self.backgroundArene = self.images.loadImgBackArene(self.infoObject)
         self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
-        self.son = Sound()
+        self.son = Sound(self)
         self.updateBar(fenetre, 75, posRectChargement, "chargement de la carte...", font)
     
         self.imCollision = self.images.getImCollision()
@@ -55,7 +54,10 @@ class Game(pygame.sprite.Sprite):
         self.mapImgO_superpose = 0
         self.mapMer = 0
         self.mapVide = 0
+        self.transi = False
+        self.indiceTransi = 0
         self.listeCaseMer = 0
+        self.musiqueFond = None
         self.listeCaseForet = 0
         self.listeCasePlaine=0
         self.listeCaseMontagne=0

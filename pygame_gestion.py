@@ -101,7 +101,7 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
     pauseicon = pygame.transform.scale(pauseicon,(45,45))
     indiceBackArene=0
     indiceBackMonde=0
-
+    choixMusique = int(aideCSV.valCorrespondante("musique"))
     infobulleIncendie = pygame.image.load("data/cata/infoBulle/info_incendie.png").convert_alpha()
     infoMortAnnimal = pygame.image.load("data/cata/infoBulle/infoMort.png").convert_alpha()
 
@@ -183,8 +183,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
         else:
             fps+=1
         
+        if choixMusique ==1:
+            game.son.jouerMusique()
+        else:
+            game.son.jouerMusique2()
         
-        game.son.jouerMusique2()
         
         modification=False
         cliqueItem = False
@@ -211,6 +214,9 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
             centrerJoueur(game)
 
         if game.joueur.getTuile().ville or (keys[K_r] and keys[K_e] and keys[K_l]):
+            game.transi = game.images.transi
+            game.musiqueFond.stop()
+            pygame.mixer.Sound.play(game.son.boss)
             game.boss=True
             game.map=game.mapBoss
             for i in range(7):
@@ -658,6 +664,11 @@ def pygameInit(mapChoisie,pointSpawn):  # fonction servant à l'initialisation p
                 victoire(game)
             if game.joueur.estMort:
                 mort(game)
+            
+            if game.transi and game.indiceTransi<len(game.transi):
+                fenetrePygame.blit(game.transi[game.indiceTransi], (0,0))
+                game.indiceTransi+=1
+                
             #if game.joueur.ville:
                 #victoire(game)
             
@@ -959,7 +970,7 @@ def deplacementCamHaut(mouse, game, bloquage, suiviePerso=False):
                 pos[1]+=y
             for annimMort in game.groupMobMort:
                 annimMort.posY+=y
-        
+
 def deplacementCamGauche(mouse, game, bloquage, suiviePerso=False):
     global moveY, moveX
     x= mouse[0]
@@ -1017,7 +1028,7 @@ def f(x):  #fonction vitesse deplacement cam
     return y
 
 
-def pause(fenetre, game):
+def pause(fenetre, game:Game):
     global infoObject
     tailleEcran = infoObject[0], infoObject[1]
     diagonalEcran = math.sqrt(tailleEcran[0]**2 + tailleEcran[1]**2)
@@ -1057,6 +1068,7 @@ def pause(fenetre, game):
                 if documentation.checkForInput(mouse):
                     librairie = not librairie
                 if menu.checkForInput(mouse):
+                    game.musiqueFond.stop()
                     main_menu.main_menu()
                 if librairie and fermer.checkForInput(mouse):
                     librairie=False

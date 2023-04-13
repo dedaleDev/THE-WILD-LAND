@@ -7,7 +7,7 @@ import aideCSV
 import requests
 import getpass
 
-dev=False
+dev=True
 def main():
     langue = locale.getlocale()
     if langue[0][0:2]=="fr":
@@ -34,7 +34,6 @@ def video():
         pygame.mixer.music.load("data/audio_en.mp3")
     pygame.mixer.music.play()
     cap = cv2.VideoCapture('data/intro2.mp4')
-    
     cv2.namedWindow("frame", cv2.WND_PROP_FULLSCREEN)
     cv2.setWindowProperty("frame",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
     while(cap.isOpened()):
@@ -47,11 +46,10 @@ def video():
                 break
         else:
             break
-    
     cap.release()
     cv2.destroyAllWindows()
+    
 def sendError(error:str):
-
     # URL de la Firebase
     firebase_url = "https://wildland-77be4-default-rtdb.europe-west1.firebasedatabase.app"
     username = getpass.getuser()

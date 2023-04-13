@@ -5,13 +5,14 @@ import pygame
 import csv
 import aideCSV
 class Sound():
-    def __init__(self):
+    def __init__(self, game):
     
     #Bruitage
-
+        self.game = game
         volumeBruitage = float(aideCSV.valCorrespondante("volumeBruitage"))
         volumeMusique = float(aideCSV.valCorrespondante("volumeMusique"))
-        
+        self.boss = pygame.mixer.Sound("data/son/boss_music.mp3")
+        self.boss.set_volume(volumeMusique)
         self.trou = pygame.mixer.Sound("data/son/effets/trou.mp3")
         self.trou.set_volume(volumeBruitage)
         self.mine = pygame.mixer.Sound("data/son/effets/mine.mp3")
@@ -125,20 +126,19 @@ class Sound():
         if not pygame.mixer.get_busy():
             if len(self.listeMusiqueCalme)==self.tailleListeMusiqueCalme and len(self.listeMusiqueCalme)>0:
                 i=random.randint(0, len(self.listeMusiqueCalme)-1)
-                
-                pygame.mixer.Sound.play(self.listeMusiqueCalme[i])
+                self.game.musiqueFond=pygame.mixer.Sound.play(self.listeMusiqueCalme[i])
 
                 self.listeMusiqueCalme.pop(i)
                 
             elif len(self.listeMusiqueConstruction)>=self.tailleListeMusiqueConstruction-1 and len(self.listeMusiqueConstruction)>0:
                 
                 i=random.randint(0, len(self.listeMusiqueConstruction)-1)
-                pygame.mixer.Sound.play(self.listeMusiqueConstruction[i])
+                self.game.musiqueFond=pygame.mixer.Sound.play(self.listeMusiqueConstruction[i])
                 self.listeMusiqueConstruction.pop(i)
                 
             elif len(self.listeMusiqueCombat)>=self.tailleListeMusiqueCombat-2 and len(self.listeMusiqueCombat)>0:
                 i=random.randint(0, len(self.listeMusiqueCombat)-1)
-                pygame.mixer.Sound.play(self.listeMusiqueCombat[i])
+                self.game.musiqueFond= pygame.mixer.Sound.play(self.listeMusiqueCombat[i])
                 self.listeMusiqueCombat.pop(i)
                 
                 
@@ -150,19 +150,18 @@ class Sound():
             if len(self.listeMusiqueCalme2)==self.tailleListeMusiqueCalme2 and len(self.listeMusiqueCalme2)>0:
                 i=random.randint(0, len(self.listeMusiqueCalme2)-1)
                 
-                pygame.mixer.Sound.play(self.listeMusiqueCalme2[i])
-
+                self.game.musiqueFond= pygame.mixer.Sound.play(self.listeMusiqueCalme2[i])
                 self.listeMusiqueCalme2.pop(i)
                 
             elif len(self.listeMusiqueConstruction2)>=self.tailleListeMusiqueConstruction2-1 and len(self.listeMusiqueConstruction2)>0:
                 
                 i=random.randint(0, len(self.listeMusiqueConstruction2)-1)
-                pygame.mixer.Sound.play(self.listeMusiqueConstruction2[i])
+                self.game.musiqueFond=pygame.mixer.Sound.play(self.listeMusiqueConstruction2[i])
                 self.listeMusiqueConstruction2.pop(i)
                 
             elif len(self.listeMusiqueCombat2)>=self.tailleListeMusiqueCombat2-2 and len(self.listeMusiqueCombat2)>0:
                 i=random.randint(0, len(self.listeMusiqueCombat2)-1)
-                pygame.mixer.Sound.play(self.listeMusiqueCombat2[i])
+                self.game.musiqueFond=pygame.mixer.Sound.play(self.listeMusiqueCombat2[i])
                 self.listeMusiqueCombat2.pop(i)
                 
                 
