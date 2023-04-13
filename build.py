@@ -9,7 +9,7 @@ from tour import Tour
 class Build(pygame.sprite.Sprite):
     def __init__(self, game, nomBatiment, tuile, nbClickMax):
         
-          nbClickMax=0#nbClickMax
+          nbClickMax=nbClickMax
           super().__init__()
           tuile.build=True
           self.game = game
