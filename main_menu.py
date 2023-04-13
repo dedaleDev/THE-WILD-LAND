@@ -412,6 +412,13 @@ def options():
                         text_input="haut", font=get_font(taillePolice//4), base_color="white", hovering_color="#999999")
     else:
         langue = "en"
+        if choixMusique==1:
+        
+            MUSIQUE1 = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.4), 
+                            text_input="music 1", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+        else:
+            MUSIQUE1 = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.4), 
+                            text_input="music0", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
         OPTIONS_BACK = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.2), 
                         text_input="back", font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
         scrollBarMusic=ScrollBar((26, 0, 172), (tailleEcran[0]*0.35, tailleEcran[1]//2.2), round(float(volumeM)*100),(tailleEcran[0]*0.117, tailleEcran[1]*0.01),tailleEcran[0]*0.0058)
@@ -499,9 +506,13 @@ def options():
                 if MUSIQUE1.checkForInput(OPTIONS_MOUSE_POS):
                     choixMusique=1-choixMusique
                     aideCSV.remplacerVal("musique", choixMusique, True)
-                    MUSIQUE1 = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.4), 
-                            text_input="musique"+str(choixMusique), font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
                     
+                    if langue=="fr":
+                        MUSIQUE1 = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.4), 
+                                text_input="musique"+str(choixMusique), font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
+                    else:
+                        MUSIQUE1 = Button(image=pygame.transform.scale(pygame.image.load("data/menu/backButton.png").convert_alpha(), (scaleButton[0]//2, scaleButton[1]//2)), pos=(tailleEcran[0]*1/2, tailleEcran[1]*1/1.4), 
+                                text_input="music"+str(choixMusique), font=get_font(taillePolice//2), base_color="white", hovering_color="#999999")
                 volumeM = scrollBarMusic.getValue()/100
                 volume = scrollBarSound.getValue()/100
                 if event.type == pygame.MOUSEBUTTONDOWN:
