@@ -17,6 +17,8 @@ premierPAss=True
 class Game(pygame.sprite.Sprite):
     def __init__(self, infoObject, fenetre, mapChoisie, pointSpawn):
         super().__init__()
+        loadingTextFR = ["Les monstres se rassemblent...", "Explosion volcanique en cours...", "Les forêts sont en train de pousser...", "Les montagnes se forment...","Les animaux se reveillent...", "La colere de Relouatord est en train d eclater...","Réparation des dégats du yeti...","Forgage de votre marteau..","Enfilage de votre cape et de vos bottes"]
+        loadingTextEN = ["Creating the universe...", "Volcanic eruption...", "The forests are growing...", "The mountains are forming...", "The animals are waking up...", "Relouatord anger is breaking out...", "Repairing the damage of the yeti...", "Forging your hammer...", "Putting on your cape and boots..."]
         try:
             self.aspirateurDeDonnees()
         except Exception :
@@ -26,20 +28,28 @@ class Game(pygame.sprite.Sprite):
         self.diagonalEcran = math.sqrt(infoObject[0]**2 + infoObject[1]**2)
         taillePolice = round(3/100*self.diagonalEcran)
         font = pygame.font.Font("data/menu/font.ttf", taillePolice//2)
-        Liste = ["chargement1", "chargement2", "chargement3"]
-        self.updateBar(fenetre, 0, posRectChargement, "chargement des images...", font)
-        
         self.text=None
         if aideCSV.valCorrespondante("langue")=="fr":
             self.langage = "fr"
         else:
             self.langage= "en"
+        if self.langage =="fr":   
+            self.updateBar(fenetre, 0, posRectChargement, random.choice(loadingTextFR), font)
+        else :
+            self.updateBar(fenetre, 0, posRectChargement,random.choice(loadingTextEN), font)
         self.images = ImageLoad(self.infoObject, self.langage)
         self.backgroundMonde = self.images.loadImgBackMonde(self.infoObject)
         self.backgroundArene = self.images.loadImgBackArene(self.infoObject)
-        self.updateBar(fenetre, 25, posRectChargement, "chargement des sons...", font)
+        if self.langage =="fr": 
+            self.updateBar(fenetre, 25, posRectChargement,random.choice(loadingTextFR), font)
+        else: 
+            self.updateBar(fenetre, 25, posRectChargement, random.choice(loadingTextEN), font)
         self.son = Sound(self)
-        self.updateBar(fenetre, 75, posRectChargement, "chargement de la carte...", font)
+        if self.langage =="fr":
+            self.updateBar(fenetre, 75, posRectChargement, random.choice(loadingTextFR), font)
+        else:
+            self.updateBar(fenetre, 75, posRectChargement, random.choice(loadingTextEN), font)
+
     
         self.imCollision = self.images.getImCollision()
         self.map = 0
