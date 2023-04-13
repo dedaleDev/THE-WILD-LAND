@@ -120,6 +120,7 @@ class ImageLoad():
         
         self.autoLoad = self.autoLoadImg()
         
+        self.transi = self.loadAnnimTransi()
         
         
         
@@ -434,6 +435,14 @@ class ImageLoad():
             listeAnnim.append(im)
         return listeAnnim
     
+    def loadAnnimTransi(self):
+        listeAnnim = []
+        for i in range(1,50):
+            im = pygame.image.load("data/personnages/boss/transi/transi_"+str(i)+".png").convert_alpha()
+            im = pygame.transform.scale(im, (self.infoObject[0], self.infoObject[1]))
+            listeAnnim.append(im)
+        return listeAnnim
+    
     def loadAnnimOiseau(self, int2):
         listeAnnim = []
         if int2:
@@ -498,11 +507,9 @@ class ImageLoad():
         return listeAnnim
 
     def loadImg(self):
-        
         listeImg = []
-
         #fonction pour charger la bonne image
-    # si exploration
+        # si exploration
         imgTemp = pygame.image.load("data/tuiles/debug.png").convert_alpha()
         imgTemp=pygame.transform.scale(imgTemp, (246, 144))
         listeImg.append(imgTemp)
