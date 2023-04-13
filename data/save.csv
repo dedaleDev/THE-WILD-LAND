@@ -1,5 +1,5 @@
-volumeBruitage ,0.05
-volumeMusique ,0.05
+volumeBruitage ,0.75
+volumeMusique ,1.0
 difficulte ,facile
 taille_matriceX ,25
 taille_matriceY ,25
@@ -9,3 +9,4 @@ hauteurEcran ,864
 changementEcran ,False
 listePos ,
 langue ,fr
+musique ,1
