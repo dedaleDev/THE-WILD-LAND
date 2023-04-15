@@ -2,6 +2,8 @@
 
 ![Fichier 706](https://user-images.githubusercontent.com/101816097/209169101-233f0174-286b-46b6-bf5c-6c004d1c1793.png)
 
+THE WILD LAND est disponible sur : https://electric-dream.itch.io/the-wild-land
+
 Pour toute informations concernant le jeu et sa documentation veuillez vous référer au site suivant :
 
 https://melon-people-c90.notion.site/271de6d2484440beb1747bda97872ff8
