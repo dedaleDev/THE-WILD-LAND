@@ -4,8 +4,8 @@
 
 Pour toute informations concernant le jeu et sa documentation veuillez vous référer au site suivant :
 
-thewildland.com/documentation
+https://melon-people-c90.notion.site/271de6d2484440beb1747bda97872ff8
 
 
 Support : 
-Si quelque chose c'est mal passé ou si vous souhaitez simplement nous faire part de vos idées d'amélioration / critiques CONSTRUCTIVES vous pouvez nous envoyer un mail à : thewildlandsupport.3xi20@aleeas.com
+Si quelque chose c'est mal passé ou si vous souhaitez simplement nous faire part de vos idées d'amélioration / critiques CONSTRUCTIVES vous pouvez nous envoyer un mail à : eletric_dreams@proton.me
