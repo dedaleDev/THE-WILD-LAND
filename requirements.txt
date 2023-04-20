@@ -1,8 +1,0 @@
-mechanize
-beautifulsoup4
-sv-ttk
-selenium
-pyperclip
-requests
-tk
-gevent
