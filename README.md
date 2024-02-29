@@ -1,7 +1,7 @@
 
 ![poster](https://github.com/Flavien-Dieval/THE-WILD-LAND/assets/101816097/7228431c-c8b7-4890-b676-40298d4091a1)
 
-THE WILD LAND est disponible sur : https://electric-dream.itch.io/the-wild-land
+## THE WILD LAND est disponible sur : https://electric-dream.itch.io/the-wild-land
 
 Pour toute informations concernant le jeu et sa documentation veuillez vous référer au site suivant :
 
